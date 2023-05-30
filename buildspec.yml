@@ -1,8 +1,6 @@
-version: 0.1
+version: 0.2
 phases:
   install:
-    runtime-versions:
-      nodejs: 16
     commands:
       - npm install -g yarn
   pre_build:
