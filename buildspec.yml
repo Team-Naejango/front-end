@@ -6,7 +6,6 @@ phases:
     commands:
       - n 16
       - npm install -g yarn
-      - node --version
   pre_build:
     commands:
       - yarn
@@ -17,4 +16,4 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: 'dist'
+  base-directory: 'out'
