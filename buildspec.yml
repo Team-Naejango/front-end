@@ -4,10 +4,10 @@ phases:
     runtime-versions:
       nodejs: 16
     commands:
-      - echo install yarn...
+      - npm install -g yarn
   pre_build:
     commands:
-      - echo Installing source NPM dependencies...
+      - yarn
   build:
     commands:
       - next build
@@ -16,6 +16,3 @@ artifacts:
   files:
       - '**/*'
   base-directory: 'dist',
-Properties:
-  Environment:
-    Image: "aws/codebuild/standard:5.0"
