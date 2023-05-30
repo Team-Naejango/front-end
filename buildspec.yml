@@ -11,6 +11,5 @@ phases:
       - next build
       - yarn next export
 artifacts:
-  files:
-    - '**/*'
+  files:     - '**/*'
   base-directory: 'dist',
