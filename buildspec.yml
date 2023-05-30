@@ -12,7 +12,7 @@ phases:
       - yarn
   build:
     commands:
-      - next build
+      - yarn run build
       - yarn next export
 artifacts:
   files:
