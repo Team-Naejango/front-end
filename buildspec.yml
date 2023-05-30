@@ -1,6 +1,8 @@
 version: 0.1 # 임의의 버전 이름
 phases:
   install:
+    runtime-versions:
+      java: corretto8
     commands:
       - yarn
   build:
