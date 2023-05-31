@@ -15,7 +15,6 @@ phases:
       - yarn next export
   post_build:
     commands:
-      - aws s3 cp index.html s3://naejango
       - aws cloudfront create-invalidation --distribution-id E3ODUFY373RJ9 --paths "/*"
 artifacts:
   files:
