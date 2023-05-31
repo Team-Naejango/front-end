@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "plugin:prettier/recommended", "next/core-web-vitals"],
+  "extends": ["airbnb", "plugin:prettier/recommended", "next/core-web-vitals", "plugin:react/recommended"],
   "rules": {
     "prettier/prettier": ["error"],
     // "off" or 0 - turn the rule off
@@ -21,9 +21,17 @@
     "consistent-return": "off",
     "no-restricted-syntax": ["off", "ForOfStatement"], // disallow specified syntax(ex. WithStatement)
     "prefer-arrow-callback": "error", // Require using arrow functions for callbacks
+    "import/prefer-default-export": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "react/button-has-type": "off",
     "require-await": "error",
+    "global-require": 0,
+    "no-alert": "off",
     "arrow-parens": ["error", "as-needed"], // a => {}
     "no-param-reassign": ["error", { "props": false }],
+    "no-unused-vars": "off",
     "no-unused-expressions": [
       "error",
       {
@@ -43,7 +51,18 @@
         "ignoreStrings": true,
         "ignoreTemplateLiterals": true
       }
-    ] // prettier의 printWidth 옵션 대신 사용
+    ], // prettier의 printWidth 옵션 대신 사용
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "": "never",
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   },
   "env": {
     "browser": true,
