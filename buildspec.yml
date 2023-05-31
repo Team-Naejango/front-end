@@ -4,6 +4,7 @@ phases:
     runtime-versions:
       nodejs: 14
     commands:
+      - aws cloudfront create-invalidation --distribution-id={d1ad0vl3i2dudp} --paths '/*'
       - n 16
       - npm install -g yarn
   pre_build:
