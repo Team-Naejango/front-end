@@ -5,6 +5,7 @@
 /* 스크롤바 제거 */
 body{
   -ms-overflow-style: none;
+  background: #fff;
 }
 ::-webkit-scrollbar {
   display: none;
