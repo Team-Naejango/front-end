@@ -4,7 +4,6 @@ phases:
     runtime-versions:
       nodejs: 14
     commands:
-      - aws cloudfront create-invalidation --distribution-id={d1ad0vl3i2dudp} --paths '/*'
       - n 16
       - npm install -g yarn
   pre_build:
@@ -14,6 +13,9 @@ phases:
     commands:
       - yarn run build
       - yarn next export
+  post_build:
+    commands:
+      - aws cloudfront create-invalidation --distribution-id={d1ad0vl3i2dudp} --paths '/*'
 artifacts:
   files:
     - '**/*'
