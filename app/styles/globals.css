@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 스크롤바 제거 */
+body{
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}

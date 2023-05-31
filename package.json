@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "naejango",
   "version": "0.1.0",
   "private": true,
   "engines": {
@@ -7,23 +7,46 @@
     "npm": ">=8.5.5"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "env-cmd -f .env.dev yarn run open-browser && next dev",
+    "open-browser": "open http://localhost:3000",
+    "build": "env-cmd -f .env.prod next build",
+    "build-dev": "env-cmd -f .env.dev next build",
+    "build-prod": "env-cmd -f .env.prod next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "@tanstack/react-query": "^4.29.12",
     "@types/node": "20.2.5",
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
-    "autoprefixer": "10.4.14",
-    "eslint": "8.41.0",
+    "autoprefixer": "^10.4.14",
+    "axios": "^1.4.0",
+    "eslint": "^8.2.0",
     "eslint-config-next": "13.4.4",
     "next": "13.4.4",
-    "postcss": "8.4.23",
+    "postcss": "^8.4.24",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2",
+    "react-hook-form": "^7.44.2",
+    "react-hot-toast": "^2.4.1",
+    "recoil": "^0.7.7",
+    "tailwindcss": "^3.3.2",
     "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0",
+    "eslint-config-airbnb": "19.0.4",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "prettier": "^2.8.8",
+    "prettier-plugin-tailwindcss": "^0.3.0",
+    "sass": "^1.62.1"
   }
 }
