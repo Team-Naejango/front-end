@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "env-cmd -f .env.dev yarn run open-browser && next dev",
     "open-browser": "open http://localhost:3000",
-    "build": "env-cmd -f .env.prod next build",
+    "build": "env-cmd -f .env.prod next build next export",
     "build-dev": "env-cmd -f .env.dev next build",
     "build-prod": "env-cmd -f .env.prod next build",
     "start": "next start",
