@@ -2,6 +2,7 @@ import React from 'react'
 
 import './styles/globals.css'
 import localFont from 'next/font/local'
+import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 
 const myFont = localFont({ src: './static/fonts/PretendardVariable.woff2' })
 
@@ -14,7 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='ko'>
       <body className={myFont.className} suppressHydrationWarning>
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   )

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import { useForm } from 'react-hook-form'
 
-import { cls } from '@/app/libs/client/utils'
 import Input from '@/app/components/input'
 import Button from '@/app/components/button'
 import { useRouter } from 'next/navigation'
@@ -12,6 +11,7 @@ import { useRouter } from 'next/navigation'
 import { FcGoogle } from 'react-icons/fc'
 import { RiKakaoTalkFill } from 'react-icons/ri'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 
 interface FormProps {
   email: string
@@ -30,6 +30,8 @@ const Home: NextPage = () => {
 
   const [method, setMethod] = useState<'email' | 'password'>('email')
 
+  // const { data } = useQuery(['queryKey'], () => fn, {})
+
   const onValid = () => {
     alert('개발중!!!!!!!!!!!!!!')
     reset()
@@ -37,7 +39,7 @@ const Home: NextPage = () => {
 
   return (
     <main className='bor-al mx-auto h-[770px] w-[375px] max-w-xl rounded-[30px] bg-[#fff] p-5'>
-      <div className='mt-20 px-4'>
+      <div className='mt-24 px-4'>
         <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>로그인</h3>
         <div className='mt-20'>
           <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-3'>
