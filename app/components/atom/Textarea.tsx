@@ -9,7 +9,7 @@ interface TextAreaProps {
   [key: string]: any
 }
 
-const TextArea = ({ label, name, register, ...rest }: TextAreaProps) => {
+const Textarea = ({ label, name, register, ...rest }: TextAreaProps) => {
   return (
     <div>
       {label ? (
@@ -28,4 +28,4 @@ const TextArea = ({ label, name, register, ...rest }: TextAreaProps) => {
   )
 }
 
-export default TextArea
+export default Textarea

@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cls } from '@/app/libs/client/utils'
+import { cls } from '@/app/libs/client/utils/util'
 
 interface ButtonProps {
   large?: boolean
@@ -13,7 +13,7 @@ const Button = ({ large = false, onClick, text, ...rest }: ButtonProps) => {
     <button
       {...rest}
       className={cls(
-        'fonts-medium w-full rounded-md border  border-transparent bg-[#A3D139] px-4 text-white shadow-sm hover:bg-[#A3D139] focus:outline-none focus:ring-2 focus:ring-[#A3D139] focus:ring-offset-2',
+        'w-full rounded-md border border-transparent  bg-[#A3D139] px-4 font-medium text-white shadow-sm hover:bg-[#A3D139] focus:outline-none focus:ring-2 focus:ring-[#A3D139] focus:ring-offset-2',
         large ? 'py-3 text-base' : 'py-2 text-sm '
       )}>
       {text}

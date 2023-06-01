@@ -12,7 +12,7 @@ interface InputProps {
   autoComplete?: string
 }
 
-export default function Input({
+export default function InputField({
   label,
   name,
   kind = 'text',

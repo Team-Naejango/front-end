@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { cls } from '@/app/libs/client/utils'
+import { cls } from '@/app/libs/client/utils/util'
 
 interface MessageProps {
   message: string

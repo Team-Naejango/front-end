@@ -1,10 +1,10 @@
 import React from 'react'
 
-import './styles/globals.css'
+import './assets/css/globals.scss'
 import localFont from 'next/font/local'
 import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 
-const myFont = localFont({ src: './static/fonts/PretendardVariable.woff2' })
+const myFont = localFont({ src: './assets/font/PretendardVariable.woff2' })
 
 export const metadata = {
   title: '내 잔고를 부탁해',
@@ -13,7 +13,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='ko'>
+    <html lang='en'>
       <body className={myFont.className} suppressHydrationWarning>
         <QueryProvider>{children}</QueryProvider>
       </body>
