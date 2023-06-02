@@ -30,8 +30,9 @@ const Sign = () => {
   } = useForm<FormProps>()
 
   const onValid = () => {
-    if (watch('password') === watch('rePassword')) {
+    if (watch('password') !== watch('rePassword')) {
       setError('rePassword', { message: '비밀번호가 일치하지 않습니다.' })
+      return
     }
     alert('개발중!!!!!!!!!!!!!!')
     reset()
@@ -47,32 +48,32 @@ const Sign = () => {
               register={register('email', {
                 required: '이메일을 입력해주세요.',
               })}
-              name='email'
+              id='email'
               type='email'
               placeholder='이메일'
-              icon={<BiUser className='absolute ml-2.5 text-xl text-[#A9A9A9]' />}
+              icon={<BiUser className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
             />
             <p className='!mt-1.5 text-xs text-red-400'>{errors.email?.message}</p>
             <InputField
               register={register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
-              name='password'
+              id='password'
               type='password'
               placeholder='비밀번호'
               autoComplete='new-password'
-              icon={<BiKey className='absolute ml-2.5 text-xl text-[#A9A9A9]' />}
+              icon={<BiKey className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
             />
             <p className='!mt-1 text-xs text-red-400'>{errors.password?.message}</p>
             <InputField
               register={register('rePassword', {
                 required: '비밀번호를 재입력해주세요.',
               })}
-              name='password'
+              id='rePassword'
               type='password'
               placeholder='비밀번호 재입력'
               autoComplete='new-password'
-              icon={<BiKey className='absolute ml-2.5 text-xl text-[#A9A9A9]' />}
+              icon={<BiKey className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
             />
             <p className='!mt-1 text-xs text-red-400'>{errors.rePassword?.message}</p>
             <Button text='회원가입' />

@@ -14,7 +14,7 @@ const Button = ({ large = false, onClick, text, ...rest }: ButtonProps) => {
       {...rest}
       className={cls(
         'w-full rounded-md border border-transparent bg-[#A3D139] px-4 font-medium text-white shadow-sm hover:bg-[#AFD751] focus:outline-none focus:ring-2 focus:ring-[#A3D139] focus:ring-offset-2',
-        large ? 'py-3 text-base' : 'py-2 text-sm '
+        large ? 'py-3 text-base' : 'py-2.5 text-sm'
       )}>
       {text}
     </button>

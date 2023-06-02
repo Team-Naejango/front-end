@@ -39,7 +39,6 @@ const Login = () => {
   }
 
   useEffect(() => {
-    console.log('document.location.href:', document.location.href.includes('login'))
     if (document.location.href.includes('login')) {
       router.replace('/')
     }
@@ -55,27 +54,27 @@ const Login = () => {
               register={register('email', {
                 required: '이메일을 입력해주세요.',
               })}
-              name='email'
+              id='email'
               type='email'
               placeholder='이메일'
-              icon={<BiUser className='absolute ml-2.5 text-xl text-[#A9A9A9]' />}
+              icon={<BiUser className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
             />
             <p className='!mt-1.5 text-xs text-red-400'>{errors.email?.message}</p>
             <InputField
               register={register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
-              name='password'
+              id='password'
               type='password'
               placeholder='비밀번호'
               autoComplete='new-password'
-              icon={<BiKey className='absolute ml-2.5 text-xl text-[#A9A9A9]' />}
+              icon={<BiKey className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
             />
             <p className='!mt-1 text-xs text-red-400'>{errors.password?.message}</p>
             <Button text='로그인' />
           </form>
 
-          <p className='mb-9 mt-4 flex justify-end text-xs text-[#A9A9A9]'>
+          <p className='mb-9 mt-4 flex justify-end text-xs text-[#A9A9A9] '>
             앗! 회원이 아니신가요?
             <Link href={'/sign'} className='px-1.5 text-[#A3D139] underline'>
               회원가입
@@ -83,11 +82,13 @@ const Login = () => {
           </p>
 
           <div className='mt-8'>
-            <div className='relative'>
-              <div className='absolute w-full border-t border-gray-300' />
-              <div className='relative -top-3 text-center'>
-                <span className='px-2 text-sm text-gray-500'>또는</span>
-              </div>
+            <div className='relative -top-3 text-center'>
+              <span
+                className={`relative border-blue-100 px-2 text-sm text-gray-500 before:absolute before:bottom-1/2 before:right-8 before:mr-2 before:h-[1px] before:w-[130px] before:bg-gray-300 before:text-red-500 before:content-[''] 
+                  after:absolute after:bottom-1/2 after:left-8 after:ml-2 after:mt-1 after:h-[1px] after:w-[130px] after:bg-gray-300 after:text-red-500 after:content-['']
+                  `}>
+                또는
+              </span>
             </div>
             <div className='mt-2 grid grid-cols-1 gap-3'>
               <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
