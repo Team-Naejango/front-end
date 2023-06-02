@@ -25,6 +25,7 @@
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
+    "react/jsx-curly-brace-presence": "off",
     "react/button-has-type": "off",
     "require-await": "error",
     "global-require": 0,
