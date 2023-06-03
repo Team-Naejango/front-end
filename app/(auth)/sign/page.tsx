@@ -10,6 +10,7 @@ import KakaoLogo from '@/app/assets/img/kakaoLogo.png'
 import { FcGoogle } from 'react-icons/fc'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import instance from '../../apis/config/axios'
 
 interface FormProps {
   email: string
@@ -19,6 +20,15 @@ interface FormProps {
 
 const Sign = () => {
   const router = useRouter()
+
+  instance
+    .get('/', {})
+    .then(response => {
+      console.log('response:', response)
+    })
+    .catch(error => {
+      console.log('error:', error)
+    })
 
   const {
     register,
