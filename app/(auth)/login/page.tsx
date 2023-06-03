@@ -7,10 +7,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { FcGoogle } from 'react-icons/fc'
+import toast from 'react-hot-toast'
+import { useMutation } from '@tanstack/react-query'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-
+import { login, LoginForm } from '@/app/apis/domain/auth/auth'
 import KakaoLogo from '@/app/assets/img/kakaoLogo.png'
 
 interface FormProps {
@@ -20,6 +22,7 @@ interface FormProps {
 
 const Login = () => {
   const router = useRouter()
+  // const [method, setMethod] = useState<'email' | 'password'>('email')
 
   const {
     register,
@@ -29,20 +32,24 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormProps>()
 
-  const [method, setMethod] = useState<'email' | 'password'>('email')
-
-  // const { data } = useQuery(['queryKey'], () => fn, {})
+  const { mutate: mutateLogin } = useMutation((params: LoginForm) => login(params), {
+    onSuccess: () => {
+      console.log('로그인 성공')
+      toast.success('로그인 성공')
+      router.replace('/')
+    },
+  })
 
   const onValid = () => {
     alert('개발중!!!!!!!!!!!!!!')
     reset()
   }
 
-  useEffect(() => {
-    if (document.location.href.includes('login')) {
-      router.replace('/')
-    }
-  }, [router])
+  // useEffect(() => {
+  //   if (document.location.href.includes('login')) {
+  //     router.replace('/')
+  //   }
+  // }, [router])
 
   return (
     <div className='bor-al mx-auto h-[770px] w-[375px] max-w-xl rounded-[30px] bg-[#fff] p-5'>

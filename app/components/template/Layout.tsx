@@ -10,7 +10,7 @@ interface LayoutProps {
   seoTitle?: string
   canGoBack?: boolean
   hasTabBar?: boolean
-  children: React.ReactNode
+  children?: React.ReactNode
 }
 
 const Layout = ({ title, canGoBack, hasTabBar, children, seoTitle }: LayoutProps) => {

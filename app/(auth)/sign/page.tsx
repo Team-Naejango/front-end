@@ -1,16 +1,16 @@
 'use client'
 
 import React from 'react'
-import InputField from '@/app/components/atom/InputField'
 import { BiKey, BiUser } from 'react-icons/bi'
-import Button from '@/app/components/atom/Button'
 import Link from 'next/link'
-import Image from 'next/image'
-import KakaoLogo from '@/app/assets/img/kakaoLogo.png'
-import { FcGoogle } from 'react-icons/fc'
+import toast, { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import instance from '../../apis/config/axios'
+import { useMutation, useQuery } from '@tanstack/react-query'
+
+import InputField from '@/app/components/atom/InputField'
+import { sign } from '@/app/apis/domain/auth/auth'
+import Button from '@/app/components/atom/Button'
 
 interface FormProps {
   email: string
@@ -21,15 +21,6 @@ interface FormProps {
 const Sign = () => {
   const router = useRouter()
 
-  instance
-    .get('/', {})
-    .then(response => {
-      console.log('response:', response)
-    })
-    .catch(error => {
-      console.log('error:', error)
-    })
-
   const {
     register,
     watch,
@@ -38,6 +29,14 @@ const Sign = () => {
     formState: { errors },
     setError,
   } = useForm<FormProps>()
+
+  const { mutate: mutateSign } = useMutation(sign, {
+    onSuccess: () => {
+      console.log('회원가입 성공')
+      toast.success('회원가입이 성공했습니다.')
+      router.push('/login')
+    },
+  })
 
   const onValid = () => {
     if (watch('password') !== watch('rePassword')) {
@@ -91,10 +90,12 @@ const Sign = () => {
 
           <p className='mb-9 mt-4 flex justify-end text-xs text-[#A9A9A9]'>
             앗! 계정이 있으신가요?
-            <Link href='/' className='px-1.5 text-[#A3D139] underline'>
+            <Link href={'/login'} className='px-1.5 text-[#A3D139] underline'>
               로그인
             </Link>
           </p>
+
+          <Toaster />
         </div>
       </div>
     </div>
