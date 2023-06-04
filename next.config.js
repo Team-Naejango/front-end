@@ -7,6 +7,7 @@ const nextConfig = {
     loader: 'imgix',
     path: '/',
   },
+  transpilePackages: ['@acme/ui', 'lodash-es'],
 }
 
 module.exports = nextConfig

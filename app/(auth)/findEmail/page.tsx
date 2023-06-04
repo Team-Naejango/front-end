@@ -38,7 +38,7 @@ const FindEmail = () => {
   const onClickFindPassword = (event: React.MouseEvent) => {
     event.stopPropagation()
     event.preventDefault()
-    router.push('/find-password')
+    router.push('/findPassword')
   }
 
   return (
