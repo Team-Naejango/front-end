@@ -7,7 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 
 import Login from '@/app/(auth)/login/page'
 import { refresh } from '@/app/apis/domain/auth/auth'
-import Layout from '@/app/components/template/Layout'
+import MainLayout from '@/app/components/template/MainLayout'
 
 const Home: NextPage = () => {
   const [tokenValid, setTokenValid] = useState<boolean>(false)
@@ -27,7 +27,7 @@ const Home: NextPage = () => {
      * */
   }, [])
 
-  return <main>{tokenValid ? <Layout canGoBack /> : <Login />}</main>
+  return <main>{tokenValid ? <MainLayout canGoBack /> : <Login />}</main>
 }
 
 export default Home
