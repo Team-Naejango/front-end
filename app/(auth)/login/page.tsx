@@ -52,16 +52,15 @@ const Login = () => {
   // }, [router])
 
   return (
-    <div className='bor-al mx-auto h-[770px] w-[375px] max-w-xl rounded-[30px] bg-[#fff] p-5'>
+    <div className='bor-al mx-auto h-[770px] w-[375px] max-w-xl overflow-auto rounded-[30px] bg-[#fff] p-5'>
       <div className='mt-20 px-4'>
         <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>로그인</h3>
         <div className='mt-20'>
-          <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-3'>
+          <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-2'>
             <InputField
               register={register('email', {
                 required: '이메일을 입력해주세요.',
               })}
-              id='email'
               type='email'
               placeholder='이메일'
               icon={<BiUser className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
@@ -71,22 +70,37 @@ const Login = () => {
               register={register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
-              id='password'
               type='password'
               placeholder='비밀번호'
               autoComplete='new-password'
               icon={<BiKey className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
             />
             <p className='!mt-1 text-xs text-red-400'>{errors.password?.message}</p>
+            <p className='!my-4 flex justify-end text-xs text-[#A9A9A9] '>
+              앗! 회원이 아니신가요?
+              <Link
+                href={'/sign'}
+                onClick={event => event.stopPropagation()}
+                className='px-1.5 text-[13px] text-[#A3D139] hover:underline'>
+                회원가입
+              </Link>
+            </p>
+            <div className={'!mb-3 flex justify-center gap-10 align-middle'}>
+              <Link
+                href={'/find-email'}
+                onClick={event => event.stopPropagation()}
+                className={'text-[13px] text-[#222] hover:underline'}>
+                아이디 찾기
+              </Link>
+              <Link
+                href={'/find-password'}
+                onClick={event => event.stopPropagation()}
+                className={'text-[13px] text-[#222] hover:underline'}>
+                비밀번호 찾기
+              </Link>
+            </div>
             <Button text='로그인' />
           </form>
-
-          <p className='mb-9 mt-4 flex justify-end text-xs text-[#A9A9A9] '>
-            앗! 회원이 아니신가요?
-            <Link href={'/sign'} className='px-1.5 text-[#A3D139] underline'>
-              회원가입
-            </Link>
-          </p>
 
           <div className='mt-8'>
             <div className='relative -top-3 text-center'>
@@ -98,11 +112,11 @@ const Login = () => {
               </span>
             </div>
             <div className='mt-2 grid grid-cols-1 gap-3'>
-              <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
+              <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                 <Image src={KakaoLogo} alt='카카오로고' width={24} height={24} className='mr-2.5' unoptimized />
                 카카오 로그인
               </button>
-              <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
+              <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                 <FcGoogle className='mr-2.5 text-2xl' />
                 구글 로그인
               </button>

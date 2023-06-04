@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 
 import { cls } from '@/app/libs/client/utils/util'
+import Header from '@/app/components/template/main/header'
 
 interface LayoutProps {
   title?: string
@@ -13,31 +14,16 @@ interface LayoutProps {
   children?: React.ReactNode
 }
 
-const Layout = ({ title, canGoBack, hasTabBar, children, seoTitle }: LayoutProps) => {
+const MainLayout = ({ title, canGoBack, hasTabBar, children, seoTitle }: LayoutProps) => {
   const router = useRouter()
+
   const onClick = () => {
     router.back()
   }
+
   return (
     <div>
-      <Head>
-        <title>{seoTitle} | 내 잔부를 부탁해</title>
-      </Head>
-      <div className='fixed top-0 flex h-12 w-full max-w-xl items-center justify-center  border-b bg-white px-10 text-lg  font-medium text-gray-800'>
-        {canGoBack ? (
-          <button onClick={onClick} className='absolute left-4'>
-            <svg
-              className='h-6 w-6'
-              fill='none'
-              stroke='currentColor'
-              viewBox='0 0 24 24'
-              xmlns='http://www.w3.org/2000/svg'>
-              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M15 19l-7-7 7-7' />
-            </svg>
-          </button>
-        ) : null}
-        {title ? <span className={cls(canGoBack ? 'mx-auto' : '', '')}>{title}</span> : null}
-      </div>
+      <Header canGoBack={canGoBack} seoTitle={seoTitle} title={title} />
       <div className={cls('pt-12', hasTabBar ? 'pb-24' : '')}>{children}</div>
       {hasTabBar ? (
         <nav className='fixed bottom-0 flex w-full max-w-xl justify-between border-t bg-white px-10 pb-5 pt-3 text-xs text-gray-700'>
@@ -152,4 +138,4 @@ const Layout = ({ title, canGoBack, hasTabBar, children, seoTitle }: LayoutProps
   )
 }
 
-export default Layout
+export default MainLayout
