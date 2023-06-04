@@ -1,5 +1,6 @@
 import instance from '@/app/apis/config/axios'
-import { Auth } from '@/app/apis/types/domain/auth/auth'
+import { Auth, LoginInfo, PassLoginForm } from '@/app/apis/types/domain/auth/auth'
+import { Response } from '@/app/apis/types/response/response'
 
 export type SignForm = {
   email: String
@@ -64,4 +65,18 @@ export async function verify(params: { accessToken: string }) {
  */
 export async function emailValidity(params: LoginForm): Promise<boolean> {
   return instance.get(`/api/user/check/${params.email}`)
+}
+
+/**
+ * 카카오 인증 로그인
+ *
+ * @param code
+ * @param code.access_token Access Token
+ *
+ *
+ */
+export async function kakaoLogin(code: PassLoginForm): Promise<Response<{ auth: LoginInfo }>> {
+  return instance.post(`/kakao?code=${code}`, code, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })
 }

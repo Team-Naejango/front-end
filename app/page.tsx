@@ -2,12 +2,21 @@
 
 import React, { useEffect, useState } from 'react'
 import { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 
-import Login from '@/app/(auth)/login/page'
+import Loading from '@/app/loading'
 import { refresh } from '@/app/apis/domain/auth/auth'
 import MainLayout from '@/app/components/template/MainLayout'
+import Login from '@/app/(auth)/login/page'
+
+// const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'), {
+//   loading: () => <Loading />,
+// })
+// const Login = dynamic(() => import('@/app/(auth)/login/page'), {
+//   loading: () => <Loading />,
+// })
 
 const Home: NextPage = () => {
   const [tokenValid, setTokenValid] = useState<boolean>(false)

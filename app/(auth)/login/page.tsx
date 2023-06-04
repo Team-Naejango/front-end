@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
+import KakaoLogo from '@/app/assets/img/kakaoLogo.png'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import Link from 'next/link'
@@ -13,7 +14,6 @@ import { useMutation } from '@tanstack/react-query'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { login, LoginForm } from '@/app/apis/domain/auth/auth'
-import KakaoLogo from '@/app/assets/img/kakaoLogo.png'
 
 interface FormProps {
   email: string
@@ -40,6 +40,10 @@ const Login = () => {
     },
   })
 
+  const handleKaKaoLogin = () => {
+    router.push('/kakaoOauth')
+  }
+
   const onValid = () => {
     alert('개발중!!!!!!!!!!!!!!')
     reset()
@@ -52,7 +56,7 @@ const Login = () => {
   // }, [router])
 
   return (
-    <div className='bor-al mx-auto h-[770px] w-[375px] max-w-xl overflow-auto rounded-[30px] bg-[#fff] p-5'>
+    <div className='mx-auto h-[770px] w-[375px] max-w-[375px] overflow-auto rounded-[30px] bg-[#fff] p-5'>
       <div className='mt-20 px-4'>
         <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>로그인</h3>
         <div className='mt-20'>
@@ -87,13 +91,13 @@ const Login = () => {
             </p>
             <div className={'!mb-3 flex justify-center gap-10 align-middle'}>
               <Link
-                href={'/find-email'}
+                href={'/findEmail'}
                 onClick={event => event.stopPropagation()}
                 className={'text-[13px] text-[#222] hover:underline'}>
                 아이디 찾기
               </Link>
               <Link
-                href={'/find-password'}
+                href={'/findPassword'}
                 onClick={event => event.stopPropagation()}
                 className={'text-[13px] text-[#222] hover:underline'}>
                 비밀번호 찾기
@@ -112,7 +116,9 @@ const Login = () => {
               </span>
             </div>
             <div className='mt-2 grid grid-cols-1 gap-3'>
-              <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
+              <button
+                onClick={handleKaKaoLogin}
+                className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                 <Image src={KakaoLogo} alt='카카오로고' width={24} height={24} className='mr-2.5' unoptimized />
                 카카오 로그인
               </button>
