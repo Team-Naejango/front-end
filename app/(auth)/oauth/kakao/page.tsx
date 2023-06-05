@@ -20,24 +20,24 @@ const KakaoCallback = () => {
   // 토큰정보 스토어에 저장
 
   // 카카오 로그인
-  const { mutate: mutateKakaoLogin } = useMutation((params: PassLoginForm) => kakaoLogin(params), {
-    onSuccess: data => {
-      if (data.success) {
-        const tokenInfo = {
-          refreshToken: data.auth.refreshToken,
-          accessToken: data.auth.accessToken,
-        }
-        /**
-         * 1. tokenInfo값을 스토어에 저장
-         * 2. 로컬 or 세션에 저장
-         *
-         * */
-      }
-    },
-    onError: (error: ApiError) => {
-      console.log('error:', error)
-    },
-  })
+  // const { mutate: mutateKakaoLogin } = useMutation((params: PassLoginForm) => kakaoLogin(params), {
+  //   onSuccess: data => {
+  //     if (data.success) {
+  //       const tokenInfo = {
+  //         refreshToken: data.auth.refreshToken,
+  //         accessToken: data.auth.accessToken,
+  //       }
+  //       /**
+  //        * 1. tokenInfo값을 스토어에 저장
+  //        * 2. 로컬 or 세션에 저장
+  //        *
+  //        * */
+  //     }
+  //   },
+  //   onError: (error: ApiError) => {
+  //     console.log('error:', error)
+  //   },
+  // })
 
   // 카카오 access_token 요청
   const getKakaoToken = () => {
