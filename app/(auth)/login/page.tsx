@@ -40,8 +40,8 @@ const Login = () => {
     },
   })
 
-  const handleKaKaoLogin = () => {
-    router.push('/kakaoOauth')
+  const onKaKaoLogin = () => {
+    router.push('/kakaoLogin')
   }
 
   const onValid = () => {
@@ -117,7 +117,7 @@ const Login = () => {
             </div>
             <div className='mt-2 grid grid-cols-1 gap-3'>
               <button
-                onClick={handleKaKaoLogin}
+                onClick={onKaKaoLogin}
                 className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                 <Image src={KakaoLogo} alt='카카오로고' width={24} height={24} className='mr-2.5' unoptimized />
                 카카오 로그인

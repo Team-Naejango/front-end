@@ -9,7 +9,7 @@ const Loading = () => {
   return (
     <div className='relative z-40 mx-auto h-[770px] w-[375px] max-w-[375px] rounded-[30px] bg-[#fff]'>
       <Lottie
-        className='absolute left-1/2 top-1/2 z-50 h-[160px] w-[160px] translate-x-[-50%] translate-y-[-50%]'
+        className='absolute left-1/2 top-1/2 z-50 h-[128px] w-[128px] translate-x-[-50%] translate-y-[-50%]'
         animationData={myAnimation}
         loop
       />

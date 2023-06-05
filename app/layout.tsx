@@ -1,10 +1,14 @@
 import React from 'react'
-
 import './assets/css/globals.scss'
 import localFont from 'next/font/local'
-import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 
-const myFont = localFont({ src: './assets/font/PretendardVariable.woff2' })
+import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
+import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
+
+const myFont = localFont({
+  src: './assets/font/PretendardVariable.woff2',
+  preload: true,
+})
 
 export const metadata = {
   title: '내 잔고를 부탁해',
@@ -13,9 +17,11 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en'>
+    <html lang='ko-KR'>
       <body className={myFont.className} suppressHydrationWarning>
-        <QueryProvider>{children}</QueryProvider>
+        <RecoilProvider>
+          <QueryProvider>{children}</QueryProvider>
+        </RecoilProvider>
       </body>
     </html>
   )
