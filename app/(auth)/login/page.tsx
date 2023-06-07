@@ -9,11 +9,18 @@ import Image from 'next/image'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { FcGoogle } from 'react-icons/fc'
 import toast from 'react-hot-toast'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import { login, LoginForm } from '@/app/apis/domain/auth/auth'
+// import { API_RESULT, AUTH_TOKEN } from '@/app/libs/client/constants/code'
+import { emailValidity, login, LoginForm, test } from '@/app/apis/domain/auth/auth'
+// import { KAKAO_STORE_KEY } from '@/app/libs/client/constants/store'
+import { instance } from '@/app/apis/config/axios'
+import { AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
+import { kakaoAccessToken } from '@/app/store/atom'
+import { useRecoilValue } from 'recoil'
+// import { login, LoginForm } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -35,19 +42,30 @@ const Login = () => {
   const { mutate: mutateLogin } = useMutation((params: LoginForm) => login(params), {
     onSuccess: () => {
       console.log('로그인 성공')
-      toast.success('로그인 성공')
-      router.replace('/')
+      // toast.success('로그인 성공')
+      // router.replace('/')
     },
   })
 
+  // const x = () => {
+  //   instance.get(`/sdsd`)
+  // }
+
+  // const data = useQuery([''], (data?: any) => emailValidity({ ...data }), {})
+
   const onKaKaoLogin = () => {
-    router.push('/kakaoLogin')
+    // x()
+    // router.push('/kakaoLogin')
   }
 
   const onValid = () => {
     alert('개발중!!!!!!!!!!!!!!')
     reset()
   }
+
+  // useEffect(() => {
+  //   x()
+  // }, [])
 
   // useEffect(() => {
   //   if (document.location.href.includes('login')) {

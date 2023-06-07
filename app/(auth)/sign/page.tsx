@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import InputField from '@/app/components/atom/InputField'
-import { sign } from '@/app/apis/domain/auth/auth'
+// import { sign } from '@/app/apis/domain/auth/auth'
 import Button from '@/app/components/atom/Button'
 import { BsPhone } from 'react-icons/bs'
 
@@ -33,13 +33,13 @@ const Sign = () => {
     setError,
   } = useForm<FormProps>()
 
-  const { mutate: mutateSign } = useMutation(sign, {
-    onSuccess: () => {
-      console.log('회원가입 성공')
-      toast.success('회원가입이 성공했습니다.')
-      router.push('/login')
-    },
-  })
+  // const { mutate: mutateSign } = useMutation(sign, {
+  //   onSuccess: () => {
+  //     console.log('회원가입 성공')
+  //     toast.success('회원가입이 성공했습니다.')
+  //     router.push('/login')
+  //   },
+  // })
 
   const onValid = () => {
     if (watch('password') !== watch('rePassword')) {

@@ -1,6 +1,6 @@
 언어 : Typescript  
 프레임워크 : Next.Js  
-상태관리: RecoilProvider, React-Query  
+상태관리: Recoil, React-Query  
 스타일링 : TailwindCSS  
 패키지 : Yarn berry  
 모듈 : CRA  

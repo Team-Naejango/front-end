@@ -3,7 +3,7 @@
 /**
  * 로그인
  */
-export interface Auth {
+export interface AuthToken {
   // 리프래시 토큰
   refreshToken: string
   // 액세스 토큰
@@ -15,6 +15,6 @@ export interface PassLoginForm {
   access_token: string
 }
 
-export interface LoginInfo extends Auth {
+export interface LoginInfo extends AuthToken {
   // member: LoginForm
 }

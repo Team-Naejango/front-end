@@ -1,5 +1,9 @@
-import axios, { AxiosError, AxiosResponseHeaders } from 'axios'
+import axios, { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
+
+import { refresh } from '@/app/apis/domain/auth/auth'
+import { getCookie, TokenValid } from '@/app/libs/client/utils/cookie'
+import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
 interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
@@ -7,58 +11,63 @@ interface HeaderType extends AxiosResponseHeaders {
 }
 
 const instance = axios.create({
-  baseURL: process.env.NEXT_DOMAIN,
+  baseURL: process.env.NEXT_PUBLIC_DOMAIN,
   withCredentials: true,
   timeout: 300000,
 })
 
-instance.interceptors.request.use(
-  config => {
-    const { headers } = config
-    const accessToken = document.cookie
+const requestConfig = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
+  const { headers } = config
+  // todo: 액세스토큰 with recoil 전역관리
+  const accessToken = document.cookie
+  console.log('headers:', headers)
+  console.log('accessToken:', accessToken)
 
-    if (accessToken) {
-      headers['Content-Type'] = 'application/json'
-      headers.Authorization = `Bearer ${accessToken}`
-    }
-
-    return config
-  },
-  error => {
-    return Promise.reject(error)
+  if (accessToken) {
+    headers['Content-Type'] = 'application/json'
+    headers.Authorization = `Bearer ${accessToken}`
   }
-)
 
-instance.interceptors.response.use(
-  response => {
-    if (!(response.status === 200 || response.status === 201 || response.status === 204)) {
-      throw new Error()
-    }
+  return config
+}
 
-    return response
-  },
-  async err => {
-    const error = err as AxiosError
+const requestErrorRejecter = (error: AxiosError | Error): Promise<AxiosError> => {
+  return Promise.reject(error)
+}
 
-    if (error.response?.status === 401) {
-      if ('엑세스 토큰 만료') {
-        const refreshToken = await axios.get('토큰 갱신')
-        // const refreshToken = getCookie(AUTH_TOKEN.갱신)
-        document.cookie = `token=${refreshToken}`
+const responseApiErrorThrower = (response: AxiosResponse) => {
+  if (!(response.status === 200 || response.status === 201 || response.status === 204)) {
+    throw new Error()
+  }
+  return response
+}
 
-        if (error.config) {
-          error.config.headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${document.cookie}`,
-          } as HeaderType
-        }
+const responseNormalizer = async (error: AxiosError) => {
+  console.log('error.config:', error.config)
 
-        const formatedResponse = await axios.request(error.config as AxiosRequestConfig)
-        return formatedResponse
+  if (error.response?.status === 403) {
+    const isHasToken = await TokenValid()
+
+    if (isHasToken) {
+      const accessToken = await refresh({ refreshToken: getCookie(KAKAO_AUTH_TOKEN.갱신) })
+
+      if (accessToken) {
+        error.config!.headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        } as HeaderType
+
+        // todo: 새로 발급받은 토큰을 전역상태에 저장하기
+
+        const normalizeResponse = await instance.request(error.config!.url as AxiosRequestConfig)
+        return normalizeResponse
       }
     }
     return Promise.reject(error)
   }
-)
+}
 
-export default instance
+instance.interceptors.request.use(requestConfig, requestErrorRejecter)
+instance.interceptors.response.use(responseApiErrorThrower, responseNormalizer)
+
+export { instance }
