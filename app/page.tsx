@@ -10,10 +10,11 @@ import { useRecoilValue } from 'recoil'
 import Loading from '@/app/loading'
 import { refresh } from '@/app/apis/domain/auth/auth'
 import { kakaoAccessToken } from '@/app/store/atom'
-import { clearSession, getCookie } from '@/app/libs/client/utils/cookie'
+import { getCookie } from '@/app/libs/client/utils/cookie'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import Login from '@/app/(auth)/login/page'
+import { useClearSession } from '@/app/hooks/useClearSession'
 
 const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'), {
   loading: () => <Loading />,
@@ -26,9 +27,10 @@ const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'),
 
 const App: NextPage = () => {
   const router = useRouter()
-  const accessToken = useRecoilValue(kakaoAccessToken)
+  const accessToken = false
+  const { resetAccessToken, resetRefreshToken } = useClearSession()
 
-  console.log('accessToken:', accessToken)
+  // console.log('accessToken:', accessToken)
 
   // Recoil initialState 초기화
   const initialState = () => {}
@@ -41,7 +43,8 @@ const App: NextPage = () => {
     },
     onError: error => {
       console.log('error:', error)
-      clearSession()
+      resetAccessToken()
+      resetRefreshToken()
     },
     onSettled: () => {
       router.push('/')
@@ -63,6 +66,7 @@ const App: NextPage = () => {
   return <main>{accessToken ? <MainLayout canGoBack /> : <Login />}</main>
 }
 
+// todo: 서버 사이드적 조건부 렌더링 검토
 // App.getInitialProps = (ctx: NextPageContext) => {
 //   // const { ...get } = cookies()
 //

@@ -7,7 +7,7 @@ import { Response } from '@/app/apis/types/response/response'
  *
  * @param params.refreshToken 리프래시 토큰
  */
-export async function refresh(params: { refreshToken: string }): Promise<Response<{ auth: AuthToken }>> {
+export async function refresh(params: { refreshToken: string }): Promise<Response<{ token: AuthToken }>> {
   return instance.post('/', params)
 }
 

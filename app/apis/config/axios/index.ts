@@ -2,7 +2,8 @@ import axios, { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRe
 import type { AxiosRequestConfig } from 'axios'
 
 import { refresh } from '@/app/apis/domain/auth/auth'
-import { getCookie, TokenValid } from '@/app/libs/client/utils/cookie'
+import { getCookie } from '@/app/libs/client/utils/cookie'
+import { TokenValid } from '@/app/libs/client/utils/token'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
 interface HeaderType extends AxiosResponseHeaders {
@@ -10,6 +11,7 @@ interface HeaderType extends AxiosResponseHeaders {
   Authorization: string
 }
 
+// todo: auth와 notAuth로 axios 요청 분리
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_DOMAIN,
   withCredentials: true,

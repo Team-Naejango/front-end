@@ -8,8 +8,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { FcGoogle } from 'react-icons/fc'
-import toast from 'react-hot-toast'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
@@ -29,7 +28,6 @@ interface FormProps {
 
 const Login = () => {
   const router = useRouter()
-  // const [method, setMethod] = useState<'email' | 'password'>('email')
 
   const {
     register,
@@ -62,16 +60,6 @@ const Login = () => {
     alert('개발중!!!!!!!!!!!!!!')
     reset()
   }
-
-  // useEffect(() => {
-  //   x()
-  // }, [])
-
-  // useEffect(() => {
-  //   if (document.location.href.includes('login')) {
-  //     router.replace('/')
-  //   }
-  // }, [router])
 
   return (
     <div className='mx-auto h-[770px] w-[375px] max-w-[375px] overflow-auto rounded-[30px] bg-[#fff] p-5'>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, cache } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -13,6 +13,7 @@ import { kakaoAccessToken, userInfoState } from '@/app/store/atom'
 import * as QueryString from 'querystring'
 import axios from 'axios'
 import { KAKAO_AUTH_REDIRECT_URL } from '@/app/libs/client/constants/apiKey'
+import { instance } from '@/app/apis/config/axios'
 
 const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token'
 
@@ -74,7 +75,7 @@ const KakaoCallback = () => {
           // })
 
           // 카카오 유저 정보 get
-          axios
+          instance
             .get('https://kapi.kakao.com/v2/user/me', {
               headers: {
                 Authorization: `Bearer ${data.access_token}`,
