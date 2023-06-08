@@ -1,7 +1,6 @@
-import { GetServerSidePropsResult } from 'next'
-
-export type Response<T = unknown> = GetServerSidePropsResult<T> & {
+export type Response<T = unknown> = {
   [K in keyof T]: T[keyof T]
 } & {
+  GetServerSidePropsResult: T
   success: boolean
 }

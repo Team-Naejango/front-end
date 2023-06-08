@@ -1,25 +1,27 @@
 'use client'
 
-import React, { lazy, Suspense, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
-import { useRecoilValue } from 'recoil'
 
 import Loading from '@/app/loading'
 import { refresh } from '@/app/apis/domain/auth/auth'
-import { kakaoAccessToken } from '@/app/store/atom'
-import { getCookie } from '@/app/libs/client/utils/cookie'
+import { getCookie, setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
-import { ErrorBoundary } from 'next/dist/client/components/error-boundary'
 import Login from '@/app/(auth)/login/page'
-import { useClearSession } from '@/app/hooks/useClearSession'
+import { ApiError } from 'next/dist/server/api-utils'
+import { useSetRecoilState } from 'recoil'
+import { kakaoAccessToken } from '@/app/store/atom'
+import UseUpdateToken from '@/app/hooks/useUpdateToken'
+import UseClearSession from '@/app/hooks/useClearSession'
 
 const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'), {
   loading: () => <Loading />,
   ssr: false,
 })
+
 // const Login = dynamic(() => import('@/app/(auth)/login/page'), {
 //   loading: () => <Loading />,
 //   ssr: false,
@@ -27,46 +29,43 @@ const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'),
 
 const App: NextPage = () => {
   const router = useRouter()
-  const accessToken = false
-  const { resetAccessToken, resetRefreshToken } = useClearSession()
+  const [isAccessToken, setIsAccessToken] = useState<boolean>(false)
 
-  // console.log('accessToken:', accessToken)
-
-  // Recoil initialState 초기화
+  // todo: Recoil 초기화 작업
   const initialState = () => {}
 
   // 토큰 갱신
   const { mutate: mutateGetToken } = useMutation(refresh, {
     onSuccess: data => {
-      console.log('data:', data.success)
-      // todo: 성공 시 신규 토큰값과 유저정보 전역상태 최신화하기
+      const {
+        token: { refreshToken, accessToken },
+      } = data
+
+      console.log('data:', data)
+      UseUpdateToken(accessToken, refreshToken)
     },
-    onError: error => {
+    onError: (error: ApiError) => {
       console.log('error:', error)
-      resetAccessToken()
-      resetRefreshToken()
+      UseClearSession()
     },
     onSettled: () => {
       router.push('/')
     },
   })
 
-  /**
-   * 로그인 유무에 따른 라우터 관리
-   *
-   * */
   useEffect(() => {
-    if (accessToken) {
+    if (isAccessToken) {
       router.push('/')
     } else {
-      mutateGetToken(getCookie(KAKAO_AUTH_TOKEN.갱신))
+      /* 아직 api 명세가 안나왔기 떄문에 주석처리 */
+      // mutateGetToken(getCookie(KAKAO_AUTH_TOKEN.갱신))
     }
-  }, [accessToken, mutateGetToken, router])
+  }, [isAccessToken, mutateGetToken, router])
 
-  return <main>{accessToken ? <MainLayout canGoBack /> : <Login />}</main>
+  return <main>{isAccessToken ? <MainLayout canGoBack /> : <Login />}</main>
 }
 
-// todo: 서버 사이드적 조건부 렌더링 검토
+// todo: 서버사이드적 조건부 렌더링 검토
 // App.getInitialProps = (ctx: NextPageContext) => {
 //   // const { ...get } = cookies()
 //

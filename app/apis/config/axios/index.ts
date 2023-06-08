@@ -1,10 +1,14 @@
 import axios, { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
+import { ApiError } from 'next/dist/server/api-utils'
+import { useRecoilValue } from 'recoil'
 
 import { refresh } from '@/app/apis/domain/auth/auth'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { kakaoAccessToken } from '@/app/store/atom'
+import UseUpdateToken from '@/app/hooks/useUpdateToken'
 
 interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
@@ -20,16 +24,23 @@ const instance = axios.create({
 
 const requestConfig = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
   const { headers } = config
-  // todo: 액세스토큰 with recoil 전역관리
-  const accessToken = document.cookie
-  console.log('headers:', headers)
-  console.log('accessToken:', accessToken)
 
-  if (accessToken) {
-    headers['Content-Type'] = 'application/json'
-    headers.Authorization = `Bearer ${accessToken}`
+  /**
+   * @todo: 액세스토큰 가져오는 위치와 시점 고려하기
+   * * 리코일은 클라이언트 사이드인데 이 페이지는 서버사이드다.
+   * * 훅 관련해서도 검토해보기
+   * */
+  const useReadAccessToken = () => {
+    return useRecoilValue(kakaoAccessToken)
   }
 
+  console.log('headers:', headers)
+  console.log('useReadAccessToken:', useReadAccessToken)
+
+  if (useReadAccessToken) {
+    headers['Content-Type'] = 'application/json'
+    headers.Authorization = `Bearer ${useReadAccessToken}`
+  }
   return config
 }
 
@@ -39,7 +50,7 @@ const requestErrorRejecter = (error: AxiosError | Error): Promise<AxiosError> =>
 
 const responseApiErrorThrower = (response: AxiosResponse) => {
   if (!(response.status === 200 || response.status === 201 || response.status === 204)) {
-    throw new Error()
+    throw new ApiError(response.status, response.data.error)
   }
   return response
 }
@@ -51,18 +62,23 @@ const responseNormalizer = async (error: AxiosError) => {
     const isHasToken = await TokenValid()
 
     if (isHasToken) {
-      const accessToken = await refresh({ refreshToken: getCookie(KAKAO_AUTH_TOKEN.갱신) })
+      const {
+        token: { accessToken, refreshToken },
+        success: isTokenSuccess,
+      } = await refresh({ refreshToken: getCookie(KAKAO_AUTH_TOKEN.갱신) })
 
-      if (accessToken) {
+      if (isTokenSuccess) {
         error.config!.headers = {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         } as HeaderType
 
-        // todo: 새로 발급받은 토큰을 전역상태에 저장하기
+        // todo: 클라이언트 사이드와 서버사이드에서 사용해도 되는지 검토하기
+        UseUpdateToken(accessToken, refreshToken)
 
-        const normalizeResponse = await instance.request(error.config!.url as AxiosRequestConfig)
-        return normalizeResponse
+        // todo: request or response 구분 후 알맞은 파라미터 삽입
+        const retryRequestConfig = await instance.request(error.config as AxiosRequestConfig)
+        return retryRequestConfig
       }
     }
     return Promise.reject(error)

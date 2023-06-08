@@ -4,7 +4,7 @@ import { kakaoAccessToken } from '@/app/store/atom'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { removeCookie } from '@/app/libs/client/utils/cookie'
 
-export const useClearSession = () => {
+const UseClearSession = () => {
   const resetAccessToken = useResetRecoilState(kakaoAccessToken)
 
   const resetRefreshToken = () => {
@@ -13,3 +13,5 @@ export const useClearSession = () => {
 
   return { resetAccessToken, resetRefreshToken }
 }
+
+export default UseClearSession

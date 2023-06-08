@@ -1,4 +1,4 @@
-// import { LoginForm } from "@/app/apis/domain/auth/auth";
+import { LoginForm } from '@/app/apis/domain/auth/auth'
 
 /**
  * 로그인
@@ -10,11 +10,9 @@ export interface AuthToken {
   accessToken: string
 }
 
-export interface PassLoginForm {
-  // Access Token
-  access_token: string
-}
-
+/**
+ * 회원정보
+ */
 export interface LoginInfo extends AuthToken {
-  // member: LoginForm
+  member: LoginForm
 }

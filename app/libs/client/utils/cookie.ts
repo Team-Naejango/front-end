@@ -2,11 +2,7 @@ import { Cookies } from 'react-cookie'
 
 const cookies = new Cookies()
 
-// todo: 리프레시 토큰 만료기한
-// const 만료기한 있는 쿠키 = () => {
-//   setCookie(KAKAO_AUTH_TOKEN.갱신)
-// }
-
+// todo: 쿠키에 저장된 만료기한 있는 토큰을 어느 시점에서 만료기한을 설정할지 고민해보기
 export const setDeadlineCookie = (name: string, token: string) => {
   const expires = new Date()
   expires.setDate(expires.getDate() + 14)
