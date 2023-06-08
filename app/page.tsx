@@ -8,14 +8,10 @@ import { useMutation } from '@tanstack/react-query'
 
 import Loading from '@/app/loading'
 import { refresh } from '@/app/apis/domain/auth/auth'
-import { getCookie, setDeadlineCookie } from '@/app/libs/client/utils/cookie'
-import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import Login from '@/app/(auth)/login/page'
 import { ApiError } from 'next/dist/server/api-utils'
-import { useSetRecoilState } from 'recoil'
-import { kakaoAccessToken } from '@/app/store/atom'
-import UseUpdateToken from '@/app/hooks/useUpdateToken'
-import UseClearSession from '@/app/hooks/useClearSession'
+import { useUpdateToken } from '@/app/hooks/useUpdateToken'
+import { useClearSession } from '@/app/hooks/useClearSession'
 
 const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'), {
   loading: () => <Loading />,
@@ -30,6 +26,8 @@ const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'),
 const App: NextPage = () => {
   const router = useRouter()
   const [isAccessToken, setIsAccessToken] = useState<boolean>(false)
+  const { updateToken } = useUpdateToken()
+  const { ResetToken } = useClearSession()
 
   // todo: Recoil 초기화 작업
   const initialState = () => {}
@@ -42,11 +40,11 @@ const App: NextPage = () => {
       } = data
 
       console.log('data:', data)
-      UseUpdateToken(accessToken, refreshToken)
+      updateToken(accessToken, refreshToken)
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
-      UseClearSession()
+      ResetToken()
     },
     onSettled: () => {
       router.push('/')

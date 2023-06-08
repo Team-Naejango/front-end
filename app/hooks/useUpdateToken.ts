@@ -4,11 +4,13 @@ import { kakaoAccessToken } from '@/app/store/atom'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
-const UseUpdateToken = (accessToken: string, refreshToken: string) => {
+export const useUpdateToken = () => {
   const setAccessToken = useSetRecoilState(kakaoAccessToken)
 
-  setDeadlineCookie(KAKAO_AUTH_TOKEN.갱신, refreshToken)
-  setAccessToken(accessToken)
-}
+  const updateToken = (accessToken: string, refreshToken: string) => {
+    setDeadlineCookie(KAKAO_AUTH_TOKEN.갱신, refreshToken)
+    setAccessToken(accessToken)
+  }
 
-export default UseUpdateToken
+  return { updateToken }
+}

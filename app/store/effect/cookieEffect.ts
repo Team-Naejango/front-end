@@ -4,8 +4,8 @@ import { AtomEffect } from 'recoil'
 import { instance } from '@/app/apis/config/axios'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
-import UseClearSession from '@/app/hooks/useClearSession'
 import { refresh } from '@/app/apis/domain/auth/auth'
+import { useClearSession } from '@/app/hooks/useClearSession'
 
 export const cookieEffect: <T>(key: string) => AtomEffect<T> =
   key =>
@@ -15,7 +15,8 @@ export const cookieEffect: <T>(key: string) => AtomEffect<T> =
         const refreshToken = getCookie(KAKAO_AUTH_TOKEN.갱신)
 
         if (!refreshToken) {
-          UseClearSession()
+          const { ResetToken } = useClearSession()
+          ResetToken()
           return
         }
 
