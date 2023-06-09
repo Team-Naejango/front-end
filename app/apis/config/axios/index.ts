@@ -24,6 +24,7 @@ const instance = axios.create({
 
 const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
   const { headers } = config
+  console.log('headers:', headers)
 
   /**
    * @todo: 액세스토큰 가져오는 위치와 시점 고려하기
@@ -34,10 +35,7 @@ const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConf
     return useRecoilValue(kakaoAccessToken)
   }
 
-  console.log('headers:', headers)
-  console.log('useReadAccessToken:', useReadAccessToken)
-
-  if (useReadAccessToken) {
+  if (headers) {
     headers['Content-Type'] = 'application/json'
     headers.Authorization = `Bearer ${useReadAccessToken}`
   }
