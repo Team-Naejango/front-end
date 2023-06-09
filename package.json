@@ -7,11 +7,11 @@
     "npm": ">=8.5.5"
   },
   "scripts": {
-    "dev": "env-cmd -f .env.development yarn run open-browser && next dev",
+    "dev": "env-cmd -f .env.local yarn run open-browser && next dev",
     "open-browser": "open http://localhost:3000",
-    "build": "env-cmd -f .env.production next build",
-    "build-dev": "env-cmd -f .env.development next build",
-    "build-prod": "env-cmd -f .env.production next build",
+    "build": "env-cmd -f .env.development next build",
+    "build-dev": "env-cmd -f .env.local next build",
+    "build-prod": "env-cmd -f .env.development next build",
     "start": "next start",
     "lint": "next lint"
   },
