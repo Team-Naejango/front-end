@@ -1,5 +1,3 @@
-import { LoginForm } from '@/app/apis/domain/auth/auth'
-
 /**
  * 로그인
  */
@@ -18,7 +16,12 @@ export interface KakaoLoginToken {
 }
 
 export interface MemberInfo {
-  member: any
+  age: string
+  email: string
+  nickName: string
+  id: string
+  gender: string
+  accessToken: string
 }
 
 /**

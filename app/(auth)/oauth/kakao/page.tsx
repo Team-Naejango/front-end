@@ -5,14 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { useRecoilState } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
-import * as QueryString from 'querystring'
 
 import Loading from '@/app/loading'
 import { kakaoLogin, kakaoToken, kakaoUserInfo } from '@/app/apis/domain/auth/auth'
 import { kakaoAccessToken, userInfoState } from '@/app/store/atom'
 import { KAKAO_AUTH_REDIRECT_URL } from '@/app/libs/client/constants/apiKey'
-import { instance } from '@/app/apis/config/axios'
-import { AuthToken, KakaoLoginToken } from '@/app/apis/types/domain/auth/auth'
+import { KakaoLoginToken } from '@/app/apis/types/domain/auth/auth'
+import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
+import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
 const KAKAO_TOKEN_URL = 'https://kauth.kakao.com/oauth/token'
 const KAKAO_USER_INFO_URL = 'https://kapi.kakao.com/v2/user/me'
@@ -26,7 +26,7 @@ export interface kakaoParams {
 
 const KakaoCallback = () => {
   const router = useRouter()
-  const [serchParams, setSearchParams] = useSearchParams()
+  const [serchParams] = useSearchParams()
   const [userInfo, setUserInfo] = useRecoilState(userInfoState)
   const [accessToken, setAccessToken] = useRecoilState(kakaoAccessToken)
 
@@ -37,18 +37,10 @@ const KakaoCallback = () => {
 
   // 카카오 로그인
   const { mutate: mutateKakaoLogin } = useMutation((params: KakaoLoginToken) => kakaoLogin(params), {
-    onMutate: () => {},
     onSuccess: data => {
-      if (data.success) {
-        const tokenInfo = {
-          // refreshToken: data.auth.refreshToken,
-          accessToken: data.auth.accessToken,
-        }
-        /**
-         * 1. tokenInfo값을 스토어에 저장
-         * 2. 로컬 or 세션에 저장
-         *
-         * */
+      if (data.auth.accessToken) {
+        setAccessToken(data.auth.accessToken)
+
         router.push('/')
       }
     },
@@ -58,12 +50,14 @@ const KakaoCallback = () => {
     },
   })
 
+  // 카카오 유저정보
   const { mutate: mutateKakaoUserInfo } = useMutation(
     (accessToken: string) => kakaoUserInfo(KAKAO_USER_INFO_URL, accessToken),
     {
       onSuccess: data => {
-        setUserInfo(data.auth.member.member)
-        router.push('/')
+        if (data.auth.member) {
+          setUserInfo(data.auth.member)
+        }
       },
       onError: (error: ApiError) => {
         return Promise.reject(error)
@@ -71,22 +65,23 @@ const KakaoCallback = () => {
     }
   )
 
-  const { mutate: mutateKakaoParams } = useMutation(
+  // 카카오 토큰
+  const { mutate: mutateKakaoToken } = useMutation(
     (params: kakaoParams | string) => kakaoToken(KAKAO_TOKEN_URL, params),
     {
       onSuccess: data => {
-        if (data?.token.accessToken) {
-          setAccessToken(data.token.accessToken)
-          // localStorage.setItem('token_for_kakaotalk', data.access_token)
+        if (data.token.refreshToken) {
+          setDeadlineCookie(KAKAO_AUTH_TOKEN.갱신, data.token.refreshToken)
 
+          // 카카오 유저정보 접근
+          mutateKakaoUserInfo(data.token.accessToken)
+
+          // 카카오 로그인 시도
           mutateKakaoLogin({
             // todo: 회원가입 type 정보
             type: '',
             accessToken: data.token.accessToken,
           })
-
-          // 카카오 유저 정보 get
-          mutateKakaoUserInfo(data.token.accessToken)
         }
       },
       onError: (error: ApiError) => {
@@ -103,54 +98,8 @@ const KakaoCallback = () => {
       redirect_uri: KAKAO_AUTH_REDIRECT_URL,
       code: serchParams,
     }
-    mutateKakaoParams(JSON.stringify(params))
+    mutateKakaoToken(JSON.stringify(params))
   }
-
-  // // 카카오 토큰 요청
-  // const getKakaoToken = () => {
-  //   const params: kakaoParams = {
-  //     grant_type: 'authorization_code',
-  //     client_id: '백엔드 api url',
-  //     redirect_uri: KAKAO_AUTH_REDIRECT_URL,
-  //     code: serchParams,
-  //   }
-  //   mutateKakaoParams(JSON.stringify(params))
-  //
-  //   fetch(KAKAO_TOKEN_URL, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-  //     body: QueryString.stringify({
-  //       grant_type: 'authorization_code',
-  //       // client_id: 백엔드 api url,
-  //       redirect_uri: KAKAO_AUTH_REDIRECT_URL,
-  //       code: serchParams,
-  //     }),
-  //   })
-  //     .then(res => res.json())
-  //     .then(data => {
-  //       console.log('data:', data)
-  //
-  //       if (data?.access_token) {
-  //         setAccessToken(data.access_token)
-  //         // localStorage.setItem('token_for_kakaotalk', data.access_token)
-  //         mutateKakaoLogin({
-  //           access_token: data.access_token,
-  //         })
-  //
-  //         // 카카오 유저 정보 get
-  //         instance
-  //           .get('https://kapi.kakao.com/v2/user/me', {
-  //             headers: {
-  //               Authorization: `Bearer ${data.access_token}`,
-  //             },
-  //           })
-  //           .then(() => {
-  //             // userInfoState(data.data.body)
-  //             router.push('/')
-  //           })
-  //       }
-  //     })
-  // }
 
   useEffect(() => {
     getKakaoToken()

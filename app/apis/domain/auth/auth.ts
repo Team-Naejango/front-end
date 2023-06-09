@@ -3,19 +3,14 @@ import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/a
 import { Response } from '@/app/apis/types/response/response'
 import { kakaoParams } from '@/app/(auth)/oauth/kakao/page'
 
-export interface SignForm {
+export interface SignParam {
   email: String
   password: String
   nickname: String
   phoneNumber: String
 }
 
-export interface KaKaoLoginForm {
-  email: String
-  password: String
-}
-
-export interface LoginForm {
+export interface LoginParam {
   email: String
   password: String
   name: String
@@ -69,7 +64,7 @@ export async function kakaoUserInfo(url: string, accessToken: string): Promise<R
  * @param params.nickname 닉네임
  * @param params.phoneNumber 휴대폰번호
  */
-export async function sign(params: SignForm): Promise<Response<boolean>> {
+export async function sign(params: SignParam): Promise<Response<boolean>> {
   return instance.post('/api/user/join', params)
 }
 
@@ -79,7 +74,7 @@ export async function sign(params: SignForm): Promise<Response<boolean>> {
  * @param params.username 아이디
  * @param params.password 비밀번호
  */
-export async function emailValidity(params: LoginForm): Promise<Response<boolean>> {
+export async function emailValidity(params: LoginParam): Promise<Response<boolean>> {
   return instance.get(`/api/user/check/${params.email}`)
 }
 
