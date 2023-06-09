@@ -1,17 +1,16 @@
 'use client'
 
 import React from 'react'
-import { BiKey, BiUser, BiUserPin } from 'react-icons/bi'
 import Link from 'next/link'
-import toast, { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
+import { BiKey, BiUser, BiUserPin } from 'react-icons/bi'
+import { BsPhone } from 'react-icons/bs'
 
 import InputField from '@/app/components/atom/InputField'
-import { sign } from '@/app/apis/domain/auth/auth'
 import Button from '@/app/components/atom/Button'
-import { BsPhone } from 'react-icons/bs'
+import { sign } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -33,10 +32,9 @@ const Sign = () => {
     setError,
   } = useForm<FormProps>()
 
-  const { mutate: mutateSign } = useMutation(sign, {
+  const { mutate: mutateSignUp } = useMutation(sign, {
     onSuccess: () => {
       console.log('회원가입 성공')
-      toast.success('회원가입이 성공했습니다.')
       router.push('/login')
     },
   })

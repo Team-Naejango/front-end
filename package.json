@@ -7,11 +7,11 @@
     "npm": ">=8.5.5"
   },
   "scripts": {
-    "dev": "env-cmd -f .env.dev yarn run open-browser && next dev",
+    "dev": "env-cmd -f .env.development yarn run open-browser && next dev",
     "open-browser": "open http://localhost:3000",
-    "build": "env-cmd -f .env.prod next build",
-    "build-dev": "env-cmd -f .env.dev next build",
-    "build-prod": "env-cmd -f .env.prod next build",
+    "build": "env-cmd -f .env.production next build",
+    "build-dev": "env-cmd -f .env.development next build",
+    "build-prod": "env-cmd -f .env.production next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -30,6 +30,7 @@
     "next": "13.4.4",
     "postcss": "^8.4.24",
     "react": "18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.44.2",
     "react-hot-toast": "^2.4.1",

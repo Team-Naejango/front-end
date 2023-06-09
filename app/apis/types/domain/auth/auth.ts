@@ -1,20 +1,32 @@
-// import { LoginForm } from "@/app/apis/domain/auth/auth";
-
 /**
  * 로그인
  */
-export interface Auth {
+export interface AuthToken {
   // 리프래시 토큰
   refreshToken: string
   // 액세스 토큰
   accessToken: string
 }
 
-export interface PassLoginForm {
-  // Access Token
-  access_token: string
+export interface KakaoLoginToken {
+  // 회원타입
+  type: string
+  // 액세스 토큰
+  accessToken: string
 }
 
-export interface LoginInfo extends Auth {
-  // member: LoginForm
+export interface MemberInfo {
+  age: string
+  email: string
+  nickName: string
+  id: string
+  gender: string
+  accessToken: string
+}
+
+/**
+ * 회원정보
+ */
+export interface LoginInfo extends KakaoLoginToken {
+  member: MemberInfo
 }

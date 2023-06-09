@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import Header from '@/app/components/template/main/header'
-import { verify } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string

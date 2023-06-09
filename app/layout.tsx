@@ -7,7 +7,7 @@ import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
-  preload: true,
+  // preload: true,
 })
 
 export const metadata = {

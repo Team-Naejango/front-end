@@ -8,12 +8,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { FcGoogle } from 'react-icons/fc'
-import toast from 'react-hot-toast'
-import { useMutation } from '@tanstack/react-query'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import { login, LoginForm } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -22,25 +19,15 @@ interface FormProps {
 
 const Login = () => {
   const router = useRouter()
-  // const [method, setMethod] = useState<'email' | 'password'>('email')
 
   const {
     register,
-    watch,
     handleSubmit,
     reset,
     formState: { errors },
   } = useForm<FormProps>()
 
-  const { mutate: mutateLogin } = useMutation((params: LoginForm) => login(params), {
-    onSuccess: () => {
-      console.log('로그인 성공')
-      toast.success('로그인 성공')
-      router.replace('/')
-    },
-  })
-
-  const onKaKaoLogin = () => {
+  const onKakaoLogin = () => {
     router.push('/kakaoLogin')
   }
 
@@ -48,12 +35,6 @@ const Login = () => {
     alert('개발중!!!!!!!!!!!!!!')
     reset()
   }
-
-  // useEffect(() => {
-  //   if (document.location.href.includes('login')) {
-  //     router.replace('/')
-  //   }
-  // }, [router])
 
   return (
     <div className='mx-auto h-[770px] w-[375px] max-w-[375px] overflow-auto rounded-[30px] bg-[#fff] p-5'>
@@ -82,24 +63,15 @@ const Login = () => {
             <p className='!mt-1 text-xs text-red-400'>{errors.password?.message}</p>
             <p className='!my-4 flex justify-end text-xs text-[#A9A9A9] '>
               앗! 회원이 아니신가요?
-              <Link
-                href={'/sign'}
-                onClick={event => event.stopPropagation()}
-                className='px-1.5 text-[13px] text-[#A3D139] hover:underline'>
+              <Link href={'/sign'} className='px-1.5 text-[13px] text-[#A3D139] hover:underline'>
                 회원가입
               </Link>
             </p>
             <div className={'!mb-3 flex justify-center gap-10 align-middle'}>
-              <Link
-                href={'/findEmail'}
-                onClick={event => event.stopPropagation()}
-                className={'text-[13px] text-[#222] hover:underline'}>
+              <Link href={'/findEmail'} className={'text-[13px] text-[#222] hover:underline'}>
                 아이디 찾기
               </Link>
-              <Link
-                href={'/findPassword'}
-                onClick={event => event.stopPropagation()}
-                className={'text-[13px] text-[#222] hover:underline'}>
+              <Link href={'/findPassword'} className={'text-[13px] text-[#222] hover:underline'}>
                 비밀번호 찾기
               </Link>
             </div>
@@ -117,7 +89,7 @@ const Login = () => {
             </div>
             <div className='mt-2 grid grid-cols-1 gap-3'>
               <button
-                onClick={onKaKaoLogin}
+                onClick={onKakaoLogin}
                 className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                 <Image src={KakaoLogo} alt='카카오로고' width={24} height={24} className='mr-2.5' unoptimized />
                 카카오 로그인
