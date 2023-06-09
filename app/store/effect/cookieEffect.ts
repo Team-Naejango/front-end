@@ -23,7 +23,7 @@ export const cookieEffect: <T>(key: string) => AtomEffect<T> =
         const { token, success } = await refresh({ refreshToken })
 
         if (success) {
-          // todo: 알맞은 파라미터 삽입
+          // todo: 알맞는 파라미터 삽입
           return await instance.request(token as AxiosRequestConfig)
         }
       } catch (error: unknown) {

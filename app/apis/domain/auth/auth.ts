@@ -1,12 +1,18 @@
 import { instance } from '@/app/apis/config/axios'
-import { AuthToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
+import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
+import { kakaoParams } from '@/app/(auth)/oauth/kakao/page'
 
 export interface SignForm {
   email: String
   password: String
   nickname: String
   phoneNumber: String
+}
+
+export interface KaKaoLoginForm {
+  email: String
+  password: String
 }
 
 export interface LoginForm {
@@ -23,12 +29,35 @@ export interface LoginForm {
 /**
  * 카카오 인증 로그인
  *
- * @param code
  * @param code.access_token 액세스 토큰
  */
-export async function kakaoLogin(code: AuthToken): Promise<Response<{ auth: LoginInfo }>> {
+export async function kakaoLogin(code: KakaoLoginToken): Promise<Response<{ auth: LoginInfo }>> {
   return instance.post(`/kakao?code=${code}`, code, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+  })
+}
+
+/**
+ * 카카오 토큰 요청
+ *
+ * @param url
+ * @param params
+ */
+export async function kakaoToken(url: string, params: kakaoParams | string): Promise<Response<{ token: AuthToken }>> {
+  return instance.post(url, params, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+  })
+}
+
+/**
+ * 카카오 유저정보
+ *
+ * @param url
+ * @param accessToken
+ */
+export async function kakaoUserInfo(url: string, accessToken: string): Promise<Response<{ auth: LoginInfo }>> {
+  return instance.get(url, {
+    headers: { Authorization: accessToken },
   })
 }
 
@@ -40,7 +69,7 @@ export async function kakaoLogin(code: AuthToken): Promise<Response<{ auth: Logi
  * @param params.nickname 닉네임
  * @param params.phoneNumber 휴대폰번호
  */
-export async function sign(params: SignForm): Promise<null> {
+export async function sign(params: SignForm): Promise<Response<boolean>> {
   return instance.post('/api/user/join', params)
 }
 
@@ -50,7 +79,7 @@ export async function sign(params: SignForm): Promise<null> {
  * @param params.username 아이디
  * @param params.password 비밀번호
  */
-export async function emailValidity(params: LoginForm): Promise<boolean> {
+export async function emailValidity(params: LoginForm): Promise<Response<boolean>> {
   return instance.get(`/api/user/check/${params.email}`)
 }
 

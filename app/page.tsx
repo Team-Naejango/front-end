@@ -5,11 +5,11 @@ import { NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
+import { ApiError } from 'next/dist/server/api-utils'
 
 import Loading from '@/app/loading'
-import { refresh } from '@/app/apis/domain/auth/auth'
 import Login from '@/app/(auth)/login/page'
-import { ApiError } from 'next/dist/server/api-utils'
+import { refresh } from '@/app/apis/domain/auth/auth'
 import { useUpdateToken } from '@/app/hooks/useUpdateToken'
 import { useClearSession } from '@/app/hooks/useClearSession'
 
@@ -38,9 +38,10 @@ const App: NextPage = () => {
       const {
         token: { refreshToken, accessToken },
       } = data
-
       console.log('data:', data)
+
       updateToken(accessToken, refreshToken)
+      setIsAccessToken(true)
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
@@ -55,11 +56,12 @@ const App: NextPage = () => {
     if (isAccessToken) {
       router.push('/')
     } else {
-      /* 아직 api 명세가 안나왔기 떄문에 주석처리 */
+      /* api 명세가 안나왔기 떄문에 주석처리 */
       // mutateGetToken(getCookie(KAKAO_AUTH_TOKEN.갱신))
     }
   }, [isAccessToken, mutateGetToken, router])
 
+  // todo: wrap 전역 처리
   return <main>{isAccessToken ? <MainLayout canGoBack /> : <Login />}</main>
 }
 

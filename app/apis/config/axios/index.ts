@@ -6,9 +6,9 @@ import { useRecoilValue } from 'recoil'
 import { refresh } from '@/app/apis/domain/auth/auth'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { TokenValid } from '@/app/libs/client/utils/token'
+import { useUpdateToken } from '@/app/hooks/useUpdateToken'
 import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { kakaoAccessToken } from '@/app/store/atom'
-import UseUpdateToken from '@/app/hooks/useUpdateToken'
 
 interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
@@ -22,7 +22,7 @@ const instance = axios.create({
   timeout: 300000,
 })
 
-const requestConfig = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
+const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
   const { headers } = config
 
   /**
@@ -74,18 +74,23 @@ const responseNormalizer = async (error: AxiosError) => {
         } as HeaderType
 
         // todo: 클라이언트 사이드와 서버사이드에서 사용해도 되는지 검토하기
-        UseUpdateToken(accessToken, refreshToken)
+        const MappingFnByUseUpdateToken = () => {
+          const { updateToken } = useUpdateToken()
+          updateToken(accessToken, refreshToken)
+
+          return MappingFnByUseUpdateToken
+        }
 
         // todo: request or response 구분 후 알맞은 파라미터 삽입
-        const retryRequestConfig = await instance.request(error.config as AxiosRequestConfig)
-        return retryRequestConfig
+        const requestConfig = await instance.request(error.config as AxiosRequestConfig)
+        return requestConfig
       }
     }
     return Promise.reject(error)
   }
 }
 
-instance.interceptors.request.use(requestConfig, requestErrorRejecter)
+instance.interceptors.request.use(requestConfigurator, requestErrorRejecter)
 instance.interceptors.response.use(responseApiErrorThrower, responseNormalizer)
 
 export { instance }
