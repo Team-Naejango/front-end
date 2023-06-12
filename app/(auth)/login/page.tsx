@@ -28,7 +28,7 @@ const Login = () => {
   } = useForm<FormProps>()
 
   const onKakaoLogin = () => {
-    router.push('/kakaoLogin')
+    router.push('/oauth/kakaoLogin')
   }
 
   const onValid = () => {

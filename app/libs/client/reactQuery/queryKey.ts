@@ -1,7 +1,6 @@
 'use client'
 
-// 쿼리 상태
-export const QUERY_STATUS = {
-  성공: 'success',
-  실패: 'fail',
+// 카카오 로그인
+export const OAUTH = {
+  카카오유저정보: 'kakaoLoginUserInfo',
 } as const

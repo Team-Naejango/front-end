@@ -1,7 +1,8 @@
 import { instance } from '@/app/apis/config/axios'
 import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
-import { kakaoParams } from '@/app/(auth)/oauth/kakao/page'
+import { kakaoParams } from '@/app/(auth)/oauth/kakaoCallback/page'
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
 export interface SignParam {
   email: String
@@ -26,7 +27,7 @@ export interface LoginParam {
  *
  * @param code.access_token 액세스 토큰
  */
-export async function kakaoLogin(code: KakaoLoginToken): Promise<Response<{ auth: LoginInfo }>> {
+export async function kakaoLogin(code: string): Promise<Response<null>> {
   return instance.post(`/kakao?code=${code}`, code, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
   })
@@ -50,7 +51,7 @@ export async function kakaoToken(url: string, params: kakaoParams | string): Pro
  * @param url
  * @param accessToken
  */
-export async function kakaoUserInfo(url: string, accessToken: string): Promise<Response<{ auth: LoginInfo }>> {
+export async function kakaoUserInfo(url: string, accessToken: string): Promise<Response<{ loginInfo: LoginInfo }>> {
   return instance.get(url, {
     headers: { Authorization: accessToken },
   })

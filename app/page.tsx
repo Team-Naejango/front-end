@@ -52,6 +52,7 @@ const App: NextPage = () => {
     },
   })
 
+  // todo: 관련 url이 아닐 경우 후속처리
   useEffect(() => {
     if (isAccessToken) {
       router.push('/')

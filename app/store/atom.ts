@@ -8,7 +8,7 @@ import { cookieEffect } from '@/app/store/effect/cookieEffect'
  * 액세스 토큰
  * @todo 액세스 토큰 만료기한
  * */
-export const kakaoAccessToken = atom<RequestCookie | string | undefined>({
+export const kakaoAccessToken = atom<string>({
   key: STORE_KEY.접근,
   default: undefined,
   effects: [cookieEffect(KAKAO_AUTH_TOKEN.갱신)],
