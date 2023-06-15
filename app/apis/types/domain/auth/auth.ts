@@ -9,10 +9,14 @@ export interface AuthToken {
 }
 
 export interface KakaoLoginToken {
-  // 회원타입
-  type: string
+  // 회원 id
+  id: string
+  // 리프래시 토큰
+  refreshToken: string
   // 액세스 토큰
   accessToken: string
+  // 신규 회원
+  new: boolean
 }
 
 export interface MemberInfo {
@@ -21,7 +25,7 @@ export interface MemberInfo {
   // 이메일
   email: string
   // 닉네임
-  nickName: string
+  nickname: string
   // 나이
   age: string
   // 성별

@@ -1,7 +1,6 @@
 import { atom } from 'recoil'
-import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies'
 
-import { KAKAO_AUTH_TOKEN, STORE_KEY } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN, STORE_KEY } from '@/app/libs/client/constants/store'
 import { cookieEffect } from '@/app/store/effect/cookieEffect'
 
 /**
@@ -9,20 +8,20 @@ import { cookieEffect } from '@/app/store/effect/cookieEffect'
  * @todo 액세스 토큰 만료기한
  * */
 export const kakaoAccessToken = atom<string>({
-  key: STORE_KEY.접근,
+  key: `${STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: undefined,
-  effects: [cookieEffect(KAKAO_AUTH_TOKEN.갱신)],
+  // effects: [cookieEffect(AUTH_TOKEN.접근)],
 })
 
 /**
  * 유저정보
  * */
 export const userInfoState = atom({
-  key: STORE_KEY.유저정보,
+  key: `${STORE_KEY.유저정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
     age: '',
     email: '',
-    nickName: '',
+    nickname: '',
     id: '',
     gender: '',
     accessToken: '',

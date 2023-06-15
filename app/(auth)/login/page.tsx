@@ -40,12 +40,13 @@ const Login = () => {
     <div className='mx-auto h-[770px] w-[375px] max-w-[375px] overflow-auto rounded-[30px] bg-[#fff] p-5'>
       <div className='mt-20 px-4'>
         <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>로그인</h3>
-        <div className='mt-20'>
+        <div className='mt-16'>
           <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-2'>
             <InputField
               register={register('email', {
                 required: '이메일을 입력해주세요.',
               })}
+              id={'email'}
               type='email'
               placeholder='이메일'
               icon={<BiUser className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
@@ -55,6 +56,7 @@ const Login = () => {
               register={register('password', {
                 required: '비밀번호를 입력해주세요.',
               })}
+              id={'password'}
               type='password'
               placeholder='비밀번호'
               autoComplete='new-password'

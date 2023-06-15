@@ -7,11 +7,10 @@
     "npm": ">=8.5.5"
   },
   "scripts": {
-    "dev": "env-cmd -f .env.local yarn run open-browser && next dev",
-    "open-browser": "open http://localhost:3000",
-    "build": "env-cmd -f .env.development next build",
-    "build-dev": "env-cmd -f .env.local next build",
-    "build-prod": "env-cmd -f .env.development next build",
+    "dev": "env-cmd -f .env.development yarn run open-browser && next dev",
+    "open-browser": "open http://localhost:3000/",
+    "build": "env-cmd -f .env.local next build",
+    "build-dev": "env-cmd -f .env.development next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -24,6 +23,7 @@
     "@types/react-dom": "18.2.4",
     "autoprefixer": "^10.4.14",
     "axios": "^1.4.0",
+    "deep-equal": "^2.2.1",
     "eslint": "^8.2.0",
     "eslint-config-next": "13.4.4",
     "lottie-react": "^2.4.0",

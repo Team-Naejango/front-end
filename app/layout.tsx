@@ -4,6 +4,7 @@ import localFont from 'next/font/local'
 
 import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
+import { UseAxiosInterceptor } from '@/app/hooks/useAxiosInterceptor'
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
@@ -20,7 +21,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='ko-KR'>
       <body className={myFont.className} suppressHydrationWarning>
         <RecoilProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {/* <UseAxiosInterceptor> */}
+            {children}
+            {/* </UseAxiosInterceptor> */}
+          </QueryProvider>
         </RecoilProvider>
       </body>
     </html>
