@@ -28,10 +28,10 @@ const Nav = () => {
         <span>홈</span>
       </Link>
       <Link
-        href={'/product'}
+        href={'/products'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/product' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/products' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -49,10 +49,10 @@ const Nav = () => {
         <span>공동구매</span>
       </Link>
       <Link
-        href={'/trade'}
+        href={'/trades'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/trade' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/trades' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           version='1.0'
@@ -75,10 +75,10 @@ const Nav = () => {
         <span>물물교환</span>
       </Link>
       <Link
-        href={'/chat'}
+        href={'/chats'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/chat' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/chats' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
