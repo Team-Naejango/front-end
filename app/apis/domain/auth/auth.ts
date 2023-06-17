@@ -1,4 +1,5 @@
-import { instance } from '@/app/apis/config/axios'
+import { instance } from '@/app/apis/config/axios/instance'
+
 import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
 
@@ -11,7 +12,7 @@ export interface SignParam {
 /**
  * 카카오 인증 로그인
  *
- * @param code query parameter
+ * @param code authorization
  */
 export async function kakaoLogin(code: string): Promise<Response<{ data: KakaoLoginToken }>> {
   return instance.get(`/login/oauth/kakao?code=${code}`, {

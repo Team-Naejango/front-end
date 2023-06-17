@@ -41,6 +41,7 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "babel-plugin-inline-react-svg": "^2.0.2",
     "env-cmd": "^10.1.0",
     "eslint-config-airbnb": "19.0.4",
     "eslint-config-prettier": "^8.8.0",

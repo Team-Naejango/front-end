@@ -9,7 +9,7 @@ interface LayoutProps {
   canGoBack?: boolean
 }
 
-const Header = ({ title, canGoBack, seoTitle }: LayoutProps) => {
+const BackHeader = ({ title, canGoBack, seoTitle }: LayoutProps) => {
   const router = useRouter()
 
   const onClick = () => {
@@ -21,7 +21,7 @@ const Header = ({ title, canGoBack, seoTitle }: LayoutProps) => {
       <Head>
         <title>{seoTitle} | 내 잔부를 부탁해</title>
       </Head>
-      <div className='absolute left-0 top-0 m-5 mx-auto flex h-12 w-[375px] max-w-xl items-center justify-start rounded-[30px] bg-white px-10 indent-7 text-lg font-medium text-gray-800'>
+      <div className='absolute left-0 top-0 m-5 mx-auto flex h-12 w-[375px] max-w-xl items-center justify-start rounded-[22px] bg-white px-10 indent-7 text-lg font-medium text-gray-800'>
         {canGoBack ? (
           <button onClick={onClick} className='absolute left-4'>
             <svg
@@ -40,4 +40,4 @@ const Header = ({ title, canGoBack, seoTitle }: LayoutProps) => {
   )
 }
 
-export default Header
+export default BackHeader

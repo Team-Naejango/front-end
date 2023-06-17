@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 
 import Login from '@/app/(auth)/login/page'
-import MainLayout from '@/app/components/template/MainLayout'
+import Layout from '@/app/(main)/layout'
 import { kakaoAccessToken } from '@/app/store/atom'
 import { removeCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
@@ -23,12 +23,12 @@ const App: NextPage = () => {
       router.push('/home')
     } else {
       removeCookie(AUTH_TOKEN.갱신)
-      router.push('/login')
+      router.push('/')
     }
   }, [accessToken, router])
 
   // todo: wrap 전역 처리
-  return <main>{isLoggedIn ? <MainLayout canGoBack /> : <Login />}</main>
+  return <>{isLoggedIn ? <Layout canGoBack /> : <Login />}</>
 }
 
 // todo: 서버사이드적 조건부 렌더링 검토

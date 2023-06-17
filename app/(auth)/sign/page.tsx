@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -37,7 +37,6 @@ const Sign = () => {
     reset,
     getValues,
     setError,
-    trigger,
     formState: { errors },
   } = useForm<FormProps>()
 
@@ -95,70 +94,68 @@ const Sign = () => {
   }, [nickname, selectedNickname])
 
   return (
-    <div className='bor-al mx-auto h-[770px] w-[375px] max-w-xl overflow-auto rounded-[30px] bg-[#fff] p-5'>
-      <div className='mt-20 px-4'>
-        <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>회원가입</h3>
-        <div className='mt-[4.75rem]'>
-          <form onSubmit={handleSubmit(onClickSave)} className='mt-8 flex flex-col space-y-2'>
-            <div className={'flex flex-row items-center'}>
-              <InputField
-                register={register('nickname', {
-                  required: '닉네임을 입력해주세요.',
-                  value: undefined,
-                  onChange: event => {
-                    if (event.target.value.match(/^\s/g)) {
-                      setError('nickname', {
-                        message: '첫 글자에 공백을 입력할 수 없습니다.',
-                      })
-                    }
-                  },
-                })}
-                id='nickname'
-                type='text'
-                maxLength={12}
-                placeholder='닉네임'
-                icon={<BiUserPin className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
-              />
-              <Button
-                type={'button'}
-                smail
-                text='중복검사'
-                onClick={onUserNameValidation}
-                disabled={nickname === undefined || nickname === ''}
-              />
-            </div>
-            <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
-            <div className='!mt-1 flex flex-row items-center space-y-3'>
-              <InputField
-                register={register('birth', {
-                  required: '생년월일을 입력해주세요.',
-                  pattern: {
-                    value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
-                    message: '유효한 생년월일을 입력해주세요. (YYYYMMDD)',
-                  },
-                })}
-                id='birth'
-                type='text'
-                maxLength={8}
-                placeholder='생년월일(YYYYMMDD)'
-                icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
-              />
-              <GenderButton gender='남' selected={gender === '남'} onClick={() => onSelectedGender('남')} />
-              <GenderButton gender='여' selected={gender === '여'} onClick={() => onSelectedGender('여')} />
-            </div>
-            <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
-            <p className='!my-4 flex justify-end text-xs text-[#A9A9A9]'>
-              앗! 계정이 있으신가요?
-              <Link
-                href={'/login'}
-                onClick={event => event.stopPropagation()}
-                className='px-1.5 text-[#A3D139] underline'>
-                로그인
-              </Link>
-            </p>
-            <Button text='회원가입' />
-          </form>
-        </div>
+    <div className='mt-20 px-4'>
+      <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>회원가입</h3>
+      <div className='mt-[4.75rem]'>
+        <form onSubmit={handleSubmit(onClickSave)} className='mt-8 flex flex-col space-y-2'>
+          <div className={'flex flex-row items-center'}>
+            <InputField
+              register={register('nickname', {
+                required: '닉네임을 입력해주세요.',
+                value: undefined,
+                onChange: event => {
+                  if (event.target.value.match(/^\s/g)) {
+                    setError('nickname', {
+                      message: '첫 글자에 공백을 입력할 수 없습니다.',
+                    })
+                  }
+                },
+              })}
+              id='nickname'
+              type='text'
+              maxLength={12}
+              placeholder='닉네임'
+              icon={<BiUserPin className='absolute ml-2.5 text-base text-[#A9A9A9]' />}
+            />
+            <Button
+              type={'button'}
+              smail
+              text='중복검사'
+              onClick={onUserNameValidation}
+              disabled={nickname === undefined || nickname === ''}
+            />
+          </div>
+          <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
+          <div className='!mt-1 flex flex-row items-center space-y-3'>
+            <InputField
+              register={register('birth', {
+                required: '생년월일을 입력해주세요.',
+                pattern: {
+                  value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
+                  message: '유효한 생년월일을 입력해주세요. (YYYYMMDD)',
+                },
+              })}
+              id='birth'
+              type='text'
+              maxLength={8}
+              placeholder='생년월일(YYYYMMDD)'
+              icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
+            />
+            <GenderButton gender='남' selected={gender === '남'} onClick={() => onSelectedGender('남')} />
+            <GenderButton gender='여' selected={gender === '여'} onClick={() => onSelectedGender('여')} />
+          </div>
+          <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
+          <p className='!my-4 flex justify-end text-xs text-[#A9A9A9]'>
+            앗! 계정이 있으신가요?
+            <Link
+              href={'/login'}
+              onClick={event => event.stopPropagation()}
+              className='px-1.5 text-[#A3D139] underline'>
+              로그인
+            </Link>
+          </p>
+          <Button text='회원가입' />
+        </form>
       </div>
     </div>
   )

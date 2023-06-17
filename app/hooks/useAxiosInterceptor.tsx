@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect } from 'react'
 import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
 import { useRecoilValue } from 'recoil'
 
-import { instance } from '@/app/apis/config/axios'
+import { instance } from '@/app/apis/config/axios/instance'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { kakaoAccessToken } from '@/app/store/atom'
 

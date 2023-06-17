@@ -31,7 +31,7 @@ const KakaoCallback = () => {
   console.log('serchParams:', serchParams[1])
 
   // // 카카오 유저정보 조회
-  // const { data: { loginInfo, success: isReadUserSuccess } = {} } = useQuery(
+  // const { data: { loginInfo, success: isReadUser } = {} } = useQuery(
   //   [OAUTH.카카오유저정보, accessToken, userInfo],
   //   () => kakaoUserInfo(KAKAO_USER_INFO_URL, accessToken),
   //   {
@@ -40,7 +40,7 @@ const KakaoCallback = () => {
   // )
 
   // 토큰 발급
-  const apiCallResponseToken = async () => {
+  const getToken = async () => {
     setDeadlineCookie(AUTH_TOKEN.인가, serchParams[1])
     /**
      * @todo: authAxios와 notAuthAXios 구분하기
@@ -65,12 +65,12 @@ const KakaoCallback = () => {
   }
 
   useEffect(() => {
-    apiCallResponseToken()
+    getToken()
   }, [])
 
   // 유저정보 조회 성공 후
   // useEffect(() => {
-  //   if (isReadUserSuccess) {
+  //   if (isReadUser) {
   //     setUserInfo(loginInfo!.member)
   //   }
   // }, [isReadUserSuccess, loginInfo, setUserInfo])
