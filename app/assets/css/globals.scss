@@ -24,3 +24,24 @@ input::-webkit-inner-spin-button {
   -moz-appearance: none;
   -webkit-appearance: none;
 }
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  display: none;
+}
+
+.swiper-button-prev {
+  //변경할 화살표 이미지
+  //background: url() no-repeat;
+}
+.swiper-button-next {
+  //변경할 화살표 이미지
+  //background: url() no-repeat;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  opacity: 0.7;
+  background-size: 70% auto;
+  background-position: center;
+}

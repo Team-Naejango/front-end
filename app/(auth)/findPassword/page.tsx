@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import BackHeader from '@/app/components/template/main/backHeader'
+import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface FormProps {
   email: string

@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import BackHeader from '@/app/components/template/main/backHeader'
+import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface FormProps {
   email: string

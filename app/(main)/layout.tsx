@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { cls } from '@/app/libs/client/utils/util'
 import Header from '@/app/components/template/main/Header'
 import Nav from '@/app/components/template/main/Nav'
+import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface LayoutProps {
   title?: string
@@ -22,8 +23,8 @@ const MainLayout = ({ title, canGoBack, hasTabBar = true, children, seoTitle }: 
 
   return (
     <>
-      {hasTabBar ? <Header /> : null}
-      <section className={cls('h-full pt-12', hasTabBar ? 'pb-24' : '')}>{children}</section>
+      {pathname === '/notice' ? <BackHeader canGoBack title={title} seoTitle={seoTitle} /> : <Header />}
+      <section className={cls('h-full pt-8', hasTabBar ? 'pb-24' : '')}>{children}</section>
       <Nav />
     </>
   )
