@@ -1,64 +1,56 @@
-import axios, { AxiosError, AxiosResponseHeaders } from 'axios'
+import axios, { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
+import { ApiError } from 'next/dist/server/api-utils'
+
+import { getCookie } from '@/app/libs/client/utils/cookie'
+import { TokenValid } from '@/app/libs/client/utils/token'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { instance } from '@/app/apis/config/axios/instance'
 
 interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
   Authorization: string
 }
 
-const instance = axios.create({
-  baseURL: process.env.NEXT_DOMAIN,
-  withCredentials: true,
-  timeout: 300000,
-})
+export const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
+  return config
+}
 
-instance.interceptors.request.use(
-  config => {
-    const { headers } = config
-    const accessToken = document.cookie
+export const requestErrorRejecter = (error: AxiosError | Error): Promise<AxiosError> => {
+  return Promise.reject(error)
+}
 
-    if (accessToken) {
-      headers['Content-Type'] = 'application/json'
-      headers.Authorization = `Bearer ${accessToken}`
-    }
-
-    return config
-  },
-  error => {
-    return Promise.reject(error)
+export const responseApiErrorThrower = (response: AxiosResponse) => {
+  if (!(response.status === 200 || response.status === 201 || response.status === 204)) {
+    throw new ApiError(response.status, response.data.error)
   }
-)
+  return response
+}
 
-instance.interceptors.response.use(
-  response => {
-    if (!(response.status === 200 || response.status === 201 || response.status === 204)) {
-      throw new Error()
-    }
+export const responseNormalizer = async (error: AxiosError) => {
+  console.log('error.config:', error.config)
 
-    return response
-  },
-  async err => {
-    const error = err as AxiosError
+  if (error.response?.status === 403) {
+    const isHasToken = await TokenValid()
 
-    if (error.response?.status === 401) {
-      if ('엑세스 토큰 만료') {
-        const refreshToken = await axios.get('토큰 갱신')
-        // const refreshToken = getCookie(AUTH_TOKEN.갱신)
-        document.cookie = `token=${refreshToken}`
+    if (isHasToken) {
+      const authorization = getCookie(AUTH_TOKEN.인가)
 
-        if (error.config) {
-          error.config.headers = {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${document.cookie}`,
-          } as HeaderType
-        }
-
-        const formatedResponse = await axios.request(error.config as AxiosRequestConfig)
-        return formatedResponse
-      }
+      // await kakaoLogin(authorization).then(response => {
+      //   const { updateToken } = useUpdateToken()
+      //
+      //   if (response.success) {
+      //     error.config!.headers = {
+      //       'Content-Type': 'application/json',
+      //       Authorization: `Bearer ${response.token.accessToken}`,
+      //     } as HeaderType
+      //
+      //     updateToken(response.token.accessToken, response.token.refreshToken)
+      //   }
+      // })
+      const requestConfig = await instance.request(error.config as AxiosRequestConfig)
+      return requestConfig
     }
     return Promise.reject(error)
   }
-)
-
-export default instance
+}

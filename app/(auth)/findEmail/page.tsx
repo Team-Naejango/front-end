@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import Header from '@/app/components/template/main/header'
+import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface FormProps {
   email: string
@@ -42,8 +42,8 @@ const FindEmail = () => {
   }
 
   return (
-    <div className='bor-al relative mx-auto h-[770px] w-[375px] max-w-xl overflow-auto rounded-[30px] bg-[#fff] p-5'>
-      <Header canGoBack title={'아이디 찾기'} seoTitle={'아이디 찾기'} />
+    <>
+      <BackHeader canGoBack title={'아이디 찾기'} seoTitle={'아이디 찾기'} />
       <div className='mt-20 px-4'>
         <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-3'>
           <InputField
@@ -70,7 +70,7 @@ const FindEmail = () => {
           )}
         </form>
       </div>
-    </div>
+    </>
   )
 }
 

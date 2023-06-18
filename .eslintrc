@@ -33,6 +33,7 @@
     "no-alert": "off",
     "arrow-parens": ["error", "as-needed"], // a => {}
     "no-param-reassign": ["error", { "props": false }],
+    "import/no-cycle": "off",
     "no-unused-vars": "off",
     "no-unused-expressions": [
       "error",

@@ -1,42 +1,50 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { NextPage } from 'next'
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { useMutation } from '@tanstack/react-query'
+import { useRecoilValue } from 'recoil'
 
-import Loading from '@/app/loading'
-import { refresh } from '@/app/apis/domain/auth/auth'
-import MainLayout from '@/app/components/template/MainLayout'
 import Login from '@/app/(auth)/login/page'
+import Home from '@/app/(main)/home/page'
+import { kakaoAccessToken } from '@/app/store/atom'
+import { removeCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
-// const MainLayout = dynamic(() => import('@/app/components/template/MainLayout'), {
-//   loading: () => <Loading />,
-// })
-// const Login = dynamic(() => import('@/app/(auth)/login/page'), {
-//   loading: () => <Loading />,
-// })
+const App: NextPage = () => {
+  const router = useRouter()
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
+  const accessToken = useRecoilValue(kakaoAccessToken)
 
-const Home: NextPage = () => {
-  const [tokenValid, setTokenValid] = useState<boolean>(false)
-
-  /**
-   * 유저정보 상태관리로 전역관리 필요
-   */
-  const navigate = useRouter()
-
-  // 토큰 갱신
-  const { mutate: mutateGetToken } = useMutation(refresh, {})
-
+  // todo: 관련 url이 아닐 경우 후속처리
   useEffect(() => {
-    /**
-     * 로그인 유무에 따른 라우터 관리
-     *
-     * */
-  }, [])
+    if (accessToken) {
+      setIsLoggedIn(true)
+      router.push('/home')
+    } else {
+      removeCookie(AUTH_TOKEN.갱신)
+      router.push('/')
+    }
+  }, [accessToken, router])
 
-  return <main>{tokenValid ? <MainLayout canGoBack /> : <Login />}</main>
+  // todo: wrap 전역 처리
+  return <>{isLoggedIn ? <Home /> : <Login />}</>
 }
 
-export default Home
+// todo: 서버사이드적 조건부 렌더링 검토
+// App.getInitialProps = (ctx: NextPageContext) => {
+//   // const { ...get } = cookies()
+//
+//   // console.log('get:', ...get)
+//
+//   // const router = useRouter()
+//
+//   if (ctx.req && ctx.res) {
+//     ctx.res.writeHead(302, { Location: '/login' })
+//     ctx.res.end()
+//   } else {
+//     router.push('/login')
+//   }
+// }
+
+export default App

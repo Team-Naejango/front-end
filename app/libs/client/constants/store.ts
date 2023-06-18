@@ -1,0 +1,16 @@
+/**
+ * 스토어 접근 키
+ */
+export const STORE_KEY = {
+  접근: 'storeAccessToken',
+  유저정보: 'storeUserInfo',
+}
+
+/**
+ * 인증 토큰
+ */
+export const AUTH_TOKEN = {
+  인가: 'authorization',
+  접근: 'accessToken',
+  갱신: 'refreshToken',
+}

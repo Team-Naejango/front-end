@@ -4,10 +4,11 @@ import localFont from 'next/font/local'
 
 import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
+import { UseAxiosInterceptor } from '@/app/hooks/useAxiosInterceptor'
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
-  preload: true,
+  // preload: true,
 })
 
 export const metadata = {
@@ -20,7 +21,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='ko-KR'>
       <body className={myFont.className} suppressHydrationWarning>
         <RecoilProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {/* <UseAxiosInterceptor> */}
+            <main className='bor-al after:w-50 after:h-50 relative mx-auto h-[770px] w-[375px] max-w-xl overflow-visible rounded-[22px] bg-[#fff] p-4 after:absolute after:left-2/4 after:top-1/2 after:z-[-1] after:box-content after:block after:h-[770px] after:w-[375px] after:translate-x-[-50%] after:translate-y-[-50%] after:rounded-[30px] after:border-[10px] after:bg-transparent after:content-[""]'>
+              {children}
+            </main>
+            {/* </UseAxiosInterceptor> */}
+          </QueryProvider>
         </RecoilProvider>
       </body>
     </html>

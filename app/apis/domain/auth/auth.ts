@@ -1,43 +1,54 @@
-import instance from '@/app/apis/config/axios'
-import { Auth, LoginInfo, PassLoginForm } from '@/app/apis/types/domain/auth/auth'
+import { instance } from '@/app/apis/config/axios/instance'
+
+import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
 
-export type SignForm = {
-  email: String
-  password: String
+export interface SignParam {
   nickname: String
-  phoneNumber: String
+  birth: number
+  gender: String
 }
 
-export type LoginForm = {
-  email: String
-  password: String
-  name: String
-  birth: String
-  gender: String
-  address: String
-  job: String
-  position: String
+/**
+ * 카카오 인증 로그인
+ *
+ * @param code authorization
+ */
+export async function kakaoLogin(code: string): Promise<Response<{ data: KakaoLoginToken }>> {
+  return instance.get(`/login/oauth/kakao?code=${code}`, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+  })
+}
+
+/**
+ * 카카오 유저정보
+ *
+ * @param url
+ * @param accessToken
+ */
+export async function kakaoUserInfo(url: string, accessToken: string): Promise<Response<{ loginInfo: LoginInfo }>> {
+  return instance.get(url, {
+    headers: { Authorization: accessToken },
+  })
 }
 
 /**
  * 회원가입
  *
- * @param params.username 아이디
- * @param params.password 비밀번호
+ * @param params.nickname 닉네임
+ * @param params.birth 생년월일
  */
-export async function sign(params: SignForm): Promise<null> {
+export async function sign(params: SignParam): Promise<Response<boolean>> {
   return instance.post('/api/user/join', params)
 }
 
 /**
- * 로그인
+ * 닉네임 중복확인
  *
- * @param params.username 아이디
- * @param params.password 비밀번호
+ * @param username 닉네임
  */
-export async function login(params: LoginForm): Promise<{ auth: Auth }> {
-  return instance.post('/api/user/login', params)
+export async function nickNameValidity(username: string): Promise<Response<boolean>> {
+  return instance.get(`/api/user/check/${username}`)
 }
 
 /**
@@ -45,38 +56,22 @@ export async function login(params: LoginForm): Promise<{ auth: Auth }> {
  *
  * @param params.refreshToken 리프래시 토큰
  */
-export async function refresh(params: { refreshToken: string }): Promise<{ auth: Auth }> {
-  return instance.post('/api/token/refresh', params)
+export async function refresh(params: { refreshToken: string }): Promise<Response<{ token: AuthToken }>> {
+  return instance.post('/', params)
 }
 
-/**
- * 토큰 검증
- * @param params.accessToken 액세스 토큰
- */
-export async function verify(params: { accessToken: string }) {
-  return instance.post('/api/token/verify', params)
-}
-
-/**
- * 이메일 중복확인
- *
- * @param params.username 아이디
- * @param params.password 비밀번호
- */
-export async function emailValidity(params: LoginForm): Promise<boolean> {
-  return instance.get(`/api/user/check/${params.email}`)
-}
-
-/**
- * 카카오 인증 로그인
- *
- * @param code
- * @param code.access_token Access Token
- *
- *
- */
-export async function kakaoLogin(code: PassLoginForm): Promise<Response<{ auth: LoginInfo }>> {
-  return instance.post(`/kakao?code=${code}`, code, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  })
-}
+// /**
+//  * 로그인
+//  *
+//  * @param params.email 아이디
+//  * @param params.password 비밀번호
+//  * @param params.name 이름
+//  * @param params.birth 생년월일
+//  * @param params.gender 성별
+//  * @param params.address 주소
+//  * @param params.job 직업
+//  * @param params.position 위치
+//  */
+// export async function login(params: LoginForm): Promise<{ auth: AuthToken }> {
+//   return instance.post('/api/user/login', params)
+// }
