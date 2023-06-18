@@ -21,7 +21,7 @@ const nextConfig = {
 }
 
 module.exports = {
-  rewrites: async () => {
+  async rewrites() {
     return [
       {
         source: '/:path*',
