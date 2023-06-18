@@ -11,6 +11,13 @@ interface InputProps {
   placeholder?: string
   autoComplete?: string
   icon?: ReactNode
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+  maxLength?: number
+  disabled?: boolean
+}
+
+export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  return ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
 }
 
 export default function InputField({
@@ -23,10 +30,13 @@ export default function InputField({
   required,
   autoComplete = 'off',
   icon,
+  onKeyDown,
+  maxLength,
+  disabled,
 }: InputProps) {
   return (
     <>
-      <label className='mb-1 block text-sm font-medium text-gray-700' htmlFor={id}>
+      <label className='mb-1 block text-xs font-medium leading-none text-gray-700' htmlFor={id}>
         {label}
       </label>
       {kind === 'text' ? (
@@ -45,7 +55,10 @@ export default function InputField({
             type={type}
             placeholder={placeholder}
             autoComplete={autoComplete}
-            className={`w-full appearance-none rounded-md border border-gray-300 px-3 py-3 text-sm placeholder-gray-400 focus:border-[#A3D139] focus:outline-none focus:ring-emerald-50
+            onKeyDown={type === 'number' ? handleKeyDown : onKeyDown}
+            maxLength={maxLength}
+            disabled={disabled}
+            className={`w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-[13px] placeholder-gray-400 placeholder:text-[12px] focus:border-[#A3D139] focus:outline-none focus:ring-emerald-50
              ${icon ? 'indent-5' : null}`}
           />
           {icon}

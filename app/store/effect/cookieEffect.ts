@@ -1,33 +1,36 @@
-import { AxiosRequestConfig } from 'axios'
 import { AtomEffect } from 'recoil'
 
-import { instance } from '@/app/apis/config/axios'
 import { getCookie } from '@/app/libs/client/utils/cookie'
-import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
-import { refresh } from '@/app/apis/domain/auth/auth'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { kakaoLogin } from '@/app/apis/domain/auth/auth'
 import { useClearSession } from '@/app/hooks/useClearSession'
+import { useUpdateToken } from '@/app/hooks/useUpdateToken'
 
 export const cookieEffect: <T>(key: string) => AtomEffect<T> =
   key =>
   ({ onSet }): any => {
     onSet(async () => {
-      try {
-        const refreshToken = getCookie(KAKAO_AUTH_TOKEN.갱신)
-
-        if (!refreshToken) {
-          const { ResetToken } = useClearSession()
-          ResetToken()
-          return
-        }
-
-        const { token, success } = await refresh({ refreshToken })
-
-        if (success) {
-          // todo: 알맞는 파라미터 삽입
-          return await instance.request(token as AxiosRequestConfig)
-        }
-      } catch (error: unknown) {
-        return Promise.reject(error)
-      }
+      // try {
+      //   const refreshToken = getCookie(AUTH_TOKEN.갱신)
+      //
+      //   if (!refreshToken) {
+      //     const { ResetToken } = useClearSession()
+      //     ResetToken()
+      //     return
+      //   }
+      //
+      //   if (refreshToken) {
+      //     const authorization = getCookie(AUTH_TOKEN.인가)
+      //     const { updateToken } = useUpdateToken()
+      //
+      //     await kakaoLogin(authorization).then(response => {
+      //       if (response.success) {
+      //         updateToken(response.token.accessToken, response.token.refreshToken)
+      //       }
+      //     })
+      //   }
+      // } catch (error: unknown) {
+      //   return Promise.reject(error)
+      // }
     })
   }

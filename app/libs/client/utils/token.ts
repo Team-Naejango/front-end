@@ -1,8 +1,8 @@
 import { useRecoilValue } from 'recoil'
 
-import { refresh } from '@/app/apis/domain/auth/auth'
+import { kakaoLogin } from '@/app/apis/domain/auth/auth'
 import { getCookie } from '@/app/libs/client/utils/cookie'
-import { KAKAO_AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { kakaoAccessToken } from '@/app/store/atom'
 import { useClearSession } from '@/app/hooks/useClearSession'
 
@@ -11,8 +11,9 @@ import { useClearSession } from '@/app/hooks/useClearSession'
  *
  * */
 export const TokenValid = async () => {
+  const refreshToken = getCookie(AUTH_TOKEN.갱신)
+  const authorization = getCookie(AUTH_TOKEN.인가)
   const accessToken = useRecoilValue(kakaoAccessToken)
-  const refreshToken = getCookie(KAKAO_AUTH_TOKEN.갱신)
   const { ResetToken } = useClearSession()
 
   if (!accessToken) {
@@ -21,7 +22,7 @@ export const TokenValid = async () => {
 
   if (!refreshToken) {
     try {
-      const response = await refresh({ refreshToken: getCookie(KAKAO_AUTH_TOKEN.갱신) })
+      const response = await kakaoLogin(authorization)
 
       if (!response.success) {
         console.log('리프레시 토큰이 만료됨')

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import Header from '@/app/components/template/main/header'
+import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface FormProps {
   email: string
@@ -35,8 +35,8 @@ const FindPassword = () => {
   }
 
   return (
-    <div className=' bor-al relative mx-auto h-[770px] w-[375px] max-w-xl overflow-auto rounded-[30px] bg-[#fff] p-5'>
-      <Header canGoBack title={'비밀번호 찾기'} seoTitle={'비밀번호 찾기'} />
+    <>
+      <BackHeader canGoBack title={'비밀번호 찾기'} seoTitle={'비밀번호 찾기'} />
       <div className='mt-20'>
         <form onSubmit={handleSubmit(onValidEmail)} className='mt-8 flex flex-row items-center space-y-3'>
           <InputField
@@ -62,7 +62,7 @@ const FindPassword = () => {
         )}
         <p className='!mt-1.5 text-xs text-red-400'>{errors.email?.message || errors.verify?.message}</p>
       </div>
-    </div>
+    </>
   )
 }
 
