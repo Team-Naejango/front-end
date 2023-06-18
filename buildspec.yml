@@ -8,7 +8,7 @@ phases:
       - npm install -g yarn
   pre_build:
     commands:
-      - cp .env.production
+      - cp .env.production .env.production
       - yarn
   build:
     commands:
