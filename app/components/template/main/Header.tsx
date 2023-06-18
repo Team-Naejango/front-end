@@ -17,17 +17,9 @@ interface LayoutProps {
 const Header = ({ title, seoTitle }: LayoutProps) => {
   const router = useRouter()
 
-  // const onClick = () => {
-  //   router.back()
-  // }
-
-  const handleClick = () => {
-    // 페이지 전환을 위한 애니메이션 처리
-    gsap.to('.page-container', {
-      x: '-100%',
-      duration: 0.5,
+  const onClickNotice = () => {
+    gsap.to('.notice-area', {
       onComplete: () => {
-        // 페이지 전환 후에 실제로 페이지 이동
         router.push('/notice')
       },
     })
@@ -49,11 +41,11 @@ const Header = ({ title, seoTitle }: LayoutProps) => {
           </div>
           <div
             role='presentation'
-            onClick={handleClick}
+            onClick={onClickNotice}
             className={
-              'flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#F9F9F9] hover:bg-gray-100'
+              'notice-area flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#F9F9F9] hover:bg-gray-100'
             }>
-            <Image src={noticeIcon} alt={'알림 아이콘'} width={24} height={24} unoptimized />
+            <Image src={noticeIcon} alt={'알림 아이콘'} width={24} unoptimized />
           </div>
         </div>
       </header>

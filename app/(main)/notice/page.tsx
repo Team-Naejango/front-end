@@ -12,7 +12,7 @@ const Notice = () => {
   }, [])
 
   return (
-    <div className={'h-full w-full overflow-hidden'}>
+    <div className='h-full w-full overflow-hidden'>
       <div className='notice-container flex h-full items-center justify-center'>
         <p>알림 페이지</p>
       </div>

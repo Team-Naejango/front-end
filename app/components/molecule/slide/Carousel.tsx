@@ -93,31 +93,3 @@ const Carousel = () => {
 }
 
 export default Carousel
-
-{
-  /* <SwiperSlide> */
-}
-{
-  /*  {dataList.map((item, idx) => { */
-}
-{
-  /*    return ( */
-}
-{
-  /*      <Link key={Number(idx)} href={'/event/1'}> */
-}
-{
-  /*        <Image src={item} alt={'이벤트 이미지1'} /> */
-}
-{
-  /*      </Link> */
-}
-{
-  /*    ) */
-}
-{
-  /*  })} */
-}
-{
-  /* </SwiperSlide> */
-}
