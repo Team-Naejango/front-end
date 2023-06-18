@@ -9,6 +9,15 @@
 //   ]
 // }
 
+// async rewrites() {
+//   return [
+//     {
+//       source: '/:path*',
+//       destination: 'http://43.202.25.203:8080/:path*',
+//     },
+//   ]
+// },
+
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
@@ -20,14 +29,4 @@ const nextConfig = {
   transpilePackages: ['@acme/ui', 'lodash-es', 'inline-react-svg'],
 }
 
-module.exports = {
-  async rewrites() {
-    return [
-      {
-        source: '/:path*',
-        destination: 'http://43.202.25.203:8080/:path*',
-      },
-    ]
-  },
-  nextConfig,
-}
+module.exports = nextConfig
