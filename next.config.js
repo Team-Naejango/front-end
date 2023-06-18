@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+/** @type {{output: string, transpilePackages: string[], images: {path: string, loader: string}, reactStrictMode: boolean, swcMinify: boolean, env: {NEXT_PUBLIC_TEST: number}}} */
 
 const nextConfig = {
   reactStrictMode: true,
