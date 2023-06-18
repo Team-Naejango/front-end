@@ -15,7 +15,7 @@ export interface SignParam {
  * @param code authorization
  */
 export async function kakaoLogin(code: string): Promise<Response<{ data: KakaoLoginToken }>> {
-  return instance.get(`http://43.202.25.203:8080/login/oauth/kakao?code=${code}`, {
+  return instance.get(`/login/oauth/kakao?code=${code}`, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
   })
 }

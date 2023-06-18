@@ -8,6 +8,7 @@ phases:
       - npm install -g yarn
   pre_build:
     commands:
+      - cp .env.production
       - yarn
   build:
     commands:
@@ -20,3 +21,7 @@ artifacts:
   files:
     - '**/*'
   base-directory: 'out'
+cache:
+  paths:
+    - 'node_modules/**/*'
+    - '.next/cache/**/*'
