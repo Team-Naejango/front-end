@@ -4,25 +4,19 @@ import React from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import gsap from 'gsap'
 
 import noticeIcon from '@/app/assets/image/notice.svg'
 import mapIcon from '@/app/assets/image/map.svg'
 
 interface LayoutProps {
-  title?: string
   seoTitle?: string
 }
 
-const Header = ({ title, seoTitle }: LayoutProps) => {
+const Header = ({ seoTitle }: LayoutProps) => {
   const router = useRouter()
 
   const onClickNotice = () => {
-    gsap.to('.notice-area', {
-      onComplete: () => {
-        router.push('/notice')
-      },
-    })
+    router.push('/notice')
   }
 
   return (
@@ -43,7 +37,7 @@ const Header = ({ title, seoTitle }: LayoutProps) => {
             role='presentation'
             onClick={onClickNotice}
             className={
-              'notice-area flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#F9F9F9] hover:bg-gray-100'
+              'flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#F9F9F9] hover:bg-gray-100'
             }>
             <Image src={noticeIcon} alt={'알림 아이콘'} width={24} unoptimized />
           </div>

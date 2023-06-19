@@ -6,7 +6,8 @@ const nextConfig = {
   output: 'export',
   images: {
     loader: 'imgix',
-    path: '/',
+    path: 'localhost:3000/*',
+    unoptimized: true,
   },
   transpilePackages: ['@acme/ui', 'lodash-es', 'inline-react-svg'],
 }

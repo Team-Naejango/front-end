@@ -9,21 +9,34 @@ import Nav from '@/app/components/template/main/Nav'
 import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface LayoutProps {
-  title?: string
-  seoTitle?: string
   hasTabBar?: boolean
   children?: React.ReactNode
 }
 
-const Layout = ({ title, hasTabBar = true, children, seoTitle }: LayoutProps) => {
+const Layout = ({ hasTabBar = true, children }: LayoutProps) => {
   const pathname = usePathname()
 
   console.log('pathname:', pathname)
 
+  const HeaderTitle = (pathname: string) => {
+    switch (pathname) {
+      case '/notice':
+        return '알림'
+      default:
+        return undefined
+    }
+  }
+
   return (
     <>
-      {pathname === '/notice' ? <BackHeader canGoBack /> : <Header />}
-      <section className={cls('h-full pt-8', hasTabBar ? 'pb-24' : '')}>{children}</section>
+      {pathname === '/notice' ? (
+        <BackHeader canGoBack title={HeaderTitle(pathname)} seoTitle={HeaderTitle(pathname)} />
+      ) : (
+        <Header />
+      )}
+      <section className={cls('h-[calc(100%-52px)] overflow-hidden pt-8', hasTabBar ? 'pb-24' : '')}>
+        {children}
+      </section>
       <Nav />
     </>
   )

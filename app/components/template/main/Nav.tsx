@@ -10,7 +10,7 @@ const Nav = () => {
   const pathname = usePathname()
 
   return (
-    <nav className='absolute bottom-0 left-0 z-[1000] flex w-[375px] max-w-xl items-center justify-between rounded-[22px] bg-white px-7 pb-4 pt-3 text-xs shadow-[0px_0px_3px_rgb(215,215,215)]'>
+    <nav className='absolute bottom-0 left-0 z-[1000] flex w-[375px] max-w-xl items-center justify-between rounded-[24px] bg-white px-7 pb-3 pt-3 text-xs shadow-[0px_0px_3px_rgb(215,215,215)]'>
       <Link
         href={'/home'}
         className={cls(

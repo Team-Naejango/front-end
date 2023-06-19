@@ -5,15 +5,22 @@ import gsap from 'gsap'
 
 const Notice = () => {
   useEffect(() => {
-    gsap.from('.notice-container', {
-      x: '100%',
-      duration: 0.5,
-    })
+    gsap.fromTo(
+      '.notice-container',
+      {
+        x: '100%',
+        duration: 0.5,
+      },
+      {
+        x: '0%',
+        duration: 0.5,
+      }
+    )
   }, [])
 
   return (
-    <div className='h-full w-full overflow-hidden'>
-      <div className='notice-container flex h-full items-center justify-center'>
+    <div className='notice-container h-full w-full'>
+      <div className=' flex h-full items-center justify-center'>
         <p>알림 페이지</p>
       </div>
     </div>
