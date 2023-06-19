@@ -93,7 +93,7 @@ const Login = () => {
             <button
               onClick={onKakaoLogin}
               className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
-              <Image src={kakaoLogo} alt='카카오 로고' width={24} height={24} className='mr-2.5' unoptimized />
+              <Image src={kakaoLogo} alt='카카오 로고' width={24} height={24} className='mr-2.5' />
               카카오 로그인
             </button>
             <button className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>

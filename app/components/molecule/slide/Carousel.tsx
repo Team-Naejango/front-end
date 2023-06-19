@@ -51,7 +51,6 @@ const Carousel = () => {
                 quality={100}
                 placeholder='blur'
                 blurDataURL={data.blurUrl}
-                unoptimized
               />
               <p
                 className={cls(

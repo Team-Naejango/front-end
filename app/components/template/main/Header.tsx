@@ -39,7 +39,7 @@ const Header = ({ seoTitle }: LayoutProps) => {
             className={
               'flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#F9F9F9] hover:bg-gray-100'
             }>
-            <Image src={noticeIcon} alt={'알림 아이콘'} width={24} unoptimized />
+            <Image src={noticeIcon} alt={'알림 아이콘'} width={24} />
           </div>
         </div>
       </header>
