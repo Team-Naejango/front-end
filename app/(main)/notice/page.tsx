@@ -7,8 +7,8 @@ import { useRecoilValue } from 'recoil'
 import { splashState } from '@/app/store/atom'
 
 const Notice = () => {
-  const isWaitSplashComplete = useRecoilValue(splashState)
-  console.log('isWaitSplashComplete:', isWaitSplashComplete)
+  const isSplashMounted = useRecoilValue(splashState)
+  console.log('isSplashMounted:', isSplashMounted)
 
   useEffect(() => {
     gsap.fromTo(

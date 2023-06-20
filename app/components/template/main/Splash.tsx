@@ -43,7 +43,6 @@ const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () =>
         ease: 'power1.out',
       }
     )
-
     return splash
   }
 

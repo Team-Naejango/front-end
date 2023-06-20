@@ -17,12 +17,12 @@ interface LayoutProps {
 
 const BackHeader = ({ title, canGoBack, seoTitle, searchParams }: LayoutProps) => {
   const router = useRouter()
-  const isWaitSplashComplete = useRecoilValue(splashState)
+  const isSplashMounted = useRecoilValue(splashState)
 
   const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
 
   const onClickPrevUrl = () => {
-    if (isWaitSplashComplete) {
+    if (isSplashMounted) {
       if (prevUrl !== '/') {
         router.back()
       } else {

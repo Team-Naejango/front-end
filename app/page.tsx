@@ -15,9 +15,9 @@ const App: NextPage = () => {
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
   const accessToken = useRecoilValue(kakaoAccessToken)
-  const isWaitSplashComplete = useRecoilValue(splashState)
+  const isSplashMounted = useRecoilValue(splashState)
 
-  console.log('isWaitSplashComplete:', isWaitSplashComplete)
+  console.log('isSplashMounted:', isSplashMounted)
 
   // todo: 관련 url이 아닐 경우 후속처리
   useEffect(() => {
@@ -31,7 +31,7 @@ const App: NextPage = () => {
   }, [accessToken, router])
 
   // todo: wrap 전역 처리
-  return <>{isLoggedIn ? <Home /> : <Login isWaitSplashComplete={isWaitSplashComplete} />}</>
+  return <>{isLoggedIn ? <Home /> : <Login isSplashMounted={isSplashMounted} />}</>
 }
 
 // todo: 서버사이드적 조건부 렌더링 검토

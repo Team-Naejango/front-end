@@ -17,7 +17,7 @@ interface FormProps {
   password: string
 }
 
-const Login = ({ isWaitSplashComplete = true }: { isWaitSplashComplete: boolean }) => {
+const Login = ({ isSplashMounted = true }: { isSplashMounted: boolean }) => {
   const router = useRouter()
 
   const {
@@ -42,7 +42,7 @@ const Login = ({ isWaitSplashComplete = true }: { isWaitSplashComplete: boolean 
 
   return (
     <>
-      {isWaitSplashComplete ? (
+      {isSplashMounted ? (
         <div className='mt-20 px-4'>
           <h3 className='text-center text-2xl font-semibold text-[#33CC99]'>로그인</h3>
           <div className='mt-16'>
