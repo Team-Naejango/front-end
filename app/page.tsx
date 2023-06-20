@@ -31,7 +31,7 @@ const App: NextPage = () => {
   }, [accessToken, router])
 
   // todo: wrap 전역 처리
-  return <>{isLoggedIn ? <Home /> : <Login isSplashMounted={isSplashMounted} />}</>
+  return <>{isLoggedIn ? <Home /> : <Login />}</>
 }
 
 // todo: 서버사이드적 조건부 렌더링 검토

@@ -1,8 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
@@ -10,6 +11,7 @@ import { FcGoogle } from 'react-icons/fc'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
+import { splashState } from '@/app/store/atom'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 interface FormProps {
@@ -17,8 +19,10 @@ interface FormProps {
   password: string
 }
 
-const Login = ({ isSplashMounted = true }: { isSplashMounted: boolean }) => {
+const Login = () => {
   const router = useRouter()
+  const [mounted, setMounted] = useState<boolean>(false)
+  const isSplashMounted = useRecoilValue(splashState)
 
   const {
     register,
@@ -40,9 +44,15 @@ const Login = ({ isSplashMounted = true }: { isSplashMounted: boolean }) => {
     reset()
   }
 
+  useEffect(() => {
+    if (isSplashMounted) {
+      setMounted(true)
+    }
+  }, [isSplashMounted])
+
   return (
     <>
-      {isSplashMounted ? (
+      {mounted ? (
         <div className='mt-20 px-4'>
           <h3 className='text-center text-2xl font-semibold text-[#33CC99]'>로그인</h3>
           <div className='mt-16'>

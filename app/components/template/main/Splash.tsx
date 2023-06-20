@@ -6,10 +6,13 @@ import gsap from 'gsap'
 
 import { cls } from '@/app/libs/client/utils/util'
 import splashLogo1 from '@/app/assets/image/NaeJanGo.svg'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { splashState } from '@/app/store/atom'
 // import splashLogo2 from '@/app/assets/image/NaeJanGo_white.svg'
 
 const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () => void; isSplashMounted: boolean }) => {
   const splashRef = useRef<HTMLDivElement>(null)
+  const isSetSplashVisible = useSetRecoilState(splashState)
 
   const animateSplash = () => {
     const splash = gsap.timeline({
@@ -50,6 +53,7 @@ const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () =>
     const animation = animateSplash()
     return () => {
       animation.kill()
+      isSetSplashVisible(true)
     }
   }, [])
 
