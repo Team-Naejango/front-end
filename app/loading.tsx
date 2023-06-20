@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react'
-
 import Lottie from 'lottie-react'
+
 import myAnimation from '@/app/assets/animation/131005-tri-cube-loader-3.json'
 
 const Loading = () => {
@@ -16,4 +16,5 @@ const Loading = () => {
     </div>
   )
 }
+
 export default Loading

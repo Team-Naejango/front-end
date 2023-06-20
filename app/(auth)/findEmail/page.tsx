@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import InputField from '@/app/components/atom/InputField'
-import Button from '@/app/components/atom/Button'
-import Link from 'next/link'
-import { Toaster } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+
+import InputField from '@/app/components/atom/InputField'
+import Button from '@/app/components/atom/Button'
 import BackHeader from '@/app/components/template/main/BackHeader'
 
 interface FormProps {
@@ -25,7 +24,7 @@ const FindEmail = () => {
   } = useForm<FormProps>()
 
   const onValid = () => {
-    alert('개발중!!!!!!!!!!!!!!')
+    alert('현재 카카오 로그인만 허용했습니다.')
     reset()
   }
 

@@ -1,19 +1,34 @@
+'use client'
+
 import React from 'react'
 import Head from 'next/head'
-import { cls } from '@/app/libs/client/utils/util'
 import { useRouter } from 'next/navigation'
+import { useRecoilValue } from 'recoil'
+
+import { cls } from '@/app/libs/client/utils/util'
+import { splashState } from '@/app/store/atom'
 
 interface LayoutProps {
   title?: string
   seoTitle?: string
   canGoBack?: boolean
+  searchParams?: string
 }
 
-const BackHeader = ({ title, canGoBack, seoTitle }: LayoutProps) => {
+const BackHeader = ({ title, canGoBack, seoTitle, searchParams }: LayoutProps) => {
   const router = useRouter()
+  const isWaitSplashComplete = useRecoilValue(splashState)
 
-  const onClick = () => {
-    router.back()
+  const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
+
+  const onClickPrevUrl = () => {
+    if (isWaitSplashComplete) {
+      if (prevUrl !== '/') {
+        router.back()
+      } else {
+        router.replace('/login')
+      }
+    }
   }
 
   return (
@@ -23,7 +38,7 @@ const BackHeader = ({ title, canGoBack, seoTitle }: LayoutProps) => {
       </Head>
       <div className='absolute left-0 top-0 m-5 mx-auto flex h-12 w-[375px] max-w-xl items-center justify-start rounded-[22px] bg-white px-10 indent-7 text-lg font-medium text-gray-800'>
         {canGoBack ? (
-          <button onClick={onClick} className='absolute left-4'>
+          <button onClick={onClickPrevUrl} className='absolute left-4'>
             <svg
               className='h-6 w-6'
               fill='none'

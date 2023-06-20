@@ -15,7 +15,7 @@ const Nav = () => {
         href={'/home'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/home' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/home' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'>
           <path
@@ -33,7 +33,7 @@ const Nav = () => {
         href={'/products'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/products' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/products' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -54,7 +54,7 @@ const Nav = () => {
         href={'/trades'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/trades' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/trades' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           version='1.0'
@@ -80,7 +80,7 @@ const Nav = () => {
         href={'/chats'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/chats' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/chats' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -101,7 +101,7 @@ const Nav = () => {
         href={'/profile'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/profile' ? 'text-[#30BE82]' : 'transition-colors hover:text-gray-500'
+          pathname === '/profile' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'>
           <path

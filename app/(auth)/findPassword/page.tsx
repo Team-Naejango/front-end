@@ -1,8 +1,9 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import BackHeader from '@/app/components/template/main/BackHeader'
@@ -13,16 +14,13 @@ interface FormProps {
 }
 
 const FindPassword = () => {
-  const router = useRouter()
+  const searchParams = useSearchParams()
   const [isEmailValid, setIsEmailValid] = useState<boolean>(false)
 
   const {
     register,
-    watch,
     handleSubmit,
-    reset,
     formState: { errors },
-    setError,
   } = useForm<FormProps>()
 
   const onValidEmail = () => {
@@ -30,13 +28,12 @@ const FindPassword = () => {
   }
 
   const onValidVerify = () => {
-    alert('개발중!!!!!!!!!!!!!!')
-    // reset()
+    alert('현재 카카오 로그인만 허용했습니다.')
   }
 
   return (
     <>
-      <BackHeader canGoBack title={'비밀번호 찾기'} seoTitle={'비밀번호 찾기'} />
+      <BackHeader canGoBack title={'비밀번호 찾기'} seoTitle={'비밀번호 찾기'} searchParams={searchParams} />
       <div className='mt-20'>
         <form onSubmit={handleSubmit(onValidEmail)} className='mt-8 flex flex-row items-center space-y-3'>
           <InputField

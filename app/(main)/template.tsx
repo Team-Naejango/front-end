@@ -13,7 +13,7 @@ interface LayoutProps {
   children?: React.ReactNode
 }
 
-const Template = ({ hasTabBar = true, children }: LayoutProps) => {
+export default function Template({ hasTabBar = true, children }: LayoutProps) {
   const pathname = usePathname()
 
   console.log('pathname:', pathname)
@@ -41,5 +41,3 @@ const Template = ({ hasTabBar = true, children }: LayoutProps) => {
     </>
   )
 }
-
-export default Template

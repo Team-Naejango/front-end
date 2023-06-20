@@ -95,7 +95,7 @@ const Sign = () => {
 
   return (
     <div className='mt-20 px-4'>
-      <h3 className='text-center text-2xl font-semibold text-[#A3D139]'>회원가입</h3>
+      <h3 className='text-center text-2xl font-semibold text-[#33CC99]'>회원가입</h3>
       <div className='mt-[4.75rem]'>
         <form onSubmit={handleSubmit(onClickSave)} className='mt-8 flex flex-col space-y-2'>
           <div className={'flex flex-row items-center'}>
@@ -123,6 +123,7 @@ const Sign = () => {
               text='중복검사'
               onClick={onUserNameValidation}
               disabled={nickname === undefined || nickname === ''}
+              className={'!text-[13px]'}
             />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
@@ -150,7 +151,7 @@ const Sign = () => {
             <Link
               href={'/login'}
               onClick={event => event.stopPropagation()}
-              className='px-1.5 text-[#A3D139] underline'>
+              className='px-1.5 text-[13px] text-[#33CC99] hover:underline'>
               로그인
             </Link>
           </p>

@@ -58,7 +58,7 @@ export default function InputField({
             onKeyDown={type === 'number' ? handleKeyDown : onKeyDown}
             maxLength={maxLength}
             disabled={disabled}
-            className={`w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-[13px] placeholder-gray-400 placeholder:text-[12px] focus:border-[#A3D139] focus:outline-none focus:ring-emerald-50
+            className={`w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-[13px] placeholder-gray-400 placeholder:text-[12px] focus:border-[#33CC99] focus:outline-none focus:ring-emerald-50
              ${icon ? 'indent-5' : null}`}
           />
           {icon}

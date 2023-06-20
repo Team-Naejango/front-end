@@ -21,7 +21,7 @@ const Button = ({ smail = false, onClick, onSubmit, type, text, className, disab
       onSubmit={onSubmit}
       disabled={disabled}
       className={cls(
-        'rounded-md border border-transparent bg-[#A3D139] px-4 py-2.5 text-[13px] font-medium text-white shadow-sm hover:bg-[#AFD751] focus:outline-none focus:ring-2 focus:ring-[#A3D139] focus:ring-offset-2',
+        'rounded-md border border-transparent bg-[#33CC99] px-4 py-2.5 text-[14px] font-medium text-white shadow-sm hover:bg-[#32D7A0] focus:outline-none focus:ring-2 focus:ring-[#33CC99] focus:ring-offset-2',
         smail ? `ml-2 flex-1 whitespace-nowrap ${className}` : 'w-full',
         disabled ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
       )}>

@@ -27,3 +27,11 @@ export const userInfoState = atom({
     accessToken: '',
   },
 })
+
+/**
+ * 스플래쉬
+ * */
+export const splashState = atom({
+  key: `${STORE_KEY.스플래쉬}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: false,
+})
