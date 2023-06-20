@@ -37,7 +37,7 @@ const Carousel = () => {
   }
 
   return (
-    <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-[30px]'}>
+    <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-3xl'}>
       {imagesData.map((data, idx) => {
         return (
           <SwiperSlide key={data.src.src}>

@@ -18,11 +18,7 @@ interface InputProps {
   className?: any
 }
 
-export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  return ['e', 'E', '+', '-'].includes(event.key) && event.preventDefault()
-}
-
-export default function InputField({
+export default function SearchInput({
   label,
   id,
   kind = 'text',
@@ -43,14 +39,7 @@ export default function InputField({
         {label}
       </label>
       {kind === 'text' ? (
-        <div className='relative flex flex-[3_3_0%] items-center rounded-md'>
-          <input
-            type='password'
-            style={{
-              display: 'none',
-            }}
-            autoComplete='off'
-          />
+        <div className='m-auto mb-3 flex items-center justify-center rounded-md'>
           <input
             id={id}
             required={required}
@@ -58,11 +47,10 @@ export default function InputField({
             type={type}
             placeholder={placeholder}
             autoComplete={autoComplete}
-            onKeyDown={type === 'number' ? handleKeyDown : onKeyDown}
             maxLength={maxLength}
             disabled={disabled}
             className={cls(
-              `w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-[13px] placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#33CC99] focus:outline-none focus:ring-emerald-50 ${className}`,
+              `w-64 appearance-none rounded-md border border-gray-300 text-[13px] placeholder-gray-400 shadow-sm placeholder:text-[12px] focus:border-[#33CC99] focus:outline-none focus:ring-emerald-50 ${className}`,
               icon ? 'indent-5' : ''
             )}
           />

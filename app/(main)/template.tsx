@@ -4,9 +4,9 @@ import React from 'react'
 import { usePathname } from 'next/navigation'
 
 import { cls } from '@/app/libs/client/utils/util'
-import Header from '@/app/components/template/main/Header'
-import Nav from '@/app/components/template/main/Nav'
-import BackHeader from '@/app/components/template/main/BackHeader'
+import Header from '@/app/components/template/main/header/Header'
+import Lnb from '@/app/components/template/main/lnb/Lnb'
+import BackHeader from '@/app/components/template/main/header/BackHeader'
 
 interface LayoutProps {
   hasTabBar?: boolean
@@ -34,10 +34,8 @@ export default function Template({ hasTabBar = true, children }: LayoutProps) {
       ) : (
         <Header />
       )}
-      <section className={cls('h-[calc(100%-52px)] overflow-hidden pt-8', hasTabBar ? 'pb-24' : '')}>
-        {children}
-      </section>
-      <Nav />
+      <section className={cls('h-auto overflow-hidden pt-8', hasTabBar ? 'pb-24' : '')}>{children}</section>
+      <Lnb />
     </>
   )
 }
