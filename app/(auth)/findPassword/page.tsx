@@ -33,7 +33,7 @@ const FindPassword = () => {
 
   return (
     <>
-      <BackHeader canGoBack title={'비밀번호 찾기'} seoTitle={'비밀번호 찾기'} searchParams={searchParams} />
+      <BackHeader canGoBack title={'비밀번호 찾기'} seoTitle={'비밀번호 찾기'} />
       <div className='mt-20'>
         <form onSubmit={handleSubmit(onValidEmail)} className='mt-8 flex flex-row items-center space-y-3'>
           <InputField
