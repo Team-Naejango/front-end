@@ -10,6 +10,7 @@ phases:
     commands:
       - echo NEXT_PUBLIC_API_URL= ${API_URL} >> .env.production
       - echo NEXT_PUBLIC_KAKAO_REST_API_KEY= ${KAKAO_REST_API_KEY} >> .env.production
+      - echo NEXT_PUBLIC_KAKAO_JS_KEY= ${KAKAO_JS_KEY} >> .env.production
       - yarn
   build:
     commands:

@@ -5,6 +5,7 @@ export const STORE_KEY = {
   접근: 'storeAccessToken',
   유저정보: 'storeUserInfo',
   스플래쉬: 'storeSplash',
+  위치정보: 'storeLocation',
 }
 
 /**

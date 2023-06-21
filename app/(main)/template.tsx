@@ -42,7 +42,7 @@ export default function Template({ hasTabBar = true, children }: LayoutProps) {
       ) : (
         <Header seoTitle={HeaderTitle(pathname)} />
       )}
-      <section className={cls('h-auto overflow-hidden pt-8', hasTabBar ? 'pb-24' : '')}>{children}</section>
+      <section className={cls('h-full overflow-hidden pt-8', hasTabBar ? 'pb-24' : '')}>{children}</section>
       <Lnb />
     </>
   )
