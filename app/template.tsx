@@ -45,7 +45,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         )}>
         {isLoading && isSplashMounted ? (
           <Splash
-            finishLoading={() => {
+            closeSplash={() => {
               setIsLoading(false)
             }}
             isSplashMounted={isSplashMounted}

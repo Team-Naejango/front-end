@@ -9,17 +9,23 @@ import { cls } from '@/app/libs/client/utils/util'
 import { splashState } from '@/app/store/atom'
 import splashLogo from '@/app/assets/image/splash_logo_white.svg'
 
-const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () => void; isSplashMounted: boolean }) => {
+interface SplashProps {
+  isSplashMounted: boolean
+  closeSplash: () => void
+}
+
+const SplashScreen = ({ isSplashMounted, closeSplash }: SplashProps) => {
   const splashRef = useRef<HTMLDivElement>(null)
   const isSetSplashVisible = useSetRecoilState(splashState)
 
   const animateSplash = () => {
     const splash = gsap.timeline({
       onComplete: () => {
-        finishLoading()
+        closeSplash()
       },
     })
 
+    // 타이틀 in
     splash.fromTo(
       '#splash',
       {
@@ -34,6 +40,7 @@ const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () =>
       }
     )
 
+    // 스플래쉬 out
     splash.fromTo(
       splashRef.current,
       { y: '0%' },
@@ -45,18 +52,6 @@ const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () =>
       }
     )
     return splash
-
-    // splash.fromTo(
-    //   splashRef.current,
-    //   { y: '0%', opacity: 1 },
-    //   {
-    //     y: '-70px',
-    //     delay: 1,
-    //     duration: 0.5,
-    //     opacity: 0,
-    //     ease: 'power1.out',
-    //   }
-    // )
   }
 
   useLayoutEffect(() => {
@@ -81,7 +76,7 @@ const SplashScreen = ({ finishLoading, isSplashMounted }: { finishLoading: () =>
         width={330}
         height={50}
         quality={100}
-        style={{ objectFit: 'cover' }}
+        style={{ objectFit: 'cover', width: 'auto', height: 'auto' }}
         priority
       />
     </div>

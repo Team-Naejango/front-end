@@ -22,6 +22,14 @@ export default function Template({ hasTabBar = true, children }: LayoutProps) {
     switch (pathname) {
       case '/notice':
         return '알림'
+      case '/home':
+        return '홈'
+      case '/products':
+        return '공동구매'
+      case '/chats':
+        return '채팅'
+      case '/profile':
+        return '프로필'
       default:
         return undefined
     }
@@ -32,7 +40,7 @@ export default function Template({ hasTabBar = true, children }: LayoutProps) {
       {pathname === '/notice' ? (
         <BackHeader canGoBack title={HeaderTitle(pathname)} seoTitle={HeaderTitle(pathname)} />
       ) : (
-        <Header />
+        <Header seoTitle={HeaderTitle(pathname)} />
       )}
       <section className={cls('h-auto overflow-hidden pt-8', hasTabBar ? 'pb-24' : '')}>{children}</section>
       <Lnb />
