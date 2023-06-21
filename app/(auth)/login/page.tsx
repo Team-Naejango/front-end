@@ -36,7 +36,9 @@ const Login = () => {
   }
 
   const onGoogleLogin = () => {
-    alert('현재 카카오 로그인만 허용했습니다.')
+    // alert('현재 카카오 로그인만 허용했습니다.')
+    alert('개발용 리다이렉트')
+    router.push('/home')
   }
 
   const onValid = () => {

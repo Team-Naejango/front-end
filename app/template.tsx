@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import { kakaoAccessToken, splashState } from '@/app/store/atom'
-import Splash from '@/app/components/template/main/Splash'
+import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 
 export default function Template({ children }: { children: React.ReactNode }) {
@@ -45,7 +45,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         )}>
         {isLoading && isSplashMounted ? (
           <Splash
-            finishLoading={() => {
+            closeSplash={() => {
               setIsLoading(false)
             }}
             isSplashMounted={isSplashMounted}

@@ -1,4 +1,4 @@
-/** @type {{output: string, transpilePackages: string[], images: {path: string, loader: string}, reactStrictMode: boolean, swcMinify: boolean, env: {NEXT_PUBLIC_TEST: number}}} */
+/** @type {{output: string, transpilePackages: string[], images: {path: string, loader: string, unoptimized: boolean}, reactStrictMode: boolean, swcMinify: boolean}} */
 
 const nextConfig = {
   reactStrictMode: true,

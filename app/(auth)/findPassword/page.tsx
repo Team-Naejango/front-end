@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import BackHeader from '@/app/components/template/main/BackHeader'
+import BackHeader from '@/app/components/template/main/header/BackHeader'
 
 interface FormProps {
   email: string

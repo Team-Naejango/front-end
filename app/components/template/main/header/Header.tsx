@@ -9,7 +9,7 @@ import noticeIcon from '@/app/assets/image/notice.svg'
 import mapIcon from '@/app/assets/image/map.svg'
 
 interface LayoutProps {
-  seoTitle?: string
+  seoTitle: string | undefined
 }
 
 const Header = ({ seoTitle }: LayoutProps) => {
@@ -22,7 +22,7 @@ const Header = ({ seoTitle }: LayoutProps) => {
   return (
     <>
       <Head>
-        <title>{seoTitle} | 내 잔부를 부탁해</title>
+        <title>{seoTitle} | 내 잔고를 부탁해</title>
       </Head>
       <header>
         <div className={'flex items-center justify-between bg-white pl-2 pr-1.5'}>

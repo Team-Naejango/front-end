@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 
 import { cls } from '@/app/libs/client/utils/util'
 
-const Nav = () => {
+const Lnb = () => {
   const pathname = usePathname()
 
   return (
@@ -39,7 +39,7 @@ const Nav = () => {
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
           viewBox='0 0 22 22'
-          strokeWidth='1.5'
+          strokeWidth='1.4'
           stroke='currentColor'
           className='h-6 w-6'>
           <path
@@ -132,4 +132,4 @@ const Nav = () => {
   )
 }
 
-export default Nav
+export default Lnb

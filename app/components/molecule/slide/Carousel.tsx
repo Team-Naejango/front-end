@@ -10,11 +10,6 @@ import { Swiper as SwiperClass } from 'swiper/types'
 import { imagesData } from '@/app/libs/client/utils/images'
 import { cls } from '@/app/libs/client/utils/util'
 
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import 'swiper/css/scrollbar'
-
 const Carousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
@@ -37,7 +32,7 @@ const Carousel = () => {
   }
 
   return (
-    <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-[30px]'}>
+    <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-3xl'}>
       {imagesData.map((data, idx) => {
         return (
           <SwiperSlide key={data.src.src}>

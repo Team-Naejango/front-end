@@ -1,7 +1,15 @@
-import React from 'react'
+'use client'
+
+import React, { lazy, useState } from 'react'
+
+const KakaoMap = lazy(() => import('@/app/components/molecule/common/KakaoMap'))
 
 const Trades = () => {
-  return <div className='flex h-[100%] items-center justify-center'>물물교환 페이지</div>
+  return (
+    <div className='relative flex h-[100%] items-center justify-center'>
+      <KakaoMap />
+    </div>
+  )
 }
 
 export default Trades

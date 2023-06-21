@@ -33,6 +33,7 @@
     "no-alert": "off",
     "arrow-parens": ["error", "as-needed"], // a => {}
     "no-param-reassign": ["error", { "props": false }],
+    "@next/next/no-document-import-in-page": "off",
     "import/no-cycle": "off",
     "no-unused-vars": "off",
     "no-unused-expressions": [
