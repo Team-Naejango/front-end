@@ -77,7 +77,7 @@ const Sign = () => {
   console.log('typeof', typeof watch('nickname'))
 
   const onUserNameValidation = (event: React.MouseEvent) => {
-    // event.preventDefault()
+    // events.preventDefault()
     if (nickname === '') return false
     // query mutation api call
     // mutateNickname(watch('nickname'))

@@ -1,4 +1,4 @@
-import React, { lazy } from 'react'
+import React, { lazy, Suspense } from 'react'
 import './assets/css/globals.scss'
 import localFont from 'next/font/local'
 import Script from 'next/script'
@@ -7,6 +7,7 @@ import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
 import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/apiKey'
 import { keywords, openGraph } from '@/app/libs/client/constants/common'
+import Loading from '@/app/loading'
 import { UseAxiosInterceptor } from '@/app/hooks/useAxiosInterceptor'
 
 lazy(() => import('swiper/css'))
@@ -33,9 +34,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script type='text/javascript' strategy='beforeInteractive' src={KAKAO_MAP_SDK_URL} />
         <RecoilProvider>
           <QueryProvider>
-            {/* <UseAxiosInterceptor> */}
-            {children}
-            {/* </UseAxiosInterceptor> */}
+            <Suspense fallback={<Loading />}>
+              {/* <UseAxiosInterceptor> */}
+              {children}
+              {/* </UseAxiosInterceptor> */}
+            </Suspense>
           </QueryProvider>
         </RecoilProvider>
       </body>
