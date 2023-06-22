@@ -1,4 +1,4 @@
-export const keywords = [
+export const KEYWORDS = [
   '공동구매',
   '공구',
   '물물거래',
@@ -12,19 +12,19 @@ export const keywords = [
   '신선품',
 ]
 
-export const openGraph = {
+export const OPENGRAPH = {
   title: '내 잔고를 부탁해',
   description: '1인 가구 맞춤형 공동구매 및 물물교환 커뮤니티 플랫폼',
   url: 'https://d1ad0vl3i2dudp.cloudfront.net/',
   siteName: '내 잔고를 부탁해',
   images: [
     {
-      url: 'https://nextjs.org/og.png',
+      url: 'http://naejango.s3-website.ap-northeast-2.amazonaws.com/images/splash_logo.svg',
       width: 800,
       height: 600,
     },
     {
-      url: 'https://nextjs.org/og-alt.png',
+      url: 'http://naejango.s3-website.ap-northeast-2.amazonaws.com/images/splash_logo.svg',
       width: 1800,
       height: 1600,
     },

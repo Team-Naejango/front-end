@@ -1,72 +1,44 @@
-'use client'
-
-import React, { useEffect, useRef, Suspense, lazy } from 'react'
+import React from 'react'
+import { Map, MapMarker } from 'react-kakao-maps-sdk'
 
 import useGeolocation from '@/app/hooks/useGeolocation'
-import Loading from '@/app/loading'
+import PlaceMarker from '@/app/(main)/trades/PlaceMarker'
+import { positions } from '@/app/(main)/trades/dummyData'
 
-import { Map } from 'react-kakao-maps-sdk'
-// const Map = lazy(() => import('react-kakao-maps-sdk').then(module => ({ default: module.Map })))
+interface EventProps {
+  onClick: () => void
+  hasModal: boolean
+}
 
-const KakaoMap = () => {
+const KakaoMap = ({ onClick, hasModal }: EventProps) => {
   const myLocation = useGeolocation()
-  const mapRef = useRef<HTMLElement | null>(null)
-
   console.log('myLocation:', myLocation)
-  console.log('mapRef:', mapRef)
-
-  // const initMap = () => {
-  //   mapRef.current = document.getElementById('map')
-  //   const mapOption = {
-  //     center: new window.kakao.maps.LatLng(myLocation.coordinates.latitude, myLocation.coordinates.longitude),
-  //     level: 4,
-  //   }
-  //   return new window.kakao.maps.Map(mapRef.current as HTMLElement, mapOption)
-  // }
-  //
-
-  // const initMap = () => {
-  //   const x = document.getElementById('map')
-  //   const map = new window.kakao.maps.Map(x as HTMLElement, {
-  //     center: new window.kakao.maps.LatLng(myLocation.coordinates.latitude, myLocation.coordinates.longitude),
-  //     level: 4,
-  //   })
-  //   return map.relayout()
-  // }
-
-  // useEffect(() => {
-  //   window.kakao.maps.load(() => initMap())
-  // }, [initMap])
 
   return (
-    <Suspense fallback={<Loading />}>
-      <Map
-        center={{ lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }}
-        zoomable
-        style={{
-          width: '375px',
-          height: '620px',
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          marginTop: '30px',
-        }}
-      />
-    </Suspense>
-    // <div
-    //   id='map'
-    //   style={{
-    //     width: '375px',
-    //     height: '620px',
-    //     position: 'absolute',
-    //     left: '50%',
-    //     top: '50%',
-    //     transform: 'translate(-50%, -50%)',
-    //     marginTop: '30px',
-    //   }}>
-    //   {myLocation ? null : <Loading />}
-    // </div>
+    // <Suspense fallback={<Loading />}>
+    <Map
+      center={{ lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }}
+      zoomable
+      level={9}
+      style={{
+        width: '375px',
+        height: '620px',
+        position: 'fixed',
+        marginTop: '30px',
+      }}>
+      {/* todo: EventMaker 컴포넌트 사용해서 map으로 등록된 위치 뿌리기 */}
+      {positions.map((position, index) => {
+        return (
+          <PlaceMarker
+            key={position.id}
+            position={{ lat: position.latlng.lat, lng: position.latlng.lng }}
+            onClick={onClick}
+            hasModal={hasModal}
+          />
+        )
+      })}
+    </Map>
+    // </Suspense>
   )
 }
 
