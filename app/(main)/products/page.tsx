@@ -26,12 +26,12 @@ const Products = () => {
 
   const onClickSearch = () => {
     // todo: searchParams 물고 가기
-    router.push('/product/search')
+    router.push('/products/search')
   }
 
   return (
-    <>
-      <div className={'mb-7 mt-2'}>
+    <div className={'relative h-auto'}>
+      <div role={'presentation'} className={'mb-7 mt-2'} onClick={onClickSearch}>
         <p className={'mb-5 text-center text-sm'}>찾고 있는 물건이 있으신가요?</p>
         <InputField
           type={'text'}
@@ -45,12 +45,12 @@ const Products = () => {
           }
         />
       </div>
-      <div className='flex h-[100%] flex-row flex-wrap items-center justify-center'>
+      <div className='mb-7 flex flex-row flex-wrap items-center justify-center'>
         {dummyData.map((data, idx) => {
           return <ItemCard key={`${data.title}/${data.price}`} title={data.title} id={idx} price={data.price} />
         })}
       </div>
-    </>
+    </div>
   )
 }
 

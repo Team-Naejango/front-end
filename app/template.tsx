@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilState } from 'recoil'
 
-import { kakaoAccessToken, splashState } from '@/app/store/atom'
+import { splashState } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 
@@ -13,7 +13,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
-  const accessToken = useRecoilValue(kakaoAccessToken)
 
   const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
 
@@ -41,7 +40,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       <div
         className={cls(
           'relative mx-auto h-[750px] w-[375px] max-w-xl rounded-[30px] p-4',
-          accessToken ? '' : 'overflow-hidden'
+          isLoading ? 'overflow-auto' : ''
         )}>
         {isLoading && isSplashMounted ? (
           <Splash

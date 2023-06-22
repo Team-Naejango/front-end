@@ -1,13 +1,26 @@
 'use client'
 
-import React, { lazy, useState } from 'react'
+import React, { lazy, Suspense, useState } from 'react'
+import Loading from '@/app/loading'
 
-const KakaoMap = lazy(() => import('@/app/components/molecule/common/KakaoMap'))
+import KakaoMap from '@/app/components/molecule/common/KakaoMap'
+import { useRecoilState } from 'recoil'
+import { useModalStore } from '@/app/store/useModalStore'
+
+// const KakaoMap = lazy(() => import('@/app/components/molecule/common/KakaoMap'))
 
 const Trades = () => {
+  const [modal, setModal] = useRecoilState(useModalStore)
+
+  const onClickModal = () => {
+    setModal(true)
+  }
+
   return (
     <div className='relative flex h-[100%] items-center justify-center'>
-      <KakaoMap />
+      {/* <Suspense fallback={<Loading />}> */}
+      <KakaoMap hasModal={modal} onClick={onClickModal} />
+      {/* </Suspense> */}
     </div>
   )
 }

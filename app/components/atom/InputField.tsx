@@ -16,6 +16,7 @@ interface InputProps {
   maxLength?: number
   disabled?: boolean
   className?: any
+  onClick?: () => void
 }
 
 export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -36,6 +37,7 @@ export default function InputField({
   maxLength,
   disabled,
   className,
+  onClick,
 }: InputProps) {
   return (
     <>
@@ -61,6 +63,7 @@ export default function InputField({
             onKeyDown={type === 'number' ? handleKeyDown : onKeyDown}
             maxLength={maxLength}
             disabled={disabled}
+            onClick={onClick}
             className={cls(
               `w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-[13px] placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#33CC99] focus:outline-none focus:ring-emerald-50 ${className}`,
               icon ? 'indent-5' : ''

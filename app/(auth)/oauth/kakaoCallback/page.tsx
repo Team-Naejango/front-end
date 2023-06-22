@@ -15,7 +15,7 @@ import { KakaoLoginToken } from '@/app/apis/types/domain/auth/auth'
 
 const KAKAO_USER_INFO_URL = 'https://kapi.kakao.com/v2/user/me'
 
-export interface kakaoParams {
+export interface KakaoParams {
   grant_type: string
   client_id: string | undefined
   redirect_uri: string
