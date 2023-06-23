@@ -31,7 +31,7 @@ const Products = () => {
 
   return (
     <div className={'relative h-auto'}>
-      <div role={'presentation'} className={'mb-7 mt-2'} onClick={onClickSearch}>
+      <div role={'presentation'} className={'mt-2'} onClick={onClickSearch}>
         <p className={'mb-5 text-center text-sm'}>찾고 있는 물건이 있으신가요?</p>
         <InputField
           type={'text'}
@@ -45,7 +45,7 @@ const Products = () => {
           }
         />
       </div>
-      <div className='mb-7 flex flex-row flex-wrap items-center justify-center'>
+      <div className='mb-6 mt-6 flex flex-row flex-wrap items-center justify-center'>
         {dummyData.map((data, idx) => {
           return <ItemCard key={`${data.title}/${data.price}`} title={data.title} id={idx} price={data.price} />
         })}

@@ -6,7 +6,8 @@ export const STORE_KEY = {
   유저정보: 'storeUserInfo',
   스플래쉬: 'storeSplash',
   위치정보: 'storeLocation',
-  모달진입: 'storeModal',
+  모달: 'storeModal',
+  다이얼로그: 'storeDialog',
 }
 
 /**

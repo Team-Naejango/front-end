@@ -1,15 +1,23 @@
 import React from 'react'
 import { CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
 
-import SelectModal from '@/app/(main)/trades/SelectModal'
+import SelectModal from '@/app/(home)/(main)/trades/SelectModal'
+import { useModal } from '@/app/hooks/useModal'
+import CustomDialog from '@/app/components/molecule/modal/CustomDialog'
 
 interface EventProps {
   position: { lat: number; lng: number }
   onClick: () => void
-  hasModal: boolean
+  hasModal?: {
+    isOpen: false
+    title: ''
+    content: ''
+  }
 }
 
 const PlaceMarker = ({ position, onClick, hasModal }: EventProps) => {
+  const { modalState, closeModal } = useModal()
+
   return (
     <>
       <MapMarker
@@ -24,7 +32,7 @@ const PlaceMarker = ({ position, onClick, hasModal }: EventProps) => {
           },
         }}
       />
-      {hasModal && (
+      {modalState.isOpen && (
         <CustomOverlayMap position={position}>
           <SelectModal />
         </CustomOverlayMap>

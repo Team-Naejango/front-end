@@ -7,6 +7,10 @@ import { cls } from '@/app/libs/client/utils/util'
 import Header from '@/app/components/template/main/header/Header'
 import Lnb from '@/app/components/template/main/lnb/Lnb'
 import BackHeader from '@/app/components/template/main/header/BackHeader'
+import { useModal } from '@/app/hooks/useModal'
+import { useRecoilState } from 'recoil'
+import { useModalStore } from '@/app/store/atom'
+import Button from '@/app/components/atom/Button'
 
 interface LayoutProps {
   hasTabBar?: boolean
@@ -18,6 +22,7 @@ export default function Template({ hasTabBar = true, children }: LayoutProps) {
 
   console.log('pathname:', pathname)
 
+  // todo: 리팩토링 필요해보임
   const HeaderTitle = (pathname: string) => {
     switch (pathname) {
       case '/notice':

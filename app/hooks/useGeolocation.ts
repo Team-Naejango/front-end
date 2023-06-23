@@ -2,14 +2,14 @@
 
 import { useState, useEffect } from 'react'
 
-interface LocationTypes {
+interface LocationProps {
   isLoaded: boolean
   coordinates: { latitude: number; longitude: number }
   error?: { code: number; message: string }
 }
 
 const useGeolocation = () => {
-  const [myLocation, setMyLocation] = useState<LocationTypes>({
+  const [myLocation, setMyLocation] = useState<LocationProps>({
     isLoaded: false,
     coordinates: { latitude: 0, longitude: 0 },
   })
@@ -36,18 +36,14 @@ const useGeolocation = () => {
   }
 
   useEffect(() => {
-    if (!('geolocation' in navigator)) {
+    if (!navigator.geolocation) {
       coordOnError({
         code: 404,
         message: '알 수 없는 에러로 인해 위치 데이터를 사용할 수 없습니다.',
       })
     }
-
+    navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
     console.log('navigator.geolocation:', navigator.geolocation)
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
-    }
   }, [])
 
   return myLocation

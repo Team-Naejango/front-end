@@ -7,7 +7,7 @@ import myAnimation from '@/app/assets/animation/131005-tri-cube-loader-3.json'
 
 const Loading = () => {
   return (
-    <div className='absolute left-0 top-0 z-[2000] mx-auto h-full max-h-full w-full max-w-full rounded-[22px] bg-[#fff]'>
+    <div className='absolute left-0 top-0 z-[99999] mx-auto h-full max-h-full w-full max-w-full rounded-[22px] bg-[#fff]'>
       <Lottie
         className='absolute left-1/2 top-1/2 z-50 h-[128px] w-[128px] translate-x-[-50%] translate-y-[-50%]'
         animationData={myAnimation}
