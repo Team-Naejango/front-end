@@ -4,15 +4,19 @@ import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 
-import { splashState } from '@/app/store/atom'
+import { splashState, useModalStore } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
+import CustomDialog from '@/app/components/molecule/modal/CustomDialog'
+import { OpenModalProps, useModal } from '@/app/hooks/useModal'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
+  const { openModal, closeModal } = useModal()
+  const [modalState, setModalState] = useRecoilState(useModalStore)
 
   const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
 
@@ -53,6 +57,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           children
         )}
       </div>
+      {modalState.isOpen ? <CustomDialog show={modalState.isOpen} onHide={closeModal} /> : null}
     </main>
   )
 }

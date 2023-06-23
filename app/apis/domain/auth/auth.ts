@@ -1,9 +1,8 @@
 import { instance } from '@/app/apis/config/axios/instance'
-
 import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
 
-export interface SignParam {
+export interface SignParams {
   nickname: String
   birth: number
   gender: String
@@ -38,7 +37,7 @@ export async function kakaoUserInfo(url: string, accessToken: string): Promise<R
  * @param params.nickname 닉네임
  * @param params.birth 생년월일
  */
-export async function sign(params: SignParam): Promise<Response<boolean>> {
+export async function sign(params: SignParams): Promise<Response<boolean>> {
   return instance.post('/api/user/join', params)
 }
 

@@ -1,18 +1,29 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 
 import useGeolocation from '@/app/hooks/useGeolocation'
-import PlaceMarker from '@/app/(main)/trades/PlaceMarker'
-import { positions } from '@/app/(main)/trades/dummyData'
+import PlaceMarker from '@/app/(home)/(main)/trades/PlaceMarker'
+import { positions } from '@/app/(home)/(main)/trades/dummyData'
+import Loading from '@/app/loading'
+import { OpenModalProps, useModal } from '@/app/hooks/useModal'
 
 interface EventProps {
   onClick: () => void
-  hasModal: boolean
 }
 
-const KakaoMap = ({ onClick, hasModal }: EventProps) => {
+const KakaoMap = () => {
   const myLocation = useGeolocation()
+  // todo: 고유 id값 부여하기
+  const { modalState, openModal } = useModal()
   console.log('myLocation:', myLocation)
+
+  const onClickModal = (props: OpenModalProps) => {
+    openModal({
+      title: props.title,
+      content: props.content,
+      callback: () => {},
+    })
+  }
 
   return (
     // <Suspense fallback={<Loading />}>
@@ -26,17 +37,20 @@ const KakaoMap = ({ onClick, hasModal }: EventProps) => {
         position: 'fixed',
         marginTop: '30px',
       }}>
-      {/* todo: EventMaker 컴포넌트 사용해서 map으로 등록된 위치 뿌리기 */}
-      {positions.map((position, index) => {
-        return (
-          <PlaceMarker
-            key={position.id}
-            position={{ lat: position.latlng.lat, lng: position.latlng.lng }}
-            onClick={onClick}
-            hasModal={hasModal}
-          />
-        )
-      })}
+      {/* todo: 로딩과 렌더링 속도 최적화하기 */}
+      {!myLocation.isLoaded ? (
+        <Loading />
+      ) : (
+        positions.map(position => {
+          return (
+            <PlaceMarker
+              key={position.id}
+              position={{ lat: position.latlng.latitude, lng: position.latlng.longitude }}
+              onClick={() => onClickModal({ title: position.title, content: position.location })}
+            />
+          )
+        })
+      )}
     </Map>
     // </Suspense>
   )
