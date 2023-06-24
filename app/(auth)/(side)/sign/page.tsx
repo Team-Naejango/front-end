@@ -88,6 +88,10 @@ const Sign = () => {
   }
 
   useEffect(() => {
+    setGender(gender)
+  }, [gender])
+
+  useEffect(() => {
     // if (selectedNickname !== nickname) {
     //   setIsNicknameDisabled(true)
     // }
