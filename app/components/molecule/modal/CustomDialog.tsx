@@ -57,7 +57,7 @@ const CustomDialog = ({ show, onHide }: DialogProps) => {
                   aria-hidden='true'
                 />
                 <Dialog.Title as='h3' className='mt-4 text-lg font-medium leading-6 text-gray-900'>
-                  성공 또는 대충 상품 제목{/* {title} */}
+                  성공/실패 또는 상품 제목{/* {title} */}
                 </Dialog.Title>
                 <div className='mt-2'>
                   <p className='text-sm text-gray-500'>
