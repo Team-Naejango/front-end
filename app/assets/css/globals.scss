@@ -1,7 +1,38 @@
+/**************************************** common ****************************************/
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
+
+/**************************************** reset ****************************************/
+
+// scrollbar
+body{
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+// input
+input::-webkit-inner-spin-button {
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+/**************************************** util ****************************************/
+
+.w-inherit {
+  width: inherit;
+}
+
+.h-inherit {
+  height: inherit;
+}
+
+/**************************************** custom ****************************************/
 
 body {
   height: 100vh;
@@ -12,32 +43,10 @@ body {
   color: #222;
 }
 
-/* 스크롤바 제거 */
-body{
-  -ms-overflow-style: none;
-}
-::-webkit-scrollbar {
-  display: none;
-}
-
-input::-webkit-inner-spin-button {
-  appearance: none;
-  -moz-appearance: none;
-  -webkit-appearance: none;
-}
-
+// swiper
 .swiper-button-next:after,
 .swiper-button-prev:after {
   display: none;
-}
-
-.swiper-button-prev {
-  //변경할 화살표 이미지
-  //background: url() no-repeat;
-}
-.swiper-button-next {
-  //변경할 화살표 이미지
-  //background: url() no-repeat;
 }
 
 .swiper-button-prev,

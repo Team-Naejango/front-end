@@ -2,8 +2,8 @@ import React, { Suspense } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 
 import useGeolocation from '@/app/hooks/useGeolocation'
-import PlaceMarker from '@/app/(home)/(main)/trades/PlaceMarker'
-import { positions } from '@/app/(home)/(main)/trades/dummyData'
+import PlaceMarker from '@/app/(home)/(main)/places/PlaceMarker'
+import { positions } from '@/app/(home)/(main)/places/dummyData'
 import Loading from '@/app/loading'
 import { OpenModalProps, useModal } from '@/app/hooks/useModal'
 
@@ -33,9 +33,10 @@ const KakaoMap = () => {
       level={9}
       style={{
         width: '375px',
-        height: '620px',
+        height: '500px',
         position: 'fixed',
-        marginTop: '30px',
+        marginTop: '4rem',
+        borderRadius: '8px',
       }}>
       {/* todo: 로딩과 렌더링 속도 최적화하기 */}
       {!myLocation.isLoaded ? (

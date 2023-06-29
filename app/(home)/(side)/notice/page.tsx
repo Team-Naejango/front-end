@@ -1,10 +1,11 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import gsap from 'gsap'
 import { useRecoilValue } from 'recoil'
+import gsap from 'gsap'
 
 import { splashState } from '@/app/store/atom'
+import Layout from '@/app/components/organism/layout/Layout'
 
 const Notice = () => {
   const isSplashMounted = useRecoilValue(splashState)
@@ -25,11 +26,13 @@ const Notice = () => {
   }, [])
 
   return (
-    <div className='notice-wrapper h-full w-full'>
-      <div className='flex h-full items-center justify-center'>
-        <p>알림 페이지</p>
+    <Layout canGoBack title='알림'>
+      <div className='notice-wrapper h-full w-full'>
+        <div className='flex h-full items-center justify-center'>
+          <p>알림 페이지</p>
+        </div>
       </div>
-    </div>
+    </Layout>
   )
 }
 
