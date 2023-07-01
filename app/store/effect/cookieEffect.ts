@@ -10,27 +10,27 @@ export const cookieEffect: <T>(key: string) => AtomEffect<T> =
   key =>
   ({ onSet }): any => {
     onSet(async () => {
-      // try {
-      //   const refreshToken = getCookie(AUTH_TOKEN.갱신)
-      //
-      //   if (!refreshToken) {
-      //     const { ResetToken } = useClearSession()
-      //     ResetToken()
-      //     return
-      //   }
-      //
-      //   if (refreshToken) {
-      //     const authorization = getCookie(AUTH_TOKEN.인가)
-      //     const { updateToken } = useUpdateToken()
-      //
-      //     await kakaoLogin(authorization).then(response => {
-      //       if (response.success) {
-      //         updateToken(response.token.accessToken, response.token.refreshToken)
-      //       }
-      //     })
-      //   }
-      // } catch (error: unknown) {
-      //   return Promise.reject(error)
-      // }
+      try {
+        const refreshToken = getCookie(AUTH_TOKEN.갱신)
+
+        if (!refreshToken) {
+          const { ResetToken } = useClearSession()
+          ResetToken()
+          return
+        }
+
+        if (refreshToken) {
+          const authorization = getCookie(AUTH_TOKEN.인가)
+          const { updateToken } = useUpdateToken()
+
+          await kakaoLogin(authorization).then(response => {
+            if (response.success) {
+              updateToken(response.data.accessToken, response.data.refreshToken)
+            }
+          })
+        }
+      } catch (error: unknown) {
+        return Promise.reject(error)
+      }
     })
   }

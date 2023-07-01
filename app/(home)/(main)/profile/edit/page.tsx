@@ -157,7 +157,7 @@ const EditProfile = () => {
             />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
-          <div className='!mt-1 flex flex-row items-center space-y-3'>
+          <div className='!mt-3 flex flex-row items-center'>
             <InputField
               register={register('birth', {
                 required: '생년월일을 입력해주세요.',
