@@ -25,7 +25,7 @@ const Layout = ({ title, canGoBack, hasHeader, children, seoTitle }: LayoutProps
       ) : (
         <Header hasHeader={hasHeader} seoTitle={seoTitle} />
       )}
-      <section className={cls('h-[calc(100%-112px)] overflow-auto')}>{children}</section>
+      <section className={cls('h-[calc(100%-100px)] overflow-auto')}>{children}</section>
       <Lnb />
     </>
   )

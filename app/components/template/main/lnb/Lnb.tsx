@@ -38,8 +38,8 @@ const Lnb = () => {
         <svg
           version='1.0'
           xmlns='http://www.w3.org/2000/svg'
-          width='26px'
-          height='26px'
+          width='24px'
+          height='24px'
           viewBox='0 0 24.000000 24.000000'
           preserveAspectRatio='xMidYMid meet'>
           <g transform='translate(0.000000,24.000000) scale(0.100000,-0.100000)' fill='#222222'>
@@ -65,7 +65,7 @@ const Lnb = () => {
           xmlns='http://www.w3.org/2000/svg'
           fill='none'
           viewBox='0 0 22 22'
-          strokeWidth='1.4'
+          strokeWidth='1.5'
           stroke='currentColor'
           className='h-6 w-6'>
           <path

@@ -27,7 +27,7 @@ const Notice = () => {
 
   return (
     <Layout canGoBack title='알림'>
-      <div className='notice-wrapper h-full w-full'>
+      <div className='notice-wrapper h-inherit mt-12'>
         <div className='flex h-full items-center justify-center'>
           <p>알림 페이지</p>
         </div>

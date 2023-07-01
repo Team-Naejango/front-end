@@ -15,7 +15,7 @@ const SearchProduct = () => {
 
   return (
     <Layout canGoBack title={'창고검색'} seoTitle={'창고검색'}>
-      <div className='mt-16'>
+      <div className='mt-12'>
         <div className={'flex items-center justify-center'}>
           <InputField
             type={'text'}

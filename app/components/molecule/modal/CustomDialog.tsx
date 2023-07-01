@@ -38,7 +38,7 @@ const CustomDialog = ({ show, onHide }: DialogProps) => {
           leave='ease-in duration-200'
           leaveFrom='opacity-100'
           leaveTo='opacity-0'>
-          <div className='fixed inset-0 bg-black bg-opacity-25' />
+          <div className='fixed inset-0 left-1/2 top-1/2 h-[770px] w-[395px] -translate-x-1/2 -translate-y-1/2 rounded-[30px] bg-black bg-opacity-25' />
         </Transition.Child>
 
         <div className='fixed inset-0 overflow-y-auto'>

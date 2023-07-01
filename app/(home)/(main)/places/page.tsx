@@ -8,6 +8,7 @@ import Layout from '@/app/components/organism/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
 import KakaoMap from '@/app/components/molecule/common/KakaoMap'
 import ItemCard from '@/app/components/organism/product/ItemCard'
+import Loading from '@/app/loading'
 
 interface ItemProps {
   title: string
@@ -33,7 +34,7 @@ const Products = () => {
 
   return (
     <Layout hasHeader seoTitle={'창고스팟'}>
-      <div className={'h-inherit relative'}>
+      <div className={'relative h-[80%]'}>
         <div role={'presentation'} className={'mt-8'} onClick={onClickSearch}>
           <p className={'mb-4 text-center text-sm'}>찾고 있는 물건이 있으신가요?</p>
           <InputField
@@ -50,6 +51,7 @@ const Products = () => {
         </div>
         <div className='relative flex h-full items-center justify-center'>
           <KakaoMap />
+          {/* <Loading /> */}
         </div>
       </div>
     </Layout>

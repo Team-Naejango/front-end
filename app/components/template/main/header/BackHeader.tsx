@@ -36,7 +36,7 @@ const BackHeader = ({ title, canGoBack, seoTitle, searchParams }: LayoutProps) =
       <Head>
         <title>{seoTitle} | 내 잔고를 부탁해</title>
       </Head>
-      <div className='absolute left-0 top-0 m-5 mx-auto flex h-12 w-[375px] max-w-xl items-center justify-start rounded-[22px] bg-white px-10 indent-7 text-lg font-medium text-gray-800'>
+      <div className='absolute left-0 top-0 z-[1000] mx-auto flex h-12 w-[375px] max-w-xl items-center justify-start rounded-[22px] bg-white px-10 indent-7 text-lg font-medium text-gray-800'>
         {canGoBack ? (
           <button onClick={onClickPrevUrl} className='absolute left-4'>
             <svg
