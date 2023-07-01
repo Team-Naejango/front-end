@@ -1,7 +1,7 @@
 import React from 'react'
 import { CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
 
-import SelectModal from '@/app/(home)/(main)/trades/SelectModal'
+import SelectModal from '@/app/(home)/(main)/places/SelectModal'
 import { useModal } from '@/app/hooks/useModal'
 import CustomDialog from '@/app/components/molecule/modal/CustomDialog'
 

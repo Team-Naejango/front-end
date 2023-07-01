@@ -15,7 +15,7 @@ const Lnb = () => {
         href={'/home'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/home' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
+          pathname.match('/home') ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'>
           <path
@@ -30,37 +30,16 @@ const Lnb = () => {
         <span>홈</span>
       </Link>
       <Link
-        href={'/products'}
+        href={'/places'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/products' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
-        )}>
-        <svg
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          viewBox='0 0 22 22'
-          strokeWidth='1.4'
-          stroke='currentColor'
-          className='h-6 w-6'>
-          <path
-            strokeLinecap='round'
-            strokeLinejoin='round'
-            d='M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9'
-          />
-        </svg>
-        <span>공동구매</span>
-      </Link>
-      <Link
-        href={'/trades'}
-        className={cls(
-          'flex flex-col items-center space-y-1.5',
-          pathname === '/trades' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
+          pathname.match('/places') ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           version='1.0'
           xmlns='http://www.w3.org/2000/svg'
-          width='26px'
-          height='26px'
+          width='24px'
+          height='24px'
           viewBox='0 0 24.000000 24.000000'
           preserveAspectRatio='xMidYMid meet'>
           <g transform='translate(0.000000,24.000000) scale(0.100000,-0.100000)' fill='#222222'>
@@ -74,13 +53,34 @@ const Lnb = () => {
             />
           </g>
         </svg>
-        <span>물물교환</span>
+        <span>창고스팟</span>
+      </Link>
+      <Link
+        href={'/warehouse'}
+        className={cls(
+          'flex flex-col items-center space-y-1.5',
+          pathname.match('/warehouse') ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
+        )}>
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          viewBox='0 0 22 22'
+          strokeWidth='1.5'
+          stroke='currentColor'
+          className='h-6 w-6'>
+          <path
+            strokeLinecap='round'
+            strokeLinejoin='round'
+            d='M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9'
+          />
+        </svg>
+        <span>창고공간</span>
       </Link>
       <Link
         href={'/chats'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/chats' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
+          pathname.match('/chats') ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg
           xmlns='http://www.w3.org/2000/svg'
@@ -101,7 +101,7 @@ const Lnb = () => {
         href={'/profile'}
         className={cls(
           'flex flex-col items-center space-y-1.5',
-          pathname === '/profile' ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
+          pathname.match('/profile') ? 'text-[#33CC99]' : 'transition-colors hover:text-gray-500'
         )}>
         <svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none'>
           <path

@@ -66,7 +66,7 @@ const SplashScreen = ({ isSplashMounted, closeSplash }: SplashProps) => {
     <div
       ref={splashRef}
       className={cls(
-        'absolute left-0 top-0 flex h-full w-full items-center justify-center rounded-[30px] bg-[#33CC99] p-4',
+        'rounded-30px absolute left-0 top-0 flex h-full w-full items-center justify-center bg-gradient-to-b from-[#60C1CA] to-[#3EE4BD] p-4',
         isSplashMounted ? 'visible' : 'invisible'
       )}>
       <Image

@@ -37,27 +37,26 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <main
-      className={cls(
-        'after:w-50 after:h-50 relative z-10 mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white after:absolute after:left-2/4 after:top-1/2 after:z-[-1] after:box-content after:block after:h-[750px] after:w-[375px] after:translate-x-[-50%] after:translate-y-[-50%] after:rounded-[30px] after:border-[10px] after:border-white after:bg-transparent after:content-[""]'
-      )}>
-      <div
-        className={cls(
-          'relative mx-auto h-[750px] w-[375px] max-w-xl rounded-[30px] p-4',
-          isLoading ? 'overflow-auto' : ''
-        )}>
-        {isLoading && isSplashMounted ? (
-          <Splash
-            closeSplash={() => {
-              setIsLoading(false)
-            }}
-            isSplashMounted={isSplashMounted}
-          />
-        ) : (
-          children
-        )}
+    <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
+      <div className='h-inherit w-inherit absolute left-2/4 top-1/2 box-content translate-x-[-50%] translate-y-[-50%] rounded-[30px] border-[10px] border-white bg-transparent'>
+        <div
+          className={cls(
+            'h-inherit w-inherit relative mx-auto max-w-xl rounded-[30px] p-4',
+            isLoading ? 'overflow-auto' : ''
+          )}>
+          {isLoading && isSplashMounted ? (
+            <Splash
+              closeSplash={() => {
+                setIsLoading(false)
+              }}
+              isSplashMounted={isSplashMounted}
+            />
+          ) : (
+            children
+          )}
+        </div>
+        {modalState.isOpen ? <CustomDialog show={modalState.isOpen} onHide={closeModal} /> : null}
       </div>
-      {modalState.isOpen ? <CustomDialog show={modalState.isOpen} onHide={closeModal} /> : null}
     </main>
   )
 }

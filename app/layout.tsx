@@ -17,7 +17,7 @@ lazy(() => import('swiper/css/scrollbar'))
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
-  preload: true,
+  // preload: true,
 })
 
 export const metadata = {
