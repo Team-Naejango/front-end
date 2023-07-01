@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { UseFormRegisterReturn } from 'react-hook-form'
 
 interface TextAreaProps {
@@ -9,18 +8,18 @@ interface TextAreaProps {
   [key: string]: any
 }
 
-const Textarea = ({ label, name, register, ...rest }: TextAreaProps) => {
+const TextArea = ({ label, name, register, ...rest }: TextAreaProps) => {
   return (
     <div>
       {label ? (
-        <label htmlFor={name} className='mb-1 block text-sm font-medium text-gray-700'>
+        <label htmlFor={name} className='mb-2 block text-xs font-medium text-gray-700'>
           {label}
         </label>
       ) : null}
       <textarea
         id={name}
         {...register}
-        className='mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 '
+        className='w-full rounded-md border-gray-300 placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#32D7A0] focus:outline-none focus:ring-0'
         rows={4}
         {...rest}
       />
@@ -28,4 +27,4 @@ const Textarea = ({ label, name, register, ...rest }: TextAreaProps) => {
   )
 }
 
-export default Textarea
+export default TextArea

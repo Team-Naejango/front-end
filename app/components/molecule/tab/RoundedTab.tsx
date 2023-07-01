@@ -3,53 +3,17 @@
 import React, { useState } from 'react'
 import { Tab } from '@headlessui/react'
 import Link from 'next/link'
-
-import { cls } from '@/app/libs/client/utils/util'
 import Image from 'next/image'
 
-const RoundedTab = () => {
-  const [categories] = useState({
-    BUY: [
-      {
-        id: 1,
-        category: '식품',
-        title: '모던리빙 호텔 수건 180g 코마사 40수 세트',
-      },
-      {
-        id: 2,
-        category: '식품',
-        title: '비비안 고양이 패턴 남성 파자마 잠옷 세트',
-      },
-      {
-        id: 3,
-        category: '식품',
-        title: '삼다수 무라벨 2L 6개',
-      },
-      {
-        id: 4,
-        category: '식품',
-        title: '모던리빙 호텔 수건 180g 코마사 40수 세트',
-      },
-      {
-        id: 5,
-        category: '식품',
-        title: '삼다수 무라벨 2L 6개',
-      },
-    ],
-    SELL: [
-      {
-        id: 1,
-        category: '식품',
-        title: '비비안 고양이 패턴 남성 파자마 잠옷 세트',
-      },
-      {
-        id: 2,
-        category: '식품',
-        title: '모던리빙 호텔 수건 180g 코마사 40수 세트',
-      },
-    ],
-  })
+import { cls } from '@/app/libs/client/utils/util'
 
+interface CategoriesProps {
+  id: number
+  category: string
+  title: string
+}
+
+const RoundedTab = ({ categories, onDelete }: { categories: any[]; onDelete: () => void }) => {
   return (
     <div className='w-full max-w-md pt-4'>
       <Tab.Group>
@@ -72,7 +36,7 @@ const RoundedTab = () => {
           {Object.values(categories).map((posts, idx) => (
             <Tab.Panel key={posts[0].title} className={cls('rounded-xl bg-white py-5')}>
               <ul className={'flex flex-col gap-5 p-0.5'}>
-                {posts.map(post => (
+                {posts.map((post: CategoriesProps) => (
                   <li
                     key={post.id}
                     className='relative flex items-center justify-around rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
@@ -81,7 +45,7 @@ const RoundedTab = () => {
                       <p className={'text-sm font-semibold'}>{post.title}</p>
                     </div>
                     <div className={'h-16 w-16 rounded-md bg-gray-500'} />
-                    <span className={'absolute right-2 top-2'}>
+                    <span role='presentation' onClick={onDelete} className={'absolute right-2 top-2'}>
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
                         fill='none'
@@ -92,19 +56,6 @@ const RoundedTab = () => {
                         <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
                       </svg>
                     </span>
-                    {/* <ul className='mt-1 flex space-x-1 text-xs font-normal leading-4 text-gray-500'> */}
-                    {/* <li>식품</li> */}
-                    {/* <li>품목 이름</li> */}
-                    {/* <li> */}
-                    {/*  <div className={'h-16 w-16 bg-gray-500'} /> */}
-                    {/* </li> */}
-                    {/* <li>{post.date}</li> */}
-                    {/* <li>&middot;</li> */}
-                    {/* <li>{post.commentCount} comments</li> */}
-                    {/* <li>&middot;</li> */}
-                    {/* <li>{post.shareCount} shares</li> */}
-                    {/* </ul> */}
-
                     <Link
                       href={'/warehouse/item/1'}
                       className={cls(

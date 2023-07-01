@@ -40,10 +40,12 @@ export default function InputField({
   onClick,
 }: InputProps) {
   return (
-    <>
-      <label className='mb-1 block text-xs font-medium leading-none text-gray-700' htmlFor={id}>
-        {label}
-      </label>
+    <div>
+      {label ? (
+        <label className='mb-2 block text-xs font-medium leading-none text-gray-700' htmlFor={id}>
+          {label}
+        </label>
+      ) : null}
       {kind === 'text' ? (
         <div className='relative flex flex-[3_3_0%] items-center rounded-md'>
           <input
@@ -72,6 +74,6 @@ export default function InputField({
           {icon}
         </div>
       ) : null}
-    </>
+    </div>
   )
 }
