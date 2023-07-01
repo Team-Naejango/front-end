@@ -17,6 +17,8 @@ interface InputProps {
   disabled?: boolean
   className?: any
   onClick?: () => void
+  value?: any
+  essential?: boolean
 }
 
 export const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -38,11 +40,14 @@ export default function InputField({
   disabled,
   className,
   onClick,
+  value,
+  essential,
 }: InputProps) {
   return (
     <div>
       {label ? (
         <label className='mb-2 block text-xs font-medium leading-none text-gray-700' htmlFor={id}>
+          {essential && <span className={'text-red-500'}>*</span>}
           {label}
         </label>
       ) : null}
@@ -57,6 +62,7 @@ export default function InputField({
           />
           <input
             id={id}
+            value={value}
             required={required}
             {...register}
             type={type}

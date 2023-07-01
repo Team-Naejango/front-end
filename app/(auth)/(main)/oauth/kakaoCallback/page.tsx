@@ -6,12 +6,13 @@ import { useRecoilState } from 'recoil'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import Loading from '@/app/loading'
-import { kakaoLogin, kakaoUserInfo } from '@/app/apis/domain/auth/auth'
+import { kakao2, kakaoLogin, kakaoUserInfo } from '@/app/apis/domain/auth/auth'
 import { kakaoAccessToken, userInfoState } from '@/app/store/atom'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { KakaoLoginToken } from '@/app/apis/types/domain/auth/auth'
+import axios from 'axios'
 
 const KAKAO_USER_INFO_URL = 'https://kapi.kakao.com/v2/user/me'
 
@@ -39,9 +40,33 @@ const KakaoCallback = () => {
   //   }
   // )
 
+  const { data, isLoading, isError } = useQuery(['kakaoToken', serchParams], () => kakao2(serchParams[1]))
+
+  console.log('data:', data)
+
+  // const x = () => {
+  //   axios
+  //     .get(`http://43.202.25.203:8080//login/oauth2/code/kakao?code=${serchParams[1]}`, {
+  //       headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'x-access-token': },
+  //     })
+  //     .then(response => {
+  //       // 받아온 JSON 데이터를 처리하는 코드를 작성합니다.
+  //       console.log('response.data:', response.data)
+  //     })
+  //     .catch(error => {
+  //       // 에러 처리 코드를 작성합니다.
+  //       console.error(error)
+  //     })
+  // }
+
   // 토큰 발급
   const getToken = async () => {
     setDeadlineCookie(AUTH_TOKEN.인가, serchParams[1])
+
+    // await kakao2(serchParams[1]).then(data => {
+    //   console.log('datadata:', data)
+    // })
+
     /**
      * @todo: authAxios와 notAuthAXios 구분하기
      * @extends notAuthAXios는 api 요청 시 인가코드를 사용하기 때문

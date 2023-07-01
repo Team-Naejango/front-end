@@ -19,6 +19,12 @@ export async function kakaoLogin(code: string): Promise<Response<{ data: KakaoLo
   })
 }
 
+export async function kakao2(code: string): Promise<Response<{ data: KakaoLoginToken }>> {
+  return instance.get(`/login/oauth2/code/kakao?code=${code}`, {
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
+  })
+}
+
 /**
  * 카카오 유저정보
  *

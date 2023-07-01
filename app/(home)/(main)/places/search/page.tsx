@@ -16,19 +16,17 @@ const SearchProduct = () => {
   return (
     <Layout canGoBack title={'창고검색'} seoTitle={'창고검색'}>
       <div className='mt-12'>
-        <div className={'flex items-center justify-center'}>
-          <InputField
-            type={'text'}
-            placeholder={'검색'}
-            className={'!left-12 !m-auto !rounded-[10px] !px-0 placeholder:text-sm placeholder:text-gray-300'}
-            icon={
-              <CiSearch
-                onClick={onClickSearch}
-                className='absolute right-2 mx-2 cursor-pointer text-2xl text-[#A9A9A9]'
-              />
-            }
-          />
-        </div>
+        <InputField
+          type={'text'}
+          placeholder={'검색'}
+          className={'!left-12 !m-auto !rounded-[10px] !px-0 placeholder:text-sm placeholder:text-gray-300'}
+          icon={
+            <CiSearch
+              onClick={onClickSearch}
+              className='absolute right-2 mx-2 cursor-pointer text-2xl text-[#A9A9A9]'
+            />
+          }
+        />
         <div className={'mt-6 flex flex-wrap gap-5'}>
           {dummyData.map((keyword, index) => {
             return (
