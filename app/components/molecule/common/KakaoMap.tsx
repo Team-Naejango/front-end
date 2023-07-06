@@ -1,59 +1,62 @@
-import React, { Suspense } from 'react'
-import { Map, MapMarker } from 'react-kakao-maps-sdk'
+'use client'
+
+import React, { useState, useMemo } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import useGeolocation from '@/app/hooks/useGeolocation'
 import PlaceMarker from '@/app/(home)/(main)/places/PlaceMarker'
-import { positions } from '@/app/(home)/(main)/places/dummyData'
-import Loading from '@/app/loading'
-import { OpenModalProps, useModal } from '@/app/hooks/useModal'
+import Categories from '@/app/(home)/(main)/places/Categories'
+import PreviewCard from '@/app/(home)/(main)/places/PreviewCard'
+import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
 
-interface EventProps {
-  onClick: () => void
-}
+export const categoriesData: string[] = ['전체', '식품', '가전/가구', '의류/뷰티', '건강/생활']
 
 const KakaoMap = () => {
-  const myLocation = useGeolocation()
-  // todo: 고유 id값 부여하기
-  const { modalState, openModal } = useModal()
+  const { myLocation, setMyLocation } = useGeolocation()
+  const [markers, setMarkers] = useState<PositionType[] | []>([])
+  const [selectedCategory, setSelectedCategory] = useState<string>(() => categoriesData[0])
+  const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
+
   console.log('myLocation:', myLocation)
 
-  const onClickModal = (props: OpenModalProps) => {
-    openModal({
-      title: props.title,
-      content: props.content,
-      callback: () => {},
-    })
-  }
+  const getPosition = useMemo(() => {
+    return { lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }
+  }, [myLocation.coordinates.latitude, myLocation.coordinates.longitude])
 
   return (
-    // <Suspense fallback={<Loading />}>
-    <Map
-      center={{ lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }}
-      zoomable
-      level={9}
-      style={{
-        width: '375px',
-        height: '500px',
-        position: 'fixed',
-        marginTop: '4rem',
-        borderRadius: '8px',
-      }}>
-      {/* todo: 로딩과 렌더링 속도 최적화하기 */}
-      {!myLocation.isLoaded ? (
-        <Loading />
+    <>
+      {myLocation.isLoaded ? (
+        <Categories
+          categoriesData={categoriesData}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
       ) : (
-        positions.map(position => {
-          return (
-            <PlaceMarker
-              key={position.id}
-              position={{ lat: position.latlng.latitude, lng: position.latlng.longitude }}
-              onClick={() => onClickModal({ title: position.title, content: position.location })}
-            />
-          )
-        })
+        <Skeleton className={'mt-8'} width={330} height={30} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
-    </Map>
-    // </Suspense>
+      <PlaceMarker
+        position={getPosition}
+        myLocation={myLocation}
+        setMyLocation={setMyLocation}
+        markers={markers}
+        setMarkers={setMarkers}
+        selectedCategory={selectedCategory}
+        setIsUpdatePreview={setIsUpdatePreview}
+      />
+
+      {myLocation.isLoaded ? (
+        isUpdatePreview ? (
+          <PreviewCard previews={markers || []} onClick={() => {}} />
+        ) : (
+          <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
+            <p className={'text-[13px]'}>범위에 존재하는 창고가 없습니다.</p>
+          </div>
+        )
+      ) : (
+        <Skeleton width={330} height={200} className={'mt-[1.125rem]'} baseColor={'rgba(240, 240, 240, 0.5)'} />
+      )}
+    </>
   )
 }
 

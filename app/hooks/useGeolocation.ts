@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 
-interface LocationProps {
+export interface LocationProps {
   isLoaded: boolean
   coordinates: { latitude: number; longitude: number }
   error?: { code: number; message: string }
@@ -14,15 +14,19 @@ const useGeolocation = () => {
     coordinates: { latitude: 0, longitude: 0 },
   })
 
-  const coordOnSuccess = (position: { coords: { latitude: number; longitude: number } }) => {
-    setMyLocation({
-      isLoaded: true,
-      coordinates: {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-      },
-    })
-  }
+  const coordOnSuccess = useCallback(
+    (position: { coords: { latitude: number; longitude: number } }) => {
+      setMyLocation(prevLocation => ({
+        ...prevLocation,
+        isLoaded: true,
+        coordinates: {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        },
+      }))
+    },
+    [setMyLocation]
+  )
 
   const coordOnError = (error: { code: number; message: string }) => {
     setMyLocation({
@@ -42,11 +46,11 @@ const useGeolocation = () => {
         message: '알 수 없는 에러로 인해 위치 데이터를 사용할 수 없습니다.',
       })
     }
-    navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
     console.log('navigator.geolocation:', navigator.geolocation)
+    navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
   }, [])
 
-  return myLocation
+  return { myLocation, setMyLocation: coordOnSuccess }
 }
 
 export default useGeolocation

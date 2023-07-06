@@ -28,6 +28,7 @@
     "react/require-default-props": "off",
     "react/jsx-curly-brace-presence": "off",
     "react/button-has-type": "off",
+    "prefer-const": "off",
     "require-await": "off",
     "global-require": 0,
     "no-alert": "off",

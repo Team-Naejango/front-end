@@ -8,6 +8,8 @@ export const STORE_KEY = {
   위치정보: 'storeLocation',
   모달: 'storeModal',
   다이얼로그: 'storeDialog',
+  맵드래그: 'storeKakaoMapDrag',
+  키워드: 'storeKakaoMapKeyword',
 }
 
 /**

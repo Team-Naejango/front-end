@@ -38,7 +38,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
-      <div className='h-inherit w-inherit absolute left-2/4 top-1/2 box-content translate-x-[-50%] translate-y-[-50%] rounded-[30px] border-[10px] border-white bg-transparent'>
+      <div
+        className={cls(
+          'h-inherit w-inherit absolute left-2/4 top-1/2 box-content translate-x-[-50%] translate-y-[-50%] rounded-[30px] border-[10px] bg-transparent',
+          isLoading ? 'border-white' : ''
+        )}>
         <div
           className={cls(
             'h-inherit w-inherit relative mx-auto max-w-xl rounded-[30px] p-4',

@@ -1,6 +1,6 @@
+import { ReactElement } from 'react'
 import { atom } from 'recoil'
 
-import { ReactElement } from 'react'
 import { AUTH_TOKEN, STORE_KEY } from '@/app/libs/client/constants/store'
 import { cookieEffect } from '@/app/store/effect/cookieEffect'
 
