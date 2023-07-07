@@ -19,18 +19,18 @@ interface LayoutProps {
 
 const Header = ({ seoTitle, hasHeader = true }: LayoutProps) => {
   const router = useRouter()
-  const { closeModal } = useModal()
-  const [modalState, setModalState] = useRecoilState(useModalStore)
+  // const { closeModal } = useModal('')
+  // const [modalState, setModalState] = useRecoilState(useModalStore)
 
   const onShowModal = () => {
-    setModalState({
-      isOpen: true,
-      title: '',
-      content: '',
-      callback: () => {
-        closeModal()
-      },
-    })
+    // setModalState({
+    //   isOpen: true,
+    //   title: '',
+    //   content: '',
+    //   callback: () => {
+    //     closeModal()
+    //   },
+    // })
   }
 
   const onClickNotice = () => {

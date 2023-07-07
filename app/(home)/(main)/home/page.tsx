@@ -4,24 +4,16 @@ import React from 'react'
 import { useRecoilState } from 'recoil'
 
 import { useModal } from '@/app/hooks/useModal'
-import { useModalStore } from '@/app/store/atom'
 import Layout from '@/app/components/organism/layout/Layout'
 import Carousel from '@/app/components/molecule/slide/Carousel'
 import Button from '@/app/components/atom/Button'
+import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 
 const Home = () => {
   const { openModal, closeModal } = useModal()
-  const [modalState, setModalState] = useRecoilState(useModalStore)
 
   const onClickModal = () => {
-    setModalState({
-      isOpen: true,
-      title: '',
-      content: '',
-      callback: () => {
-        closeModal()
-      },
-    })
+    openModal({ modal: { id: 'testModal', type: MODAL_TYPES.Modal }, callback: () => {} })
   }
 
   return (

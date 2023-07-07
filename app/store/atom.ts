@@ -80,20 +80,3 @@ export const locationState = atom<LocationProps>({
     longitude: 0,
   },
 })
-
-/**
- * 모달
- *
- * @property isOpen
- * @property callback
- * @property title / 제목
- * @property content / 내용
- * */
-export const useModalStore = atom<ModalProps>({
-  key: `${STORE_KEY.모달}/${new Date().getUTCMilliseconds() * Math.random()}`,
-  default: {
-    isOpen: false,
-    title: '',
-    content: '',
-  },
-})

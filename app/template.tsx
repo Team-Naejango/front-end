@@ -4,20 +4,20 @@ import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 
-import { splashState, useModalStore } from '@/app/store/atom'
+import { splashState } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
-import CustomDialog from '@/app/components/molecule/modal/CustomDialog'
-import { OpenModalProps, useModal } from '@/app/hooks/useModal'
+import { modalSelector } from '@/app/store/modal'
+import CustomModal from '@/app/components/molecule/modal/CustomModal'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
-  const { openModal, closeModal } = useModal()
-  const [modalState, setModalState] = useRecoilState(useModalStore)
+  const [modalState, setModalState] = useRecoilState(modalSelector('testModal'))
 
+  console.log('modalState:', modalState)
   const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
 
   useEffect(() => {
@@ -59,7 +59,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
             children
           )}
         </div>
-        {modalState.isOpen ? <CustomDialog show={modalState.isOpen} onHide={closeModal} /> : null}
+        {modalState.modal.show ? (
+          <CustomModal id={modalState.modal.id}>
+            <div>test</div>
+          </CustomModal>
+        ) : null}
       </div>
     </main>
   )

@@ -12,6 +12,12 @@ export const STORE_KEY = {
   키워드: 'storeKakaoMapKeyword',
 }
 
+export const MODAL_KEY = {
+  아톰: 'modalIdsState',
+  패밀리: 'modalState',
+  셀렉터: 'modalSelector',
+}
+
 /**
  * 인증 토큰
  */

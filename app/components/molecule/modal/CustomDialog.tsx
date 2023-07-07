@@ -1,35 +1,16 @@
 import React, { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-
-import { useModal } from '@/app/hooks/useModal'
-import { AiOutlineCheck, AiOutlineCheckCircle } from 'react-icons/ai'
 import { BsCheck2 } from 'react-icons/bs'
 
 interface DialogProps {
   show: boolean | undefined
-  onHide: () => void
+  onClose: () => void
 }
 
-const CustomDialog = ({ show, onHide }: DialogProps) => {
-  const { openModal, closeModal } = useModal()
-
+const CustomDialog = ({ show, onClose }: DialogProps) => {
   return (
-    // <Dialog open={show} onClose={onHide}>
-    //   <Dialog.Panel>
-    //     <Dialog.Title>Deactivate account</Dialog.Title>
-    //     <Dialog.Description>This will permanently deactivate your account</Dialog.Description>
-    //
-    //     <p>
-    //       Are you sure you want to deactivate your account? All of your data will be permanently removed. This action
-    //       cannot be undone.
-    //     </p>
-    //
-    //     <button onClick={() => closeModal}>Deactivate</button>
-    //     <button onClick={() => closeModal}>Cancel</button>
-    //   </Dialog.Panel>
-    // </Dialog>
     <Transition appear show={show} as={Fragment}>
-      <Dialog as='div' className='relative z-10' onClose={onHide}>
+      <Dialog as='div' className='relative z-10' onClose={onClose}>
         <Transition.Child
           as={Fragment}
           enter='ease-out duration-300'
@@ -68,17 +49,17 @@ const CustomDialog = ({ show, onHide }: DialogProps) => {
                   </p>
                 </div>
 
-                <div className='mt-4 flex justify-center gap-4 text-center'>
+                <div className='mt-4 flex justify-center gap-6 text-center'>
                   <button
                     type='button'
                     className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-500 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                    onClick={closeModal}>
+                    onClick={onClose}>
                     확인
                   </button>
                   <button
                     type='button'
                     className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-500 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
-                    onClick={closeModal}>
+                    onClick={onClose}>
                     취소
                   </button>
                 </div>

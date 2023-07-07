@@ -47,7 +47,7 @@ const KakaoMap = () => {
 
       {myLocation.isLoaded ? (
         isUpdatePreview ? (
-          <PreviewCard previews={markers || []} onClick={() => {}} />
+          <PreviewCard previews={markers || []} />
         ) : (
           <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
             <p className={'text-[13px]'}>범위에 존재하는 창고가 없습니다.</p>
