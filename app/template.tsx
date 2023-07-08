@@ -8,16 +8,17 @@ import { splashState } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 import { modalSelector } from '@/app/store/modal'
-import CustomModal from '@/app/components/molecule/modal/CustomModal'
+import CustomAlert from '@/app/components/molecule/modal/CustomAlert'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
-  const [modalState, setModalState] = useRecoilState(modalSelector('testModal'))
+  const [alertTrueState, setAlertTrueState] = useRecoilState(modalSelector('testTrueAlert'))
+  const [alertFalseState, setAlertFalseState] = useRecoilState(modalSelector('testFalseAlert'))
 
-  console.log('modalState:', modalState)
+  console.log('alertTrueState:', alertTrueState)
   const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
 
   useEffect(() => {
@@ -59,11 +60,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
             children
           )}
         </div>
-        {modalState.modal.show ? (
-          <CustomModal id={modalState.modal.id}>
-            <div>test</div>
-          </CustomModal>
-        ) : null}
+
+        {alertTrueState.modal.show ? <CustomAlert id={alertTrueState.modal.id} success /> : null}
+        {alertFalseState.modal.show ? <CustomAlert id={alertFalseState.modal.id} success={false} /> : null}
       </div>
     </main>
   )

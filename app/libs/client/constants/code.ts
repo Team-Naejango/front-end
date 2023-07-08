@@ -34,9 +34,8 @@ export type E_CRUD = (typeof CRUD)[keyof typeof CRUD]
  * 모달 타입
  */
 export const MODAL_TYPES = {
-  Alert: 'alert',
-  Confirm: 'confirm',
-  Modal: 'modal',
+  ALERT: 'alert',
+  CONFIRM: 'confirm',
 } as const
 
 export type R_MODAL_TYPES = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]

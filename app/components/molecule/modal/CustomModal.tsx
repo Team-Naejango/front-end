@@ -5,14 +5,16 @@ import { Dialog, Transition } from '@headlessui/react'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 
-interface CustomModalProps {
+interface ModalProps {
   id: string
   children: React.ReactNode
 }
 
-const CustomModal = ({ id, children }: CustomModalProps) => {
+const CustomModal = ({ id, children }: ModalProps) => {
   const { closeModal } = useModal()
   const modalState = useRecoilValue(modalSelector(id))
+
+  console.log('modalStmodalStateate:', modalState)
 
   const onCloseModal = (id: string) => {
     const currentModalId = modalState.modal.id === id

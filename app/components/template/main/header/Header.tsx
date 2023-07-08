@@ -8,7 +8,7 @@ import { useRecoilState } from 'recoil'
 import { FiSettings } from 'react-icons/fi'
 
 import { useModal } from '@/app/hooks/useModal'
-import { useModalStore } from '@/app/store/atom'
+// import { useModalStore } from '@/app/store/atom'
 import noticeIcon from '@/app/assets/image/notice.svg'
 import mapIcon from '@/app/assets/image/map.svg'
 

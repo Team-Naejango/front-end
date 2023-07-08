@@ -1,6 +1,6 @@
-import React, { useLayoutEffect, useState } from 'react'
-import uuid from 'react-uuid'
+import React, { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
+import uuid from 'react-uuid'
 
 import { useModal } from '@/app/hooks/useModal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
@@ -24,10 +24,7 @@ const PreviewCard = ({ previews, isHovered }: PreviewCardProps) => {
 
   const onClickShowModal = (value: string) => {
     openModal({
-      modal: { id: 'previewModal', type: MODAL_TYPES.Modal },
-      callback: () => {
-        console.log('test')
-      },
+      modal: { id: 'previewModal', type: MODAL_TYPES.CONFIRM },
     })
     setActiveItem(value)
     // setMarkerItemsValue([{ name: previews.map(data => data.content) }])

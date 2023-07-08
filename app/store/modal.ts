@@ -14,6 +14,15 @@ export type ModalProps = {
   callback?: () => void
 }
 
+const initialModal: ModalProps = {
+  modal: {
+    id: '',
+    type: MODAL_TYPES.CONFIRM,
+    show: false,
+  },
+  callback: () => alert('confirm type 일시 확인시 기본 알림창'),
+}
+
 export const modalIdsState = atom<string[]>({
   key: `${MODAL_KEY.아톰}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: [],
@@ -22,11 +31,12 @@ export const modalIdsState = atom<string[]>({
 export const modalsState = atomFamily<ModalProps, string>({
   key: `${MODAL_KEY.패밀리}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: id => ({
+    ...initialModal,
     modal: {
+      ...initialModal.modal,
       id,
-      type: MODAL_TYPES.Modal,
-      show: false,
     },
+    callback: () => alert('confirm type 일시 확인시 기본 알림창'),
   }),
 })
 

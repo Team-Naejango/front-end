@@ -135,19 +135,11 @@ const PlaceMarker = ({
   }
 
   const onClickDottedMarker = (event: kakao.maps.Marker, marker: any) => {
-    console.log('marker:', marker)
+    // console.log('marker:', marker)
     setInfo(marker)
     kakaoMap && kakaoMap.panTo(event.getPosition())
     setIsHovered(true)
   }
-
-  // const handleMouseEnter = () => {
-  //   setIsHovered(true)
-  // }
-  //
-  // const handleMouseLeave = () => {
-  //   setIsHovered(false)
-  // }
 
   return (
     <>
@@ -208,15 +200,13 @@ const PlaceMarker = ({
                       height: 30,
                     },
                   }}
-                  // onMouseOver={handleMouseEnter}
-                  // onMouseOut={handleMouseLeave}
                   onClick={event => onClickDottedMarker(event, marker)}
                 />
 
                 {info && info.content === marker.content && (
                   <CustomOverlayMap position={{ lat: marker.position.lat, lng: marker.position.lng }} yAnchor={2.1}>
                     <div>
-                      <span className={'rounded border border-[#222] p-1 text-[13px] font-semibold'}>
+                      <span className={'rounded border border-[#222] p-1 text-[13px] font-normal'}>
                         {marker.content}
                       </span>
                     </div>
