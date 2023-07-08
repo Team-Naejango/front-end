@@ -48,7 +48,7 @@ const SelectBox = ({ title, data, selected, setSelected, essential, placeholder 
           </Listbox.Button>
 
           <Transition as={Fragment} leave='transition ease-in duration-100' leaveFrom='opacity-100' leaveTo='opacity-0'>
-            <Listbox.Options className='absolute z-30 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+            <Listbox.Options className='z-30 mt-1 max-h-40 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
               {data.map(value => (
                 <Listbox.Option
                   key={value.name}
