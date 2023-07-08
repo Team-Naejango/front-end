@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo, useLayoutEffect } from 'react'
+import React, { useState, useMemo } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -12,20 +12,17 @@ import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
 import { CATEGORIES } from '@/app/libs/client/constants/warehouse'
 
 const KakaoMap = () => {
+  // todo: markers, info 유사 데이터 바인딩으로 인한 리팩토링 필요
   const { myLocation, setMyLocation } = useGeolocation()
   const [markers, setMarkers] = useState<PositionType[] | []>([])
+  const [info, setInfo] = useState<PositionType | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(() => CATEGORIES[0])
   const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
-  const [isHovered, setIsHovered] = useState<boolean>(false)
-  const [info, setInfo] = useState<PositionType | null>(null)
+  const [isDragedMixture, setIsDragedMixture] = useState<boolean>(false)
 
   const getPosition = useMemo(() => {
     return { lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }
   }, [myLocation.coordinates.latitude, myLocation.coordinates.longitude])
-
-  console.log('info:', info)
-  console.log('markers:', markers)
-  console.log('isUpdatePreview:', isUpdatePreview)
 
   return (
     <>
@@ -46,8 +43,8 @@ const KakaoMap = () => {
         setMarkers={setMarkers}
         selectedCategory={selectedCategory.name}
         setIsUpdatePreview={setIsUpdatePreview}
-        isHovered={isHovered}
-        setIsHovered={setIsHovered}
+        isDragedMixture={isDragedMixture}
+        setIsDragedMixture={setIsDragedMixture}
         info={info}
         setInfo={setInfo}
       />
@@ -55,7 +52,11 @@ const KakaoMap = () => {
       {myLocation.isLoaded ? (
         isUpdatePreview ? (
           // todo: 임시 더미데이터, api 받은 후 리팩토링
-          <PreviewCard previews={isHovered ? positions : markers} isHovered={isHovered} />
+          <PreviewCard
+            previews={isDragedMixture ? positions : markers}
+            activedItem={info?.content ?? ''}
+            isDragedMixture={isDragedMixture}
+          />
         ) : (
           <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
             <p className={'text-[13px]'}>범위에 존재하는 창고가 없습니다.</p>

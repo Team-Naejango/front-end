@@ -82,7 +82,7 @@ export const locationState = atom<LocationProps>({
 })
 
 /**
- * 지도 유저창고 아이템
+ * 지도 유저창고 아이템 리스트
  *
  * @property name / 아이템명
  * */
@@ -93,4 +93,13 @@ export const markerItemsState = atom<{ name: string }[]>({
       name: '',
     },
   ],
+})
+
+/**
+ * 최근 활성화된 창고 타이틀
+ *
+ * */
+export const activatedWareHouseTitleState = atom<string>({
+  key: `${STORE_KEY.창고이름조회}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: '',
 })

@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useLayoutEffect, Dispatch, SetStateAction } from 'react'
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
+import { useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -10,6 +11,7 @@ import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
 import { PositionType } from '@/app/(home)/(main)/places/dummyData'
 import { LocationProps } from '@/app/hooks/useGeolocation'
+import { activatedWareHouseTitleState } from '@/app/store/atom'
 
 /* global kakao, maps, services */
 import PlacesSearchResult = kakao.maps.services.PlacesSearchResult
@@ -25,8 +27,8 @@ interface EventProps {
   myLocation: LocationProps
   setMyLocation: (value: { coords: { latitude: number; longitude: number } }) => void
   setIsUpdatePreview: Dispatch<SetStateAction<boolean>>
-  isHovered: boolean
-  setIsHovered: Dispatch<SetStateAction<boolean>>
+  isDragedMixture: boolean
+  setIsDragedMixture: Dispatch<SetStateAction<boolean>>
   info: PositionType | null
   setInfo: Dispatch<SetStateAction<PositionType | null>>
 }
@@ -43,12 +45,13 @@ const PlaceMarker = ({
   setIsUpdatePreview,
   markers,
   setMarkers,
-  isHovered,
-  setIsHovered,
+  isDragedMixture,
+  setIsDragedMixture,
   info,
   setInfo,
 }: EventProps) => {
   const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map | null>(null)
+  const setWareHouseTitleValue = useSetRecoilState<string>(activatedWareHouseTitleState)
 
   const { watch, handleSubmit, control, reset } = useForm<FormProps>()
 
@@ -127,18 +130,18 @@ const PlaceMarker = ({
 
   const onSubmitSearch = () => {
     keywordSearch(watch('search'))
-    isHovered && setIsHovered(false)
+    isDragedMixture && setIsDragedMixture(false)
   }
 
   const onKeyDownSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') keywordSearch(event.currentTarget.value)
   }
 
-  const onClickDottedMarker = (event: kakao.maps.Marker, marker: any) => {
-    // console.log('marker:', marker)
+  const onClickDottedMarker = (event: kakao.maps.Marker, marker: PositionType) => {
     setInfo(marker)
     kakaoMap && kakaoMap.panTo(event.getPosition())
-    setIsHovered(true)
+    setIsDragedMixture(true)
+    setWareHouseTitleValue(marker.content)
   }
 
   return (
@@ -179,13 +182,14 @@ const PlaceMarker = ({
           }}
           onCreate={setKakaoMap}
           onDragEnd={map => {
+            setInfo({ content: '', position: { lat: 0, lng: 0 }, data: '' })
             setMyLocation({
               coords: {
                 latitude: map.getCenter().getLat(),
                 longitude: map.getCenter().getLng(),
               },
             })
-            isHovered && setIsHovered(false)
+            isDragedMixture && setIsDragedMixture(false)
           }}>
           {markers?.map((marker, idx) => {
             // console.log('marker:', marker)

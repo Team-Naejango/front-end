@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import uuid from 'react-uuid'
 
@@ -9,24 +9,25 @@ import CardSelectModal from '@/app/(home)/(main)/places/CardSelectModal'
 import { modalSelector } from '@/app/store/modal'
 import CustomModal from '@/app/components/molecule/modal/CustomModal'
 import { cls } from '@/app/libs/client/utils/util'
-import { markerItemsState } from '@/app/store/atom'
+import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 
 interface PreviewCardProps {
   previews: PositionType[]
-  isHovered: boolean
+  isDragedMixture: boolean
+  activedItem: string
 }
 
-const PreviewCard = ({ previews, isHovered }: PreviewCardProps) => {
-  const [activeItem, setActiveItem] = useState<string>('')
+const PreviewCard = ({ previews, isDragedMixture, activedItem }: PreviewCardProps) => {
   const modalState = useRecoilValue(modalSelector('previewModal'))
   const { openModal, closeModal } = useModal()
   const [markerItemsValue, setMarkerItemsValue] = useRecoilState<{ name: any }[]>(markerItemsState)
+  const [wareHouseTitleValue, setWareHouseTitleValue] = useRecoilState<string>(activatedWareHouseTitleState)
 
   const onClickShowModal = (value: string) => {
+    setWareHouseTitleValue(value)
     openModal({
       modal: { id: 'previewModal', type: MODAL_TYPES.CONFIRM },
     })
-    setActiveItem(value)
     // setMarkerItemsValue([{ name: previews.map(data => data.content) }])
     setMarkerItemsValue(
       positions.map(data => ({
@@ -46,8 +47,8 @@ const PreviewCard = ({ previews, isHovered }: PreviewCardProps) => {
                   key={`${uuid()}_${preview.content}`}
                   role='presentation'
                   className={'w-full cursor-pointer rounded border p-4 text-xs hover:bg-[#eee]'}
-                  onClick={() => onClickShowModal(preview.content ?? '')}>
-                  {isHovered ? (
+                  onClick={() => onClickShowModal(preview.content ?? wareHouseTitleValue)}>
+                  {isDragedMixture ? (
                     <span
                       className={cls(
                         'mr-1.5 rounded px-1 py-1 text-[10px] text-white',
@@ -70,7 +71,11 @@ const PreviewCard = ({ previews, isHovered }: PreviewCardProps) => {
 
       {modalState.modal.show ? (
         <CustomModal id={modalState.modal.id}>
-          <CardSelectModal item={activeItem} isHovered={isHovered} onClose={() => closeModal(modalState.modal.id)} />
+          <CardSelectModal
+            title={activedItem === '' ? wareHouseTitleValue : activedItem}
+            isDragedMixture={isDragedMixture}
+            onClose={() => closeModal(modalState.modal.id)}
+          />
         </CustomModal>
       ) : null}
     </>

@@ -14,8 +14,6 @@ const CustomModal = ({ id, children }: ModalProps) => {
   const { closeModal } = useModal()
   const modalState = useRecoilValue(modalSelector(id))
 
-  console.log('modalStmodalStateate:', modalState)
-
   const onCloseModal = (id: string) => {
     const currentModalId = modalState.modal.id === id
     if (currentModalId) closeModal(id)

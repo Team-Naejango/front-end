@@ -47,7 +47,7 @@ const CustomAlert = ({ id, success, children }: AlertProps) => {
               leave='ease-in duration-200'
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'>
-              <Dialog.Panel className='w-[330px] max-w-md transform rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+              <Dialog.Panel className='w-[320px] max-w-md transform rounded-xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <div className={'flex flex-col items-center justify-center gap-2'}>
                   <ImCheckmark
                     className={cls(

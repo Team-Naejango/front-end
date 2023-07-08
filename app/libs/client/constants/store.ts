@@ -11,6 +11,7 @@ export const STORE_KEY = {
   맵드래그: 'storeKakaoMapDrag',
   키워드: 'storeKakaoMapKeyword',
   마커아이템: 'storeMarkerItem',
+  창고이름조회: 'storeWarehouseTitle',
 }
 
 export const MODAL_KEY = {
