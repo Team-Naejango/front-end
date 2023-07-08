@@ -127,6 +127,7 @@ const PlaceMarker = ({
 
   const onSubmitSearch = () => {
     keywordSearch(watch('search'))
+    isHovered && setIsHovered(false)
   }
 
   const onKeyDownSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
