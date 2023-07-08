@@ -14,7 +14,7 @@ phases:
       - yarn
   build:
     commands:
-      - yarn run build햣 
+      - yarn run build
       - yarn next export
   post_build:
     commands:
