@@ -1,19 +1,35 @@
-import React, { useState } from 'react'
-import { useRecoilState } from 'recoil'
+import React, { useEffect, useState } from 'react'
+import { useRecoilValue } from 'recoil'
 
 import SelectBox from '@/app/components/atom/SelectBox'
-import { KEEP_TYPES } from '@/app/libs/client/constants/warehouse'
+import { markerItemsState } from '@/app/store/atom'
+import { positions } from '@/app/(home)/(main)/places/dummyData'
 
-const CardSelectModal = ({ item, onClose }: { item: string; onClose: () => void }) => {
-  const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
+const CardSelectModal = ({ item, isHovered, onClose }: { item: string; isHovered: boolean; onClose: () => void }) => {
+  const [selectedType, setSelectedType] = useState<{ name: string }>({ name: '아이템 목록' })
+  const markerItemsValue = useRecoilValue<{ name: string }[]>(markerItemsState)
+
+  console.log('markerItemsValue:', markerItemsValue)
+  console.log('item:', item)
+
+  useEffect(() => {
+    if (isHovered) setSelectedType({ name: item })
+  }, [isHovered, item])
 
   return (
     <>
-      <div className={'mb-4 text-center'}>
-        <span className={'text-sm'}>{item}</span>
+      <div className={'text-center'}>
+        <span className={'font-semibold'}>{item}</span>
       </div>
-      <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
-      <div className='mt-4 flex justify-center gap-6 text-center'>
+      <div className={'mb-4 mt-7 flex items-center gap-6'}>
+        <div className={'h-[100px] w-[100px] rounded bg-[#ccc]'} />
+        <div className={'flex h-[100px] flex-col justify-center'}>
+          <span className={'flex-1 text-[13px]'}>아이템명</span>
+          <p className={'flex-1 text-[13px]'}>설명</p>
+        </div>
+      </div>
+      <SelectBox data={markerItemsValue} selected={selectedType} setSelected={setSelectedType} />
+      <div className='mt-6 flex justify-center gap-6 text-center'>
         <button
           type='button'
           className='inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-500 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
@@ -22,7 +38,7 @@ const CardSelectModal = ({ item, onClose }: { item: string; onClose: () => void 
         </button>
         <button
           type='button'
-          className='inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-500 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2'
+          className='inline-flex justify-center rounded-md border border-transparent bg-[#e9e9e9] px-4 py-2 text-sm font-medium hover:bg-[#e1e1e1] focus:outline-none'
           onClick={onClose}>
           취소
         </button>

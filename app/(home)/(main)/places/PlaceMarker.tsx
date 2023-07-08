@@ -8,7 +8,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
-import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
+import { PositionType } from '@/app/(home)/(main)/places/dummyData'
 import { LocationProps } from '@/app/hooks/useGeolocation'
 
 /* global kakao, maps, services */
@@ -25,6 +25,10 @@ interface EventProps {
   myLocation: LocationProps
   setMyLocation: (value: { coords: { latitude: number; longitude: number } }) => void
   setIsUpdatePreview: Dispatch<SetStateAction<boolean>>
+  isHovered: boolean
+  setIsHovered: Dispatch<SetStateAction<boolean>>
+  info: PositionType | null
+  setInfo: Dispatch<SetStateAction<PositionType | null>>
 }
 
 interface FormProps {
@@ -39,9 +43,12 @@ const PlaceMarker = ({
   setIsUpdatePreview,
   markers,
   setMarkers,
+  isHovered,
+  setIsHovered,
+  info,
+  setInfo,
 }: EventProps) => {
   const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map | null>(null)
-  const [info, setInfo] = useState<PositionType | null>(null)
 
   const { watch, handleSubmit, control, reset } = useForm<FormProps>()
 
@@ -127,9 +134,19 @@ const PlaceMarker = ({
   }
 
   const onClickDottedMarker = (event: kakao.maps.Marker, marker: any) => {
+    console.log('marker:', marker)
     setInfo(marker)
     kakaoMap && kakaoMap.panTo(event.getPosition())
+    setIsHovered(true)
   }
+
+  // const handleMouseEnter = () => {
+  //   setIsHovered(true)
+  // }
+  //
+  // const handleMouseLeave = () => {
+  //   setIsHovered(false)
+  // }
 
   return (
     <>
@@ -175,6 +192,7 @@ const PlaceMarker = ({
                 longitude: map.getCenter().getLng(),
               },
             })
+            isHovered && setIsHovered(false)
           }}>
           {markers?.map((marker, idx) => {
             // console.log('marker:', marker)
@@ -189,13 +207,17 @@ const PlaceMarker = ({
                       height: 30,
                     },
                   }}
+                  // onMouseOver={handleMouseEnter}
+                  // onMouseOut={handleMouseLeave}
                   onClick={event => onClickDottedMarker(event, marker)}
                 />
 
                 {info && info.content === marker.content && (
                   <CustomOverlayMap position={{ lat: marker.position.lat, lng: marker.position.lng }} yAnchor={2.1}>
                     <div>
-                      <span className={'text-sm'}>{marker.content}</span>
+                      <span className={'rounded border border-[#222] p-1 text-[13px] font-semibold'}>
+                        {marker.content}
+                      </span>
                     </div>
                   </CustomOverlayMap>
                 )}

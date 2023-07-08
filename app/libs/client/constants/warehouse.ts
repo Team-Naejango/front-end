@@ -1,10 +1,12 @@
+/**
+ * 카테고리 타입
+ */
 export const CATEGORIES: { name: string }[] = [
+  { name: '전체' },
   { name: '식품' },
-  { name: '가전' },
-  { name: '의류' },
-  { name: '건강' },
-  { name: '뷰티' },
-  { name: '생활' },
+  { name: '가전/가구' },
+  { name: '의류/뷰티' },
+  { name: '건강/생활' },
 ]
 
 export const STORAGES: { id: number; name: string }[] = [

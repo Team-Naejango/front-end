@@ -22,8 +22,8 @@ const CustomDialog = ({ show, onClose }: DialogProps) => {
           <div className='fixed inset-0 left-1/2 top-1/2 h-[770px] w-[395px] -translate-x-1/2 -translate-y-1/2 rounded-[30px] bg-black bg-opacity-25' />
         </Transition.Child>
 
-        <div className='fixed inset-0 overflow-y-auto'>
-          <div className='flex min-h-full items-center justify-center p-4 text-center'>
+        <div className='fixed inset-0 top-1/2 h-[780px] -translate-y-1/2 overflow-y-auto'>
+          <div className='flex min-h-full items-end justify-center overflow-y-clip p-4 text-center'>
             <Transition.Child
               as={Fragment}
               enter='ease-out duration-300'
@@ -32,7 +32,7 @@ const CustomDialog = ({ show, onClose }: DialogProps) => {
               leave='ease-in duration-200'
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'>
-              <Dialog.Panel className='w-80 max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+              <Dialog.Panel className='w-[375px] max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                 <BsCheck2
                   className='mx-auto box-content h-6 w-6 rounded-full bg-[#DCFCE6] p-1.5 text-[#16A349]'
                   aria-hidden='true'

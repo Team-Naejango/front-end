@@ -87,7 +87,7 @@ const MultiSelectBox = ({ title, data, selected, setSelected, essential }: Multi
                     value={person}>
                     {({ selected, active }) => (
                       <>
-                        <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
+                        <span className={`block truncate text-sm ${selected ? 'font-medium' : 'font-normal'}`}>
                           {person.name}
                         </span>
                         {selected ? (

@@ -10,6 +10,7 @@ export const STORE_KEY = {
   다이얼로그: 'storeDialog',
   맵드래그: 'storeKakaoMapDrag',
   키워드: 'storeKakaoMapKeyword',
+  마커아이템: 'storeMarkerItem',
 }
 
 export const MODAL_KEY = {

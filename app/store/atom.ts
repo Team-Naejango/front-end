@@ -80,3 +80,17 @@ export const locationState = atom<LocationProps>({
     longitude: 0,
   },
 })
+
+/**
+ * 지도 유저창고 아이템
+ *
+ * @property name / 아이템명
+ * */
+export const markerItemsState = atom<{ name: string }[]>({
+  key: `${STORE_KEY.마커아이템}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: [
+    {
+      name: '',
+    },
+  ],
+})

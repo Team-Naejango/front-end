@@ -9,16 +9,15 @@ import PlaceMarker from '@/app/(home)/(main)/places/PlaceMarker'
 import Categories from '@/app/(home)/(main)/places/Categories'
 import PreviewCard from '@/app/(home)/(main)/places/PreviewCard'
 import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
-
-export const categoriesData: string[] = ['전체', '식품', '가전/가구', '의류/뷰티', '건강/생활']
+import { CATEGORIES } from '@/app/libs/client/constants/warehouse'
 
 const KakaoMap = () => {
   const { myLocation, setMyLocation } = useGeolocation()
   const [markers, setMarkers] = useState<PositionType[] | []>([])
-  const [selectedCategory, setSelectedCategory] = useState<string>(() => categoriesData[0])
+  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(() => CATEGORIES[0])
   const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
-
-  console.log('myLocation:', myLocation)
+  const [isHovered, setIsHovered] = useState<boolean>(false)
+  const [info, setInfo] = useState<PositionType | null>(null)
 
   const getPosition = useMemo(() => {
     return { lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }
@@ -28,7 +27,7 @@ const KakaoMap = () => {
     <>
       {myLocation.isLoaded ? (
         <Categories
-          categoriesData={categoriesData}
+          categoriesData={CATEGORIES}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
@@ -41,13 +40,18 @@ const KakaoMap = () => {
         setMyLocation={setMyLocation}
         markers={markers}
         setMarkers={setMarkers}
-        selectedCategory={selectedCategory}
+        selectedCategory={selectedCategory.name}
         setIsUpdatePreview={setIsUpdatePreview}
+        isHovered={isHovered}
+        setIsHovered={setIsHovered}
+        info={info}
+        setInfo={setInfo}
       />
 
       {myLocation.isLoaded ? (
         isUpdatePreview ? (
-          <PreviewCard previews={markers || []} />
+          // todo: 임시 더미데이터, api 받은 후 리팩토링
+          <PreviewCard previews={isHovered ? positions : markers} isHovered={isHovered} />
         ) : (
           <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
             <p className={'text-[13px]'}>범위에 존재하는 창고가 없습니다.</p>
