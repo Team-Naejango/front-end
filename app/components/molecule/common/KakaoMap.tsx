@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useLayoutEffect } from 'react'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -22,6 +22,10 @@ const KakaoMap = () => {
   const getPosition = useMemo(() => {
     return { lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }
   }, [myLocation.coordinates.latitude, myLocation.coordinates.longitude])
+
+  console.log('info:', info)
+  console.log('markers:', markers)
+  console.log('isUpdatePreview:', isUpdatePreview)
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import uuid from 'react-uuid'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
@@ -20,7 +20,7 @@ const PreviewCard = ({ previews, isHovered }: PreviewCardProps) => {
   const [activeItem, setActiveItem] = useState<string>('')
   const modalState = useRecoilValue(modalSelector('previewModal'))
   const { openModal, closeModal } = useModal()
-  const [test, setTest] = useRecoilState<{ name: any }[]>(markerItemsState)
+  const [markerItemsValue, setMarkerItemsValue] = useRecoilState<{ name: any }[]>(markerItemsState)
 
   const onClickShowModal = (value: string) => {
     openModal({
@@ -30,8 +30,8 @@ const PreviewCard = ({ previews, isHovered }: PreviewCardProps) => {
       },
     })
     setActiveItem(value)
-    // setTest([{ name: previews.map(data => data.content) }])
-    setTest(
+    // setMarkerItemsValue([{ name: previews.map(data => data.content) }])
+    setMarkerItemsValue(
       positions.map(data => ({
         name: data.content,
       }))
