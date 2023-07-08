@@ -1,6 +1,6 @@
+import { ReactElement } from 'react'
 import { atom } from 'recoil'
 
-import { ReactElement } from 'react'
 import { AUTH_TOKEN, STORE_KEY } from '@/app/libs/client/constants/store'
 import { cookieEffect } from '@/app/store/effect/cookieEffect'
 
@@ -82,18 +82,15 @@ export const locationState = atom<LocationProps>({
 })
 
 /**
- * 모달
+ * 지도 유저창고 아이템
  *
- * @property isOpen
- * @property callback
- * @property title / 제목
- * @property content / 내용
+ * @property name / 아이템명
  * */
-export const useModalStore = atom<ModalProps>({
-  key: `${STORE_KEY.모달}/${new Date().getUTCMilliseconds() * Math.random()}`,
-  default: {
-    isOpen: false,
-    title: '',
-    content: '',
-  },
+export const markerItemsState = atom<{ name: string }[]>({
+  key: `${STORE_KEY.마커아이템}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: [
+    {
+      name: '',
+    },
+  ],
 })

@@ -1,34 +1,41 @@
-import { ReactElement, useCallback } from 'react'
-import { useRecoilState } from 'recoil'
+import { useCallback } from 'react'
+import { useRecoilCallback } from 'recoil'
 
-import { useModalStore } from '@/app/store/atom'
+import { Modal, ModalProps, modalSelector } from '@/app/store/modal'
 
-export interface OpenModalProps {
-  title: string
-  content: ReactElement | string
-  callback?: () => any
-}
+type OmitShow = Omit<Modal, 'show'>
+type OmitModalProps = Omit<ModalProps, 'OmitShow'>
 
 export const useModal = () => {
-  const [modalState, setModalState] = useRecoilState(useModalStore)
-
-  const closeModal = useCallback(() => {
-    setModalState(prev => {
-      return { ...prev, isOpen: false }
-    })
-  }, [setModalState])
-
-  const openModal = useCallback(
-    ({ title, content, callback }: OpenModalProps) => {
-      setModalState({
-        isOpen: true,
-        title,
-        content,
-        callback,
-      })
-    },
-    [setModalState]
+  const setModal = useRecoilCallback(
+    ({ set }) =>
+      (value: ModalProps) => {
+        set(modalSelector(value.modal.id), value)
+      },
+    []
   )
 
-  return { modalState, closeModal, openModal }
+  const closeModal = useRecoilCallback(
+    ({ reset }) =>
+      (id: string) => {
+        reset(modalSelector(id))
+      },
+    []
+  )
+
+  const openModal = useCallback(
+    (params: OmitModalProps) => {
+      const value = {
+        modal: {
+          ...params.modal,
+          show: (params.modal.show = true),
+        },
+        callback: params.callback,
+      }
+      setModal(value)
+    },
+    [setModal]
+  )
+
+  return { closeModal, openModal }
 }

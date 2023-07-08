@@ -3,38 +3,44 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import Image from 'next/image'
+import { GrFormNext } from 'react-icons/gr'
 
+import { CATEGORIES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/warehouse'
 import Layout from '@/app/components/organism/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import TextArea from '@/app/components/atom/TextArea'
 import SelectBox from '@/app/components/atom/SelectBox'
+import MultiSelectBox from '@/app/components/atom/MultiSelectBox'
+import mapIcon from '@/app/assets/image/map.svg'
 
-const CATEGORY_DATA = [
-  { name: '식품' },
-  { name: '가전' },
-  { name: '의류' },
-  { name: '건강' },
-  { name: '뷰티' },
-  { name: '생활' },
-]
-
-const STORAGE_DATA = [{ name: 'BUY' }, { name: 'SELL' }]
-
-interface CreateProductProps {
+interface ProductProps {
   name: string
   price: number
   description: string
+  coords: {
+    latitude: number
+    longitude: number
+  }
+  option: {
+    quantity: number
+    status: string
+    change: string
+  }
 }
 
 const Create = () => {
   const router = useRouter()
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORY_DATA[0])
-  const [selectedStorage, setSelectedStorage] = useState(STORAGE_DATA[0])
+  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
+  const [selectedStorage, setSelectedStorage] = useState<{ id: number; name: string }[]>([STORAGES[0]])
+  const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
 
-  const { register, handleSubmit } = useForm<CreateProductProps>()
+  const { register, handleSubmit } = useForm<ProductProps>()
 
-  const onValid = (data: CreateProductProps) => {}
+  const onValid = (data: ProductProps) => {}
+
+  const onClickShowOption = () => {}
 
   return (
     <Layout canGoBack title={'아이템 등록'}>
@@ -54,16 +60,65 @@ const Create = () => {
             <input id={'file'} className='hidden' type='file' />
           </label>
         </div>
-        <InputField register={register('name', { required: true })} label='상품명' placeholder='상품명' type='text' />
+        <InputField
+          type='text'
+          register={register('name', { required: true })}
+          label='상품명'
+          placeholder='상품명'
+          essential
+        />
         <SelectBox
           title={'카테고리'}
-          data={CATEGORY_DATA}
+          data={CATEGORIES}
           selected={selectedCategory}
           setSelected={setSelectedCategory}
+          essential
         />
-        <TextArea register={register('description', { required: true })} label='상품설명' placeholder='상품명' />
-        <InputField register={register('price', { required: true })} label='가격' placeholder='가격' type='text' />
-        <SelectBox title={'저장창고'} data={STORAGE_DATA} selected={selectedStorage} setSelected={setSelectedStorage} />
+        <TextArea
+          register={register('description', { required: true })}
+          label='상품설명'
+          placeholder='상품설명'
+          essential
+        />
+        <InputField
+          type='text'
+          register={register('price', { required: true })}
+          label='가격'
+          placeholder='가격(원)'
+          essential
+        />
+        <MultiSelectBox
+          title={'창고선택'}
+          data={STORAGES}
+          selected={selectedStorage}
+          setSelected={setSelectedStorage}
+          essential
+        />
+        <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
+        <InputField
+          type='text'
+          label={'위치'}
+          value={'지역설정안함'}
+          register={register('coords', { required: true })}
+          className={'!indent-6'}
+          essential
+          icon={
+            <>
+              <Image src={mapIcon} alt={'지도 아이콘'} className='absolute ml-2.5 text-sm text-[#A9A9A9]' />
+              <GrFormNext className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]' />
+            </>
+          }
+        />
+        <InputField
+          type='text'
+          label={'옵션'}
+          value={'수량 1 / 중고상품 / 교환불가'}
+          register={register('option', { required: true })}
+          className={'!indent-0'}
+          icon={<GrFormNext className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]' />}
+          onClick={onClickShowOption}
+          essential
+        />
         <Button text={'등록'} />
       </form>
     </Layout>

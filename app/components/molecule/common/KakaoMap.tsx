@@ -1,59 +1,66 @@
-import React, { Suspense } from 'react'
-import { Map, MapMarker } from 'react-kakao-maps-sdk'
+'use client'
+
+import React, { useState, useMemo } from 'react'
+import Skeleton from 'react-loading-skeleton'
+import 'react-loading-skeleton/dist/skeleton.css'
 
 import useGeolocation from '@/app/hooks/useGeolocation'
 import PlaceMarker from '@/app/(home)/(main)/places/PlaceMarker'
-import { positions } from '@/app/(home)/(main)/places/dummyData'
-import Loading from '@/app/loading'
-import { OpenModalProps, useModal } from '@/app/hooks/useModal'
-
-interface EventProps {
-  onClick: () => void
-}
+import Categories from '@/app/(home)/(main)/places/Categories'
+import PreviewCard from '@/app/(home)/(main)/places/PreviewCard'
+import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
+import { CATEGORIES } from '@/app/libs/client/constants/warehouse'
 
 const KakaoMap = () => {
-  const myLocation = useGeolocation()
-  // todo: 고유 id값 부여하기
-  const { modalState, openModal } = useModal()
-  console.log('myLocation:', myLocation)
+  const { myLocation, setMyLocation } = useGeolocation()
+  const [markers, setMarkers] = useState<PositionType[] | []>([])
+  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(() => CATEGORIES[0])
+  const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
+  const [isHovered, setIsHovered] = useState<boolean>(false)
+  const [info, setInfo] = useState<PositionType | null>(null)
 
-  const onClickModal = (props: OpenModalProps) => {
-    openModal({
-      title: props.title,
-      content: props.content,
-      callback: () => {},
-    })
-  }
+  const getPosition = useMemo(() => {
+    return { lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }
+  }, [myLocation.coordinates.latitude, myLocation.coordinates.longitude])
 
   return (
-    // <Suspense fallback={<Loading />}>
-    <Map
-      center={{ lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }}
-      zoomable
-      level={9}
-      style={{
-        width: '375px',
-        height: '500px',
-        position: 'fixed',
-        marginTop: '4rem',
-        borderRadius: '8px',
-      }}>
-      {/* todo: 로딩과 렌더링 속도 최적화하기 */}
-      {!myLocation.isLoaded ? (
-        <Loading />
+    <>
+      {myLocation.isLoaded ? (
+        <Categories
+          categoriesData={CATEGORIES}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
       ) : (
-        positions.map(position => {
-          return (
-            <PlaceMarker
-              key={position.id}
-              position={{ lat: position.latlng.latitude, lng: position.latlng.longitude }}
-              onClick={() => onClickModal({ title: position.title, content: position.location })}
-            />
-          )
-        })
+        <Skeleton className={'mt-8'} width={330} height={30} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
-    </Map>
-    // </Suspense>
+      <PlaceMarker
+        position={getPosition}
+        myLocation={myLocation}
+        setMyLocation={setMyLocation}
+        markers={markers}
+        setMarkers={setMarkers}
+        selectedCategory={selectedCategory.name}
+        setIsUpdatePreview={setIsUpdatePreview}
+        isHovered={isHovered}
+        setIsHovered={setIsHovered}
+        info={info}
+        setInfo={setInfo}
+      />
+
+      {myLocation.isLoaded ? (
+        isUpdatePreview ? (
+          // todo: 임시 더미데이터, api 받은 후 리팩토링
+          <PreviewCard previews={isHovered ? positions : markers} isHovered={isHovered} />
+        ) : (
+          <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
+            <p className={'text-[13px]'}>범위에 존재하는 창고가 없습니다.</p>
+          </div>
+        )
+      ) : (
+        <Skeleton width={330} height={200} className={'mt-[1.125rem]'} baseColor={'rgba(240, 240, 240, 0.5)'} />
+      )}
+    </>
   )
 }
 

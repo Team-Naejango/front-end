@@ -8,6 +8,15 @@ export const STORE_KEY = {
   위치정보: 'storeLocation',
   모달: 'storeModal',
   다이얼로그: 'storeDialog',
+  맵드래그: 'storeKakaoMapDrag',
+  키워드: 'storeKakaoMapKeyword',
+  마커아이템: 'storeMarkerItem',
+}
+
+export const MODAL_KEY = {
+  아톰: 'modalIdsState',
+  패밀리: 'modalState',
+  셀렉터: 'modalSelector',
 }
 
 /**

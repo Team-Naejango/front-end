@@ -33,12 +33,12 @@ const ChatDetail: NextPage = () => {
 
   return (
     <Layout canGoBack title='내잔고'>
-      <div className='mt-8 space-y-4 px-4 py-10 pb-16'>
+      <div className='mt-8 space-y-4 py-10 pb-16'>
         {dummyData.map(data => {
           return <Message key={data.message} message={data.message} reversed={data.reversed} />
         })}
         <div ref={scrollRef} />
-        <form onSubmit={handleSubmit(onValid)} className='fixed inset-x-0 bottom-20 bg-white py-2'>
+        <form onSubmit={handleSubmit(onValid)} className='fixed inset-x-4 bottom-20 bg-white py-2'>
           <div className='relative mx-auto flex w-full  max-w-md items-center'>
             <input
               type='text'

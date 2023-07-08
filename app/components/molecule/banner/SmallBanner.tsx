@@ -33,11 +33,6 @@ const SmallBanner = ({ onClick, onClose }: { onClick: () => void; onClose: () =>
           </svg>
           참여만해도 경품 당첨!
         </p>
-        {/* <Link */}
-        {/*  href={'/event/1'} */}
-        {/*  className='flex-none rounded-full bg-gray-900 px-3.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900'> */}
-        {/*  이동하기 <span aria-hidden='true'>&rarr;</span> */}
-        {/* </Link> */}
       </div>
       <div className={'flex'}>
         <button type='button' onClick={onClose} className='hover:text-[#444] focus-visible:outline-offset-[-4px]'>

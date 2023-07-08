@@ -5,14 +5,16 @@ interface TextAreaProps {
   label?: string
   name?: string
   register?: UseFormRegisterReturn
+  essential?: boolean
   [key: string]: any
 }
 
-const TextArea = ({ label, name, register, ...rest }: TextAreaProps) => {
+const TextArea = ({ label, name, register, essential, ...rest }: TextAreaProps) => {
   return (
     <div>
       {label ? (
         <label htmlFor={name} className='mb-2 block text-xs font-medium text-gray-700'>
+          {essential && <span className={'text-red-500'}>*</span>}
           {label}
         </label>
       ) : null}
