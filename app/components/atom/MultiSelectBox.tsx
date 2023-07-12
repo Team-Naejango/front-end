@@ -37,7 +37,7 @@ const MultiSelectBox = ({ title, data, selected, setSelected, essential }: Multi
               'relative flex w-full cursor-default gap-1 rounded-md bg-white py-1.5 pl-2 pr-10 text-left text-sm leading-8 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-[#32D7A0]',
               selected.length === 0 ? 'h-[42px]' : ''
             )}>
-            {selected.map((data: any) => (
+            {selected.map(data => (
               <div key={data.name} className={'flex items-center rounded-[20px] border py-1.5 pl-3 pr-1.5'}>
                 <span className={'block truncate text-xs'}>{data.name}</span>
                 <span
@@ -87,7 +87,7 @@ const MultiSelectBox = ({ title, data, selected, setSelected, essential }: Multi
                     value={person}>
                     {({ selected, active }) => (
                       <>
-                        <span className={`block truncate text-sm ${selected ? 'font-medium' : 'font-normal'}`}>
+                        <span className={`block truncate text-[13px] ${selected ? 'font-medium' : 'font-normal'}`}>
                           {person.name}
                         </span>
                         {selected ? (

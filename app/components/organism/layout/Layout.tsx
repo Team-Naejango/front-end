@@ -12,18 +12,19 @@ interface LayoutProps {
   seoTitle?: string
   canGoBack?: boolean
   hasHeader?: boolean
+  setting?: boolean
   children: React.ReactNode
 }
 
-const Layout = ({ title, canGoBack, hasHeader, children, seoTitle }: LayoutProps) => {
+const Layout = ({ title, seoTitle, canGoBack, hasHeader, setting, children }: LayoutProps) => {
   return (
     <>
       {canGoBack ? (
         <BackHeader canGoBack title={title} seoTitle={seoTitle} />
       ) : hasHeader ? (
-        <Header hasHeader={hasHeader} seoTitle={seoTitle} />
+        <Header hasHeader={hasHeader} seoTitle={seoTitle} setting={setting} />
       ) : (
-        <Header hasHeader={hasHeader} seoTitle={seoTitle} />
+        <Header hasHeader={hasHeader} seoTitle={seoTitle} setting={setting} />
       )}
       <section className={cls('h-[calc(100%-6.875rem)] overflow-auto')}>{children}</section>
       <Lnb />

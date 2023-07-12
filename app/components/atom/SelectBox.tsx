@@ -28,7 +28,7 @@ const SelectBox = ({ title, data, selected, setSelected, essential, placeholder 
           <Listbox.Button
             className='relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-sm leading-8 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-[#32D7A0]'
             placeholder={placeholder}>
-            <span className='block truncate'>{selected.name}</span>
+            <span className='block truncate text-[13px]'>{selected.name}</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-400'>
               <svg
                 aria-hidden
@@ -58,7 +58,7 @@ const SelectBox = ({ title, data, selected, setSelected, essential, placeholder 
                   value={value}>
                   {({ selected }) => (
                     <>
-                      <span className={`block truncate text-sm ${selected ? 'font-medium' : 'font-normal'}`}>
+                      <span className={`block truncate text-[13px] ${selected ? 'font-medium' : 'font-normal'}`}>
                         {value.name}
                       </span>
                       {selected ? (

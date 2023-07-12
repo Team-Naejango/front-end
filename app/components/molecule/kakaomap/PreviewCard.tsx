@@ -5,7 +5,7 @@ import uuid from 'react-uuid'
 import { useModal } from '@/app/hooks/useModal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
-import CardSelectModal from '@/app/(home)/(main)/places/CardSelectModal'
+import CardSelectModal from '@/app/components/molecule/kakaomap/CardSelectModal'
 import { modalSelector } from '@/app/store/modal'
 import CustomModal from '@/app/components/molecule/modal/CustomModal'
 import { cls } from '@/app/libs/client/utils/util'
@@ -18,7 +18,7 @@ interface PreviewCardProps {
 }
 
 const PreviewCard = ({ previews, isDragedMixture, activedItem }: PreviewCardProps) => {
-  const modalState = useRecoilValue(modalSelector('previewModal'))
+  const modalState = useRecoilValue(modalSelector('Preview'))
   const { openModal, closeModal } = useModal()
   const [markerItemsValue, setMarkerItemsValue] = useRecoilState<{ name: any }[]>(markerItemsState)
   const [wareHouseTitleValue, setWareHouseTitleValue] = useRecoilState<string>(activatedWareHouseTitleState)
@@ -26,7 +26,7 @@ const PreviewCard = ({ previews, isDragedMixture, activedItem }: PreviewCardProp
   const onClickShowModal = (value: string) => {
     setWareHouseTitleValue(value)
     openModal({
-      modal: { id: 'previewModal', type: MODAL_TYPES.CONFIRM },
+      modal: { id: 'Preview', type: MODAL_TYPES.CONFIRM },
     })
     // setMarkerItemsValue([{ name: previews.map(data => data.content) }])
     setMarkerItemsValue(

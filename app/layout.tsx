@@ -8,7 +8,7 @@ import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
 import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/apiKey'
 import { KEYWORDS, OPENGRAPH } from '@/app/libs/client/constants/common'
 import Loading from '@/app/loading'
-import { UseAxiosInterceptor } from '@/app/hooks/useAxiosInterceptor'
+// import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
 
 lazy(() => import('swiper/css'))
 lazy(() => import('swiper/css/navigation'))
@@ -35,9 +35,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RecoilProvider>
           <QueryProvider>
             <Suspense fallback={<Loading />}>
-              {/* <UseAxiosInterceptor> */}
+              {/* <UseAxiosWrapper> */}
               {children}
-              {/* </UseAxiosInterceptor> */}
+              {/* </UseAxiosWrapper> */}
             </Suspense>
           </QueryProvider>
         </RecoilProvider>

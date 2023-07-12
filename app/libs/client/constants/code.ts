@@ -38,4 +38,14 @@ export const MODAL_TYPES = {
   CONFIRM: 'confirm',
 } as const
 
-export type R_MODAL_TYPES = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]
+export type E_MODAL_TYPES = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]
+
+/**
+ * 스위치
+ */
+export const SWITCH_STATUS = {
+  온: 'ON',
+  오프: 'OFF',
+} as const
+
+export type E_SWITCH_STATUS = (typeof SWITCH_STATUS)[keyof typeof SWITCH_STATUS]

@@ -10,7 +10,7 @@ export const KAKAO_AUTH_REDIRECT_URL = `http://43.202.25.203:8080/oauth2/authori
 //   typeof window === 'undefined' ? '' : `${window.location.protocol}//${window.location.host}/oauth/kakaoCallback`
 // }
 
-// kakaoMap sdk 인증 url
+// kakaomap sdk 인증 url
 export const KAKAO_MAP_SDK_URL = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_JS_KEY}&libraries=services&autoload=false`
 
 // https://kauth.kakao.com/oauth/authorize?response_type=code&

@@ -15,7 +15,7 @@ import SelectBox from '@/app/components/atom/SelectBox'
 import MultiSelectBox from '@/app/components/atom/MultiSelectBox'
 import mapIcon from '@/app/assets/image/map.svg'
 
-interface ProductProps {
+interface ItemProps {
   name: string
   price: number
   description: string
@@ -30,15 +30,15 @@ interface ProductProps {
   }
 }
 
-const Create = () => {
+const CreateItem = () => {
   const router = useRouter()
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
   const [selectedStorage, setSelectedStorage] = useState<{ id: number; name: string }[]>([STORAGES[0]])
   const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
 
-  const { register, handleSubmit } = useForm<ProductProps>()
+  const { register, handleSubmit } = useForm<ItemProps>()
 
-  const onValid = (data: ProductProps) => {}
+  const onValid = (data: ItemProps) => {}
 
   const onClickShowOption = () => {}
 
@@ -125,4 +125,4 @@ const Create = () => {
   )
 }
 
-export default Create
+export default CreateItem

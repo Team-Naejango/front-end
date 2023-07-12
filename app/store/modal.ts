@@ -1,11 +1,11 @@
 import { atom, atomFamily, selectorFamily, DefaultValue } from 'recoil'
 
 import { MODAL_KEY } from '@/app/libs/client/constants/store'
-import { MODAL_TYPES, R_MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { MODAL_TYPES, E_MODAL_TYPES } from '@/app/libs/client/constants/code'
 
 export type Modal = {
   id: string
-  type: R_MODAL_TYPES
+  type: E_MODAL_TYPES
   show?: boolean
 }
 
@@ -20,7 +20,7 @@ const initialModal: ModalProps = {
     type: MODAL_TYPES.CONFIRM,
     show: false,
   },
-  callback: () => alert('confirm type 일시 확인시 기본 알림창'),
+  callback: () => alert(''),
 }
 
 export const modalIdsState = atom<string[]>({

@@ -8,7 +8,7 @@ import { instance } from '@/app/apis/config/axios/instance'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { kakaoAccessToken } from '@/app/store/atom'
 
-const UseAxiosInterceptor = ({ children }: { children: ReactNode }) => {
+const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
   const accessToken = useRecoilValue(kakaoAccessToken)
 
   useEffect(() => {
@@ -41,4 +41,4 @@ const UseAxiosInterceptor = ({ children }: { children: ReactNode }) => {
   return <div>{children}</div>
 }
 
-export { UseAxiosInterceptor }
+export default UseAxiosWrapper

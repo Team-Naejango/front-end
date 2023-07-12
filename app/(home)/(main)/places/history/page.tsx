@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import uuid from 'react-uuid'
 import { CiSearch } from 'react-icons/ci'
 
 import Layout from '@/app/components/organism/layout/Layout'
@@ -28,15 +29,13 @@ const History = () => {
           }
         />
         <div className={'mt-6 flex flex-wrap gap-5'}>
-          {/* {dummyData.map((keyword, index) => { */}
-          {/*  return ( */}
-          <span
-            // key={`${keyword[index]}_${keyword}`}
-            className={'cursor-pointer rounded-2xl bg-gray-200 px-4 py-1 text-xs'}>
-            {/* {keyword} */}
-          </span>
-          {/*  ) */}
-          {/* })} */}
+          {dummyData.map(keyword => {
+            return (
+              <span key={`${uuid()}_${keyword}`} className={'cursor-pointer rounded-2xl bg-gray-200 px-4 py-1 text-xs'}>
+                {keyword}
+              </span>
+            )
+          })}
         </div>
       </div>
     </Layout>

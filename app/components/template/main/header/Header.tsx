@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { Fragment } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
@@ -11,13 +11,18 @@ import { useModal } from '@/app/hooks/useModal'
 // import { useModalStore } from '@/app/store/atom'
 import noticeIcon from '@/app/assets/image/notice.svg'
 import mapIcon from '@/app/assets/image/map.svg'
+import DropDown from '@/app/components/atom/DropDown'
+import { Menu } from '@headlessui/react'
+import Link from 'next/link'
+import { cls } from '@/app/libs/client/utils/util'
 
 interface LayoutProps {
   seoTitle: string | undefined
   hasHeader?: boolean
+  setting?: boolean
 }
 
-const Header = ({ seoTitle, hasHeader = true }: LayoutProps) => {
+const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) => {
   const router = useRouter()
   // const { closeModal } = useModal('')
   // const [modalState, setModalState] = useRecoilState(useModalStore)
@@ -55,10 +60,15 @@ const Header = ({ seoTitle, hasHeader = true }: LayoutProps) => {
             <div
               role='presentation'
               onClick={onClickNotice}
-              className={
-                'flex h-12 w-12 cursor-pointer items-center justify-center rounded-md bg-[#F9F9F9] hover:bg-gray-100'
-              }>
-              <Image src={noticeIcon} alt={'알림 아이콘'} width={24} />
+              className={cls(
+                'relative flex h-12 w-12 cursor-pointer items-center justify-center bg-[#f9f9f9] hover:bg-gray-100',
+                setting ? 'rounded-full' : 'rounded-md'
+              )}>
+              {setting ? (
+                <div className={'absolute h-full w-full rounded-full bg-emerald-500'} />
+              ) : (
+                <Image src={noticeIcon} alt={'알림 아이콘'} width={24} />
+              )}
             </div>
           </div>
         </header>

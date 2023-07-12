@@ -42,12 +42,12 @@ const CardSelectModal = ({ title, isDragedMixture, onClose }: CardSelectProps) =
         <div className='mt-6 flex justify-center gap-6 text-center'>
           <button
             type='submit'
-            className='inline-flex justify-center rounded-md border border-transparent bg-[#33CC99] px-4 py-2 text-sm font-medium text-white hover:bg-[#32D7A0] focus:outline-none focus:ring-2 focus:ring-[#33CC99] focus:ring-offset-1'>
+            className='inline-flex justify-center rounded-md border border-transparent bg-[#33CC99] px-4 py-2 text-[13px] font-medium text-white hover:bg-[#32D7A0] focus:outline-none focus:ring-2 focus:ring-[#33CC99] focus:ring-offset-1'>
             교환신청
           </button>
           <button
             type='button'
-            className='inline-flex justify-center rounded-md border border-transparent bg-[#e9e9e9] px-4 py-2 text-sm font-medium hover:bg-[#e1e1e1] focus:outline-none'
+            className='inline-flex justify-center rounded-md border border-transparent bg-[#e9e9e9] px-4 py-2 text-[13px] font-medium hover:bg-[#e1e1e1] focus:outline-none'
             onClick={onClose}>
             취소
           </button>

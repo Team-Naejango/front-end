@@ -5,9 +5,9 @@ import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
 import useGeolocation from '@/app/hooks/useGeolocation'
-import PlaceMarker from '@/app/(home)/(main)/places/PlaceMarker'
-import Categories from '@/app/(home)/(main)/places/Categories'
-import PreviewCard from '@/app/(home)/(main)/places/PreviewCard'
+import PlaceMarker from '@/app/components/molecule/kakaomap/PlaceMarker'
+import Categories from '@/app/components/molecule/kakaomap/Categories'
+import PreviewCard from '@/app/components/molecule/kakaomap/PreviewCard'
 import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
 import { CATEGORIES } from '@/app/libs/client/constants/warehouse'
 
@@ -35,6 +35,7 @@ const KakaoMap = () => {
       ) : (
         <Skeleton className={'mt-8'} width={330} height={30} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
+
       <PlaceMarker
         position={getPosition}
         myLocation={myLocation}
