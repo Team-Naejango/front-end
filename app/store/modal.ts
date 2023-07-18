@@ -20,7 +20,7 @@ const initialModal: ModalProps = {
     type: MODAL_TYPES.CONFIRM,
     show: false,
   },
-  callback: () => alert(''),
+  callback: () => {},
 }
 
 export const modalIdsState = atom<string[]>({
@@ -36,7 +36,6 @@ export const modalsState = atomFamily<ModalProps, string>({
       ...initialModal.modal,
       id,
     },
-    callback: () => alert('confirm type 일시 확인시 기본 알림창'),
   }),
 })
 

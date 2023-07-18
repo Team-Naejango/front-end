@@ -9,6 +9,7 @@ import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 import { modalSelector } from '@/app/store/modal'
 import CustomAlert from '@/app/components/molecule/modal/CustomAlert'
+import CustomToast from '@/app/components/molecule/modal/CustomToast'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -18,7 +19,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const [alertTrueState, setAlertTrueState] = useRecoilState(modalSelector('testTrueAlert'))
   const [alertFalseState, setAlertFalseState] = useRecoilState(modalSelector('testFalseAlert'))
 
-  console.log('alertTrueState:', alertTrueState)
   const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
 
   useEffect(() => {
@@ -64,6 +64,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
         {alertTrueState.modal.show ? <CustomAlert id={alertTrueState.modal.id} success /> : null}
         {alertFalseState.modal.show ? <CustomAlert id={alertFalseState.modal.id} success={false} /> : null}
       </div>
+
+      <CustomToast />
     </main>
   )
 }

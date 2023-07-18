@@ -14,11 +14,15 @@ import Button from '@/app/components/atom/Button'
 import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
 import { kakaoAccessToken } from '@/app/store/atom'
 import GenderButton from '@/app/components/atom/GenderButton'
+import { SignParams } from '@/app/apis/domain/profile/profile'
 
 interface FormProps {
-  nickname: string
-  birth: number
+  age?: number
   gender: string
+  nickname: string
+  intro: string
+  phoneNumber: string
+  imgUrl: string
 }
 
 const Sign = () => {
@@ -42,7 +46,7 @@ const Sign = () => {
 
   const nickname = watch('nickname')
 
-  const { mutate: mutateSign } = useMutation(sign, {
+  const { mutate: mutateSign } = useMutation((params: SignParams) => sign(accessToken, params), {
     onSuccess: () => {
       console.log('회원가입 성공')
       router.push('/home')
@@ -61,13 +65,16 @@ const Sign = () => {
   })
 
   const onClickSave = () => {
-    if (!isNicknameDisabled) return alert('중복검사 해라')
-    if (isNicknameDisabled && selectedNickname !== nickname) return alert('다시 중복검사 해라')
+    // if (!isNicknameDisabled) return alert('중복검사 해라')
+    // if (isNicknameDisabled && selectedNickname !== nickname) return alert('다시 중복검사 해라')
 
     mutateSign({
-      birth: watch('birth'),
+      // age: watch('age'),
       nickname,
       gender,
+      phoneNumber: watch('phoneNumber'),
+      intro: '',
+      imgUrl: '',
     })
 
     reset()
@@ -133,14 +140,14 @@ const Sign = () => {
           <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
           <div className='!mt-3 flex flex-row items-center'>
             <InputField
-              register={register('birth', {
+              register={register('age', {
                 required: '생년월일을 입력해주세요.',
                 pattern: {
                   value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
                   message: '유효한 생년월일을 입력해주세요. (YYYYMMDD)',
                 },
               })}
-              id='birth'
+              id='age'
               type='text'
               maxLength={8}
               placeholder='생년월일(YYYYMMDD)'
@@ -149,7 +156,19 @@ const Sign = () => {
             <GenderButton gender='남' selected={gender === '남'} onClick={() => onSelectedGender('남')} />
             <GenderButton gender='여' selected={gender === '여'} onClick={() => onSelectedGender('여')} />
           </div>
-          <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
+          <p className='!mt-1.5 text-xs text-red-400'>{errors.age?.message}</p>
+          <div>
+            <InputField
+              register={register('phoneNumber', {
+                required: '휴대폰번호를 입력해주세요.',
+              })}
+              id='phoneNumber'
+              type='text'
+              maxLength={11}
+              placeholder='휴대폰번호'
+            />
+          </div>
+          <p className='!mt-1.5 text-xs text-red-400'>{errors.phoneNumber?.message}</p>
           <p className='!my-4 flex justify-end text-xs text-[#A9A9A9]'>
             앗! 계정이 있으신가요?
             <Link

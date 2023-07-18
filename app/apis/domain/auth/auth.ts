@@ -1,12 +1,7 @@
 import { instance } from '@/app/apis/config/axios/instance'
 import { AuthToken, KakaoLoginToken, LoginInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
-
-export interface SignParams {
-  nickname: String
-  birth: number
-  gender: String
-}
+import { SignParams } from '@/app/apis/domain/profile/profile'
 
 /**
  * 카카오 인증 로그인
@@ -15,18 +10,6 @@ export interface SignParams {
  */
 export async function kakaoLogin(code: string): Promise<Response<{ data: KakaoLoginToken }>> {
   return instance.get(`/login/oauth/kakao?code=${code}`, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-  })
-}
-
-export async function kakao2(code: string): Promise<Response<{ data: KakaoLoginToken }>> {
-  return instance.get(`/login/oauth2/code/kakao?code=${code}`, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
-  })
-}
-
-export async function kakao3(): Promise<Response<{ data: KakaoLoginToken }>> {
-  return instance.get(`/oauth2/authorization/kakao`, {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8' },
   })
 }
@@ -44,13 +27,22 @@ export async function kakaoUserInfo(url: string, accessToken: string): Promise<R
 }
 
 /**
- * 회원가입
+ * 유저 회원가입
  *
- * @param params.nickname 닉네임
- * @param params.birth 생년월일
+ * @param params.age
+ * @param params.gender
+ * @param params.nickname
+ * @param params.intro
+ * @param params.phoneNumber
+ * @param params.imgUrl
+ *
+ * @param accessToken
+ * @param params
  */
-export async function sign(params: SignParams): Promise<Response<boolean>> {
-  return instance.post('/api/user/join', params)
+export async function sign(accessToken: string | null, params: SignParams): Promise<Response<null>> {
+  return instance.post('/api/user/profile', params, {
+    headers: { Authorization: accessToken },
+  })
 }
 
 /**
@@ -70,19 +62,3 @@ export async function nickNameValidity(username: string): Promise<Response<boole
 export async function refresh(params: { refreshToken: string }): Promise<Response<{ token: AuthToken }>> {
   return instance.post('/', params)
 }
-
-// /**
-//  * 로그인
-//  *
-//  * @param params.email 아이디
-//  * @param params.password 비밀번호
-//  * @param params.name 이름
-//  * @param params.birth 생년월일
-//  * @param params.gender 성별
-//  * @param params.address 주소
-//  * @param params.job 직업
-//  * @param params.position 위치
-//  */
-// export async function login(params: LoginForm): Promise<{ auth: AuthToken }> {
-//   return instance.post('/api/user/login', params)
-// }

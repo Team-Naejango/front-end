@@ -39,6 +39,7 @@ const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) =>
   }
 
   const onClickNotice = () => {
+    if (setting) return
     router.push('/notice')
   }
 

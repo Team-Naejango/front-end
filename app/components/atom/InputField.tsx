@@ -44,7 +44,7 @@ export default function InputField({
   essential,
 }: InputProps) {
   return (
-    <div>
+    <>
       {label ? (
         <label className='mb-2 block text-xs font-medium leading-none text-gray-700' htmlFor={id}>
           {essential && <span className={'text-red-500'}>*</span>}
@@ -80,6 +80,6 @@ export default function InputField({
           {icon}
         </div>
       ) : null}
-    </div>
+    </>
   )
 }

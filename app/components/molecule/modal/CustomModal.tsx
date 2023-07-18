@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useRef } from 'react'
 import { useRecoilValue } from 'recoil'
 import { Dialog, Transition } from '@headlessui/react'
 
@@ -11,6 +11,7 @@ interface ModalProps {
 }
 
 const CustomModal = ({ id, children }: ModalProps) => {
+  const refDiv = useRef(null)
   const { closeModal } = useModal()
   const modalState = useRecoilValue(modalSelector(id))
 
@@ -23,7 +24,7 @@ const CustomModal = ({ id, children }: ModalProps) => {
     <>
       {modalState.modal.show && (
         <Transition appear show={modalState.modal.id === id} as={Fragment}>
-          <Dialog as='div' className='relative z-10' onClose={() => onCloseModal(id)}>
+          <Dialog initialFocus={refDiv} as='div' className='relative z-10' onClose={() => onCloseModal(id)}>
             <Transition.Child
               as={Fragment}
               enter='ease-out duration-300'
@@ -45,7 +46,9 @@ const CustomModal = ({ id, children }: ModalProps) => {
                   leave='ease-in duration-200'
                   leaveFrom='opacity-100 scale-100'
                   leaveTo='opacity-0 scale-100'>
-                  <Dialog.Panel className='w-[375px] max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
+                  <Dialog.Panel
+                    ref={refDiv}
+                    className='w-[375px] max-w-md transform rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                     {children}
                   </Dialog.Panel>
                 </Transition.Child>

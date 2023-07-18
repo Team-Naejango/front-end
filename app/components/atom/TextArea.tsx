@@ -7,9 +7,11 @@ interface TextAreaProps {
   register?: UseFormRegisterReturn
   essential?: boolean
   [key: string]: any
+  placeholder?: string
+  rows?: number
 }
 
-const TextArea = ({ label, name, register, essential, ...rest }: TextAreaProps) => {
+const TextArea = ({ label, name, register, essential, rows = 4, placeholder, ...rest }: TextAreaProps) => {
   return (
     <div>
       {label ? (
@@ -21,8 +23,9 @@ const TextArea = ({ label, name, register, essential, ...rest }: TextAreaProps) 
       <textarea
         id={name}
         {...register}
-        className='w-full rounded-md border-gray-300 placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#32D7A0] focus:outline-none focus:ring-0'
-        rows={4}
+        placeholder={placeholder}
+        className='w-full rounded-md border-gray-300 text-[13px] placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#32D7A0] focus:outline-none focus:ring-0'
+        rows={rows}
         {...rest}
       />
     </div>

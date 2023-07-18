@@ -34,7 +34,12 @@ export const responseNormalizer = async (error: AxiosError) => {
     const isHasToken = await TokenValid()
 
     if (isHasToken) {
-      const authorization = getCookie(AUTH_TOKEN.인가)
+      // const authorization = getCookie(AUTH_TOKEN.인가)
+
+      // error.config!.headers = {
+      //   'Content-Type': 'application/json',
+      //   Authorization: `Bearer ${authorization}`,
+      // } as HeaderType
 
       // await kakaoLogin(authorization).then(response => {
       //   const { updateToken } = useUpdateToken()

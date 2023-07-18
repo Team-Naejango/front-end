@@ -1,0 +1,8 @@
+{
+  "gcmKey": "GCM API Key HERE",
+  "subject": "mailto:https://d1ad0vl3i2dudp.cloudfront.net/",
+  "vapid": {
+    "public": "BG5ChKDaZEdyXKWvbgvqU4rZEmbs0_RtY0cv8aJ5njd6Ks2-DgmMYHg63WPiSg0PrtTR8_9bAVwu78GhHL9GclM",
+    "private": "633trb2tRSZVNlsnT_aga4w9UHe7f1qRVrUt8oUI-gQ"
+  }
+}
