@@ -9,7 +9,7 @@ const CustomToast = () => {
       position={'bottom-center'}
       containerStyle={{
         position: 'absolute',
-        bottom: '13%',
+        bottom: '14%',
         fontSize: '11px',
         letterSpacing: '0.1px',
       }}

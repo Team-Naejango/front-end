@@ -15,6 +15,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.370.0",
+    "@aws-sdk/signature-v4-crt": "^3.370.0",
     "@headlessui/react": "^1.7.15",
     "@tailwindcss/forms": "^0.5.3",
     "@tanstack/react-query": "^4.29.12",
@@ -23,7 +25,8 @@
     "@types/react": "18.2.7",
     "@types/react-dom": "18.2.4",
     "autoprefixer": "^10.4.14",
-    "aws-sdk": "^2.1416.0",
+    "aws-crt": "^1.15.21",
+    "aws-sdk": "^2.1417.0",
     "axios": "^1.4.0",
     "deep-equal": "^2.2.1",
     "eslint": "^8.2.0",
