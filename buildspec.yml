@@ -13,7 +13,7 @@ phases:
       - echo NEXT_PUBLIC_KAKAO_JS_KEY= ${KAKAO_JS_KEY} >> .env.production
       - echo NEXT_PUBLIC_AWS_REGION= ${AWS_REGION} >> .env.production
       - echo NEXT_PUBLIC_AWS_ACCESS_KEY_ID= ${AWS_ACCESS_KEY_ID} >> .env.production
-      - echo NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY_ID= ${AWS_SECRET_ACCESS_KEY_ID} >> .env.production
+      - echo NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY= ${AWS_SECRET_ACCESS_KEY} >> .env.production
       - yarn
   build:
     commands:
