@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
+import { useRecoilValue } from 'recoil'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
-import { useRecoilValue } from 'recoil'
+import { BsPhone } from 'react-icons/bs'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
@@ -166,6 +167,7 @@ const Sign = () => {
               type='text'
               maxLength={11}
               placeholder='휴대폰번호'
+              icon={<BsPhone className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.phoneNumber?.message}</p>

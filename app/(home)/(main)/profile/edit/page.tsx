@@ -1,12 +1,13 @@
 'use client'
 
 import React, { useState, useEffect, ChangeEvent } from 'react'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { useForm } from 'react-hook-form'
+import Image from 'next/image'
+import { toast } from 'react-hot-toast'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
-import { toast } from 'react-hot-toast'
-import Image from 'next/image'
+import { BsPhone } from 'react-icons/bs'
 
 import Button from '@/app/components/atom/Button'
 import InputField from '@/app/components/atom/InputField'
@@ -210,6 +211,7 @@ const EditProfile = () => {
               type='text'
               maxLength={11}
               placeholder='휴대폰번호'
+              icon={<BsPhone className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.phoneNumber?.message}</p>
