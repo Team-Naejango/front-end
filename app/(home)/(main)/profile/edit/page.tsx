@@ -137,7 +137,7 @@ const EditProfile = () => {
   }
 
   return (
-    <Layout canGoBack seoTitle={'프로필'}>
+    <Layout canGoBack title={'프로필 편집'} seoTitle={'프로필'}>
       <div className='mt-16'>
         <form onSubmit={handleSubmit(onValid)} className='space-y-4 px-4'>
           <div className='mb-12 flex items-center justify-center gap-3'>
