@@ -31,6 +31,8 @@ const Carousel = () => {
     onSlideChange: onSlideCurrentIdx,
   }
 
+  console.log('homeImagesData:', homeImagesData)
+
   return (
     <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-3xl'}>
       {homeImagesData.map((data, idx) => {

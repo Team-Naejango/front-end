@@ -13,7 +13,7 @@ const nextConfig = {
   output: 'export',
   images: {
     loader: 'imgix',
-    path: 'localhost:3000/*',
+    path: 'https://d1ad0vl3i2dudp.cloudfront.net/*',
     unoptimized: true,
   },
   transpilePackages: ['@acme/ui', 'lodash-es', 'inline-react-svg'],
