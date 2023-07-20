@@ -1,20 +1,11 @@
 'use client'
 
-import { StaticImageData } from 'next/image'
-
 import event1 from '@/app/assets/image/event_trip_02.png'
 import event2 from '@/app/assets/image/event_trip_03.png'
 import event3 from '@/app/assets/image/event_basket.png'
 import event4 from '@/app/assets/image/event_trip_04.png'
 
-interface HomeHouseData {
-  src: StaticImageData
-  blurUrl: string
-  title: string
-  position: boolean
-}
-
-const homeImagesData: HomeHouseData[] = [
+const imagesData = [
   {
     src: event1,
     blurUrl:
@@ -45,4 +36,4 @@ const homeImagesData: HomeHouseData[] = [
   },
 ]
 
-export { homeImagesData }
+export { imagesData }

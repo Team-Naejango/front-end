@@ -37,8 +37,8 @@ const EditProfile = () => {
     register,
     watch,
     handleSubmit,
-    setValue,
     setError,
+    setValue,
     formState: { errors },
   } = useForm<EditProfileForm>()
   const nickname = watch('nickname')
@@ -124,7 +124,7 @@ const EditProfile = () => {
     }
   }
 
-  const onValidUserName = (event: React.MouseEvent) => {
+  const onUserNameValidation = (event: React.MouseEvent) => {
     event.preventDefault()
     if (nickname === '') return false
 
@@ -177,7 +177,7 @@ const EditProfile = () => {
               type={'button'}
               smail
               text='중복검사'
-              onClick={onValidUserName}
+              onClick={onUserNameValidation}
               disabled={nickname === undefined || nickname === ''}
               className={'!text-[13px]'}
             />
@@ -210,7 +210,7 @@ const EditProfile = () => {
               id='phoneNumber'
               type='text'
               maxLength={11}
-              placeholder={'휴대폰번호'}
+              placeholder='휴대폰번호'
               icon={<BsPhone className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
           </div>
@@ -220,6 +220,7 @@ const EditProfile = () => {
               required: '자기소개를 입력해주세요.',
             })}
             placeholder={'자기소개'}
+            rows={3}
           />
           <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p>
           <Button smail text='저장' className={'!mx-auto mt-4 block'} />

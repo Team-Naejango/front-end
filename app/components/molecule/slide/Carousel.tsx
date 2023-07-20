@@ -7,7 +7,7 @@ import SwiperCore, { Navigation, Pagination, A11y, Autoplay } from 'swiper'
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 
-import { homeImagesData } from '@/app/libs/client/utils/images'
+import { imagesData } from '@/app/libs/client/utils/images'
 import { cls } from '@/app/libs/client/utils/util'
 
 const Carousel = () => {
@@ -31,14 +31,12 @@ const Carousel = () => {
     onSlideChange: onSlideCurrentIdx,
   }
 
-  console.log('homeImagesData:', homeImagesData)
-
   return (
     <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-3xl'}>
-      {homeImagesData.map((data, idx) => {
+      {imagesData.map((data, id) => {
         return (
           <SwiperSlide key={`${data.title}_${data.src}`}>
-            <Link href={`/events/${idx}`}>
+            <Link href={`/events/${id}`}>
               <Image
                 src={data.src}
                 alt={'여행 이벤트 이미지'}
@@ -54,7 +52,7 @@ const Carousel = () => {
                   'absolute bottom-0 left-0 z-20 whitespace-pre-wrap px-5 py-8 text-[26px] font-extrabold leading-normal text-white',
                   data.position ? 'bottom-0 right-0 text-right' : ''
                 )}>
-                {homeImagesData[idx]?.title}
+                {imagesData[id]?.title}
               </p>
             </Link>
           </SwiperSlide>
@@ -64,7 +62,7 @@ const Carousel = () => {
         className={
           'absolute left-5 top-5 z-30 rounded-[30px] border border-white px-2.5 py-[1px] text-[10px] text-white'
         }>
-        {`${activeIndex + 1} / ${homeImagesData.length}`}
+        {`${activeIndex + 1} / ${imagesData.length}`}
       </span>
     </Swiper>
   )

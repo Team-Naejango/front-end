@@ -4,7 +4,7 @@ import { Response } from '@/app/apis/types/response/response'
 
 export interface SignParams {
   // 생년월일
-  age: number
+  age?: number
   // 성별
   gender: string
   // 닉네임

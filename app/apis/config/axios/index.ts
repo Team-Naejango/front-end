@@ -35,10 +35,12 @@ export const responseNormalizer = async (error: AxiosError) => {
 
     if (isHasToken) {
       // const authorization = getCookie(AUTH_TOKEN.인가)
+
       // error.config!.headers = {
       //   'Content-Type': 'application/json',
       //   Authorization: `Bearer ${authorization}`,
       // } as HeaderType
+
       // await kakaoLogin(authorization).then(response => {
       //   const { updateToken } = useUpdateToken()
       //
@@ -51,8 +53,8 @@ export const responseNormalizer = async (error: AxiosError) => {
       //     updateToken(response.token.accessToken, response.token.refreshToken)
       //   }
       // })
-      // const requestConfig = await instance.request(error.config as AxiosRequestConfig)
-      // return requestConfig
+      const requestConfig = await instance.request(error.config as AxiosRequestConfig)
+      return requestConfig
     }
     return Promise.reject(error)
   }
