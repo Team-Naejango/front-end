@@ -11,6 +11,7 @@ import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { kakaoAccessToken } from '@/app/store/atom'
 import { useQuery } from '@tanstack/react-query'
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
 
 // export async function getServerSideProps() {
 //   // getUserData 함수를 getServerSideProps 함수 외부로 이동합니다.
@@ -45,8 +46,8 @@ const Home = ({ propsData }: any) => {
   }
 
   console.log('accessToken:', accessToken)
-  const { data: getUserData, isLoading, isError } = useQuery(['test'], () => userInfo(accessToken))
-  console.log('getUserData:', getUserData)
+  // const { data: getUserData, isLoading, isError } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
+  // console.log('getUserData:', getUserData)
 
   // const x = async () => {
   //   return fetch('http://43.202.25.203:8080/api/user/profile', {

@@ -33,10 +33,10 @@ const Carousel = () => {
 
   return (
     <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-3xl'}>
-      {homeImagesData.map((data, id) => {
+      {homeImagesData.map((data, idx) => {
         return (
           <SwiperSlide key={`${data.title}_${data.src}`}>
-            <Link href={`/events/${id}`}>
+            <Link href={`/events/${idx}`}>
               <Image
                 src={data.src}
                 alt={'여행 이벤트 이미지'}
@@ -52,7 +52,7 @@ const Carousel = () => {
                   'absolute bottom-0 left-0 z-20 whitespace-pre-wrap px-5 py-8 text-[26px] font-extrabold leading-normal text-white',
                   data.position ? 'bottom-0 right-0 text-right' : ''
                 )}>
-                {data.title}
+                {homeImagesData[idx]?.title}
               </p>
             </Link>
           </SwiperSlide>

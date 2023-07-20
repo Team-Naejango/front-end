@@ -70,8 +70,8 @@ const Carousel = () => {
 
   return (
     <>
-      <Swiper {...swiperParams} className={'w-full'}>
-        {wareHouseImagesData.map(data => {
+      <Swiper {...swiperParams} className={'mt-16 w-full'}>
+        {wareHouseImagesData.map((data, idx) => {
           return (
             <SwiperSlide key={`${data.title}_${data.src}`}>
               <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
@@ -86,7 +86,7 @@ const Carousel = () => {
                     priority
                   />
                   <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-semibold'>
-                    {data.title}
+                    {wareHouseImagesData[idx].title}
                   </span>
                 </Link>
               </div>
