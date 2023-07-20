@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 
 import Layout from '@/app/components/organism/layout/Layout'
-import Carousel from '@/app/components/organism/warehouse/Carousel'
+import WareHouseCarousel from '@/app/components/organism/warehouse/WareHouseCarousel'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 
 const WareHouse = () => {
@@ -12,7 +12,7 @@ const WareHouse = () => {
     <Layout hasHeader seoTitle={'창고공간'}>
       <div className={'relative h-full w-full'}>
         <div className='flex flex-col justify-center'>
-          <Carousel />
+          <WareHouseCarousel />
           <h2 className={'mb-4 mt-16 text-center text-lg font-bold'}>창고 정보</h2>
           <div className={'h-auto w-full rounded-xl bg-[#f5f5f5] px-8 py-4 text-center'}>
             <div className='mx-auto my-4 grid grid-cols-1 grid-rows-[minmax(0,1fr)] items-center justify-center gap-x-3 gap-y-8'>

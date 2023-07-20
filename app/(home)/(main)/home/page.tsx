@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil'
 
 import { useModal } from '@/app/hooks/useModal'
 import Layout from '@/app/components/organism/layout/Layout'
-import Carousel from '@/app/components/organism/home/Carousel'
+import Carousel from '@/app/components/molecule/slide/Carousel'
 import Button from '@/app/components/atom/Button'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { kakaoAccessToken } from '@/app/store/atom'

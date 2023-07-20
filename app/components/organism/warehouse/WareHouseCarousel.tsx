@@ -10,7 +10,7 @@ import { BsPlusSquare } from 'react-icons/bs'
 
 import { wareHouseImagesData } from '@/app/libs/client/utils/images'
 
-const Carousel = () => {
+const WareHouseCarousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
@@ -69,7 +69,7 @@ const Carousel = () => {
   }, [updatePrevDisabledState])
 
   return (
-    <Swiper {...swiperParams} className={'mt-16 w-full'}>
+    <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
       {wareHouseImagesData.map((data, idx) => {
         return (
           <SwiperSlide key={`${data.title}_${data.src}`}>
@@ -121,4 +121,4 @@ const Carousel = () => {
   )
 }
 
-export default Carousel
+export default WareHouseCarousel
