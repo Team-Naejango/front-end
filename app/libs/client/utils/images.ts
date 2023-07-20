@@ -6,7 +6,6 @@ import event1 from '@/app/assets/image/event_trip_02.png'
 import event2 from '@/app/assets/image/event_trip_03.png'
 import event3 from '@/app/assets/image/event_basket.png'
 import event4 from '@/app/assets/image/event_trip_04.png'
-import boxImg from '@/app/assets/image/box.png'
 
 interface HomeHouseData {
   src: StaticImageData
@@ -46,33 +45,4 @@ const homeImagesData: HomeHouseData[] = [
   },
 ]
 
-interface WareHouseData {
-  id: number
-  src: StaticImageData
-  title: string
-}
-
-const wareHouseImagesData: WareHouseData[] = [
-  {
-    id: 1,
-    src: boxImg,
-    title: '창고1',
-  },
-  {
-    id: 2,
-    src: boxImg,
-    title: '창고2',
-  },
-  {
-    id: 3,
-    src: boxImg,
-    title: '창고3',
-  },
-  {
-    id: 4,
-    src: boxImg,
-    title: '창고4',
-  },
-]
-
-export { homeImagesData, wareHouseImagesData }
+export { homeImagesData }
