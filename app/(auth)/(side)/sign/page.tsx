@@ -18,7 +18,7 @@ import GenderButton from '@/app/components/atom/GenderButton'
 import { SignParams } from '@/app/apis/domain/profile/profile'
 
 interface FormProps {
-  age?: number
+  age: number
   gender: string
   nickname: string
   intro: string
@@ -29,11 +29,9 @@ interface FormProps {
 const Sign = () => {
   const router = useRouter()
   const accessToken = useRecoilValue(kakaoAccessToken)
-  const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
   const [selectedNickname, setSelectedNickname] = useState<string>('')
   console.log('accessToken:', accessToken)
-  console.log('gender:', gender)
 
   const {
     register,
@@ -41,6 +39,7 @@ const Sign = () => {
     handleSubmit,
     reset,
     getValues,
+    setValue,
     setError,
     formState: { errors },
   } = useForm<FormProps>()
@@ -48,7 +47,8 @@ const Sign = () => {
   const nickname = watch('nickname')
 
   const { mutate: mutateSign } = useMutation((params: SignParams) => sign(accessToken, params), {
-    onSuccess: () => {
+    onSuccess: ({ data }) => {
+      console.log('data:', data)
       console.log('회원가입 성공')
       router.push('/home')
     },
@@ -56,6 +56,34 @@ const Sign = () => {
       console.log('error:', error)
     },
   })
+
+  // const x = async ({ age, nickname, gender, phoneNumber, intro, imgUrl }: FormProps) => {
+  //   return fetch('http://43.202.25.203:8080/api/user/profile', {
+  //     method: 'POST',
+  //     headers: {
+  //       Authorization: accessToken!,
+  //     },
+  //     body: JSON.stringify({
+  //       age,
+  //       nickname,
+  //       gender,
+  //       phoneNumber,
+  //       intro,
+  //       imgUrl,
+  //     }),
+  //   })
+  //     .then(response => {
+  //       console.log('response:', response)
+  //       return response
+  //     })
+  //     .then(response => {
+  //       console.log('response.data:', response.json())
+  //     })
+  //     .catch(error => {
+  //       // 에러 처리 코드를 작성합니다.
+  //       console.error(error)
+  //     })
+  // }
 
   const { mutate: mutateNickname } = useMutation(nickNameValidity, {
     onSuccess: () => {
@@ -70,9 +98,9 @@ const Sign = () => {
     // if (isNicknameDisabled && selectedNickname !== nickname) return alert('다시 중복검사 해라')
 
     mutateSign({
-      // age: watch('age'),
+      age: Number(watch('age')),
       nickname,
-      gender,
+      gender: watch('gender'),
       phoneNumber: watch('phoneNumber'),
       intro: '',
       imgUrl: '',
@@ -81,7 +109,7 @@ const Sign = () => {
     reset()
   }
 
-  const onUserNameValidation = (event: React.MouseEvent) => {
+  const onValidUserName = (event: React.MouseEvent) => {
     event.preventDefault()
     if (nickname === '') return false
 
@@ -90,12 +118,8 @@ const Sign = () => {
   }
 
   const onSelectedGender = (gender: '남' | '여') => {
-    setGender(gender)
+    setValue('gender', gender)
   }
-
-  useEffect(() => {
-    setGender(gender)
-  }, [gender])
 
   useEffect(() => {
     // if (selectedNickname !== nickname) {
@@ -131,7 +155,7 @@ const Sign = () => {
               type={'button'}
               smail
               text='중복검사'
-              onClick={onUserNameValidation}
+              onClick={onValidUserName}
               disabled={nickname === undefined || nickname === ''}
               className={'!text-[13px]'}
             />
@@ -152,8 +176,8 @@ const Sign = () => {
               placeholder='생년월일(YYYYMMDD)'
               icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
-            <GenderButton gender='남' selected={gender === '남'} onClick={() => onSelectedGender('남')} />
-            <GenderButton gender='여' selected={gender === '여'} onClick={() => onSelectedGender('여')} />
+            <GenderButton gender='남' selected={watch('gender') === '남'} onClick={() => onSelectedGender('남')} />
+            <GenderButton gender='여' selected={watch('gender') === '여'} onClick={() => onSelectedGender('여')} />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.age?.message}</p>
           <div>

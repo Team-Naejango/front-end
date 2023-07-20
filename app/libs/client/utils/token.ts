@@ -16,24 +16,24 @@ export const TokenValid = async () => {
   const accessToken = useRecoilValue(kakaoAccessToken)
   const { ResetToken } = useClearSession()
 
-  if (!accessToken) {
-    return false
-  }
-
-  if (!refreshToken) {
-    try {
-      const response = await kakaoLogin(authorization)
-
-      if (!response.success) {
-        console.log('리프레시 토큰이 만료됨')
-        ResetToken()
-
-        return false
-      }
-    } catch (error: unknown) {
-      return Promise.reject(error)
-    }
-  }
+  // if (!accessToken) {
+  //   return false
+  // }
+  //
+  // if (!refreshToken) {
+  //   try {
+  //     const response = await kakaoLogin(authorization)
+  //
+  //     if (!response.success) {
+  //       console.log('리프레시 토큰이 만료됨')
+  //       ResetToken()
+  //
+  //       return false
+  //     }
+  //   } catch (error: unknown) {
+  //     return Promise.reject(error)
+  //   }
+  // }
 
   return true
 }

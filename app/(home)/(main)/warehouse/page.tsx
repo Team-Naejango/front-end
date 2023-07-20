@@ -2,51 +2,49 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import Layout from '@/app/components/organism/layout/Layout'
-import boxImg from '@/app/assets/image/box.png'
+import Carousel from '@/app/components/organism/warehouse/Carousel'
+import FloatingButton from '@/app/components/atom/FloatingButton'
 
 const WareHouse = () => {
   return (
     <Layout hasHeader seoTitle={'창고공간'}>
-      <div className='h-inherit mt-8 flex items-center justify-center'>
-        <div className='w-300 mx-auto grid grid-cols-2 grid-rows-[minmax(0,1fr)] items-center justify-center gap-x-3 gap-y-8'>
-          <Link href={`/warehouse/item/${1}`} className='block px-4 pt-4'>
-            <div className='relative flex h-32 w-32 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
-              <Image src={boxImg} alt={''} width={112} height={112} priority />
-              <h1 className='absolute text-lg font-semibold'>{'창고1'}</h1>
+      <div className='h-inherit mt-12 flex flex-col justify-center'>
+        <Carousel />
+        <h2 className={'mb-4 mt-16 text-center text-lg font-bold'}>창고 정보</h2>
+        <div className={'h-auto w-full rounded-xl bg-[#f5f5f5] px-8 py-4 text-center'}>
+          <div className='mx-auto my-4 grid grid-cols-1 grid-rows-[minmax(0,1fr)] items-center justify-center gap-x-3 gap-y-8'>
+            <div className={'flex w-full items-center gap-12 text-left'}>
+              <ul className={'flex-1'}>
+                <li className={'text-xs'}>이름</li>
+                <li className={'mt-1 text-[13px] font-medium'}>내 잔고는 특별해</li>
+              </ul>
+              <ul className={'flex-1'}>
+                <li className={'text-xs'}>위치</li>
+                <li className={'mt-1 text-[13px] font-medium'}>대충 어딘가</li>
+              </ul>
             </div>
-          </Link>
-          <Link href={`/warehouse/item/${2}`} className='block px-4 pt-4'>
-            <div className='flex h-32 w-32 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
-              <Image src={boxImg} alt={''} width={112} height={112} priority />
-              <h1 className='absolute text-lg font-semibold'>{'창고2'}</h1>
+            <div className={'flex w-full items-center gap-14 text-left'}>
+              <ul className={'flex-1'}>
+                <li className={'text-xs'}>생성일</li>
+                <li className={'mt-1 text-[13px] font-medium'}>2023/04/19</li>
+              </ul>
+              <ul className={'flex-1'}>
+                <li className={'text-xs'}>소개</li>
+                <li className={'mt-1 text-[13px] font-medium'}>가나다라마바사아자</li>
+              </ul>
             </div>
-          </Link>
-          <Link href={`/warehouse/item/${3}`} className='block px-4 pt-4'>
-            <div className='flex h-32 w-32 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
-              <Image src={boxImg} alt={''} width={112} height={112} priority />
-              <h1 className='absolute text-lg font-semibold'>{'창고3'}</h1>
-            </div>
-          </Link>
-          <div className={'block px-4 pt-4'}>
-            <button className='flex h-32 w-32 items-center justify-center rounded-md border border-[#33cc99] shadow-sm hover:border-none hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
-              <h1 className='text-lg font-medium'>{'창고 추가'}</h1>
-            </button>
           </div>
-          {/* {streams.map(stream => ( */}
-          {/*  <Link key={stream.id} href={`/streams/${stream.id}`} className='block px-4  pt-4'> */}
-          {/*    <div className='aspect-video w-full rounded-md bg-slate-300 shadow-sm' /> */}
-          {/*    <h1 className='mt-2 text-2xl font-bold text-gray-900'>{stream.name}</h1> */}
-          {/*  </Link> */}
-          {/* ))} */}
-          {/* <Link href={`/warehouse/item/${3}`} className='block px-4 pt-4'> */}
-          {/*  <div className='flex h-28 w-28 items-center justify-center rounded-md bg-slate-300 shadow-sm'> */}
-          {/*    <h1 className='mt-2 text-xl font-semibold text-gray-900'>{'창고3'}</h1> */}
-          {/*  </div> */}
-          {/* </Link> */}
         </div>
+        <FloatingButton href='/warehouse/item/create'>
+          <span className={'text-xs'}>창고등록</span>
+        </FloatingButton>
+      </div>
+      <div className={'absolute right-0 top-3 rounded border border-[#ddd] px-1.5 py-1 hover:border-[#32D7A0]'}>
+        <Link href={'/warehouse/point'}>
+          <span className={'inline-block text-[13px]'}>포인트 충전</span>
+        </Link>
       </div>
     </Layout>
   )

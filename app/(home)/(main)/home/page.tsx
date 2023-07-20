@@ -1,17 +1,15 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
-import { useQuery } from '@tanstack/react-query'
-import { GetServerSideProps } from 'next'
-import axios from 'axios'
 
 import { useModal } from '@/app/hooks/useModal'
 import Layout from '@/app/components/organism/layout/Layout'
-import Carousel from '@/app/components/molecule/slide/Carousel'
+import Carousel from '@/app/components/organism/home/Carousel'
 import Button from '@/app/components/atom/Button'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { kakaoAccessToken } from '@/app/store/atom'
+import { useQuery } from '@tanstack/react-query'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 
 // export async function getServerSideProps() {
@@ -46,8 +44,30 @@ const Home = ({ propsData }: any) => {
     openModal({ modal: { id: 'testFalseAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
   }
 
+  console.log('accessToken:', accessToken)
   const { data: getUserData, isLoading, isError } = useQuery(['test'], () => userInfo(accessToken))
   console.log('getUserData:', getUserData)
+
+  // const x = async () => {
+  //   return fetch('http://43.202.25.203:8080/api/user/profile', {
+  //     method: 'GET',
+  //     headers: {
+  //       Authorization: accessToken!,
+  //     },
+  //   })
+  //     .then(response => response.json())
+  //     .then(response => {
+  //       console.log('response.data:', response.data)
+  //     })
+  //     .catch(error => {
+  //       // 에러 처리 코드를 작성합니다.
+  //       console.error(error)
+  //     })
+  // }
+
+  // useEffect(() => {
+  //   x()
+  // }, [])
 
   // axios
   //   .get('http://43.202.25.203:8080/api/user/profile', {
