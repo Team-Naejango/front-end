@@ -39,7 +39,7 @@ const WareHouse = () => {
               </div>
             </div>
           </div>
-          <FloatingButton href='/warehouse/item/create'>
+          <FloatingButton href='/warehouse/edit'>
             <span className={'text-xs'}>
               <LuEdit2 fontSize={'21'} />
             </span>
