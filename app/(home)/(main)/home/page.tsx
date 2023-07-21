@@ -48,7 +48,7 @@ const Home = () => {
   }
 
   console.log('accessToken:', accessToken)
-  // const { data: getUserData, isLoading, isError } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
+  // const { data: { getUserData, isError, isLoading } = {} } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
   // console.log('getUserData:', getUserData)
 
   // const x = async () => {

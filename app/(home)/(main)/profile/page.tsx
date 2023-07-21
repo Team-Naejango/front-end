@@ -46,7 +46,7 @@ const Profile = () => {
         <ul className={'flex flex-col gap-3.5'}>
           <li
             role={'presentation'}
-            onClick={() => onLink('/profile/edit')}
+            onClick={() => onLink('/profile/[...edit]')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
             <span className={'text-sm'}>회원정보 수정</span>
             <GrFormNext />

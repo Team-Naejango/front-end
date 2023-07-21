@@ -30,7 +30,14 @@ const MultiSelectBox = ({ title, data, selected, setSelected, essential }: Multi
           {title}
         </span>
       ) : null}
-      <Combobox value={selected} onChange={setSelected} multiple>
+      <Combobox
+        value={selected}
+        onChange={newValue => {
+          if (newValue) {
+            setSelected(newValue)
+          }
+        }}
+        multiple>
         <div className='relative mt-1'>
           <Combobox.Button
             className={cls(

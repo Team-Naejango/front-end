@@ -27,7 +27,7 @@ interface EditProfileForm {
 
 const EditProfile = () => {
   const [imageFile, setImageFile] = useState<FileList | null>(null)
-  const [imageSrc, setImageSrc] = useState<string | ArrayBuffer | null>('')
+  const [imageSrc, setImageSrc] = useState<string | null>('')
 
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
@@ -106,13 +106,15 @@ const EditProfile = () => {
 
     const reader = new FileReader()
     reader.addEventListener('load', () => {
-      setImageSrc(reader.result)
+      setImageSrc(reader.result as string)
       setImageFile(event.target.files)
+
+      URL.revokeObjectURL(reader.result as string)
     })
     reader.readAsDataURL(file)
   }
 
-  const onValid = async () => {
+  const onSubmit = async () => {
     if (!imageSrc) {
       toast.error('이미지를 등록해 주세요.')
       return
@@ -139,7 +141,7 @@ const EditProfile = () => {
   return (
     <Layout canGoBack title={'프로필 편집'} seoTitle={'프로필'}>
       <div className='mt-16'>
-        <form onSubmit={handleSubmit(onValid)} className='space-y-4 px-4'>
+        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4 px-4'>
           <div className='mb-12 flex items-center justify-center gap-3'>
             {imageFile ? (
               <Image
@@ -152,7 +154,7 @@ const EditProfile = () => {
             ) : (
               <div className='h-24 w-24 rounded-full bg-gray-300' />
             )}
-            <InputFile id='picture' {...register('imageFile')} onChange={e => onUpload(e)} />
+            <InputFile id='picture' {...register('imageFile')} onChange={event => onUpload(event)} />
           </div>
           <div className={'flex flex-row items-center'}>
             <InputField

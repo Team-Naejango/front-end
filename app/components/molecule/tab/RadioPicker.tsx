@@ -36,7 +36,7 @@ const RadioPicker = ({ data, selectedRadio, setSelectedRadio }: RadioPickerProps
                 value={value}
                 className={({ active, checked }) =>
                   `${active ? 'ring-1 ring-white ring-opacity-60 ring-offset-1 ring-offset-[#32D7A0]' : ''}
-                    relative flex cursor-pointer rounded-lg bg-[#f8f8f8] px-5 py-4 focus:outline-none`
+                    relative flex cursor-pointer rounded-lg bg-[#f6f6f6] px-5 py-4 focus:outline-none`
                 }>
                 {({ active, checked }) => (
                   <>

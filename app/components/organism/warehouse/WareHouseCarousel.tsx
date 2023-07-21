@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import SwiperCore, { Navigation, Pagination, A11y } from 'swiper'
@@ -14,8 +13,7 @@ import { wareHouseImagesData } from '@/app/libs/client/utils/images'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
-const WareHouseCarousel = () => {
-  const router = useRouter()
+const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
@@ -46,7 +44,7 @@ const WareHouseCarousel = () => {
   const onTouchCurrentIdx = () => {
     if (swiper) {
       const { realIndex } = swiper
-      if (swiper) swiper.allowSlidePrev = realIndex !== 0
+      swiper.allowSlidePrev = realIndex !== 0
     }
   }
 
@@ -107,10 +105,7 @@ const WareHouseCarousel = () => {
             <div
               className={`swiper-button-next cursor-pointer, absolute right-5 top-1/2 ${findLastIdx ? 'block' : ''}`}>
               {findLastIdx ? (
-                <BsPlusSquare
-                  className='h-6 w-6 text-[#222] hover:text-[#33CC99]'
-                  onClick={() => router.push('/warehouse/edit')}
-                />
+                <BsPlusSquare className='h-6 w-6 text-[#222] hover:text-[#33CC99]' onClick={onClick} />
               ) : (
                 <svg
                   fill='none'

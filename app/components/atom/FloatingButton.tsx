@@ -1,9 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
+import { UrlObject } from 'url'
 
 interface FloatingButtonProps {
   children: React.ReactNode
-  href: string
+  href: string | UrlObject
 }
 
 const FloatingButton = ({ children, href }: FloatingButtonProps) => {

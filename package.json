@@ -51,6 +51,7 @@
     "swiper": "^9.4.1",
     "tailwindcss": "^3.3.2",
     "typescript": "5.0.4",
+    "underscore": "^1.13.6",
     "web-push": "^3.6.3"
   },
   "devDependencies": {

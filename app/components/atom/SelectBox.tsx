@@ -23,7 +23,13 @@ const SelectBox = ({ title, data, selected, setSelected, essential, placeholder 
           {title}
         </span>
       ) : null}
-      <Listbox value={selected} onChange={setSelected}>
+      <Listbox
+        value={selected}
+        onChange={newValue => {
+          if (newValue) {
+            setSelected(newValue)
+          }
+        }}>
         <div className='relative mt-1'>
           <Listbox.Button
             className='relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-sm leading-8 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-1 focus:ring-[#32D7A0]'
