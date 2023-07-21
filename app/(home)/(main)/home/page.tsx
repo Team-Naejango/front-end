@@ -2,15 +2,16 @@
 
 import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
+// import { useQuery } from '@tanstack/react-query'
 
+import { kakaoAccessToken } from '@/app/store/atom'
+import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import Layout from '@/app/components/organism/layout/Layout'
+import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { kakaoAccessToken } from '@/app/store/atom'
-import { useQuery } from '@tanstack/react-query'
-import { userInfo } from '@/app/apis/domain/profile/profile'
-import Carousel from '@/app/components/molecule/slide/Carousel'
+// import { userInfo } from '@/app/apis/domain/profile/profile'
+// import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
 
 // export async function getServerSideProps() {
 //   // getUserData 함수를 getServerSideProps 함수 외부로 이동합니다.
@@ -45,8 +46,8 @@ const Home = ({ propsData }: any) => {
   }
 
   console.log('accessToken:', accessToken)
-  const { data: getUserData, isLoading, isError } = useQuery(['test'], () => userInfo(accessToken))
-  console.log('getUserData:', getUserData)
+  // const { data: getUserData, isLoading, isError } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
+  // console.log('getUserData:', getUserData)
 
   // const x = async () => {
   //   return fetch('http://43.202.25.203:8080/api/user/profile', {
@@ -88,7 +89,7 @@ const Home = ({ propsData }: any) => {
     <Layout hasHeader seoTitle={'홈'}>
       <div className='flex items-center justify-center'>
         <div className={'mt-8 w-full'}>
-          <Carousel />
+          <EventCarousel />
           <div className={'mx-auto mt-80 flex w-[80%] gap-4'}>
             <Button smail onClick={() => onClickShowTrueAlert()} text={'성공 버튼'} />
             <Button

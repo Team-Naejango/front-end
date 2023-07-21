@@ -11,11 +11,6 @@ import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/apiKey'
 import Loading from '@/app/loading'
 // import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
 
-lazy(() => import('swiper/css'))
-lazy(() => import('swiper/css/navigation'))
-lazy(() => import('swiper/css/pagination'))
-lazy(() => import('swiper/css/scrollbar'))
-
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
   // preload: true,

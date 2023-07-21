@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { lazy, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import SwiperCore, { Navigation, Pagination, A11y, Autoplay } from 'swiper'
@@ -10,7 +10,11 @@ import { Swiper as SwiperClass } from 'swiper/types'
 import { homeImagesData } from '@/app/libs/client/utils/images'
 import { cls } from '@/app/libs/client/utils/util'
 
-const Carousel = () => {
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
+const EventCarousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
@@ -68,4 +72,4 @@ const Carousel = () => {
   )
 }
 
-export default Carousel
+export default EventCarousel

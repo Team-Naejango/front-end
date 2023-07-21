@@ -3,12 +3,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import SwiperCore, { Navigation, Pagination, A11y, Autoplay } from 'swiper'
+import SwiperCore, { Navigation, Pagination, A11y } from 'swiper'
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 import { BsPlusSquare } from 'react-icons/bs'
 
 import { wareHouseImagesData } from '@/app/libs/client/utils/images'
+
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 const WareHouseCarousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
@@ -17,7 +20,7 @@ const WareHouseCarousel = () => {
   const totalSlides = wareHouseImagesData.length
   const findLastIdx = activeIndex === totalSlides - 1
 
-  SwiperCore.use([Navigation, Autoplay])
+  SwiperCore.use([Navigation])
 
   const updatePrevDisabledState = useCallback(() => {
     if (swiper && swiper.realIndex === 0) {
@@ -70,9 +73,9 @@ const WareHouseCarousel = () => {
 
   return (
     <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
-      {wareHouseImagesData.map((data, idx) => {
+      {wareHouseImagesData.map(data => {
         return (
-          <SwiperSlide key={`${data.title}_${data.src}`}>
+          <SwiperSlide key={data.title} className={'slider_fade'}>
             <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
               <Link href={`/warehouse/item/${data.id}`}>
                 <Image
@@ -85,7 +88,7 @@ const WareHouseCarousel = () => {
                   priority
                 />
                 <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-semibold'>
-                  {wareHouseImagesData[idx].title}
+                  {data.title}
                 </span>
               </Link>
             </div>
