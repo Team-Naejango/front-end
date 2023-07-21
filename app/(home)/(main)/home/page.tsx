@@ -5,12 +5,12 @@ import { useRecoilValue } from 'recoil'
 
 import { useModal } from '@/app/hooks/useModal'
 import Layout from '@/app/components/organism/layout/Layout'
-import Carousel from '@/app/components/organism/home/Carousel'
 import Button from '@/app/components/atom/Button'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { kakaoAccessToken } from '@/app/store/atom'
 import { useQuery } from '@tanstack/react-query'
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import Carousel from '@/app/components/molecule/slide/Carousel'
 
 // export async function getServerSideProps() {
 //   // getUserData 함수를 getServerSideProps 함수 외부로 이동합니다.
