@@ -3,7 +3,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import KakaoMap from '@/app/components/organism/place/KakaoMap'
 
 const WareHousePlaces = () => {

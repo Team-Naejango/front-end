@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import RoundedTab from '@/app/components/molecule/tab/RoundedTab'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 

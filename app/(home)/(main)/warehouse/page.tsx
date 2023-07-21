@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import WareHouseCarousel from '@/app/components/organism/warehouse/WareHouseCarousel'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 

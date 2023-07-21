@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil'
 import gsap from 'gsap'
 
 import { splashState } from '@/app/store/atom'
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 
 const Notice = () => {
   const isSplashMounted = useRecoilValue(splashState)

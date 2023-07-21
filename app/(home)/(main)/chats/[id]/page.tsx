@@ -4,7 +4,7 @@ import React, { EventHandler, useEffect, useRef } from 'react'
 import type { NextPage } from 'next'
 import { useForm } from 'react-hook-form'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import Message from '@/app/components/atom/Message'
 
 interface MessageForm {

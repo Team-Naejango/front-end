@@ -72,7 +72,7 @@ const WareHouseCarousel = () => {
   }, [updatePrevDisabledState])
 
   return (
-    <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
+    <Swiper {...swiperParams} className={'mt-20 h-40 w-full'}>
       {wareHouseImagesData.map(data => {
         return (
           <SwiperSlide key={data.title} className={'slider_fade'}>

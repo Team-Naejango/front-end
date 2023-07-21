@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 
 const EventDetail = () => {
   return (

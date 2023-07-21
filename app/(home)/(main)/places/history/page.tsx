@@ -4,7 +4,7 @@ import React from 'react'
 import uuid from 'react-uuid'
 import { CiSearch } from 'react-icons/ci'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
 
 const History = () => {

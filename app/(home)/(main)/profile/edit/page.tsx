@@ -12,7 +12,7 @@ import { BsPhone } from 'react-icons/bs'
 import Button from '@/app/components/atom/Button'
 import InputField from '@/app/components/atom/InputField'
 import GenderButton from '@/app/components/atom/GenderButton'
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import TextArea from '@/app/components/atom/TextArea'
 import InputFile from '@/app/components/atom/InputFile'
 

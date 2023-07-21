@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 import { GrFormNext } from 'react-icons/gr'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import SwitchButton from '@/app/components/atom/SwitchButton'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import CustomModal from '@/app/components/molecule/modal/CustomModal'

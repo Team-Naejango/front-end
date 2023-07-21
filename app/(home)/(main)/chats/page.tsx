@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import SmallBanner from '@/app/components/molecule/banner/SmallBanner'
 import { cls } from '@/app/libs/client/utils/util'
 

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import Button from '@/app/components/atom/Button'
 import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
 

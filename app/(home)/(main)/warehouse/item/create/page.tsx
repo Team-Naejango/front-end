@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { GrFormNext } from 'react-icons/gr'
 
 import { CATEGORIES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/warehouse'
-import Layout from '@/app/components/organism/layout/Layout'
+import Layout from '@/app/components/template/main/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import TextArea from '@/app/components/atom/TextArea'
