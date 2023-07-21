@@ -64,7 +64,7 @@ const KakaoMap = () => {
           </div>
         )
       ) : (
-        <Skeleton width={330} height={200} className={'mt-[1.125rem]'} baseColor={'rgba(240, 240, 240, 0.5)'} />
+        <Skeleton width={330} height={190} className={'mt-[1.125rem]'} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
     </>
   )

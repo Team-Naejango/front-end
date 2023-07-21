@@ -81,7 +81,7 @@ const Sign = () => {
     reset()
   }
 
-  const onUserNameValidation = (event: React.MouseEvent) => {
+  const onValidUserName = (event: React.MouseEvent) => {
     event.preventDefault()
     if (nickname === '') return false
 
@@ -131,7 +131,7 @@ const Sign = () => {
               type={'button'}
               smail
               text='중복검사'
-              onClick={onUserNameValidation}
+              onClick={onValidUserName}
               disabled={nickname === undefined || nickname === ''}
               className={'!text-[13px]'}
             />

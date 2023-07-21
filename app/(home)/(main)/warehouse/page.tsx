@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { LuEdit2 } from 'react-icons/lu'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import WareHouseCarousel from '@/app/components/organism/warehouse/WareHouseCarousel'
@@ -39,10 +40,12 @@ const WareHouse = () => {
             </div>
           </div>
           <FloatingButton href='/warehouse/item/create'>
-            <span className={'text-xs'}>창고등록</span>
+            <span className={'text-xs'}>
+              <LuEdit2 fontSize={'21'} />
+            </span>
           </FloatingButton>
         </div>
-        <div className={'absolute right-0 top-3 rounded border border-[#ddd] px-1.5 py-1 hover:border-[#32D7A0]'}>
+        <div className={'absolute right-0 top-3 rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0]'}>
           <Link href={'/warehouse/point'}>
             <span className={'inline-block text-[13px]'}>포인트 충전</span>
           </Link>
