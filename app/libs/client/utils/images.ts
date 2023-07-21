@@ -61,11 +61,6 @@ const wareHouseImagesData: WareHouseData[] = [
     src: boxImg,
     title: '창고3',
   },
-  {
-    id: 4,
-    src: boxImg,
-    title: '창고4',
-  },
 ]
 
 export { homeImagesData, wareHouseImagesData }
