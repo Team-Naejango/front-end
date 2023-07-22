@@ -7,35 +7,34 @@ import { useRecoilState } from 'recoil'
 import { splashState } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
-import { modalSelector } from '@/app/store/modal'
-import CustomAlert from '@/app/components/molecule/modal/CustomAlert'
 import CustomToast from '@/app/components/molecule/modal/CustomToast'
+// import { modalSelector } from '@/app/store/modal'
+// import CustomAlert from '@/app/components/molecule/modal/CustomAlert'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
-  const [alertTrueState, setAlertTrueState] = useRecoilState(modalSelector('testTrueAlert'))
-  const [alertFalseState, setAlertFalseState] = useRecoilState(modalSelector('testFalseAlert'))
-
-  const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
+  // const alertTrueState = useRecoilValue(modalSelector('testTrueAlert'))
+  // const alertFalseState = useRecoilValue(modalSelector('testFalseAlert'))
 
   useEffect(() => {
-    window.addEventListener('popstate', () => {
-      if (isSplashMounted) {
-        if (prevUrl !== '/') {
-          router.back()
-        } else {
-          router.replace('/login')
-        }
+    if (isSplashMounted) {
+      const handleBackButton = () => {
+        window.addEventListener('popstate', () => {
+          pathname !== '/' ? router.back() : router.replace('/login')
+        })
       }
-    })
-  }, [])
+      return () => {
+        window.removeEventListener('popstate', handleBackButton)
+      }
+    }
+  }, [isSplashMounted, pathname, router])
 
   useEffect(() => {
     setIsSplashMounted(true)
-  }, [])
+  }, [setIsSplashMounted])
 
   return (
     <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
@@ -61,8 +60,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
           )}
         </div>
 
-        {alertTrueState.modal.show ? <CustomAlert id={alertTrueState.modal.id} success /> : null}
-        {alertFalseState.modal.show ? <CustomAlert id={alertFalseState.modal.id} success={false} /> : null}
+        {/* {alertTrueState.modal.show ? <CustomAlert id={alertTrueState.modal.id} success /> : null} */}
+        {/* {alertFalseState.modal.show ? <CustomAlert id={alertFalseState.modal.id} success={false} /> : null} */}
       </div>
 
       <CustomToast />

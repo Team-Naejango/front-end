@@ -13,7 +13,7 @@ const Chats = () => {
   const [close, setClose] = useState<boolean>(false)
 
   const onClickBanner = () => {
-    router.push('/events/0')
+    router.push('/events')
   }
 
   const onCloseBanner = () => {
@@ -28,7 +28,6 @@ const Chats = () => {
           <Link
             href={`/chats/${i}`}
             key={_}
-            prefetch
             className={cls('flex items-center space-x-3 py-3 hover:bg-[#eeeeee]', i === 0 ? '!border-t-0' : '')}>
             <div className='h-12 w-12 rounded-full bg-slate-300' />
             <div className={'inline-block'}>

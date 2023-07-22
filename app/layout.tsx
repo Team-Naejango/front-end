@@ -9,7 +9,7 @@ import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
 import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/apiKey'
 import Loading from '@/app/loading'
-// import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
+import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
@@ -33,9 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <RecoilProvider>
           <QueryProvider>
             <Suspense fallback={<Loading />}>
-              {/* <UseAxiosWrapper> */}
-              {children}
-              {/* </UseAxiosWrapper> */}
+              <UseAxiosWrapper>{children}</UseAxiosWrapper>
             </Suspense>
           </QueryProvider>
         </RecoilProvider>

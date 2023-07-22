@@ -5,17 +5,19 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
-import { useRecoilValue } from 'recoil'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
+import { useRecoilValue } from 'recoil'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
-import { kakaoAccessToken } from '@/app/store/atom'
 import GenderButton from '@/app/components/atom/GenderButton'
 import { SignParams } from '@/app/apis/domain/profile/profile'
+import { getCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { kakaoAccessToken } from '@/app/store/atom'
 
 interface FormProps {
   age?: number
@@ -28,12 +30,12 @@ interface FormProps {
 
 const Sign = () => {
   const router = useRouter()
-  const accessToken = useRecoilValue(kakaoAccessToken)
+  // const accessToken = useRecoilValue(kakaoAccessToken)
+  const accessToken = getCookie(AUTH_TOKEN.접근)
   const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
   const [selectedNickname, setSelectedNickname] = useState<string>('')
-  console.log('accessToken:', accessToken)
-  console.log('gender:', gender)
+  console.log('signAccessToken:', accessToken)
 
   const {
     register,
@@ -50,7 +52,7 @@ const Sign = () => {
   const { mutate: mutateSign } = useMutation((params: SignParams) => sign(accessToken, params), {
     onSuccess: () => {
       console.log('회원가입 성공')
-      // router.push('/home')
+      router.push('/home')
     },
     onError: (error: unknown) => {
       console.log('error:', error)

@@ -1,4 +1,3 @@
-import { ReactElement } from 'react'
 import { atom } from 'recoil'
 
 import { AUTH_TOKEN, STORE_KEY } from '@/app/libs/client/constants/store'
@@ -18,13 +17,6 @@ interface LocationProps {
   longitude: number
 }
 
-interface ModalProps {
-  isOpen: boolean
-  title: string
-  content: ReactElement | string
-  callback?: () => any
-}
-
 /**
  * 액세스 토큰
  * @todo 액세스 토큰 만료기한
@@ -33,7 +25,7 @@ interface ModalProps {
 export const kakaoAccessToken = atom<string | null>({
   key: `${STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: undefined,
-  // effects: [cookieEffect(AUTH_TOKEN.접근)],
+  effects: [cookieEffect(AUTH_TOKEN.접근)],
 })
 
 /**

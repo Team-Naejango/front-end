@@ -7,9 +7,12 @@ import { useRecoilValue } from 'recoil'
 import { instance } from '@/app/apis/config/axios/instance'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { kakaoAccessToken } from '@/app/store/atom'
+import { getCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
-  const accessToken = useRecoilValue(kakaoAccessToken)
+  // const accessToken = useRecoilValue(kakaoAccessToken)
+  const accessToken = getCookie(AUTH_TOKEN.접근)
 
   useEffect(() => {
     const requestInterceptor = instance.interceptors.request.use(
@@ -23,12 +26,12 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         console.log('isHasToken:', isHasToken)
         console.log('accessTokenaccessToken:', accessToken)
 
-        // if (!isHasToken) {
-        config.headers = {
-          'Content-Type': 'application/json',
-          Authorization: accessToken,
-        } as AxiosRequestHeaders
-        // }
+        if (!isHasToken) {
+          config.headers = {
+            'Content-Type': 'application/json',
+            Authorization: accessToken,
+          } as AxiosRequestHeaders
+        }
         return config
       }
     )

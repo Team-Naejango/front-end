@@ -6,6 +6,8 @@ import { getCookie } from '@/app/libs/client/utils/cookie'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { instance } from '@/app/apis/config/axios/instance'
+import { kakaoLogin } from '@/app/apis/domain/auth/auth'
+import { useUpdateToken } from '@/app/hooks/useUpdateToken'
 
 interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
@@ -28,33 +30,23 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
 }
 
 export const responseNormalizer = async (error: AxiosError) => {
-  console.log('error.config:', error.config)
+  console.log('error.config:before', error.config)
 
-  if (error.response?.status === 403) {
+  if (error.response?.status === 401) {
     const isHasToken = await TokenValid()
 
     if (isHasToken) {
-      // const authorization = getCookie(AUTH_TOKEN.인가)
+      const accessToken = getCookie(AUTH_TOKEN.접근)
 
-      // error.config!.headers = {
-      //   'Content-Type': 'application/json',
-      //   Authorization: `Bearer ${authorization}`,
-      // } as HeaderType
+      error.config!.headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      } as HeaderType
 
-      // await kakaoLogin(authorization).then(response => {
-      //   const { updateToken } = useUpdateToken()
-      //
-      //   if (response.success) {
-      //     error.config!.headers = {
-      //       'Content-Type': 'application/json',
-      //       Authorization: `Bearer ${response.token.accessToken}`,
-      //     } as HeaderType
-      //
-      //     updateToken(response.token.accessToken, response.token.refreshToken)
-      //   }
-      // })
-      const requestConfig = await instance.request(error.config as AxiosRequestConfig)
-      return requestConfig
+      console.log('error.config:after', error.config)
+
+      const renewalConfig = await instance.request(error.config as AxiosRequestConfig)
+      return renewalConfig
     }
     return Promise.reject(error)
   }

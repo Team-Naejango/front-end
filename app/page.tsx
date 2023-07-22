@@ -3,51 +3,31 @@
 import React, { useState, useEffect } from 'react'
 import { NextPage } from 'next'
 import { useRouter } from 'next/navigation'
-import { useRecoilValue } from 'recoil'
 
 import Login from '@/app/(auth)/(main)/login/page'
 import Home from '@/app/(home)/(main)/home/page'
-import { kakaoAccessToken, splashState } from '@/app/store/atom'
-import { removeCookie } from '@/app/libs/client/utils/cookie'
+import { getCookie, removeCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
 const App: NextPage = () => {
   const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
-  const accessToken = useRecoilValue(kakaoAccessToken)
-  const isSplashMounted = useRecoilValue(splashState)
-
-  console.log('isSplashMounted:', isSplashMounted)
+  const accessToken = getCookie(AUTH_TOKEN.접근)
+  // const accessToken = useRecoilValue(kakaoAccessToken)
 
   // todo: 관련 url이 아닐 경우 후속처리
   useEffect(() => {
     if (accessToken) {
       setIsLoggedIn(true)
-      // router.push('/home')
+      router.push('/home')
     } else {
       removeCookie(AUTH_TOKEN.갱신)
-      // router.push('/')
+      router.push('/')
     }
   }, [accessToken, router])
 
   // todo: wrap 전역 처리
   return <>{isLoggedIn ? <Home /> : <Login />}</>
 }
-
-// todo: 서버사이드적 조건부 렌더링 검토
-// App.getInitialProps = (ctx: NextPageContext) => {
-//   // const { ...get } = cookies()
-//
-//   // console.log('get:', ...get)
-//
-//   // const router = useRouter()
-//
-//   if (ctx.req && ctx.res) {
-//     ctx.res.writeHead(302, { Location: '/login' })
-//     ctx.res.end()
-//   } else {
-//     router.push('/login')
-//   }
-// }
 
 export default App

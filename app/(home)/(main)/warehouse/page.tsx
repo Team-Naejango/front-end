@@ -18,7 +18,7 @@ const WareHouse = () => {
       pathname: '/warehouse/edit',
       query: {
         CRUD: CRUD.등록,
-        seq: null,
+        seq: '',
       },
     })
   }
@@ -54,7 +54,6 @@ const WareHouse = () => {
             </div>
           </div>
           <FloatingButton
-            prefetch={false}
             href={{
               pathname: `/warehouse/edit`,
               query: {

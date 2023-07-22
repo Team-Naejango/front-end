@@ -1,6 +1,6 @@
-import { instance } from '@/app/apis/config/axios/instance'
-import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { withAuth } from '@/app/apis/config/axios/withAuth'
 import { Response } from '@/app/apis/types/response/response'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 
 export interface SignParams {
   // 생년월일
@@ -22,7 +22,7 @@ export interface SignParams {
  *
  */
 export async function userInfo(accessToken: string | null): Promise<Response<{ data: MemberInfo }>> {
-  return instance.get('/api/user/profile', {
+  return withAuth.get('/api/user/profile', {
     headers: { Authorization: accessToken },
   })
 }
@@ -40,7 +40,7 @@ export async function modifyUserInfo(params: {
   intro: string
   imgUrl: string
 }): Promise<Response<{ data: MemberInfo }>> {
-  return instance.patch('/api/user/profile', params)
+  return withAuth.patch('/api/user/profile', params)
 }
 
 /**
@@ -48,5 +48,5 @@ export async function modifyUserInfo(params: {
  *
  */
 export async function deleteUser(): Promise<Response<null>> {
-  return instance.delete('/api/user/profile')
+  return withAuth.delete('/api/user/profile')
 }

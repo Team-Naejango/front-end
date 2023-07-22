@@ -1,17 +1,20 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useRecoilValue } from 'recoil'
 
-import { kakaoAccessToken } from '@/app/store/atom'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { useModal } from '@/app/hooks/useModal'
 import Layout from '@/app/components/template/main/layout/Layout'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import FloatingButton from '@/app/components/atom/FloatingButton'
+import { getCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { kakaoAccessToken } from '@/app/store/atom'
+import { MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { useModal } from '@/app/hooks/useModal'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
 
@@ -36,15 +39,16 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
 
 const Home = () => {
   const router = useRouter()
-  const { openModal } = useModal()
-  const accessToken = useRecoilValue(kakaoAccessToken)
+  const accessToken = getCookie(AUTH_TOKEN.접근)
+  // const { openModal } = useModal()
+  // const accessToken = useRecoilValue(kakaoAccessToken)
 
-  const onClickShowTrueAlert = () => {
-    openModal({ modal: { id: 'testTrueAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
-  }
-  const onClickShowFalseAlert = () => {
-    openModal({ modal: { id: 'testFalseAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
-  }
+  // const onClickShowTrueAlert = () => {
+  //   openModal({ modal: { id: 'testTrueAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
+  // }
+  // const onClickShowFalseAlert = () => {
+  //   openModal({ modal: { id: 'testFalseAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
+  // }
 
   console.log('accessToken:', accessToken)
   // const { data: getUserData, isError, isLoading = {} } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
