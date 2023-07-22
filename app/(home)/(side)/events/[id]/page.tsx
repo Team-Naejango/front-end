@@ -1,13 +1,43 @@
+'use client'
+
 import React from 'react'
+import { useRouter } from 'next/navigation'
 
-import Layout from '@/app/components/template/main/layout/Layout'
-
-const EventDetail = () => {
-  return (
-    <Layout canGoBack title={'이벤트 상세'} seoTitle={'이벤트 상세'}>
-      <div className='flex h-[100%] items-center justify-center'>이벤트 상세 페이지</div>
-    </Layout>
-  )
+type PostPageProps = {
+  post?: any
 }
 
-export default EventDetail
+async function getData(ctx: any) {
+  // const slug = ctx.params?.slug as string
+
+  console.log('ctx:', ctx)
+  // console.log('slug:', slug)
+
+  // if (!post) {
+  //   return {
+  //     notFound: true,
+  //   };
+  // }
+
+  return {
+    props: {
+      post: 1,
+    },
+  }
+}
+
+const PostPage = async ({ post }: any) => {
+  const router = useRouter()
+  const data = await getData(post)
+
+  console.log('data:', data)
+  console.log('post:', post)
+
+  if (!post && typeof window !== 'undefined') {
+    router.push('/404')
+    return null
+  }
+  return <div>PostPage</div>
+}
+
+export default PostPage
