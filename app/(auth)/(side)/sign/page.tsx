@@ -50,7 +50,7 @@ const Sign = () => {
   const { mutate: mutateSign } = useMutation((params: SignParams) => sign(accessToken, params), {
     onSuccess: () => {
       console.log('회원가입 성공')
-      router.push('/home')
+      // router.push('/home')
     },
     onError: (error: unknown) => {
       console.log('error:', error)

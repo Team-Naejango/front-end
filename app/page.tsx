@@ -23,10 +23,10 @@ const App: NextPage = () => {
   useEffect(() => {
     if (accessToken) {
       setIsLoggedIn(true)
-      router.push('/home')
+      // router.push('/home')
     } else {
       removeCookie(AUTH_TOKEN.갱신)
-      router.push('/')
+      // router.push('/')
     }
   }, [accessToken, router])
 

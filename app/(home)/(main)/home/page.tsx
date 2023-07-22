@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
-// import { useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 
 import { kakaoAccessToken } from '@/app/store/atom'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
@@ -12,9 +12,8 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import FloatingButton from '@/app/components/atom/FloatingButton'
-
-// import { userInfo } from '@/app/apis/domain/profile/profile'
-// import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
+import { userInfo } from '@/app/apis/domain/profile/profile'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
 
 // export async function getServerSideProps() {
 //   const UseGetUserData = async () => {
@@ -48,7 +47,7 @@ const Home = () => {
   }
 
   console.log('accessToken:', accessToken)
-  // const { data: { getUserData, isError, isLoading } = {} } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
+  // const { data: getUserData, isError, isLoading = {} } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
   // console.log('getUserData:', getUserData)
 
   // const x = async () => {
