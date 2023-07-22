@@ -32,24 +32,24 @@ type Params = {
   }
 }
 const WarehouseEdit = ({ params = { userId: '1' } }: Params) => {
-  const searchParam = useSearchParams()
-  const editState = searchParam.get('CRUD')
+  // const searchParam = useSearchParams()
+  // const editState = searchParam.get('CRUD')
 
   // const data = getData()
   // console.log('data:', data)
   console.log('params:', params)
-  const getEditStatus = useCallback(() => {
-    const editState = searchParam.get('CRUD')
-    const seqState = searchParam.get('seq')
-    const edit = (editState === CRUD.수정 && seqState !== '') || false
-    return { edit }
-  }, [searchParam])
+  // const getEditStatus = useCallback(() => {
+  //   const editState = searchParam.get('CRUD')
+  //   const seqState = searchParam.get('seq')
+  //   const edit = (editState === CRUD.수정 && seqState !== '') || false
+  //   return { edit }
+  // }, [searchParam])
   //
   // const { edit } = getEditStatus()
   //
-  useEffect(() => {
-    getEditStatus()
-  }, [])
+  // useEffect(() => {
+  //   getEditStatus()
+  // }, [])
 
   // useEffect(() => {
   //   const getCRUDValue = async () => {
@@ -78,7 +78,8 @@ const WarehouseEdit = ({ params = { userId: '1' } }: Params) => {
 
   return (
     <Suspense fallback={<Loading />}>
-      <BackHeader canGoBack title={`창고 ${editState === CRUD.수정 ? '편집' : '생성'}`} />
+      <div>test</div>
+      {/* <BackHeader canGoBack title={`창고 ${editState === CRUD.수정 ? '편집' : '생성'}`} /> */}
       {/* <div className={'mt-8'}>{editState === CRUD.수정 ? '편집' : '생성'}</div> */}
     </Suspense>
   )

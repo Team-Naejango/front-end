@@ -54,6 +54,7 @@ const WareHouse = () => {
             </div>
           </div>
           <FloatingButton
+            prefetch={false}
             href={{
               pathname: `/warehouse/edit`,
               query: {
