@@ -7,10 +7,8 @@ type PostPageProps = {
   post?: any
 }
 
-async function getData(ctx: any) {
+async function getData() {
   // const slug = ctx.params?.slug as string
-
-  console.log('ctx:', ctx)
   // console.log('slug:', slug)
 
   // if (!post) {
@@ -26,17 +24,12 @@ async function getData(ctx: any) {
   }
 }
 
-const PostPage = async ({ post }: any) => {
+const PostPage = async () => {
   const router = useRouter()
-  const data = await getData(post)
+  const data = await getData()
 
   console.log('data:', data)
-  console.log('post:', post)
 
-  if (!post && typeof window !== 'undefined') {
-    router.push('/404')
-    return null
-  }
   return <div>PostPage</div>
 }
 
