@@ -14,13 +14,13 @@ const WarehouseEdit = () => {
     const seqState = searchParam.get('seq')
     const edit = (editState === CRUD.수정 && seqState !== '') || false
     return { edit }
-  }, [searchParam])
+  }, [])
 
   const { edit } = getEditStatus()
 
   useEffect(() => {
     getEditStatus()
-  }, [getEditStatus])
+  }, [])
 
   // console.log('editState:', editState)
 
@@ -28,22 +28,6 @@ const WarehouseEdit = () => {
   //   if (edit) {
   //   }
   // }, [editState])
-
-  // useEffect(() => {
-  //   const getCRUDValue = async () => {
-  //     const CRUDValue = searchParam.get('CRUD')
-  //
-  //     if (CRUDValue === CRUD) {
-  //       // 수정 페이지로 처리하는 로직
-  //       console.log('This is the edit page.')
-  //     } else {
-  //       // 생성 페이지로 처리하는 로직
-  //       console.log('This is the create page.')
-  //     }
-  //   }
-  //
-  //   getCRUDValue()
-  // }, [searchParam, CRUD])
 
   return (
     <>

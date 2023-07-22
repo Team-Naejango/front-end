@@ -12,10 +12,9 @@ interface LayoutProps {
   title?: string
   seoTitle?: string
   canGoBack?: boolean
-  searchParams?: string
 }
 
-const BackHeader = ({ title, canGoBack, seoTitle, searchParams }: LayoutProps) => {
+const BackHeader = ({ title, canGoBack, seoTitle }: LayoutProps) => {
   const router = useRouter()
   const isSplashMounted = useRecoilValue(splashState)
 
