@@ -26,18 +26,21 @@ import Loading from '@/app/loading'
 //   params: { name: string }
 // }
 
-type Params = {
+interface IProps {
   params: {
-    userId: string
+    id: string
   }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
-const WarehouseEdit = ({ params = { userId: '1' } }: Params) => {
+
+const WarehouseEdit = ({ params, searchParams }: IProps) => {
   // const searchParam = useSearchParams()
   // const editState = searchParam.get('CRUD')
 
   // const data = getData()
   // console.log('data:', data)
   console.log('params:', params)
+  console.log('searchParams:', searchParams)
   // const getEditStatus = useCallback(() => {
   //   const editState = searchParam.get('CRUD')
   //   const seqState = searchParam.get('seq')

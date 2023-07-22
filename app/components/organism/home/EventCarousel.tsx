@@ -42,7 +42,7 @@ const EventCarousel = () => {
       {homeImagesData.map((data, id) => {
         return (
           <SwiperSlide key={data.title}>
-            <Link href={`/events/${id}`} prefetch={false}>
+            <Link href={`/events/${id}`}>
               <Image
                 src={data.src}
                 alt={'여행 이벤트 이미지'}

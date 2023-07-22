@@ -3,34 +3,31 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
-type PostPageProps = {
-  post?: any
+interface IProps {
+  params: {
+    id: string
+  }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 async function getData() {
-  // const slug = ctx.params?.slug as string
-  // console.log('slug:', slug)
-
-  // if (!post) {
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
-
   return {
     props: {
-      post: 1,
+      id: 1,
     },
   }
 }
 
-const PostPage = async () => {
+const Events = async ({ params, searchParams }: IProps) => {
   const router = useRouter()
   const data = await getData()
 
   console.log('data:', data)
 
+  console.log('params:', params)
+  console.log('searchParams:', searchParams)
+
   return <div>PostPage</div>
 }
 
-export default PostPage
+export default Events
