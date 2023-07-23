@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
+import { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ApiError } from 'next/dist/server/api-utils'
 
@@ -6,8 +6,6 @@ import { getCookie } from '@/app/libs/client/utils/cookie'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { instance } from '@/app/apis/config/axios/instance'
-import { kakaoLogin } from '@/app/apis/domain/auth/auth'
-import { useUpdateToken } from '@/app/hooks/useUpdateToken'
 
 interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
