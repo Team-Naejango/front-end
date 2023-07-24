@@ -1,6 +1,6 @@
 import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { useClearSession } from '@/app/hooks/useClearSession'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 
 /**
  * 토큰 검증

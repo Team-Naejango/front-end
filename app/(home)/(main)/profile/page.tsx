@@ -1,9 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, Suspense } from 'react'
 import { useRouter } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
+import { ApiError } from 'next/dist/server/api-utils'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import SwitchButton from '@/app/components/atom/SwitchButton'
@@ -11,34 +14,79 @@ import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import CustomModal from '@/app/components/molecule/modal/CustomModal'
 import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
+import { removeAuthToken } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import Loading from '@/app/loading'
+
+import { deleteUser } from '@/app/apis/domain/profile/profile'
 
 const Profile = () => {
   const router = useRouter()
   const { openModal } = useModal()
   const [switchStatus, setSwitchStatus] = useState<boolean>(false)
-  const modalState = useRecoilValue(modalSelector('Account'))
+  const _account = useRecoilValue(modalSelector('account'))
+  const _logout = useRecoilValue(modalSelector('logout'))
+  const _withdrawal = useRecoilValue(modalSelector('withdrawal'))
 
-  const onClickShowModal = () => {
+  const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
+    onSuccess: () => {
+      console.log('유저탈퇴 성공')
+      removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+      router.push('/login')
+    },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
+  })
+
+  const onClickUserSetting = () => {
     openModal({
-      modal: { id: 'Account', type: MODAL_TYPES.CONFIRM },
+      modal: { id: 'account', type: MODAL_TYPES.CONFIRM },
+    })
+  }
+
+  const logout = () => {
+    openModal({
+      modal: {
+        id: 'logout',
+        type: MODAL_TYPES.CONFIRM,
+        title: '로그아웃',
+        show: true,
+        content: '로그아웃을 하시겠습니까?',
+      },
+      callback: () => {
+        console.log('로그아웃 성공')
+        removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+        router.push('/login')
+      },
+    })
+  }
+
+  const withdrawal = () => {
+    openModal({
+      modal: {
+        id: 'withdrawal',
+        type: MODAL_TYPES.CONFIRM,
+        title: '탈퇴',
+        show: true,
+        content: '회원을 탈퇴 하시겠습니까?',
+      },
+      callback: () => {
+        console.log('회원탈퇴 성공')
+        mutateDeleteUser()
+      },
     })
   }
 
   const onClickSwitch = () => {
     setSwitchStatus(prevState => !prevState)
-    // setSwitchStatus(event ? SWITCH_STATUS.온 : SWITCH_STATUS.오프)
     // setValue('notificationFlag', event.target.checked ? FLAG.TRUE : FLAG.FALSE)
   }
 
   const onLink = (value: string) => {
     router.push(value)
   }
-
-  // useEffect(() => {
-  //   release === SWITCH_STATUS.온 || release === 1
-  //     ? setSwitchStatus(SWITCH_STATUS.온)
-  //     : setSwitchStatus(SWITCH_STATUS.오프)
-  // }, [])
 
   return (
     <Layout hasHeader setting seoTitle={'프로필'}>
@@ -84,19 +132,38 @@ const Profile = () => {
           <li
             role={'presentation'}
             className={'flex cursor-pointer items-center justify-between py-3'}
-            onClick={onClickShowModal}>
+            onClick={onClickUserSetting}>
             <span className={'text-sm'}>계정 설정</span>
           </li>
         </ul>
       </div>
 
-      {modalState.modal.show ? (
-        <CustomModal id={modalState.modal.id}>
-          <ul className={'flex flex-col gap-3'}>
-            <li className={'cursor-pointer py-2 text-sm hover:text-gray-600'}>로그아웃</li>
-            <li className={'cursor-pointer py-2 text-sm hover:text-gray-600'}>탈퇴하기</li>
+      {_account.modal.show ? (
+        <CustomModal id={_account.modal.id}>
+          <ul className={'flex flex-col gap-4'}>
+            <li role={'presentation'} className={'cursor-pointer py-2 text-sm hover:text-gray-600'} onClick={logout}>
+              로그아웃
+            </li>
+            <li
+              role={'presentation'}
+              className={'cursor-pointer py-2 text-sm hover:text-gray-600'}
+              onClick={withdrawal}>
+              탈퇴하기
+            </li>
           </ul>
         </CustomModal>
+      ) : null}
+
+      {_logout.modal.show ? (
+        <Suspense fallback={<Loading />}>
+          <CustomModal id={_logout.modal.id} type={'dialog'} />
+        </Suspense>
+      ) : null}
+
+      {_withdrawal.modal.show ? (
+        <Suspense fallback={<Loading />}>
+          <CustomModal id={_withdrawal.modal.id} type={'dialog'} />
+        </Suspense>
       ) : null}
     </Layout>
   )

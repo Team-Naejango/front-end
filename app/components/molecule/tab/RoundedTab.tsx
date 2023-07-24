@@ -24,7 +24,7 @@ const RoundedTab = ({ categories, onDelete }: { categories: any[]; onDelete: () 
               className={({ selected }) =>
                 cls(
                   'leading-5, w-full rounded-[30px] py-2.5 text-sm font-medium focus:outline-none',
-                  selected ? 'bg-white' : 'hover:bg-white/[0.12] hover:text-white'
+                  selected ? 'bg-white text-[#33CC99]' : 'hover:bg-white/[0.3]'
                 )
               }>
               {category}

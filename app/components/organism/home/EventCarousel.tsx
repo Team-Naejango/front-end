@@ -3,38 +3,36 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import SwiperCore, { Navigation, Pagination, A11y, Autoplay } from 'swiper'
-import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
+import SwiperCore, { A11y, Autoplay } from 'swiper'
+import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 
-import { homeImagesData, wareHouseImagesData } from '@/app/libs/client/utils/images'
+import { homeImagesData } from '@/app/libs/client/utils/images'
 import { cls } from '@/app/libs/client/utils/util'
 
 import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
 
 const EventCarousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
-  const totalSlides = wareHouseImagesData.length
+  const totalSlides = homeImagesData.length
 
-  SwiperCore.use([Navigation, Autoplay])
+  SwiperCore.use([A11y, Autoplay])
 
-  const onSlideCurrentIdx = () => {
+  const onSlideIndexChanged = () => {
     if (swiper) {
       setActiveIndex(swiper.realIndex)
     }
   }
 
   const swiperParams: SwiperProps = {
-    modules: [Navigation, Pagination, A11y, Autoplay],
+    modules: [A11y, Autoplay],
     slidesPerView: 1,
-    autoplay: { delay: 3000 },
+    autoplay: { delay: 3000, disableOnInteraction: false },
     loop: true,
     onSwiper: setSwiper,
-    onSlideChange: onSlideCurrentIdx,
+    onSlideChange: onSlideIndexChanged,
   }
 
   return (

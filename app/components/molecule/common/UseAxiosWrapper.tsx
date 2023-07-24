@@ -24,7 +24,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         const isHasToken = await TokenValid()
 
         console.log('isHasToken:', isHasToken)
-        console.log('accessTokenaccessToken:', accessToken)
+        console.log('axiosAccessToken:', accessToken)
 
         if (!isHasToken) {
           config.headers = {
@@ -41,7 +41,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     }
   }, [accessToken])
 
-  return <div>{children}</div>
+  return <>{children}</>
 }
 
 export default UseAxiosWrapper

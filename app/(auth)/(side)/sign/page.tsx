@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
+import { toast } from 'react-hot-toast'
+import { ApiError } from 'next/dist/server/api-utils'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
@@ -12,14 +14,15 @@ import { useRecoilValue } from 'recoil'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
 import GenderButton from '@/app/components/atom/GenderButton'
-import { SignParams } from '@/app/apis/domain/profile/profile'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
 import { kakaoAccessToken } from '@/app/store/atom'
 
-interface FormProps {
+import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
+import { SignParams } from '@/app/apis/domain/profile/profile'
+
+interface SignProps {
   age?: number
   gender: string
   nickname: string
@@ -39,13 +42,14 @@ const Sign = () => {
 
   const {
     register,
+    getValues,
     watch,
     handleSubmit,
-    reset,
-    getValues,
     setError,
     formState: { errors },
-  } = useForm<FormProps>()
+  } = useForm<SignProps>({
+    mode: 'onSubmit',
+  })
 
   const nickname = watch('nickname')
 
@@ -54,8 +58,9 @@ const Sign = () => {
       console.log('회원가입 성공')
       router.push('/home')
     },
-    onError: (error: unknown) => {
+    onError: (error: ApiError) => {
       console.log('error:', error)
+      toast.error(error.message)
     },
   })
 
@@ -65,22 +70,26 @@ const Sign = () => {
       setIsNicknameDisabled(true)
       setSelectedNickname(getValues('nickname'))
     },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
   })
 
-  const onClickSave = () => {
+  const onClickSubmit = () => {
     // if (!isNicknameDisabled) return alert('중복검사 해라')
     // if (isNicknameDisabled && selectedNickname !== nickname) return alert('다시 중복검사 해라')
 
-    mutateSign({
-      // age: watch('age'),
+    const params: SignParams = {
+      age: Number(getValues('age')),
       nickname,
       gender,
-      phoneNumber: watch('phoneNumber'),
+      phoneNumber: getValues('phoneNumber'),
       intro: '',
       imgUrl: '',
-    })
+    }
 
-    reset()
+    mutateSign(params)
   }
 
   const onValidUserName = (event: React.MouseEvent) => {
@@ -109,7 +118,7 @@ const Sign = () => {
     <div className='mt-20 px-4'>
       <h3 className='text-center text-2xl font-semibold text-[#33CC99]'>회원가입</h3>
       <div className='mt-[4.75rem]'>
-        <form onSubmit={handleSubmit(onClickSave)} className='mt-8 flex flex-col space-y-2'>
+        <form onSubmit={handleSubmit(onClickSubmit)} className='mt-8 flex flex-col space-y-2'>
           <div className={'flex flex-row items-center'}>
             <InputField
               register={register('nickname', {

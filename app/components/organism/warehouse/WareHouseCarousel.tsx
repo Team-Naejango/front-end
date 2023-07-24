@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import SwiperCore, { Navigation, Pagination, A11y } from 'swiper'
+import SwiperCore, { Navigation, A11y } from 'swiper'
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 import { BsPlusSquare } from 'react-icons/bs'
@@ -20,7 +20,7 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
   const totalSlides = wareHouseImagesData.length
   const findLastIdx = activeIndex === totalSlides - 1
 
-  SwiperCore.use([Navigation])
+  SwiperCore.use([Navigation, A11y])
 
   const updatePrevDisabledState = useCallback(() => {
     if (swiper && swiper.realIndex === 0) {
@@ -28,9 +28,9 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
     } else {
       document.querySelector('.swiper-button-prev')?.classList.remove('swiper-button-disabled')
     }
-  }, [swiper])
+  }, [swiper, activeIndex])
 
-  const onSlideCurrentIdx = () => {
+  const onSlideControls = () => {
     if (swiper) {
       setActiveIndex(swiper.realIndex)
       updatePrevDisabledState()
@@ -41,7 +41,7 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
     }
   }
 
-  const onTouchCurrentIdx = () => {
+  const prevSlideBlocked = () => {
     if (swiper) {
       const { realIndex } = swiper
       swiper.allowSlidePrev = realIndex !== 0
@@ -49,7 +49,7 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
   }
 
   const swiperParams: SwiperProps = {
-    modules: [Navigation, Pagination, A11y],
+    modules: [Navigation, A11y],
     slidesPerView: 1,
     loop: true,
     navigation: {
@@ -58,9 +58,9 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
       disabledClass: 'swiper-button-disabled',
     },
     onSwiper: setSwiper,
-    onSlideChange: onSlideCurrentIdx,
+    onSlideChange: onSlideControls,
     onTouchStart: () => {
-      onTouchCurrentIdx()
+      prevSlideBlocked()
     },
     onTouchEnd: () => {
       updatePrevDisabledState()
