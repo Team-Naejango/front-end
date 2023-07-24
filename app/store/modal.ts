@@ -6,6 +6,8 @@ import { MODAL_TYPES, E_MODAL_TYPES } from '@/app/libs/client/constants/code'
 export type Modal = {
   id: string
   type: E_MODAL_TYPES
+  title?: string
+  content?: string
   show?: boolean
 }
 
@@ -18,6 +20,8 @@ const initialModal: ModalProps = {
   modal: {
     id: '',
     type: MODAL_TYPES.CONFIRM,
+    title: '',
+    content: '',
     show: false,
   },
   callback: () => {},

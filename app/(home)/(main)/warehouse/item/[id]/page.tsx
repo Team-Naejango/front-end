@@ -57,7 +57,7 @@ const WareHouseItem = () => {
 
   return (
     <Layout canGoBack title={`창고${params.id}`}>
-      <div className='mt-10'>
+      <div className='mt-8'>
         <RoundedTab categories={categories as any} onDelete={onDeleteProduct} />
         <FloatingButton href='/warehouse/item/create'>
           <svg

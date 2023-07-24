@@ -22,7 +22,7 @@ interface LocationProps {
  * @todo 액세스 토큰 만료기한
  *
  * */
-export const kakaoAccessToken = atom<string | null>({
+export const kakaoAccessToken = atom<string>({
   key: `${STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: undefined,
   effects: [cookieEffect(AUTH_TOKEN.접근)],

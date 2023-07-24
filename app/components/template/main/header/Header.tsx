@@ -62,7 +62,7 @@ const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) =>
               role='presentation'
               onClick={onClickNotice}
               className={cls(
-                'relative flex h-12 w-12 cursor-pointer items-center justify-center bg-[#f9f9f9] hover:bg-gray-100',
+                'relative flex h-12 w-12 cursor-pointer items-center justify-center bg-[#f5f5f5] hover:bg-[#f0f0f0]',
                 setting ? 'rounded-full' : 'rounded-md'
               )}>
               {setting ? (

@@ -28,7 +28,7 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
     } else {
       document.querySelector('.swiper-button-prev')?.classList.remove('swiper-button-disabled')
     }
-  }, [swiper])
+  }, [swiper, activeIndex])
 
   const onSlideControls = () => {
     if (swiper) {

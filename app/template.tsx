@@ -8,16 +8,12 @@ import { splashState } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 import CustomToast from '@/app/components/molecule/modal/CustomToast'
-// import { modalSelector } from '@/app/store/modal'
-// import CustomAlert from '@/app/components/molecule/modal/CustomAlert'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
-  // const alertTrueState = useRecoilValue(modalSelector('testTrueAlert'))
-  // const alertFalseState = useRecoilValue(modalSelector('testFalseAlert'))
 
   useEffect(() => {
     if (isSplashMounted) {
@@ -59,11 +55,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
             children
           )}
         </div>
-
-        {/* {alertTrueState.modal.show ? <CustomAlert id={alertTrueState.modal.id} success /> : null} */}
-        {/* {alertFalseState.modal.show ? <CustomAlert id={alertFalseState.modal.id} success={false} /> : null} */}
       </div>
 
+      {/* toast */}
       <CustomToast />
     </main>
   )

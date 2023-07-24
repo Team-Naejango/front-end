@@ -25,7 +25,7 @@ export const removeCookie = (key: string) => {
   return cookies.remove(key)
 }
 
-export const removeAllCookie = (accessKey: string, refreshKey: string) => {
+export const removeAuthToken = (accessKey: string, refreshKey: string) => {
   removeCookie(accessKey)
   removeCookie(refreshKey)
 }
