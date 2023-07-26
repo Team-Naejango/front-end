@@ -4,6 +4,9 @@ import React, { useState, useEffect, ChangeEvent } from 'react'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { useForm } from 'react-hook-form'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
@@ -15,19 +18,31 @@ import GenderButton from '@/app/components/atom/GenderButton'
 import Layout from '@/app/components/template/main/layout/Layout'
 import TextArea from '@/app/components/atom/TextArea'
 import InputFile from '@/app/components/atom/InputFile'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
+
+import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
+import { nickNameValidity } from '@/app/apis/domain/auth/auth'
 
 interface EditProfileForm {
-  age: number
+  birth: string
   gender: string
   nickname: string
   intro: string
   phoneNumber: string
-  imageFile: FileList
+  imageFile?: FileList
 }
 
 const EditProfile = () => {
+  const query = useQueryClient()
+  const router = useRouter()
   const [imageFile, setImageFile] = useState<FileList | null>(null)
-  const [imageSrc, setImageSrc] = useState<string | null>('')
+  const [imageSrc, setImageSrc] = useState<string | undefined>('')
+  const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
+  const [selectedNickname, setSelectedNickname] = useState<string>('')
+
+  console.log('imageFile:', imageFile)
+  console.log('imageSrc:', imageSrc)
 
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
@@ -37,11 +52,45 @@ const EditProfile = () => {
     register,
     watch,
     handleSubmit,
+    getValues,
     setValue,
     setError,
+    reset,
     formState: { errors },
-  } = useForm<EditProfileForm>()
+  } = useForm<EditProfileForm>({
+    mode: 'onChange',
+  })
   const nickname = watch('nickname')
+
+  const { data: _userInfo, isSuccess = {} } = useQuery<{ data: MemberInfo }>([OAUTH.유저정보], () => userInfo())
+
+  const { mutate: mutateUserInfoModify } = useMutation<{ data: MemberInfo }, ApiError, MemberInfo>(
+    (params: MemberInfo) => modifyUserInfo({ ...params }),
+    {
+      onSuccess: () => {
+        query.invalidateQueries([OAUTH.유저정보])
+        toast.success('프로필이 변경되었습니다.')
+        router.push('/profile')
+      },
+      onError: (error: ApiError) => {
+        console.log('error:', error)
+        toast.error(error.message)
+      },
+    }
+  )
+
+  // todo: API 나온 후 작업
+  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+  //   onSuccess: () => {
+  //     console.log('닉네임 사용 가능')
+  //     setIsNicknameDisabled(true)
+  //     setSelectedNickname(getValues('nickname'))
+  //   },
+  //   onError: (error: ApiError) => {
+  //     console.log('error:', error)
+  //     toast.error(error.message)
+  //   },
+  // })
 
   const uploadS3 = async (file: File) => {
     const s3Client = new S3Client({
@@ -114,9 +163,13 @@ const EditProfile = () => {
     reader.readAsDataURL(file)
   }
 
+  if (imageFile) {
+    console.log('name:', imageFile[0].name)
+  }
+
   const onSubmit = async () => {
     if (!imageSrc) {
-      toast.error('이미지를 등록해 주세요.')
+      toast.error('이미지를 등록해주세요.')
       return
     }
 
@@ -124,6 +177,19 @@ const EditProfile = () => {
       const file = imageFile[0]
       await uploadS3(file)
     }
+
+    const params: MemberInfo = {
+      nickname: getValues('nickname'),
+      gender: getValues('gender'),
+      imgUrl: imageSrc,
+      birth: getValues('birth'),
+      intro: getValues('intro'),
+      phoneNumber: getValues('phoneNumber'),
+    }
+
+    console.log('params:', params)
+
+    mutateUserInfoModify(params)
   }
 
   const onValidUserName = (event: React.MouseEvent) => {
@@ -138,6 +204,10 @@ const EditProfile = () => {
     setValue('gender', gender)
   }
 
+  useEffect(() => {
+    reset(_userInfo?.data)
+  }, [_userInfo])
+
   return (
     <Layout canGoBack title={'프로필 편집'} seoTitle={'프로필'}>
       <div className='mt-16'>
@@ -146,6 +216,7 @@ const EditProfile = () => {
             {imageFile ? (
               <Image
                 src={URL.createObjectURL(imageFile[0])}
+                defaultValue={imageSrc}
                 width={'100'}
                 height={'100'}
                 alt='이미지 미리보기'
@@ -160,7 +231,7 @@ const EditProfile = () => {
             <InputField
               register={register('nickname', {
                 required: '닉네임을 입력해주세요.',
-                value: undefined,
+                value: _userInfo?.data.nickname,
                 onChange: event => {
                   if (event.target.value.match(/^\s/g)) {
                     setError('nickname', {
@@ -187,8 +258,9 @@ const EditProfile = () => {
           <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
           <div className='!mt-3 flex flex-row items-center'>
             <InputField
-              register={register('age', {
+              register={register('birth', {
                 required: '생년월일을 입력해주세요.',
+                value: _userInfo?.data.birth,
                 pattern: {
                   value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
                   message: '유효한 생년월일을 입력해주세요. (YYYYMMDD)',
@@ -203,11 +275,12 @@ const EditProfile = () => {
             <GenderButton gender='남' selected={watch('gender') === '남'} onClick={() => onSelectedGender('남')} />
             <GenderButton gender='여' selected={watch('gender') === '여'} onClick={() => onSelectedGender('여')} />
           </div>
-          <p className='!mt-1.5 text-xs text-red-400'>{errors.age?.message}</p>
+          <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
           <div>
             <InputField
               register={register('phoneNumber', {
                 required: '휴대폰번호를 입력해주세요.',
+                value: _userInfo?.data.phoneNumber,
               })}
               id='phoneNumber'
               type='text'
@@ -219,7 +292,12 @@ const EditProfile = () => {
           <p className='!mt-1.5 text-xs text-red-400'>{errors.phoneNumber?.message}</p>
           <TextArea
             register={register('intro', {
-              required: '자기소개를 입력해주세요.',
+              required: '자기소개를 입력하세요.',
+              value: _userInfo?.data.intro,
+              maxLength: {
+                value: 100,
+                message: '100자 제한입니다.',
+              },
             })}
             placeholder={'자기소개'}
           />

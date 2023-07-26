@@ -2,7 +2,7 @@
 
 import React from 'react'
 import Head from 'next/head'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 
 import { cls } from '@/app/libs/client/utils/util'
@@ -16,19 +16,6 @@ interface LayoutProps {
 
 const BackHeader = ({ title, canGoBack, seoTitle }: LayoutProps) => {
   const router = useRouter()
-  const isSplashMounted = useRecoilValue(splashState)
-
-  const prevUrl = typeof window === 'undefined' ? '' : window.location.pathname
-
-  const onClickPrevUrl = () => {
-    if (isSplashMounted) {
-      if (prevUrl !== '/') {
-        router.back()
-      } else {
-        router.replace('/login')
-      }
-    }
-  }
 
   return (
     <>
@@ -37,7 +24,7 @@ const BackHeader = ({ title, canGoBack, seoTitle }: LayoutProps) => {
       </Head>
       <div className='absolute left-0 top-0 z-[1000] mx-auto flex h-12 w-[375px] max-w-xl items-center justify-start rounded-[22px] bg-white px-10 indent-7 text-lg font-medium text-gray-800'>
         {canGoBack ? (
-          <button onClick={onClickPrevUrl} className='absolute left-4'>
+          <button onClick={() => router.back()} className='absolute left-4'>
             <svg
               className='h-6 w-6'
               fill='none'

@@ -2,6 +2,5 @@
 
 // 카카오 로그인
 export const OAUTH = {
-  유저정보: 'UserInfo',
-  로그인: 'kakaoLoginSuccess',
+  유저정보: 'userInfo',
 } as const

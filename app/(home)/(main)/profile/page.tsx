@@ -15,7 +15,7 @@ import CustomModal from '@/app/components/molecule/modal/CustomModal'
 import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
 import { removeAuthToken } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import Loading from '@/app/loading'
 
 import { deleteUser } from '@/app/apis/domain/profile/profile'
@@ -30,13 +30,15 @@ const Profile = () => {
 
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
-      console.log('유저탈퇴 성공')
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-      router.push('/login')
+      toast.success('회원탈퇴가 완료되었습니다.')
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
       toast.error(error.message)
+    },
+    onSettled: () => {
+      router.push('/login')
     },
   })
 

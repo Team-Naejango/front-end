@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import Login from '@/app/(auth)/(main)/login/page'
 import Home from '@/app/(home)/(main)/home/page'
 import { getCookie, removeCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 const App: NextPage = () => {
   const router = useRouter()

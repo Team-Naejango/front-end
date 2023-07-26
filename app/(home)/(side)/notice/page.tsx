@@ -4,11 +4,11 @@ import React, { useEffect } from 'react'
 import { useRecoilValue } from 'recoil'
 import gsap from 'gsap'
 
-import { splashState } from '@/app/store/atom'
 import Layout from '@/app/components/template/main/layout/Layout'
+import { splashState } from '@/app/store/atom'
 
 const Notice = () => {
-  const isSplashMounted = useRecoilValue(splashState)
+  const isSplashMounted = useRecoilValue<boolean>(splashState)
   console.log('isSplashMounted:', isSplashMounted)
 
   useEffect(() => {

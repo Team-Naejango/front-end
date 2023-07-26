@@ -1,7 +1,7 @@
 import { AtomEffect } from 'recoil'
 
-import { getCookie, setDeadlineCookie, removeAuthToken } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { setDeadlineCookie, getCookie, removeAuthToken } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 export const cookieEffect: <T>(key: string) => AtomEffect<T> =
   key =>

@@ -1,7 +1,9 @@
 import { atom } from 'recoil'
 
-import { AUTH_TOKEN, STORE_KEY } from '@/app/libs/client/constants/store'
 import { cookieEffect } from '@/app/store/effect/cookieEffect'
+import { AUTH_TOKEN, COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
+import { PROFILE_STORE_KEY } from '@/app/libs/client/constants/store/profile'
+import { PLACE_STORE_KEY } from '@/app/libs/client/constants/store/places'
 
 interface UserInfoProps {
   age: number | null
@@ -23,7 +25,7 @@ interface LocationProps {
  *
  * */
 export const kakaoAccessToken = atom<string>({
-  key: `${STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${COMMON_STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: undefined,
   effects: [cookieEffect(AUTH_TOKEN.접근)],
 })
@@ -39,7 +41,7 @@ export const kakaoAccessToken = atom<string>({
  * @property accessToken / 액세스토큰
  * */
 export const userInfoState = atom<UserInfoProps>({
-  key: `${STORE_KEY.유저정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${PROFILE_STORE_KEY.유저정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
     age: null,
     email: '',
@@ -55,7 +57,7 @@ export const userInfoState = atom<UserInfoProps>({
  *
  * */
 export const splashState = atom<boolean>({
-  key: `${STORE_KEY.스플래쉬}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${COMMON_STORE_KEY.스플래쉬}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: false,
 })
 
@@ -66,7 +68,7 @@ export const splashState = atom<boolean>({
  * @property longitude / y좌표
  * */
 export const locationState = atom<LocationProps>({
-  key: `${STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${COMMON_STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
     latitude: 0,
     longitude: 0,
@@ -79,7 +81,7 @@ export const locationState = atom<LocationProps>({
  * @property name / 아이템명
  * */
 export const markerItemsState = atom<{ name: string }[]>({
-  key: `${STORE_KEY.마커아이템}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${PLACE_STORE_KEY.마커아이템}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: [
     {
       name: '',
@@ -92,6 +94,15 @@ export const markerItemsState = atom<{ name: string }[]>({
  *
  * */
 export const activatedWareHouseTitleState = atom<string>({
-  key: `${STORE_KEY.창고이름조회}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${PLACE_STORE_KEY.창고이름조회}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: '',
 })
+
+// /**
+//  * 토큰 검증
+//  *
+//  * */
+// export const tokenValidatedState = atom<boolean>({
+//   key: `${COMMON_STORE_KEY.토큰검증}/${new Date().getUTCMilliseconds() * Math.random()}`,
+//   default: false,
+// })

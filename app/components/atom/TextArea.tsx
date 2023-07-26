@@ -11,7 +11,7 @@ interface TextAreaProps {
   rows?: number
 }
 
-const TextArea = ({ label, name, register, essential, rows = 4, placeholder, ...rest }: TextAreaProps) => {
+export default function TextArea({ label, name, register, essential, rows = 4, placeholder, ...rest }: TextAreaProps) {
   return (
     <div>
       {label ? (
@@ -22,14 +22,11 @@ const TextArea = ({ label, name, register, essential, rows = 4, placeholder, ...
       ) : null}
       <textarea
         id={name}
-        {...register}
         placeholder={placeholder}
-        className='w-full rounded-md border-gray-300 text-[13px] placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#32D7A0] focus:outline-none focus:ring-0'
         rows={rows}
-        {...rest}
+        {...register}
+        className='w-full rounded-md border-gray-300 text-[13px] placeholder-gray-400 shadow-sm placeholder:text-[12px] placeholder:font-light focus:border-[#32D7A0] focus:outline-none focus:ring-0'
       />
     </div>
   )
 }
-
-export default TextArea

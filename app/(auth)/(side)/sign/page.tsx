@@ -10,20 +10,20 @@ import { ApiError } from 'next/dist/server/api-utils'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
-import { useRecoilValue } from 'recoil'
+// import { useRecoilValue } from 'recoil'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import GenderButton from '@/app/components/atom/GenderButton'
 import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
-import { kakaoAccessToken } from '@/app/store/atom'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+// import { kakaoAccessToken } from '@/app/store/atom'
 
 import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
-import { SignParams } from '@/app/apis/domain/profile/profile'
 
 interface SignProps {
-  age?: number
+  birth: string
   gender: string
   nickname: string
   intro: string
@@ -38,7 +38,6 @@ const Sign = () => {
   const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
   const [selectedNickname, setSelectedNickname] = useState<string>('')
-  console.log('signAccessToken:', accessToken)
 
   const {
     register,
@@ -53,14 +52,15 @@ const Sign = () => {
 
   const nickname = watch('nickname')
 
-  const { mutate: mutateSign } = useMutation((params: SignParams) => sign(accessToken, params), {
+  const { mutate: mutateSign } = useMutation((params: SignProps) => sign(accessToken, params), {
     onSuccess: () => {
-      console.log('회원가입 성공')
+      toast.success('회원가입이 완료되었습니다.')
       router.push('/home')
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
       toast.error(error.message)
+      router.push('/sign')
     },
   })
 
@@ -80,8 +80,10 @@ const Sign = () => {
     // if (!isNicknameDisabled) return alert('중복검사 해라')
     // if (isNicknameDisabled && selectedNickname !== nickname) return alert('다시 중복검사 해라')
 
-    const params: SignParams = {
-      age: Number(getValues('age')),
+    if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
+
+    const params: MemberInfo = {
+      birth: getValues('birth'),
       nickname,
       gender,
       phoneNumber: getValues('phoneNumber'),
@@ -150,7 +152,7 @@ const Sign = () => {
           <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>
           <div className='!mt-3 flex flex-row items-center'>
             <InputField
-              register={register('age', {
+              register={register('birth', {
                 required: '생년월일을 입력해주세요.',
                 pattern: {
                   value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
@@ -166,7 +168,7 @@ const Sign = () => {
             <GenderButton gender='남' selected={gender === '남'} onClick={() => onSelectedGender('남')} />
             <GenderButton gender='여' selected={gender === '여'} onClick={() => onSelectedGender('여')} />
           </div>
-          <p className='!mt-1.5 text-xs text-red-400'>{errors.age?.message}</p>
+          <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
           <div>
             <InputField
               register={register('phoneNumber', {
