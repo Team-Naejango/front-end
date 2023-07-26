@@ -4,26 +4,27 @@ import React, { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 
-import { splashState } from '@/app/store/atom'
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 import CustomToast from '@/app/components/molecule/modal/CustomToast'
+import { splashState } from '@/app/store/atom'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
-  const [isSplashMounted, setIsSplashMounted] = useRecoilState(splashState)
+  const [isSplashMounted, setIsSplashMounted] = useRecoilState<boolean>(splashState)
 
   useEffect(() => {
     if (isSplashMounted) {
-      const handleBackButton = () => {
+      const onBackButton = () => {
         window.addEventListener('popstate', () => {
-          pathname !== '/' ? router.back() : router.replace('/login')
+          pathname === '/' ? router.replace('/login') : router.back()
         })
       }
+      onBackButton()
       return () => {
-        window.removeEventListener('popstate', handleBackButton)
+        window.removeEventListener('popstate', onBackButton)
       }
     }
   }, [isSplashMounted, pathname, router])

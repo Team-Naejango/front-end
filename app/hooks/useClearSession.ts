@@ -1,4 +1,4 @@
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { removeAuthToken } from '@/app/libs/client/utils/cookie'
 
 export const useClearSession = () => {

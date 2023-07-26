@@ -1,5 +1,5 @@
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 export const useUpdateToken = () => {
   const updateToken = (accessToken: string, refreshToken: string) => {

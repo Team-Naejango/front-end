@@ -1,6 +1,6 @@
 import { atom, atomFamily, selectorFamily, DefaultValue } from 'recoil'
 
-import { MODAL_KEY } from '@/app/libs/client/constants/store'
+import { MODAL_STORE_KEY } from '@/app/libs/client/constants/store/common'
 import { MODAL_TYPES, E_MODAL_TYPES } from '@/app/libs/client/constants/code'
 
 export type Modal = {
@@ -28,12 +28,12 @@ const initialModal: ModalProps = {
 }
 
 export const modalIdsState = atom<string[]>({
-  key: `${MODAL_KEY.아톰}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${MODAL_STORE_KEY.아톰}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: [],
 })
 
 export const modalsState = atomFamily<ModalProps, string>({
-  key: `${MODAL_KEY.패밀리}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${MODAL_STORE_KEY.패밀리}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: id => ({
     ...initialModal,
     modal: {
@@ -44,7 +44,7 @@ export const modalsState = atomFamily<ModalProps, string>({
 })
 
 export const modalSelector = selectorFamily<ModalProps, string>({
-  key: `${MODAL_KEY.셀렉터}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  key: `${MODAL_STORE_KEY.셀렉터}/${new Date().getUTCMilliseconds() * Math.random()}`,
   get:
     modalId =>
     ({ get }) =>

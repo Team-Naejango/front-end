@@ -3,90 +3,47 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { useRecoilValue } from 'recoil'
+import { ApiError } from 'next/dist/server/api-utils'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
-import { kakaoAccessToken } from '@/app/store/atom'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { useModal } from '@/app/hooks/useModal'
-import { userInfo } from '@/app/apis/domain/profile/profile'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { Response } from '@/app/apis/types/response/response'
 
-// export async function getServerSideProps() {
-//   const UseGetUserData = async () => {
-//     const { data, error } = await useQuery(['test'], userInfo)
-//     return { data, error }
-//   }
+import { userInfo } from '@/app/apis/domain/profile/profile'
+
+// async function getData() {
+//   const queryClient = new QueryClient()
+//   const accessToken = getCookie(AUTH_TOKEN.접근)
 //
-//   const { data: getUserDataResult, error } = await UseGetUserData()
-//
-//   if (error) {
-//     console.log('Error while fetching user data:', error)
-//   }
+//   await queryClient.prefetchQuery([OAUTH.유저정보], () => userInfo())
 //
 //   return {
 //     props: {
-//       getUserData: getUserDataResult,
+//       dehydratedState: dehydrate(queryClient),
 //     },
 //   }
 // }
 
 const Home = () => {
   const router = useRouter()
-  const accessToken = getCookie(AUTH_TOKEN.접근)
-  // const { openModal } = useModal()
-  // const accessToken = useRecoilValue(kakaoAccessToken)
 
-  // const onClickShowTrueAlert = () => {
-  //   openModal({ modal: { id: 'testTrueAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
-  // }
-  // const onClickShowFalseAlert = () => {
-  //   openModal({ modal: { id: 'testFalseAlert', type: MODAL_TYPES.ALERT }, callback: () => {} })
-  // }
+  /**
+   * todo: 쿼리 캐싱 가비지컬렉션 처리
+   * todo: 에러 핸들링 처리
+   *
+   * const queryClient = new QueryClient()
+   * const queryCache = queryClient.getQueryCache()
+   * queryCache.clear()
+   * */
+  const { data: getUserData } = useQuery<Response<{ data: MemberInfo }>>([OAUTH.유저정보], () => userInfo())
 
-  console.log('accessToken:', accessToken)
-  // const { data: getUserData, isError, isLoading = {} } = useQuery([OAUTH.유저정보], () => userInfo(accessToken))
-  // console.log('getUserData:', getUserData)
-
-  // const x = async () => {
-  //   return fetch('http://43.202.25.203:8080/api/user/profile', {
-  //     method: 'GET',
-  //     headers: {
-  //       Authorization: accessToken!,
-  //     },
-  //   })
-  //     .then(response => response.json())
-  //     .then(response => {
-  //       console.log('response.data:', response.data)
-  //     })
-  //     .catch(error => {
-  //       // 에러 처리 코드를 작성합니다.
-  //       console.error(error)
-  //     })
-  // }
-
-  // axios
-  //   .get('http://43.202.25.203:8080/api/user/profile', {
-  //     headers: {
-  //       Authorization: accessToken,
-  //     },
-  //   })
-  //   .then(response => {
-  //     console.log('response.data:', response)
-  //   })
-  //   .catch(error => {
-  //     console.error(error)
-  //   })
-
-  // useEffect(() => {
-  //   x()
-  // }, [])
+  console.log('getUserData:', getUserData ?? [])
 
   return (
     <Layout hasHeader seoTitle={'홈'}>
@@ -110,15 +67,6 @@ const Home = () => {
           </FloatingButton>
         </div>
       </div>
-      {/* <div className={'mx-auto mt-80 flex w-[80%] gap-4'}> */}
-      {/* <Button smail onClick={() => onClickShowTrueAlert()} text={'성공 버튼'} /> */}
-      {/* <Button */}
-      {/*   smail */}
-      {/*   className={'!bg-red-500 hover:!bg-[#F05454] focus:!ring-red-500'} */}
-      {/*   onClick={() => onClickShowFalseAlert()} */}
-      {/*   text={'실패 버튼'} */}
-      {/* /> */}
-      {/* </div> */}
     </Layout>
   )
 }

@@ -1,13 +1,13 @@
 import { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ApiError } from 'next/dist/server/api-utils'
+import { getCookie } from 'cookies-next'
 
-import { getCookie } from '@/app/libs/client/utils/cookie'
 import { TokenValid } from '@/app/libs/client/utils/token'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { instance } from '@/app/apis/config/axios/instance'
 
-interface HeaderType extends AxiosResponseHeaders {
+export interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
   Authorization: string
 }
@@ -28,23 +28,22 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
 }
 
 export const responseNormalizer = async (error: AxiosError) => {
-  console.log('error.config:before', error.config)
+  if (error.response?.status === 403) {
+    const isHasToken = TokenValid()
 
-  if (error.response?.status === 401) {
-    const isHasToken = await TokenValid()
-
-    if (isHasToken) {
-      const accessToken = getCookie(AUTH_TOKEN.접근)
+    if (!isHasToken) {
+      const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
       error.config!.headers = {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${refreshToken}`,
       } as HeaderType
 
-      console.log('error.config:after', error.config)
-
-      const renewalConfig = await instance.request(error.config as AxiosRequestConfig)
-      return renewalConfig
+      try {
+        await instance.request(error.config as AxiosRequestConfig)
+      } catch (error: unknown) {
+        return false
+      }
     }
     return Promise.reject(error)
   }

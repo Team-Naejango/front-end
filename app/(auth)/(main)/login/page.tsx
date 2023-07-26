@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
-import { FcGoogle } from 'react-icons/fc'
+import { PiUserCircleMinus } from 'react-icons/pi'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
@@ -22,7 +22,7 @@ interface FormProps {
 const Login = () => {
   const router = useRouter()
   const [mounted, setMounted] = useState<boolean>(false)
-  const isSplashMounted = useRecoilValue(splashState)
+  const isSplashMounted = useRecoilValue<boolean>(splashState)
 
   const {
     register,
@@ -35,13 +35,12 @@ const Login = () => {
     router.push('/oauth/kakaoLogin')
   }
 
-  const onGoogleLogin = () => {
-    // alert('현재 카카오 로그인만 허용했습니다.')
-    alert('개발용 리다이렉트')
+  const onNonUserLogin = () => {
+    // API Call authorization
     router.push('/home')
   }
 
-  const onValid = () => {
+  const onSubmit = () => {
     alert('현재 카카오 로그인만 허용했습니다.')
     reset()
   }
@@ -58,7 +57,7 @@ const Login = () => {
         <div className='mt-20 px-4'>
           <h3 className='text-center text-2xl font-semibold text-[#33CC99]'>로그인</h3>
           <div className='mt-16'>
-            <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-2'>
+            <form onSubmit={handleSubmit(onSubmit)} className='mt-8 flex flex-col space-y-2'>
               <InputField
                 register={register('email', {
                   required: '이메일을 입력해주세요.',
@@ -114,10 +113,10 @@ const Login = () => {
                   카카오 로그인
                 </button>
                 <button
-                  onClick={onGoogleLogin}
+                  onClick={onNonUserLogin}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
-                  <FcGoogle className='mr-2.5 text-2xl' />
-                  구글 로그인
+                  <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
+                  비회원 로그인
                 </button>
               </div>
             </div>
