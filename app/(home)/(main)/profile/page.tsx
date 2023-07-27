@@ -54,12 +54,12 @@ const Profile = () => {
         id: 'logout',
         type: MODAL_TYPES.CONFIRM,
         title: '로그아웃',
-        show: true,
-        content: '로그아웃을 하시겠습니까?',
+        content: '로그아웃 하시겠습니까?',
       },
       callback: () => {
         console.log('로그아웃 성공')
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+        toast.success('로그아웃 완료되었습니다.')
         router.push('/login')
       },
     })
@@ -71,11 +71,9 @@ const Profile = () => {
         id: 'withdrawal',
         type: MODAL_TYPES.CONFIRM,
         title: '탈퇴',
-        show: true,
-        content: '회원을 탈퇴 하시겠습니까?',
+        content: '회원탈퇴 하시겠습니까?',
       },
       callback: () => {
-        console.log('회원탈퇴 성공')
         mutateDeleteUser()
       },
     })

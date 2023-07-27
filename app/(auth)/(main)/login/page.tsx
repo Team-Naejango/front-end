@@ -13,6 +13,16 @@ import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
+import { useQuery } from '@tanstack/react-query'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { AUTH, OAUTH } from '@/app/libs/client/reactQuery/queryKey'
+import { userInfo } from '@/app/apis/domain/profile/profile'
+import { nonUser } from '@/app/apis/domain/auth/auth'
+import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
+import jwtDecode from 'jwt-decode'
 
 interface FormProps {
   email: string
@@ -31,13 +41,38 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormProps>()
 
+  // const { data: accessToken, isSuccess = {} } = useQuery([AUTH.비회원], () => nonUser())
+
+  // console.log('accessToken:', accessToken)
+
   const onKakaoLogin = () => {
     router.push('/oauth/kakaoLogin')
   }
 
-  const onNonUserLogin = () => {
-    // API Call authorization
-    router.push('/home')
+  const onNonUserLogin = async () => {
+    // try {
+    //   const response = await nonUser()
+    //   // const getToken = response.accessToken
+    //   console.log('getToken:', response)
+    // } catch (error) {
+    //   console.log('error:', error)
+    // }
+
+    // axios
+    //   .get('http://43.202.25.203:8080/api/auth/guest')
+    //   .then(response => {
+    //     // 성공적으로 응답 받았을 때 처리하는 로직
+    //     console.log('응답 데이터:', response.data)
+    //     // setDeadlineCookie(AUTH_TOKEN.접근, jwtDecode(response.data))
+    //   })
+    //   .catch(error => {
+    //     // 요청이 실패하거나 응답을 받지 못했을 때 처리하는 로직
+    //     console.error('에러 발생:', error)
+    //   })
+    // setDeadlineCookie(AUTH_TOKEN.접근, accessToken)
+
+    toast.success('비회원로그인이 성공되었습니다.')
+    // router.push('/home')
   }
 
   const onSubmit = () => {

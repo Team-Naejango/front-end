@@ -20,6 +20,7 @@ const KakaoCallback = () => {
     setDeadlineCookie(AUTH_TOKEN.갱신, refreshToken)
   }
 
+  // api get 요청 후 바디로 받기
   useEffect(() => {
     getToken().then(() => {
       try {

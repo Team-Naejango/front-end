@@ -78,11 +78,27 @@ const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
                     <Dialog.Description as={Fragment}>
                       <div className='mx-auto flex w-[200px] justify-around gap-2 p-4'>
                         {modal.type === MODAL_TYPES.ALERT ? (
-                          <Button text={'확인'} onClick={() => (callback ? dialogCallback() : {})} />
+                          <Button
+                            text={'확인'}
+                            className={'!py-2'}
+                            onClick={() => (callback ? dialogCallback() : {})}
+                          />
                         ) : (
                           <>
-                            <Button smail text={'확인'} onClick={() => (callback ? dialogCallback() : {})} />
-                            <Button smail cancel ref={cancelButtonRef} text={'취소'} onClick={() => onCloseModal(id)} />
+                            <Button
+                              smail
+                              text={'확인'}
+                              className={'!py-2'}
+                              onClick={() => (callback ? dialogCallback() : {})}
+                            />
+                            <Button
+                              smail
+                              cancel
+                              ref={cancelButtonRef}
+                              text={'취소'}
+                              className={'!py-2'}
+                              onClick={() => onCloseModal(id)}
+                            />
                           </>
                         )}
                       </div>

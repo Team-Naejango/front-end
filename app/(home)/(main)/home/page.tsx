@@ -41,7 +41,7 @@ const Home = () => {
    * const queryCache = queryClient.getQueryCache()
    * queryCache.clear()
    * */
-  const { data: getUserData } = useQuery<Response<{ data: MemberInfo }>>([OAUTH.유저정보], () => userInfo())
+  const { data: getUserData } = useQuery<Response<{ user: MemberInfo }>>([OAUTH.유저정보], () => userInfo())
 
   console.log('getUserData:', getUserData ?? [])
 
