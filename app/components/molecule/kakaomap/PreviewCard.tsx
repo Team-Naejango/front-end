@@ -1,6 +1,7 @@
 import React from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import uuid from 'react-uuid'
+import { toast } from 'react-hot-toast'
 
 import { useModal } from '@/app/hooks/useModal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
@@ -27,6 +28,9 @@ const PreviewCard = ({ previews, isDragedMixture, activedItem }: PreviewCardProp
     setWareHouseTitleValue(value)
     openModal({
       modal: { id: 'Preview', type: MODAL_TYPES.CONFIRM },
+      callback: () => {
+        toast.success('교환신청이 완료되었습니다.')
+      },
     })
     // setMarkerItemsValue([{ name: previews.map(data => data.content) }])
     setMarkerItemsValue(
@@ -70,7 +74,7 @@ const PreviewCard = ({ previews, isDragedMixture, activedItem }: PreviewCardProp
       </div>
 
       {modalState.modal.show ? (
-        <CustomModal id={modalState.modal.id}>
+        <CustomModal id={modalState.modal.id} btn btnTxt={'교환신청'}>
           <CardSelectModal
             title={activedItem === '' ? wareHouseTitleValue : activedItem}
             isDragedMixture={isDragedMixture}

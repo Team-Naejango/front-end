@@ -43,7 +43,7 @@ const FindPassword = () => {
             type='email'
             placeholder='이메일'
           />
-          <Button text='인증번호 받기' smail />
+          <Button text='인증번호 받기' small />
         </form>
         {isEmailValid && (
           <form onSubmit={handleSubmit(onValidVerify)} className='mt-2 flex flex-row items-center space-y-3'>
@@ -54,7 +54,7 @@ const FindPassword = () => {
               type='number'
               placeholder='인증번호'
             />
-            <Button text='인증하기' smail />
+            <Button text='인증하기' small />
           </form>
         )}
         <p className='!mt-1.5 text-xs text-red-400'>{errors.email?.message || errors.verify?.message}</p>

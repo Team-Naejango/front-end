@@ -1,19 +1,18 @@
-import React, { lazy, Suspense } from 'react'
+import React, { Suspense } from 'react'
 import './assets/css/globals.scss'
 import localFont from 'next/font/local'
 import Script from 'next/script'
 import { Metadata } from 'next'
 
 import NEXT_SEO_DEFAULT from '@/next-seo-config'
-import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
+import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/sdk'
 import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
-import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/apiKey'
+import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
 import Loading from '@/app/loading'
 import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
-  // preload: true,
 })
 
 export const metadata: Metadata = {

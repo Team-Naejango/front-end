@@ -4,14 +4,14 @@ import React from 'react'
 import Link from 'next/link'
 
 interface ItemProps {
-  title: string
   id: number
-  price: string
+  title: string
+  hearts?: number
 }
 
-const ItemCard = ({ title, price, id }: ItemProps) => {
+const ItemCard = ({ id, title, hearts }: ItemProps) => {
   return (
-    <Link href={`/products/${id}`} className='flex w-1/2 flex-row flex-wrap justify-center px-4 pt-5'>
+    <Link href={`/profile/loved`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
       <div>
         <div className='relative h-36 w-36 rounded-md bg-gray-200 opacity-70'>
           <div className={'absolute right-1.5 top-1.5 text-[#33CC99]'}>
@@ -32,14 +32,6 @@ const ItemCard = ({ title, price, id }: ItemProps) => {
         </div>
         <div className='flex flex-col gap-2.5 pt-2'>
           <h3 className='text-xs font-normal text-gray-900'>{title}</h3>
-          <div className={'flex items-center justify-between'}>
-            <div className={'flex'}>
-              <div className='relative -mr-2 h-5 w-5 rounded-full bg-gray-400' />
-              <div className='relative -mr-2 h-5 w-5 rounded-full bg-gray-500' />
-              <div className='relative -mr-2 h-5 w-5 rounded-full bg-gray-600' />
-            </div>
-            <span className='rounded bg-[#33CC99] p-[7px] text-xs font-normal text-white'>{price}원</span>
-          </div>
         </div>
       </div>
     </Link>

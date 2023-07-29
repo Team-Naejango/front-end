@@ -142,7 +142,7 @@ const Sign = () => {
             />
             <Button
               type={'button'}
-              smail
+              small
               text='중복검사'
               onClick={onValidUserName}
               disabled={nickname === undefined || nickname === ''}

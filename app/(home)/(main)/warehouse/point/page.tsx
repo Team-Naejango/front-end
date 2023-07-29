@@ -38,7 +38,9 @@ const PointCharge = () => {
     <Layout canGoBack title={'포인트 충전'} seoTitle={'포인트 충전'}>
       <div className='mt-10 px-2'>
         <RadioPicker data={points} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
-        <Button type={'submit'} text={'충전하기'} onClick={onSubmit} />
+        <div className={'fixed bottom-[95px] left-1/2 w-[90%] -translate-x-1/2 transform'}>
+          <Button type={'submit'} text={'충전하기'} onClick={onSubmit} />
+        </div>
       </div>
     </Layout>
   )

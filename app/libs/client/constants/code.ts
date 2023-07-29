@@ -35,6 +35,7 @@ export type E_CRUD = (typeof CRUD)[keyof typeof CRUD]
  */
 export const MODAL_TYPES = {
   ALERT: 'alert',
+  DIALOG: 'dialog',
   CONFIRM: 'confirm',
 } as const
 

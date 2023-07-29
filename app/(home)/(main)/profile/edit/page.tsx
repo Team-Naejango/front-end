@@ -36,13 +36,10 @@ interface EditProfileForm {
 const EditProfile = () => {
   const query = useQueryClient()
   const router = useRouter()
+  const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
   const [imageFile, setImageFile] = useState<FileList | null>(null)
-  const [imageSrc, setImageSrc] = useState<string | undefined>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
   const [selectedNickname, setSelectedNickname] = useState<string>('')
-
-  console.log('imageFile:', imageFile)
-  console.log('imageSrc:', imageSrc)
 
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
@@ -58,13 +55,14 @@ const EditProfile = () => {
     reset,
     formState: { errors },
   } = useForm<EditProfileForm>({
-    mode: 'onChange',
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
   })
   const nickname = watch('nickname')
 
-  const { data: _userInfo, isSuccess = {} } = useQuery<{ data: MemberInfo }>([OAUTH.유저정보], () => userInfo())
+  const { data: _userInfo } = useQuery<{ user: MemberInfo }>([OAUTH.유저정보], () => userInfo())
 
-  const { mutate: mutateUserInfoModify } = useMutation<{ data: MemberInfo }, ApiError, MemberInfo>(
+  const { mutate: mutateUserInfoModify } = useMutation<{ user: MemberInfo }, ApiError, MemberInfo>(
     (params: MemberInfo) => modifyUserInfo({ ...params }),
     {
       onSuccess: () => {
@@ -105,6 +103,7 @@ const EditProfile = () => {
       const command = new PutObjectCommand({
         Bucket: 'naejango-s3-image',
         Key: `upload/${file.name}`,
+        ContentType: file.type,
         Body: file,
         ACL: 'public-read',
       })
@@ -138,6 +137,7 @@ const EditProfile = () => {
   }
 
   const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log('event.target.files:', event.target.files)
     const file = event.target.files![0]
     const fileExt = file?.name.split('.').pop()
 
@@ -155,7 +155,7 @@ const EditProfile = () => {
 
     const reader = new FileReader()
     reader.addEventListener('load', () => {
-      setImageSrc(reader.result as string)
+      setImagePreview(reader.result as string)
       setImageFile(event.target.files)
 
       URL.revokeObjectURL(reader.result as string)
@@ -163,12 +163,10 @@ const EditProfile = () => {
     reader.readAsDataURL(file)
   }
 
-  if (imageFile) {
-    console.log('name:', imageFile[0].name)
-  }
-
   const onSubmit = async () => {
-    if (!imageSrc) {
+    if (!_userInfo) return
+
+    if (!setImagePreview) {
       toast.error('이미지를 등록해주세요.')
       return
     }
@@ -181,14 +179,13 @@ const EditProfile = () => {
     const params: MemberInfo = {
       nickname: getValues('nickname'),
       gender: getValues('gender'),
-      imgUrl: imageSrc,
+      imgUrl: (imageFile! && imageFile[0].name) ?? _userInfo.user.imgUrl,
       birth: getValues('birth'),
       intro: getValues('intro'),
       phoneNumber: getValues('phoneNumber'),
     }
 
     console.log('params:', params)
-
     mutateUserInfoModify(params)
   }
 
@@ -205,8 +202,14 @@ const EditProfile = () => {
   }
 
   useEffect(() => {
-    reset(_userInfo?.data)
+    reset(_userInfo?.user)
+
+    if (_userInfo?.user?.imgUrl) {
+      setImagePreview(_userInfo.user.imgUrl)
+    }
   }, [_userInfo])
+
+  console.log('imageFile:', watch('imageFile'))
 
   return (
     <Layout canGoBack title={'프로필 편집'} seoTitle={'프로필'}>
@@ -216,14 +219,25 @@ const EditProfile = () => {
             {imageFile ? (
               <Image
                 src={URL.createObjectURL(imageFile[0])}
-                defaultValue={imageSrc}
+                defaultValue={imagePreview}
                 width={'100'}
                 height={'100'}
                 alt='이미지 미리보기'
                 className={'h-24 w-24 rounded-full bg-gray-300 object-cover'}
               />
             ) : (
-              <div className='h-24 w-24 rounded-full bg-gray-300' />
+              <Image
+                src={`${
+                  _userInfo?.user.imgUrl === ''
+                    ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
+                    : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/${_userInfo?.user.imgUrl}`
+                }`}
+                width={'100'}
+                height={'100'}
+                quality={100}
+                alt='프로필 이미지'
+                className={'h-24 w-24 rounded-full bg-gray-300 object-cover'}
+              />
             )}
             <InputFile id='picture' {...register('imageFile')} onChange={event => onUpload(event)} />
           </div>
@@ -231,7 +245,7 @@ const EditProfile = () => {
             <InputField
               register={register('nickname', {
                 required: '닉네임을 입력해주세요.',
-                value: _userInfo?.data.nickname,
+                value: _userInfo?.user.nickname,
                 onChange: event => {
                   if (event.target.value.match(/^\s/g)) {
                     setError('nickname', {
@@ -248,7 +262,7 @@ const EditProfile = () => {
             />
             <Button
               type={'button'}
-              smail
+              small
               text='중복검사'
               onClick={onValidUserName}
               disabled={nickname === undefined || nickname === ''}
@@ -260,7 +274,7 @@ const EditProfile = () => {
             <InputField
               register={register('birth', {
                 required: '생년월일을 입력해주세요.',
-                value: _userInfo?.data.birth,
+                value: _userInfo?.user.birth,
                 pattern: {
                   value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
                   message: '유효한 생년월일을 입력해주세요. (YYYYMMDD)',
@@ -280,7 +294,7 @@ const EditProfile = () => {
             <InputField
               register={register('phoneNumber', {
                 required: '휴대폰번호를 입력해주세요.',
-                value: _userInfo?.data.phoneNumber,
+                value: _userInfo?.user.phoneNumber,
               })}
               id='phoneNumber'
               type='text'
@@ -293,7 +307,7 @@ const EditProfile = () => {
           <TextArea
             register={register('intro', {
               required: '자기소개를 입력하세요.',
-              value: _userInfo?.data.intro,
+              value: _userInfo?.user.intro,
               maxLength: {
                 value: 100,
                 message: '100자 제한입니다.',
@@ -302,7 +316,7 @@ const EditProfile = () => {
             placeholder={'자기소개'}
           />
           <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p>
-          <Button smail text='저장' className={'!mx-auto mt-4 block'} />
+          <Button small text='저장' className={'!mx-auto mt-4 block'} />
         </form>
       </div>
     </Layout>

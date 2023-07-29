@@ -5,6 +5,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
+import jwtDecode from 'jwt-decode'
+import { ApiError } from 'next/dist/server/api-utils'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
@@ -12,7 +16,11 @@ import { PiUserCircleMinus } from 'react-icons/pi'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
+import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
+
+import { nonUser } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -35,9 +43,27 @@ const Login = () => {
     router.push('/oauth/kakaoLogin')
   }
 
-  const onNonUserLogin = () => {
-    // API Call authorization
-    router.push('/home')
+  const onNonUserLogin = async () => {
+    // try {
+    //   const response = await nonUser()
+    //   // const getToken = response.accessToken
+    //   console.log('getToken:', response)
+    // } catch (error) {
+    //   console.log('error:', error)
+    // }
+
+    axios
+      .get('http://43.202.25.203:8080/api/auth/guest')
+      .then(response => {
+        console.log('응답 데이터:', response.data)
+        setDeadlineCookie(AUTH_TOKEN.접근, jwtDecode(response.data))
+        toast.success('비회원 로그인에 성공하였습니다.')
+        router.push('/home')
+      })
+      .catch((error: ApiError) => {
+        console.error('에러 발생:', error)
+        toast.error(error.message)
+      })
   }
 
   const onSubmit = () => {

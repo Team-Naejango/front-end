@@ -3,17 +3,19 @@ import { useRecoilValue } from 'recoil'
 import { Dialog, Transition } from '@headlessui/react'
 
 import { useModal } from '@/app/hooks/useModal'
-import { modalSelector } from '@/app/store/modal'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import Button from '@/app/components/atom/Button'
+import { modalSelector } from '@/app/store/modal'
+import { E_MODAL_TYPES, MODAL_TYPES } from '@/app/libs/client/constants/code'
 
 interface ModalProps {
   id: string
-  type?: 'modal' | 'dialog'
+  type?: E_MODAL_TYPES
+  btn?: boolean
+  btnTxt?: string
   children?: React.ReactNode
 }
 
-const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
+const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '확인', children }: ModalProps) => {
   const cancelButtonRef = useRef<HTMLDivElement | null>(null)
   const { closeModal } = useModal()
   const modalState = useRecoilValue(modalSelector(id))
@@ -24,11 +26,13 @@ const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
     if (hasModalId) return closeModal(id)
   }
 
-  const dialogCallback = () => {
+  const modalCallback = () => {
     if (callback) {
       callback()
+      onCloseModal(id)
+    } else {
+      onCloseModal(id)
     }
-    onCloseModal(id)
   }
 
   return (
@@ -48,12 +52,14 @@ const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
         <div className='fixed inset-0 top-1/2 h-[780px] -translate-y-1/2'>
           <div
             className={`flex min-h-full justify-center overflow-y-clip p-4 text-center ${
-              type === 'modal' ? 'items-end' : 'items-center'
+              type === MODAL_TYPES.CONFIRM ? 'items-end' : 'items-center'
             }`}>
             <Transition.Child
               as={Fragment}
               enter='ease-out duration-300 transform'
-              enterFrom={`opacity-0 scale-100 ${type === 'modal' ? 'translate-y-[200px]' : 'translate-y-[20px]'}`}
+              enterFrom={`opacity-0 scale-100 ${
+                type === MODAL_TYPES.CONFIRM ? 'translate-y-[200px]' : 'translate-y-[20px]'
+              }`}
               enterTo='opacity-100 scale-100 translate-y-[0px]'
               leave='ease-in duration-200'
               leaveFrom='opacity-100 scale-100'
@@ -61,10 +67,30 @@ const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
               <Dialog.Panel
                 ref={cancelButtonRef}
                 className={`${
-                  type === 'modal' ? 'w-[375px] p-6' : 'w-[330px] px-5 pb-2 pt-6 text-center'
+                  type === MODAL_TYPES.CONFIRM ? 'w-[375px] p-6' : 'w-[330px] px-5 pb-2 pt-6 text-center'
                 } max-w-md transform rounded-2xl bg-white text-left align-middle shadow-xl transition-all`}>
-                {type === 'modal' ? (
-                  children
+                {type === MODAL_TYPES.CONFIRM ? (
+                  <>
+                    {children}
+                    {btn ? (
+                      <div className={'mt-4 text-center'}>
+                        <Button
+                          small
+                          text={btnTxt}
+                          className={'!py-2'}
+                          onClick={() => (callback ? modalCallback() : {})}
+                        />
+                        <Button
+                          small
+                          cancel
+                          ref={cancelButtonRef}
+                          text={'취소'}
+                          className={'ml-2 !py-2'}
+                          onClick={() => onCloseModal(id)}
+                        />
+                      </div>
+                    ) : null}
+                  </>
                 ) : (
                   <>
                     {modal.title && (
@@ -76,13 +102,38 @@ const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
                       {modal.content && <div className='overflow-auto p-3 text-sm'>{modal.content}</div>}
                     </div>
                     <Dialog.Description as={Fragment}>
-                      <div className='mx-auto flex w-[200px] justify-around gap-2 p-4'>
+                      <div
+                        className={`p-4 ${
+                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] justify-around gap-2'
+                        }`}>
                         {modal.type === MODAL_TYPES.ALERT ? (
-                          <Button text={'확인'} onClick={() => (callback ? dialogCallback() : {})} />
+                          <>
+                            {children}
+                            <div className={'mt-4 text-center'}>
+                              <Button
+                                small
+                                text={'확인'}
+                                className={'!flex-grow-0 !py-2'}
+                                onClick={() => modalCallback()}
+                              />
+                            </div>
+                          </>
                         ) : (
                           <>
-                            <Button smail text={'확인'} onClick={() => (callback ? dialogCallback() : {})} />
-                            <Button smail cancel ref={cancelButtonRef} text={'취소'} onClick={() => onCloseModal(id)} />
+                            <Button
+                              small
+                              text={'확인'}
+                              className={'!py-2'}
+                              onClick={() => (callback ? modalCallback() : {})}
+                            />
+                            <Button
+                              small
+                              cancel
+                              ref={cancelButtonRef}
+                              text={'취소'}
+                              className={'!py-2'}
+                              onClick={() => onCloseModal(id)}
+                            />
                           </>
                         )}
                       </div>

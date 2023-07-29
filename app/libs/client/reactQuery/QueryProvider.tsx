@@ -21,7 +21,7 @@ const defaultQueryCache = new QueryCache({
   onError: (error: unknown) => {
     const { name, message } = error as Error
     console.log(`${name}: ${message}`)
-    toast.error('서버요청 에러가 발생했습니다.')
+    toast.error('서버 요청 에러가 발생했습니다.')
     return Promise.reject(error)
   },
 })
@@ -31,35 +31,35 @@ const defaultMutationCache = new MutationCache({
   onError: (error: unknown) => {
     const { name, message } = error as Error
     console.log(`${name}: ${message}`)
-    toast.error('서버요청 에러가 발생했습니다.')
+    toast.error('서버 요청 에러가 발생했습니다.')
     return Promise.reject(error)
   },
 })
 
 function QueryProvider({ children }: React.PropsWithChildren) {
-  const queryClient = new QueryClient({
+  const query = new QueryClient({
     defaultOptions: defaultQueryClientOptions,
     queryCache: defaultQueryCache,
     mutationCache: defaultMutationCache,
   })
 
-  const queryCache = queryClient.getQueryCache()
-  const mutationCache = queryClient.getMutationCache()
+  const queryCache = query.getQueryCache()
+  const mutationCache = query.getMutationCache()
 
   useEffect(() => {
-    // 캐싱 제거 (query)
+    // 에러 캐시 제거 (query)
     const queryUnsubscribe = queryCache.subscribe(event => {
       if (event?.query?.state?.status === 'error') {
         const { queryKey } = event.query
 
-        queryClient.removeQueries(queryKey)
+        query.removeQueries(queryKey)
       }
     })
 
-    // 캐싱 제거 (mutation)
+    // 에러 캐시 제거 (mutation)
     const mutationUnsubscribe = mutationCache.subscribe(event => {
       if (event?.mutation?.state?.status === 'error') {
-        queryClient.getMutationCache().remove(event.mutation)
+        query.getMutationCache().remove(event.mutation)
       }
     })
 
@@ -67,12 +67,12 @@ function QueryProvider({ children }: React.PropsWithChildren) {
       queryUnsubscribe()
       mutationUnsubscribe()
     }
-  }, [queryClient, queryCache, mutationCache])
+  }, [query, queryCache, mutationCache])
 
   return (
     // todo: 쿼리 하이드레이트 작업
-    <QueryClientProvider client={queryClient}>
-      <Hydrate state={dehydrate(queryClient)}>{children}</Hydrate>
+    <QueryClientProvider client={query}>
+      <Hydrate state={dehydrate(query)}>{children}</Hydrate>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )

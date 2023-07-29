@@ -31,7 +31,7 @@ const Profile = () => {
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-      toast.success('회원탈퇴가 완료되었습니다.')
+      toast.success('회원탈퇴 되었습니다.')
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
@@ -54,12 +54,12 @@ const Profile = () => {
         id: 'logout',
         type: MODAL_TYPES.CONFIRM,
         title: '로그아웃',
-        show: true,
-        content: '로그아웃을 하시겠습니까?',
+        content: '로그아웃 하시겠습니까?',
       },
       callback: () => {
         console.log('로그아웃 성공')
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+        toast.success('로그아웃 되었습니다.')
         router.push('/login')
       },
     })
@@ -71,11 +71,9 @@ const Profile = () => {
         id: 'withdrawal',
         type: MODAL_TYPES.CONFIRM,
         title: '탈퇴',
-        show: true,
-        content: '회원을 탈퇴 하시겠습니까?',
+        content: '회원탈퇴 하시겠습니까?',
       },
       callback: () => {
-        console.log('회원탈퇴 성공')
         mutateDeleteUser()
       },
     })
@@ -107,23 +105,23 @@ const Profile = () => {
           </li>
           <li
             role={'presentation'}
-            onClick={() => onLink('/profile/sold')}
+            onClick={() => onLink('/profile/follow')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>판매내역</span>
-            <GrFormNext />
-          </li>
-          <li
-            role={'presentation'}
-            onClick={() => onLink('/profile/bought')}
-            className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>구매내역</span>
+            <span className={'text-sm'}>팔로우</span>
             <GrFormNext />
           </li>
           <li
             role={'presentation'}
             onClick={() => onLink('/profile/loved')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>관심 목록</span>
+            <span className={'text-sm'}>관심 상품</span>
+            <GrFormNext />
+          </li>
+          <li
+            role={'presentation'}
+            onClick={() => onLink('/profile/review')}
+            className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
+            <span className={'text-sm'}>리뷰 내역</span>
             <GrFormNext />
           </li>
         </ul>
@@ -141,30 +139,32 @@ const Profile = () => {
       </div>
 
       {_account.modal.show ? (
-        <CustomModal id={_account.modal.id}>
-          <ul className={'flex flex-col gap-4'}>
-            <li role={'presentation'} className={'cursor-pointer py-2 text-sm hover:text-gray-600'} onClick={logout}>
-              로그아웃
-            </li>
-            <li
-              role={'presentation'}
-              className={'cursor-pointer py-2 text-sm hover:text-gray-600'}
-              onClick={withdrawal}>
-              탈퇴하기
-            </li>
-          </ul>
-        </CustomModal>
+        <Suspense fallback={<Loading />}>
+          <CustomModal id={_account.modal.id}>
+            <ul className={'flex flex-col gap-4'}>
+              <li role={'presentation'} className={'cursor-pointer py-2 text-sm hover:text-gray-600'} onClick={logout}>
+                로그아웃
+              </li>
+              <li
+                role={'presentation'}
+                className={'cursor-pointer py-2 text-sm hover:text-gray-600'}
+                onClick={withdrawal}>
+                탈퇴하기
+              </li>
+            </ul>
+          </CustomModal>
+        </Suspense>
       ) : null}
 
       {_logout.modal.show ? (
         <Suspense fallback={<Loading />}>
-          <CustomModal id={_logout.modal.id} type={'dialog'} />
+          <CustomModal id={_logout.modal.id} type={MODAL_TYPES.DIALOG} />
         </Suspense>
       ) : null}
 
       {_withdrawal.modal.show ? (
         <Suspense fallback={<Loading />}>
-          <CustomModal id={_withdrawal.modal.id} type={'dialog'} />
+          <CustomModal id={_withdrawal.modal.id} type={MODAL_TYPES.DIALOG} />
         </Suspense>
       ) : null}
     </Layout>

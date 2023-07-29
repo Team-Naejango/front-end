@@ -3,17 +3,10 @@ import { Cookies } from 'react-cookie'
 const cookies = new Cookies()
 
 export const setDeadlineCookie = (key: string, token: string | null) => {
-  const expires = new Date()
-  expires.setDate(expires.getDate() + 14)
-
   cookies.set(key, token, {
     path: '/',
-    expires: key === 'refreshToken' ? expires : undefined,
+    maxAge: key === 'refreshToken' ? 60 * 60 * 24 * 14 : undefined,
   })
-}
-
-export const setCookie = (key: string, value: string | null, options?: { maxAge: number }) => {
-  return cookies.set(key, value, { ...options })
 }
 
 export const getCookie = (key: string) => {
