@@ -41,7 +41,7 @@ const ListUser = ({ user }: { user?: any }) => {
           <EventCarousel />
           <div className={'mt-[21.5rem] text-center'}>
             <p className={'text-[15px] font-medium'}>내 주변에서 물물교환을 하고 싶다면?</p>
-            <Button smail text={'탐색하기'} className={'!ml-0 mt-4'} onClick={() => router.push('/places')} />
+            <Button small text={'탐색하기'} className={'mt-4'} onClick={() => router.push('/places')} />
           </div>
           <FloatingButton href='/warehouse/item/create'>
             <svg

@@ -158,13 +158,13 @@ const Profile = () => {
 
       {_logout.modal.show ? (
         <Suspense fallback={<Loading />}>
-          <CustomModal id={_logout.modal.id} type={'dialog'} />
+          <CustomModal id={_logout.modal.id} type={MODAL_TYPES.DIALOG} />
         </Suspense>
       ) : null}
 
       {_withdrawal.modal.show ? (
         <Suspense fallback={<Loading />}>
-          <CustomModal id={_withdrawal.modal.id} type={'dialog'} />
+          <CustomModal id={_withdrawal.modal.id} type={MODAL_TYPES.DIALOG} />
         </Suspense>
       ) : null}
     </Layout>

@@ -16,13 +16,13 @@ import WriteReviewPopup from '@/app/components/organism/profile/WriteReviewPopup
 
 const Review = () => {
   const { openModal } = useModal()
-  const _review = useRecoilValue(modalSelector('review'))
+  const _review = useRecoilValue(modalSelector('writeReview'))
 
   const onClickWriteReview = () => {
     openModal({
-      modal: { id: 'review', type: MODAL_TYPES.CONFIRM },
+      modal: { id: 'writeReview', type: MODAL_TYPES.CONFIRM },
       callback: () => {
-        toast.success('작성하신 리뷰가 등록되었습니다.')
+        toast.success('리뷰가 등록되었습니다.')
       },
     })
   }

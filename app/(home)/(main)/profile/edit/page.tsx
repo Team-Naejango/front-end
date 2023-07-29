@@ -262,7 +262,7 @@ const EditProfile = () => {
             />
             <Button
               type={'button'}
-              smail
+              small
               text='중복검사'
               onClick={onValidUserName}
               disabled={nickname === undefined || nickname === ''}
@@ -316,7 +316,7 @@ const EditProfile = () => {
             placeholder={'자기소개'}
           />
           <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p>
-          <Button smail text='저장' className={'!mx-auto mt-4 block'} />
+          <Button small text='저장' className={'!mx-auto mt-4 block'} />
         </form>
       </div>
     </Layout>

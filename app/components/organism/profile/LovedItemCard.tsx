@@ -11,7 +11,7 @@ interface ItemProps {
 
 const ItemCard = ({ id, title, hearts }: ItemProps) => {
   return (
-    <Link href={`/products/${id}`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
+    <Link href={`/profile/loved`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
       <div>
         <div className='relative h-36 w-36 rounded-md bg-gray-200 opacity-70'>
           <div className={'absolute right-1.5 top-1.5 text-[#33CC99]'}>
