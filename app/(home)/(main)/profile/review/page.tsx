@@ -1,20 +1,17 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useParams } from 'next/navigation'
 import { Tab } from '@headlessui/react'
 import Link from 'next/link'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import RoundedTab, { RoundedTabProps } from '@/app/components/molecule/tab/RoundedTab'
-import FloatingButton from '@/app/components/atom/FloatingButton'
 import { cls } from '@/app/libs/client/utils/util'
+import Button from '@/app/components/atom/Button'
 
-const WareHouseItem = () => {
-  const params = useParams()
-
-  const [categories] = useState({
-    BUY: [
+const Review = () => {
+  const [reviews] = useState({
+    '작성 가능한 리뷰': [
       {
         id: 1,
         value: '식품',
@@ -41,7 +38,7 @@ const WareHouseItem = () => {
         title: '삼다수 무라벨 2L 6개',
       },
     ],
-    SELL: [
+    '작성한 리뷰': [
       {
         id: 1,
         value: '식품',
@@ -55,38 +52,25 @@ const WareHouseItem = () => {
     ],
   })
 
-  // todo: 삭제 팝업창과 delete api 추가
-  const onDeleteProduct = () => {}
-
   return (
-    <Layout canGoBack title={`창고${params.id}`}>
+    <Layout canGoBack title='리뷰내역'>
       <div className='mt-8'>
-        <RoundedTab tabs={categories as any}>
-          {Object.values(categories).map(posts => (
+        <RoundedTab tabs={reviews as any}>
+          {Object.values(reviews).map(posts => (
             <Tab.Panel key={posts[0].title} className={cls('rounded-xl bg-white pb-5 pt-2')}>
+              <span className={'mr-1 flex justify-end text-[13px]'}>{posts.length} 건</span>
               <ul className={'flex flex-col gap-5 p-0.5'}>
                 {posts.map((post: RoundedTabProps) => (
                   <li
                     key={post.id}
-                    className='relative flex items-center justify-around rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
-                    <div className={'-ml-4 flex w-1/2 flex-col gap-0.5'}>
+                    className='relative flex items-center justify-around gap-8 rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
+                    <div className={'h-16 w-16 rounded-md bg-gray-500'} />
+                    <div className={'flex w-1/2 flex-col gap-0.5'}>
                       <span className={'text-xs'}>{post.value}</span>
                       <p className={'text-sm font-semibold'}>{post.title}</p>
                     </div>
-                    <div className={'h-16 w-16 rounded-md bg-gray-500'} />
-                    <span role='presentation' onClick={onDeleteProduct} className={'absolute right-2 top-2'}>
-                      <svg
-                        xmlns='http://www.w3.org/2000/svg'
-                        fill='none'
-                        viewBox='0 0 24 24'
-                        strokeWidth='2'
-                        stroke='currentColor'
-                        className='h-4 w-4'>
-                        <path strokeLinecap='round' strokeLinejoin='round' d='M6 18L18 6M6 6l12 12' />
-                      </svg>
-                    </span>
                     <Link
-                      href={'/warehouse/item/1'}
+                      href={'/profile/review'}
                       className={cls(
                         'absolute inset-0 rounded-xl',
                         'ring-[#32D7A0] focus:z-10 focus:outline-none focus:ring-1'
@@ -98,20 +82,12 @@ const WareHouseItem = () => {
             </Tab.Panel>
           ))}
         </RoundedTab>
-        <FloatingButton href='/warehouse/item/create'>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth='2'
-            stroke='currentColor'
-            className='h-6 w-6'>
-            <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-          </svg>
-        </FloatingButton>
+        <div className={'sticky bottom-0 left-0 mx-auto bg-white pb-2.5'}>
+          <Button text={'리뷰 쓰기'} />
+        </div>
       </div>
     </Layout>
   )
 }
 
-export default WareHouseItem
+export default Review

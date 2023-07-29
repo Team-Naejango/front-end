@@ -3,7 +3,7 @@ import { AuthToken, MemberInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
 
 /**
- * 유저 회원가입
+ * 회원가입
  *
  * @param params.birth // 생년월일
  * @param params.gender  // 성별

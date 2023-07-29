@@ -17,7 +17,7 @@ export interface ItemParams {
 }
 
 /**
- * 아이템 조회
+ * 아이템 정보
  */
 export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageIdList'>
 export interface ItemInfo extends OmitStorageIdItemInfo {

@@ -3,7 +3,7 @@ import { Response } from '@/app/apis/types/response/response'
 import { ItemInfo, ItemParams } from '@/app/apis/types/domain/warehouse/warehouse'
 
 /**
- * 아이템 정보 조회
+ * 아이템 조회
  *
  * @param itemId // 아이템 id
  */
@@ -29,7 +29,7 @@ export async function createItem(params: ItemParams): Promise<Response<{ item: I
 }
 
 /**
- * 아이템 정보 수정
+ * 아이템 수정
  *
  * @param itemId // 아이템 id
  */

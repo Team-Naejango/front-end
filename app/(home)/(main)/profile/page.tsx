@@ -105,23 +105,23 @@ const Profile = () => {
           </li>
           <li
             role={'presentation'}
-            onClick={() => onLink('/profile/sold')}
+            onClick={() => onLink('/profile/follow')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>판매내역</span>
-            <GrFormNext />
-          </li>
-          <li
-            role={'presentation'}
-            onClick={() => onLink('/profile/bought')}
-            className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>구매내역</span>
+            <span className={'text-sm'}>팔로우</span>
             <GrFormNext />
           </li>
           <li
             role={'presentation'}
             onClick={() => onLink('/profile/loved')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>관심 목록</span>
+            <span className={'text-sm'}>관심 상품</span>
+            <GrFormNext />
+          </li>
+          <li
+            role={'presentation'}
+            onClick={() => onLink('/profile/review')}
+            className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
+            <span className={'text-sm'}>리뷰 내역</span>
             <GrFormNext />
           </li>
         </ul>

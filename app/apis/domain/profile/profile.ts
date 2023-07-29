@@ -2,6 +2,12 @@ import { withAuth } from '@/app/apis/config/axios/withAuth'
 import { Response } from '@/app/apis/types/response/response'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 
+// export async function getUsers() {
+//   const res = await fetch('https://jsonplaceholder.typicode.com/users')
+//   const users = (await res.json()) as any[]
+//   return users
+// }
+
 /**
  * 유저정보 조회
  *

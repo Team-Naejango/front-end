@@ -235,7 +235,7 @@ const EditProfile = () => {
                 width={'100'}
                 height={'100'}
                 quality={100}
-                alt='이미지 미리보기'
+                alt='프로필 이미지'
                 className={'h-24 w-24 rounded-full bg-gray-300 object-cover'}
               />
             )}
