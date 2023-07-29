@@ -10,10 +10,11 @@ import Button from '@/app/components/atom/Button'
 interface ModalProps {
   id: string
   type?: 'modal' | 'dialog'
+  btn?: boolean
   children?: React.ReactNode
 }
 
-const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
+const CustomModal = ({ id, type = 'modal', btn = false, children }: ModalProps) => {
   const cancelButtonRef = useRef<HTMLDivElement | null>(null)
   const { closeModal } = useModal()
   const modalState = useRecoilValue(modalSelector(id))
@@ -64,7 +65,27 @@ const CustomModal = ({ id, type = 'modal', children }: ModalProps) => {
                   type === 'modal' ? 'w-[375px] p-6' : 'w-[330px] px-5 pb-2 pt-6 text-center'
                 } max-w-md transform rounded-2xl bg-white text-left align-middle shadow-xl transition-all`}>
                 {type === 'modal' ? (
-                  children
+                  <>
+                    {children}
+                    {btn ? (
+                      <div className={'mt-4 text-center'}>
+                        <Button
+                          smail
+                          text={'확인'}
+                          className={'!py-2'}
+                          onClick={() => (callback ? dialogCallback() : {})}
+                        />
+                        <Button
+                          smail
+                          cancel
+                          ref={cancelButtonRef}
+                          text={'취소'}
+                          className={'!py-2'}
+                          onClick={() => onCloseModal(id)}
+                        />
+                      </div>
+                    ) : null}
+                  </>
                 ) : (
                   <>
                     {modal.title && (

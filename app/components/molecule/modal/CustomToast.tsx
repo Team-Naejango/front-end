@@ -14,7 +14,7 @@ const CustomToast = () => {
         letterSpacing: '0.2px',
       }}
       toastOptions={{
-        duration: 2000,
+        duration: 1500,
         style: {
           padding: '10px 12px',
           boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.01)',

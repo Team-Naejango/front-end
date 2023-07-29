@@ -31,7 +31,7 @@ const Profile = () => {
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-      toast.success('회원탈퇴가 완료되었습니다.')
+      toast.success('회원탈퇴 되었습니다.')
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
@@ -59,7 +59,7 @@ const Profile = () => {
       callback: () => {
         console.log('로그아웃 성공')
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-        toast.success('로그아웃 완료되었습니다.')
+        toast.success('로그아웃 되었습니다.')
         router.push('/login')
       },
     })
@@ -139,19 +139,21 @@ const Profile = () => {
       </div>
 
       {_account.modal.show ? (
-        <CustomModal id={_account.modal.id}>
-          <ul className={'flex flex-col gap-4'}>
-            <li role={'presentation'} className={'cursor-pointer py-2 text-sm hover:text-gray-600'} onClick={logout}>
-              로그아웃
-            </li>
-            <li
-              role={'presentation'}
-              className={'cursor-pointer py-2 text-sm hover:text-gray-600'}
-              onClick={withdrawal}>
-              탈퇴하기
-            </li>
-          </ul>
-        </CustomModal>
+        <Suspense fallback={<Loading />}>
+          <CustomModal id={_account.modal.id}>
+            <ul className={'flex flex-col gap-4'}>
+              <li role={'presentation'} className={'cursor-pointer py-2 text-sm hover:text-gray-600'} onClick={logout}>
+                로그아웃
+              </li>
+              <li
+                role={'presentation'}
+                className={'cursor-pointer py-2 text-sm hover:text-gray-600'}
+                onClick={withdrawal}>
+                탈퇴하기
+              </li>
+            </ul>
+          </CustomModal>
+        </Suspense>
       ) : null}
 
       {_logout.modal.show ? (

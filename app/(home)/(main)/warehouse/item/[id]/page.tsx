@@ -71,7 +71,7 @@ const WareHouseItem = () => {
                     className='relative flex items-center justify-around rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
                     <div className={'-ml-4 flex w-1/2 flex-col gap-0.5'}>
                       <span className={'text-xs'}>{post.value}</span>
-                      <p className={'text-sm font-semibold'}>{post.title}</p>
+                      <p className={'text-[13px] font-semibold'}>{post.title}</p>
                     </div>
                     <div className={'h-16 w-16 rounded-md bg-gray-500'} />
                     <span role='presentation' onClick={onDeleteProduct} className={'absolute right-2 top-2'}>
