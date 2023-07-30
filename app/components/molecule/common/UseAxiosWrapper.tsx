@@ -25,7 +25,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
 
         config.headers = {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${isHasToken ? refreshToken : accessToken}`,
+          Authorization: `Bearer ${isHasToken ? accessToken : refreshToken}`,
         } as AxiosRequestHeaders
 
         return config
