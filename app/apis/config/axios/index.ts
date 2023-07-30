@@ -1,9 +1,10 @@
 import { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ApiError } from 'next/dist/server/api-utils'
-import { getCookie } from 'cookies-next'
+// import { getCookie } from 'cookies-next'
 
 import { TokenValid } from '@/app/libs/client/utils/token'
+import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { instance } from '@/app/apis/config/axios/instance'
 
