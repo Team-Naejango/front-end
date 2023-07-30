@@ -2,12 +2,6 @@ import { withAuth } from '@/app/apis/config/axios/withAuth'
 import { Response } from '@/app/apis/types/response/response'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 
-// export async function getUsers() {
-//   const res = await fetch('https://jsonplaceholder.typicode.com/users')
-//   const users = (await res.json()) as any[]
-//   return users
-// }
-
 /**
  * 유저정보 조회
  *
@@ -38,3 +32,13 @@ export async function modifyUserInfo(params: MemberInfo): Promise<Response<{ use
 export async function deleteUser(): Promise<Response<null>> {
   return withAuth.delete('/api/user/profile')
 }
+
+/**
+ * 더미 API
+ *
+ */
+// export async function getUsers() {
+//   const res = await fetch('https://jsonplaceholder.typicode.com/users')
+//   const users = (await res.json()) as any[]
+//   return users
+// }

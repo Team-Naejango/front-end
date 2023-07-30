@@ -6,17 +6,6 @@
 모듈 : CNA  
 린트&프리티어 : Airbnb  
 컴포넌트 디자인패턴 : Atomic Design  
-오픈API: Kakao SDK  
+오픈API: Kakao SDK(Login, Map)  
 배포 : AWS CloudFront  
-자동화 : AWS CodePipeline  
-
-### 실행
-
-```bash
-git clone <package_name_url>
-```
-
-```bash
-yarn install
-yarn dev
-```
+자동화 : AWS CodePipeline
