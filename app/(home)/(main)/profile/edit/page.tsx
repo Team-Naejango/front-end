@@ -266,7 +266,7 @@ const EditProfile = () => {
               text='중복검사'
               onClick={onValidUserName}
               disabled={nickname === undefined || nickname === ''}
-              className={'!text-[13px]'}
+              className={'ml-2 !text-[13px]'}
             />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.nickname?.message}</p>

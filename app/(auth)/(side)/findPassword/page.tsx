@@ -43,7 +43,7 @@ const FindPassword = () => {
             type='email'
             placeholder='이메일'
           />
-          <Button text='인증번호 받기' small />
+          <Button small text='인증번호 받기' className={'ml-2'} />
         </form>
         {isEmailValid && (
           <form onSubmit={handleSubmit(onValidVerify)} className='mt-2 flex flex-row items-center space-y-3'>

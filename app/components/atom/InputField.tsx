@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 import type { UseFormRegisterReturn } from 'react-hook-form'
+
 import { cls } from '@/app/libs/client/utils/util'
 
 interface InputProps {
@@ -11,6 +12,7 @@ interface InputProps {
   required?: boolean
   placeholder?: string
   autoComplete?: string
+  readOnly?: boolean
   icon?: ReactNode
   onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
   maxLength?: number
@@ -34,6 +36,7 @@ export default function InputField({
   placeholder,
   required,
   autoComplete = 'off',
+  readOnly = false,
   icon,
   onKeyDown,
   maxLength,
@@ -68,6 +71,7 @@ export default function InputField({
             type={type}
             placeholder={placeholder}
             autoComplete={autoComplete}
+            readOnly={readOnly}
             onKeyDown={type === 'number' ? handleKeyDown : onKeyDown}
             maxLength={maxLength}
             disabled={disabled}

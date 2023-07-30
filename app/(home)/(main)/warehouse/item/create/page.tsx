@@ -15,7 +15,7 @@ import SelectBox from '@/app/components/atom/SelectBox'
 import MultiSelectBox from '@/app/components/atom/MultiSelectBox'
 import mapIcon from '@/app/assets/image/map.svg'
 
-interface ItemProps {
+interface CreateItemProps {
   name: string
   price: number
   description: string
@@ -36,15 +36,19 @@ const CreateItem = () => {
   const [selectedStorage, setSelectedStorage] = useState<{ id: number; name: string }[]>([STORAGES[0]])
   const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
 
-  const { register, handleSubmit } = useForm<ItemProps>()
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<CreateItemProps>()
 
-  const onValid = (data: ItemProps) => {}
+  const onSubmit = (data: CreateItemProps) => {}
 
   const onClickShowOption = () => {}
 
   return (
     <Layout canGoBack title={'아이템 등록'}>
-      <form className='mt-12 space-y-4 p-2' onSubmit={handleSubmit(onValid)}>
+      <form className='mt-12 space-y-4 p-2' onSubmit={handleSubmit(onSubmit)}>
         <div>
           <label
             htmlFor={'file'}
@@ -62,11 +66,12 @@ const CreateItem = () => {
         </div>
         <InputField
           type='text'
-          register={register('name', { required: true })}
+          register={register('name', { required: '상품명을 입력해주세요.' })}
           label='상품명'
           placeholder='상품명'
           essential
         />
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.name?.message}</p>
         <SelectBox
           title={'카테고리'}
           data={CATEGORIES}
@@ -75,18 +80,20 @@ const CreateItem = () => {
           essential
         />
         <TextArea
-          register={register('description', { required: true })}
+          register={register('description', { required: '상품설명을 입력해주세요.' })}
           label='상품설명'
           placeholder='상품설명'
           essential
         />
+        <p className='!mt-0 text-xs text-red-400'>{errors.description?.message}</p>
         <InputField
           type='text'
-          register={register('price', { required: true })}
+          register={register('price', { required: '가격을 입력해주세요.' })}
           label='가격'
           placeholder='가격(원)'
           essential
         />
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.price?.message}</p>
         <MultiSelectBox
           title={'창고선택'}
           data={STORAGES}
@@ -99,8 +106,9 @@ const CreateItem = () => {
           type='text'
           label={'위치'}
           value={'지역설정안함'}
-          register={register('coords', { required: true })}
+          register={register('coords', { required: '위치를 설정해주세요.' })}
           className={'!indent-6'}
+          readOnly
           essential
           icon={
             <>
@@ -109,16 +117,18 @@ const CreateItem = () => {
             </>
           }
         />
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.coords?.message}</p>
         <InputField
           type='text'
           label={'옵션'}
           value={'수량 1 / 중고상품 / 교환불가'}
-          register={register('option', { required: true })}
+          register={register('option', { required: '옵션을 선택해주세요.' })}
           className={'!indent-0'}
           icon={<GrFormNext className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]' />}
           onClick={onClickShowOption}
           essential
         />
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.option?.message}</p>
         <Button text={'등록'} />
       </form>
     </Layout>
