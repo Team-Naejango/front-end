@@ -1,3 +1,5 @@
+'use client'
+
 import jwtDecode from 'jwt-decode'
 // import { useRecoilState } from 'recoil'
 
@@ -16,9 +18,10 @@ export const TokenValid = () => {
   const { ResetToken } = useClearSession()
 
   const decodedToken = jwtDecode(accessToken) as { exp: number }
-  const expirationTime = decodedToken.exp * 1000
+  const expTime = decodedToken.exp * 1000
+  const currentTime = Date.now()
 
-  if (Date.now() > expirationTime) {
+  if (currentTime > expTime) {
     console.log('액세스 토큰 만료')
     return false
   }
@@ -26,7 +29,7 @@ export const TokenValid = () => {
   if (!refreshToken) {
     console.log('리프레시 토큰 만료')
     ResetToken()
-    return false
+    return true
   }
   return true
 }

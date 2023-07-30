@@ -13,6 +13,13 @@ export interface HeaderType extends AxiosResponseHeaders {
   Authorization: string
 }
 
+const addAuthToken = (config: AxiosRequestConfig, token: string) => {
+  config.headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  } as HeaderType
+}
+
 export const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
   return config
 }
@@ -29,19 +36,21 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
 }
 
 export const responseNormalizer = async (error: AxiosError) => {
+  if (!error.config) {
+    return false
+  }
+
   if (error.response?.status === 403) {
     const isHasToken = TokenValid()
 
     if (!isHasToken) {
       const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
-      error.config!.headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${refreshToken}`,
-      } as HeaderType
+      const newConfig = { ...error.config }
+      addAuthToken(newConfig, refreshToken)
 
       try {
-        await instance.request(error.config as AxiosRequestConfig)
+        await instance.request(newConfig)
       } catch (error: unknown) {
         return false
       }

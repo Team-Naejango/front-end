@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React from 'react'
 import './assets/css/globals.scss'
 import localFont from 'next/font/local'
 import Script from 'next/script'
@@ -8,7 +8,6 @@ import NEXT_SEO_DEFAULT from '@/next-seo-config'
 import { KAKAO_MAP_SDK_URL } from '@/app/libs/client/constants/sdk'
 import RecoilProvider from '@/app/libs/client/recoil/RecoilProvider'
 import QueryProvider from '@/app/libs/client/reactQuery/QueryProvider'
-import Loading from '@/app/loading'
 import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
 
 const myFont = localFont({
@@ -31,9 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script type='text/javascript' src={KAKAO_MAP_SDK_URL} strategy='beforeInteractive' />
         <RecoilProvider>
           <QueryProvider>
-            <Suspense fallback={<Loading />}>
-              <UseAxiosWrapper>{children}</UseAxiosWrapper>
-            </Suspense>
+            <UseAxiosWrapper>{children}</UseAxiosWrapper>
           </QueryProvider>
         </RecoilProvider>
       </body>
