@@ -9,13 +9,14 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import FloatingButton from '@/app/components/atom/FloatingButton'
-import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import { CRUD } from '@/app/libs/client/constants/code'
 
 const Home = () => {
   const router = useRouter()
@@ -37,7 +38,14 @@ const Home = () => {
             <p className={'text-[15px] font-medium'}>내 주변에서 물물교환을 하고 싶다면?</p>
             <Button small text={'탐색하기'} className={'!mt-4'} onClick={() => router.push('/places')} />
           </div>
-          <FloatingButton href='/warehouse/item/create'>
+          <FloatingButton
+            href={{
+              pathname: '/warehouse/item/edit',
+              query: {
+                crud: CRUD.등록,
+                seq: null,
+              },
+            }}>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'

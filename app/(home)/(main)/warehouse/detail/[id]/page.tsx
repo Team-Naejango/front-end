@@ -9,6 +9,14 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import RoundedTab, { RoundedTabProps } from '@/app/components/molecule/tab/RoundedTab'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import { cls } from '@/app/libs/client/utils/util'
+import { CRUD } from '@/app/libs/client/constants/code'
+import { useQuery } from '@tanstack/react-query'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { userInfo } from '@/app/apis/domain/profile/profile'
+import { itemInfo } from '@/app/apis/domain/warehouse/warehouse'
+import { ItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 const WareHouseItem = () => {
   const params = useParams()
@@ -55,6 +63,11 @@ const WareHouseItem = () => {
     ],
   })
 
+  // 아이템 조회
+  const { data: _itemInfo } = useQuery<{ item: ItemInfo }>([ITEM.상세], () => itemInfo(params.id))
+
+  console.log('_itemInfo:', _itemInfo)
+
   // todo: 삭제 팝업창과 delete api 추가
   const onDeleteProduct = () => {}
 
@@ -69,11 +82,11 @@ const WareHouseItem = () => {
                   <li
                     key={post.id}
                     className='relative flex items-center justify-around rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
-                    <div className={'-ml-4 flex w-1/2 flex-col gap-0.5'}>
+                    <div className={'-ml-4 h-16 w-16 rounded-md bg-gray-500'} />
+                    <div className={'-ml-6 flex w-1/2 flex-col gap-0.5'}>
                       <span className={'text-xs'}>{post.value}</span>
                       <p className={'text-[13px] font-semibold'}>{post.title}</p>
                     </div>
-                    <div className={'h-16 w-16 rounded-md bg-gray-500'} />
                     <span role='presentation' onClick={onDeleteProduct} className={'absolute right-2 top-2'}>
                       <svg
                         xmlns='http://www.w3.org/2000/svg'
@@ -86,7 +99,13 @@ const WareHouseItem = () => {
                       </svg>
                     </span>
                     <Link
-                      href={'/warehouse/item/1'}
+                      href={{
+                        pathname: '/warehouse/detail/item/edit',
+                        query: {
+                          crud: CRUD.수정,
+                          seq: 1,
+                        },
+                      }}
                       className={cls(
                         'absolute inset-0 rounded-xl',
                         'ring-[#32D7A0] focus:z-10 focus:outline-none focus:ring-1'
@@ -98,7 +117,14 @@ const WareHouseItem = () => {
             </Tab.Panel>
           ))}
         </RoundedTab>
-        <FloatingButton href='/warehouse/item/create'>
+        <FloatingButton
+          href={{
+            pathname: '/warehouse/detail/item/edit',
+            query: {
+              crud: CRUD.등록,
+              seq: null,
+            },
+          }}>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'

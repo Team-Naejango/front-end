@@ -14,9 +14,10 @@ export interface HeaderType extends AxiosResponseHeaders {
 }
 
 const addAuthToken = (config: AxiosRequestConfig, token: string) => {
+  console.log('token:', token)
   config.headers = {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+    Authorization: `${token}`,
   } as HeaderType
 }
 
@@ -45,6 +46,7 @@ export const responseNormalizer = async (error: AxiosError) => {
 
     if (!isHasToken) {
       const refreshToken = getCookie(AUTH_TOKEN.갱신)
+      console.log('refreshToken:', refreshToken)
 
       const newConfig = { ...error.config }
       addAuthToken(newConfig, refreshToken)

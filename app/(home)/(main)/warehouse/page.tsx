@@ -14,13 +14,13 @@ const WareHouse = () => {
   const { push } = useCustomRouter()
 
   const onCreate = () => {
-    const params: { crud: string; seq: string } = {
+    const params: { crud: string; seq: null } = {
       crud: CRUD.등록,
-      seq: '',
+      seq: null,
     }
 
     push({
-      pathname: '/warehouse/edit',
+      pathname: '/warehouse/1',
       query: params,
     })
   }
@@ -57,7 +57,7 @@ const WareHouse = () => {
           </div>
           <FloatingButton
             href={{
-              pathname: '/warehouse/edit',
+              pathname: '/warehouse/1',
               query: {
                 crud: CRUD.수정,
                 seq: 1,

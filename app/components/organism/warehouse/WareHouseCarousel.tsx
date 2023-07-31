@@ -77,7 +77,7 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
         return (
           <SwiperSlide key={data.title} className={'slider_fade'}>
             <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
-              <Link href={`/warehouse/item/${data.id}`}>
+              <Link href={`/warehouse/detail/${data.id}`}>
                 <Image
                   src={data.src}
                   alt={data.title}

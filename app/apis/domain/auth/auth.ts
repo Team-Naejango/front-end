@@ -16,6 +16,7 @@ import { Response } from '@/app/apis/types/response/response'
  * @param params
  */
 export async function sign(accessToken: string, params: MemberInfo): Promise<Response<null>> {
+  console.log('api accessToken:', accessToken)
   return instance.post('/api/user/profile', params, {
     headers: { Authorization: `Bearer ${accessToken}` },
   })

@@ -19,7 +19,7 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import TextArea from '@/app/components/atom/TextArea'
 import InputFile from '@/app/components/atom/InputFile'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
-import { OAUTH } from '@/app/libs/client/reactQuery/queryKey'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
 import { nickNameValidity } from '@/app/apis/domain/auth/auth'

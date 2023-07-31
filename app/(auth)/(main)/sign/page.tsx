@@ -48,6 +48,7 @@ const Sign = () => {
     formState: { errors },
   } = useForm<SignProps>({
     mode: 'onSubmit',
+    reValidateMode: 'onChange',
   })
 
   const nickname = watch('nickname')

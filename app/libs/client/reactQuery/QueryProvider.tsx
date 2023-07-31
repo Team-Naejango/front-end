@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import { QueryClient, QueryCache, MutationCache, QueryClientProvider, Hydrate, dehydrate } from '@tanstack/react-query'
+import { QueryClient, QueryCache, QueryClientProvider, Hydrate, dehydrate } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { toast } from 'react-hot-toast'
 
@@ -16,18 +16,8 @@ const defaultQueryClientOptions = {
   },
 }
 
-// 에러 전역 처리 (query)
+// 에러 전역 처리
 const defaultQueryCache = new QueryCache({
-  onError: (error: unknown) => {
-    const { name, message } = error as Error
-    console.log(`${name}: ${message}`)
-    toast.error('서버 요청 에러가 발생했습니다.')
-    return Promise.reject(error)
-  },
-})
-
-// 에러 전역 처리 (mutation)
-const defaultMutationCache = new MutationCache({
   onError: (error: unknown) => {
     const { name, message } = error as Error
     console.log(`${name}: ${message}`)
@@ -40,7 +30,6 @@ function QueryProvider({ children }: React.PropsWithChildren) {
   const query = new QueryClient({
     defaultOptions: defaultQueryClientOptions,
     queryCache: defaultQueryCache,
-    mutationCache: defaultMutationCache,
   })
 
   const queryCache = query.getQueryCache()

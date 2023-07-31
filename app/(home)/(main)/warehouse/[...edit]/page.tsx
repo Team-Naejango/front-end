@@ -13,7 +13,7 @@ import TextArea from '@/app/components/atom/TextArea'
 import Button from '@/app/components/atom/Button'
 import mapIcon from '@/app/assets/image/map.svg'
 
-interface CreateWarehouseProps {
+interface WarehouseProps {
   name: string
   description: string
   coords: {
@@ -35,12 +35,12 @@ const WarehouseEdit = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateWarehouseProps>({
+  } = useForm<WarehouseProps>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
   })
 
-  const onSubmit = (data: CreateWarehouseProps) => {}
+  const onSubmit = (data: WarehouseProps) => {}
 
   // useEffect(() => {
   //   if (isEditMode) {

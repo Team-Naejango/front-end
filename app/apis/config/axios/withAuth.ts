@@ -7,6 +7,7 @@ import {
   responseNormalizer,
 } from '@/app/apis/config/axios/index'
 
+import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 // const accessToken = getCookie(AUTH_TOKEN.접근)

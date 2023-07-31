@@ -7,14 +7,12 @@ import { instance } from '@/app/apis/config/axios/instance'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
-// import { kakaoAccessToken } from '@/app/store/atom'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
-  // const accessToken = useRecoilValue(kakaoAccessToken)
-  const accessToken = getCookie(AUTH_TOKEN.접근)
-  const refreshToken = getCookie(AUTH_TOKEN.갱신)
-
   useEffect(() => {
+    const accessToken = getCookie(AUTH_TOKEN.접근)
+    const refreshToken = getCookie(AUTH_TOKEN.갱신)
+
     const requestInterceptor = instance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
         if (!config.headers) {
@@ -25,7 +23,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
 
         config.headers = {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${isHasToken ? accessToken : refreshToken}`,
+          Authorization: `${isHasToken ? `Bearer ${accessToken}` : `${refreshToken}`}`,
         } as AxiosRequestHeaders
 
         return config
@@ -34,7 +32,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     return () => {
       instance.interceptors.request.eject(requestInterceptor)
     }
-  }, [accessToken, refreshToken])
+  }, [])
 
   return <>{children}</>
 }
