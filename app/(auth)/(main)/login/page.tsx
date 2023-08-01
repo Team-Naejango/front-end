@@ -52,18 +52,21 @@ const Login = () => {
     //   console.log('error:', error)
     // }
 
-    axios
-      .get('http://43.202.25.203:8080/api/auth/guest')
-      .then(response => {
-        console.log('응답 데이터:', response.data)
-        setDeadlineCookie(AUTH_TOKEN.접근, jwtDecode(response.data))
-        toast.success('비회원 로그인에 성공하였습니다.')
-        router.push('/home')
-      })
-      .catch((error: ApiError) => {
-        console.error('에러 발생:', error)
-        toast.error(error.message)
-      })
+    toast.success('비회원 로그인에 성공하였습니다.')
+    router.push('/home')
+
+    // axios
+    //   .get('http://43.202.25.203:8080/api/auth/guest')
+    //   .then(response => {
+    //     console.log('응답 데이터:', response.data)
+    //     setDeadlineCookie(AUTH_TOKEN.접근, jwtDecode(response.data))
+    //     toast.success('비회원 로그인에 성공하였습니다.')
+    //     router.push('/home')
+    //   })
+    //   .catch((error: ApiError) => {
+    //     console.error('에러 발생:', error)
+    //     toast.error(error.message)
+    //   })
   }
 
   const onSubmit = () => {
