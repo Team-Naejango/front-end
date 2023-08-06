@@ -70,11 +70,11 @@ export const splashState = atom<boolean>({
 export const locationState = atom<LocationProps>({
   key: `${COMMON_STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
-    latitude: 0,
-    longitude: 0,
+    latitude: 37.5704,
+    longitude: 126.9922,
   },
 })
-
+// center={{ lat: 33.450701, lng: 126.570667 }}
 /**
  * 지도 유저창고 아이템 리스트
  *

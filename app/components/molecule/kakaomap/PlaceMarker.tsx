@@ -163,7 +163,7 @@ const PlaceMarker = ({
                 />
               )}
             />
-            <Button text={'검색'} type={'submit'} small className={'!mt-0 h-[42px] !text-[13px]'} />
+            <Button text={'검색'} type={'submit'} small className={'!mt-0 ml-2 h-[42px] !text-[13px]'} />
           </div>
         </form>
       ) : (

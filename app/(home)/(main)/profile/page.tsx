@@ -31,7 +31,7 @@ const Profile = () => {
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-      toast.success('회원탈퇴 되었습니다.')
+      toast.success('회원 탈퇴 되었습니다.')
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
@@ -57,7 +57,6 @@ const Profile = () => {
         content: '로그아웃 하시겠습니까?',
       },
       callback: () => {
-        console.log('로그아웃 성공')
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
         toast.success('로그아웃 되었습니다.')
         router.push('/login')
@@ -71,7 +70,7 @@ const Profile = () => {
         id: 'withdrawal',
         type: MODAL_TYPES.CONFIRM,
         title: '탈퇴',
-        content: '회원탈퇴 하시겠습니까?',
+        content: '회원 탈퇴 하시겠습니까?',
       },
       callback: () => {
         mutateDeleteUser()

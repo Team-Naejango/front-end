@@ -12,7 +12,7 @@ export interface ItemParams {
   type: string
   // 카테고리
   category: string
-  // 창고 id
+  // 창고 리스트
   storageIdList: number[]
 }
 
@@ -23,4 +23,36 @@ export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageIdList'>
 export interface ItemInfo extends OmitStorageIdItemInfo {
   // 아이템 id
   id: string
+}
+
+/**
+ * 창고 정보
+ */
+export interface Storage {
+  id: number
+  name: string
+  imgUrl: string
+  description: string
+  address: string
+  coord: {
+    longitude: number
+    latitude: number
+  }
+  distance?: number
+  // // 창고 리스트
+  // storageList: number[]
+  // // 창고 번호
+  // count: number
+  // // 이름
+  // name: string
+  // // 이미지 url
+  // imgUrl: string
+  // // 설명
+  // description: string
+  // // 주소
+  // address: string
+  // // 좌표값 X
+  // longitude: number
+  // // 좌표값 Y
+  // latitude: number
 }

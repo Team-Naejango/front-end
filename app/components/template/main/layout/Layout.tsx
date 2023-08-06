@@ -12,14 +12,15 @@ interface LayoutProps {
   canGoBack?: boolean
   hasHeader?: boolean
   setting?: boolean
+  onClick?: (event?: any) => void
   children: React.ReactNode
 }
 
-const Layout = ({ title, seoTitle, canGoBack, hasHeader, setting, children }: LayoutProps) => {
+const Layout = ({ title, seoTitle, canGoBack, hasHeader, setting, onClick, children }: LayoutProps) => {
   return (
     <>
       {canGoBack ? (
-        <BackHeader canGoBack title={title} seoTitle={seoTitle} />
+        <BackHeader canGoBack title={title} seoTitle={seoTitle} onClick={onClick} />
       ) : hasHeader ? (
         <Header hasHeader={hasHeader} seoTitle={seoTitle} setting={setting} />
       ) : (

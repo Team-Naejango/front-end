@@ -18,11 +18,11 @@ const App: NextPage = () => {
 
   useEffect(() => {
     if (accessToken) {
-      // setIsLoggedIn(true)
-      // router.push('/home')
+      setIsLoggedIn(true)
+      router.push('/home')
     } else {
-      // ResetToken()
-      // router.push('/')
+      ResetToken()
+      router.push('/login')
     }
   }, [])
 

@@ -29,7 +29,7 @@ const Button = forwardRef(
           small ? `flex-1 whitespace-nowrap` : 'w-full',
           disabled ? 'bg-[#ddd] hover:bg-[#ddd]' : '',
           cancel
-            ? '!border-[#ccc] !bg-white !text-[#222] hover:!border-[#33CC99] hover:!bg-[#33CC99] hover:!text-white'
+            ? '!border-[#ccc] !bg-white !text-[#222] hover:!border-[#32D7A0] hover:!bg-[#32D7A0] hover:!text-white'
             : ''
         )}>
         {text}

@@ -40,7 +40,7 @@ const ListUser = ({ user }: { user?: any }) => {
       <div className='flex items-center justify-center'>
         <div className={'mt-8 w-full'}>
           <EventCarousel />
-          <div className={'mt-[21.5rem] text-center'}>
+          <div className={'mt-[22rem] text-center'}>
             <p className={'text-[15px] font-medium'}>내 주변에서 물물교환을 하고 싶다면?</p>
             <Button small text={'탐색하기'} className={'mt-4'} onClick={() => router.push('/places')} />
           </div>

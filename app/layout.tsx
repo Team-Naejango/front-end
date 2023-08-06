@@ -28,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='ko-KR'>
       <body className={myFont.className} suppressHydrationWarning>
         <Script type='text/javascript' src={KAKAO_MAP_SDK_URL} strategy='beforeInteractive' />
+        <Script type='text/javascript' src={'//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js'} async />
         <RecoilProvider>
           <QueryProvider>
             <UseAxiosWrapper>{children}</UseAxiosWrapper>

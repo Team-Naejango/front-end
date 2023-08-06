@@ -7,7 +7,7 @@ import Link from 'next/link'
 import Layout from '@/app/components/template/main/layout/Layout'
 
 const Notice = () => {
-  useEffect(() => {
+  const pageAnimation = () => {
     gsap.fromTo(
       '.notice-wrapper',
       {
@@ -21,6 +21,10 @@ const Notice = () => {
         opacity: 1,
       }
     )
+  }
+
+  useEffect(() => {
+    pageAnimation()
   }, [])
 
   return (

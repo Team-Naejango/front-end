@@ -2,18 +2,21 @@
 
 import React, { ReactNode, useEffect } from 'react'
 import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 
-import { instance } from '@/app/apis/config/axios/instance'
+import { withAuth } from '@/app/apis/config/axios/withAuth'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+import { useClearSession } from '@/app/hooks/useClearSession'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
-  useEffect(() => {
-    const accessToken = getCookie(AUTH_TOKEN.접근)
-    const refreshToken = getCookie(AUTH_TOKEN.갱신)
+  const router = useRouter()
+  const { ResetToken } = useClearSession()
 
-    const requestInterceptor = instance.interceptors.request.use(
+  useEffect(() => {
+    const requestInterceptor = withAuth.interceptors.request.use(
       async (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
         if (!config.headers) {
           config.headers = {} as AxiosHeaders
@@ -21,16 +24,25 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
 
         const isHasToken = await TokenValid()
 
-        config.headers = {
-          'Content-Type': 'application/json',
-          Authorization: `${isHasToken ? `Bearer ${accessToken}` : `${refreshToken}`}`,
-        } as AxiosRequestHeaders
+        if (isHasToken) {
+          const accessToken = getCookie(AUTH_TOKEN.접근)
+          config.headers = {
+            Authorization: `Bearer ${accessToken}`,
+          } as AxiosRequestHeaders
+        } else {
+          ResetToken()
+          toast.error('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
+          router.replace('/login')
+        }
 
         return config
-      }
+      },
+      undefined,
+      { synchronous: true }
     )
+
     return () => {
-      instance.interceptors.request.eject(requestInterceptor)
+      withAuth.interceptors.request.eject(requestInterceptor)
     }
   }, [])
 

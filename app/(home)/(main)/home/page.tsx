@@ -25,7 +25,7 @@ const Home = () => {
    * todo: 쿼리 캐싱 가비지컬렉션 처리
    * todo: 에러 핸들링 처리
    * */
-  const { data: getUserData } = useQuery<Response<{ user: MemberInfo }>>([OAUTH.유저정보], () => userInfo())
+  const { data: getUserData } = useQuery<Response<{ data: MemberInfo }>>([OAUTH.유저정보], () => userInfo())
 
   console.log('getUserData:', getUserData ?? [])
 
@@ -34,13 +34,13 @@ const Home = () => {
       <div className='flex items-center justify-center'>
         <div className={'mt-8 w-full'}>
           <EventCarousel />
-          <div className={'mt-[21.5rem] text-center'}>
+          <div className={'mt-[22rem] text-center'}>
             <p className={'text-[15px] font-medium'}>내 주변에서 물물교환을 하고 싶다면?</p>
             <Button small text={'탐색하기'} className={'!mt-4'} onClick={() => router.push('/places')} />
           </div>
           <FloatingButton
             href={{
-              pathname: '/warehouse/item/edit',
+              pathname: '/warehouse/detail/item/edit',
               query: {
                 crud: CRUD.등록,
                 seq: null,

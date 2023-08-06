@@ -26,7 +26,7 @@ export async function sign(accessToken: string, params: MemberInfo): Promise<Res
  * 비회원 로그인
  *
  */
-export async function nonUser(): Promise<Response<{ accessToken: string }>> {
+export async function nonUser(): Promise<Response<{ data: { accessToken: string } }>> {
   return instance.get('/api/auth/guest')
 }
 

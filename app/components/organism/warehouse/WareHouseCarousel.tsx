@@ -12,12 +12,14 @@ import { wareHouseImagesData } from '@/app/libs/client/utils/images'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
+import { StorageParam } from '@/app/apis/domain/warehouse/warehouse'
+import uuid from 'react-uuid'
 
-const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
+const WareHouseCarousel = ({ datas, onClick }: { datas: StorageParam; onClick: () => void }) => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
-  const totalSlides = wareHouseImagesData.length
+  const totalSlides = [datas].length
   const findLastIdx = activeIndex === totalSlides - 1
 
   SwiperCore.use([Navigation, A11y])
@@ -71,25 +73,31 @@ const WareHouseCarousel = ({ onClick }: { onClick: () => void }) => {
     updatePrevDisabledState()
   }, [updatePrevDisabledState])
 
+  console.log('datas:', datas)
+
   return (
     <Swiper {...swiperParams} className={'mt-20 h-40 w-full'}>
-      {wareHouseImagesData.map(data => {
+      {[datas]?.map((data: StorageParam) => {
         return (
-          <SwiperSlide key={data.title} className={'slider_fade'}>
+          <SwiperSlide key={uuid()} className={'slider_fade'}>
             <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md bg-[#33cc99] shadow-sm hover:bg-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
-              <Link href={`/warehouse/detail/${data.id}`}>
+              <Link href={`/warehouse/detail/1`}>
                 <Image
-                  src={data.src}
-                  alt={data.title}
+                  priority
+                  src={
+                    data?.imgUrl === null
+                      ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/box.png'
+                      : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${data?.imgUrl}`
+                  }
+                  alt={'창고 이미지'}
                   width={144}
                   height={144}
                   style={{ objectFit: 'cover', margin: '0 auto' }}
                   quality={100}
-                  priority
                 />
-                <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-semibold'>
-                  {data.title}
-                </span>
+                {/* <span className='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-lg font-semibold'> */}
+                {/*  {data?.name} */}
+                {/* </span> */}
               </Link>
             </div>
             <div className='swiper-button-prev absolute left-5 top-1/2'>

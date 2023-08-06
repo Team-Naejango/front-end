@@ -16,7 +16,7 @@ const EventCarousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
-  const totalSlides = homeImagesData.length
+  const totalSlides = homeImagesData.filter(value => value.ing).length
 
   SwiperCore.use([A11y, Autoplay])
 
@@ -36,30 +36,33 @@ const EventCarousel = () => {
   }
 
   return (
-    <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-[1.25rem]'}>
+    <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-[1rem]'}>
       {homeImagesData.map(data => {
         return (
-          <SwiperSlide key={data.title}>
-            <Link href={'/events'}>
-              <Image
-                src={data.src}
-                alt={'여행 이벤트 이미지'}
-                width={375}
-                height={300}
-                style={{ objectFit: 'cover', height: '300px' }}
-                quality={100}
-                placeholder='blur'
-                blurDataURL={data.blurUrl}
-              />
-              <p
-                className={cls(
-                  'absolute bottom-0 left-0 z-20 whitespace-pre-wrap px-5 py-8 text-[26px] font-extrabold leading-normal text-white',
-                  data.position ? 'bottom-0 right-0 text-right' : ''
-                )}>
-                {data.title}
-              </p>
-            </Link>
-          </SwiperSlide>
+          data.ing && (
+            <SwiperSlide key={data.title}>
+              <Link href={'/events'}>
+                <Image
+                  src={data.src}
+                  priority
+                  quality={100}
+                  placeholder='blur'
+                  blurDataURL={data.blurUrl}
+                  alt={'여행 이벤트 이미지'}
+                  width={375}
+                  height={300}
+                  style={{ objectFit: 'cover', height: '300px' }}
+                />
+                <p
+                  className={cls(
+                    'absolute bottom-0 left-0 z-20 whitespace-pre-wrap px-5 py-8 text-[26px] font-extrabold leading-normal text-white',
+                    data.position ? 'bottom-0 right-0 text-right' : ''
+                  )}>
+                  {data.title}
+                </p>
+              </Link>
+            </SwiperSlide>
+          )
         )
       })}
       <span

@@ -13,7 +13,6 @@ import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 export const TokenValid = () => {
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
   const accessToken = getCookie(AUTH_TOKEN.접근)
-  const { ResetToken } = useClearSession()
 
   const decodedToken = jwtDecode(accessToken) as { exp: number }
   const expTime = decodedToken.exp * 1000
@@ -25,8 +24,7 @@ export const TokenValid = () => {
   }
 
   if (!refreshToken) {
-    console.log('리프레시 토큰 만료')
-    ResetToken()
+    // console.log('리프레시 토큰 만료')
     return true
   }
   return true

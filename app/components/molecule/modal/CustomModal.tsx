@@ -104,7 +104,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = 'í™
                     <Dialog.Description as={Fragment}>
                       <div
                         className={`p-4 ${
-                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] justify-around gap-2'
+                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] justify-around gap-3.5'
                         }`}>
                         {modal.type === MODAL_TYPES.ALERT ? (
                           <>

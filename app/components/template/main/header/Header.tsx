@@ -1,20 +1,14 @@
 'use client'
 
-import React, { Fragment } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { useRecoilState } from 'recoil'
 import { FiSettings } from 'react-icons/fi'
 
-import { useModal } from '@/app/hooks/useModal'
-// import { useModalStore } from '@/app/store/atom'
-import noticeIcon from '@/app/assets/image/notice.svg'
-import mapIcon from '@/app/assets/image/map.svg'
-import DropDown from '@/app/components/atom/DropDown'
-import { Menu } from '@headlessui/react'
-import Link from 'next/link'
 import { cls } from '@/app/libs/client/utils/util'
+import mapIcon from '@/app/assets/image/map.svg'
+import noticeIcon from '@/app/assets/image/notice.svg'
 
 interface LayoutProps {
   seoTitle: string | undefined
@@ -24,19 +18,6 @@ interface LayoutProps {
 
 const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) => {
   const router = useRouter()
-  // const { closeModal } = useModal('')
-  // const [modalState, setModalState] = useRecoilState(useModalStore)
-
-  const onShowModal = () => {
-    // setModalState({
-    //   isOpen: true,
-    //   title: '',
-    //   content: '',
-    //   callback: () => {
-    //     closeModal()
-    //   },
-    // })
-  }
 
   const onClickNotice = () => {
     if (setting) return
@@ -74,7 +55,7 @@ const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) =>
           </div>
         </header>
       ) : (
-        <FiSettings onClick={onShowModal} className={'absolute right-5 top-5 cursor-pointer text-[22px]'} />
+        <FiSettings className={'absolute right-5 top-5 cursor-pointer text-[22px]'} />
       )}
     </>
   )

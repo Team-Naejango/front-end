@@ -1,22 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Tab } from '@headlessui/react'
 import Link from 'next/link'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import RoundedTab, { RoundedTabProps } from '@/app/components/molecule/tab/RoundedTab'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import { cls } from '@/app/libs/client/utils/util'
 import { CRUD } from '@/app/libs/client/constants/code'
-import { useQuery } from '@tanstack/react-query'
-import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
-import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { userInfo } from '@/app/apis/domain/profile/profile'
+import { ItemInfo, ItemParams } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+
 import { itemInfo } from '@/app/apis/domain/warehouse/warehouse'
-import { ItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
-import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 const WareHouseItem = () => {
   const params = useParams()
@@ -65,6 +63,9 @@ const WareHouseItem = () => {
 
   // 아이템 조회
   const { data: _itemInfo } = useQuery<{ item: ItemInfo }>([ITEM.상세], () => itemInfo(params.id))
+  // const { data: { item: _itemInfo } = {} } = useQuery<{ item: ItemInfo }>([ITEM.상세], () => itemInfo(seq), {
+  //   enabled: !!seq,
+  // })
 
   console.log('_itemInfo:', _itemInfo)
 

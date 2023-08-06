@@ -1,6 +1,9 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { useSetRecoilState } from 'recoil'
+
+import { locationState } from '@/app/store/atom'
 
 export interface LocationProps {
   isLoaded: boolean
@@ -13,6 +16,7 @@ const useGeolocation = () => {
     isLoaded: false,
     coordinates: { latitude: 0, longitude: 0 },
   })
+  const userLocal = useSetRecoilState(locationState)
 
   const coordOnSuccess = useCallback(
     (position: { coords: { latitude: number; longitude: number } }) => {
@@ -24,6 +28,7 @@ const useGeolocation = () => {
           longitude: position.coords.longitude,
         },
       }))
+      userLocal({ latitude: position.coords.latitude, longitude: position.coords.longitude })
     },
     [setMyLocation]
   )

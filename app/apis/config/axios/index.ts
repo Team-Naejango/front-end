@@ -7,6 +7,7 @@ import { TokenValid } from '@/app/libs/client/utils/token'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { instance } from '@/app/apis/config/axios/instance'
+import { withAuth } from '@/app/apis/config/axios/withAuth'
 
 export interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
@@ -52,7 +53,7 @@ export const responseNormalizer = async (error: AxiosError) => {
       addAuthToken(newConfig, refreshToken)
 
       try {
-        await instance.request(newConfig)
+        await withAuth.request(newConfig)
       } catch (error: unknown) {
         return false
       }

@@ -1,29 +1,55 @@
 'use client'
 
-import React from 'react'
-import { useSearchParams } from 'next/navigation'
+import React, { ChangeEvent, useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import Image from 'next/image'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
+import { ApiError } from 'next/dist/server/api-utils'
 import { GrFormNext } from 'react-icons/gr'
+import { toast } from 'react-hot-toast'
 
 import BackHeader from '@/app/components/template/main/header/BackHeader'
-import { CRUD } from '@/app/libs/client/constants/code'
 import InputField from '@/app/components/atom/InputField'
 import TextArea from '@/app/components/atom/TextArea'
 import Button from '@/app/components/atom/Button'
+import InputFile from '@/app/components/atom/InputFile'
+import SelectCoordinate from '@/app/components/organism/warehouse/SelectCoordinate'
+import { CRUD } from '@/app/libs/client/constants/code'
+import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { Storage } from '@/app/apis/types/domain/warehouse/warehouse'
+import { AddressType } from '@/app/components/molecule/kakaomap/SearchAddress'
+import { E_STEP, STEP } from '@/app/libs/client/constants/app/warehouse'
 import mapIcon from '@/app/assets/image/map.svg'
+
+import { saveStorage, storageInfo, StorageParam } from '@/app/apis/domain/warehouse/warehouse'
 
 interface WarehouseProps {
   name: string
   description: string
-  coords: {
-    latitude: number
-    longitude: number
-  }
+  imgUrl: string
+  address: string
 }
 
 const WarehouseEdit = () => {
   const searchParams = useSearchParams()
+  const query = useQueryClient()
+  const router = useRouter()
+  const [imageFile, setImageFile] = useState<FileList | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
+  const [step, setStep] = useState<E_STEP>(STEP.위치정보)
+  const [address, setAddress] = useState<AddressType>({
+    value: '',
+    coords: {
+      latitude: null,
+      longitude: null,
+    },
+  })
+
+  const REGION = process.env.NEXT_PUBLIC_AWS_REGION
+  const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
+  const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
   const crud = searchParams.get('crud')
   const seq = searchParams.get('seq')
@@ -35,36 +61,204 @@ const WarehouseEdit = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    reset,
   } = useForm<WarehouseProps>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
+    defaultValues: {
+      imgUrl: undefined,
+    },
   })
 
-  const onSubmit = (data: WarehouseProps) => {}
+  // 창고 조회
+  const { data: { storage: _storageInfo } = {} } = useQuery<{ storage: Storage }>(
+    [WAREHOUSE.조회],
+    () => storageInfo(),
+    {
+      enabled: isEditMode,
+    }
+  )
 
-  // useEffect(() => {
-  //   if (isEditMode) {
-  //   }
-  // }, [editState])
+  // 창고 등록
+  const { mutate: mutateSave } = useMutation<null, ApiError, StorageParam>(saveStorage, {
+    onSuccess: () => {
+      query.invalidateQueries([WAREHOUSE.조회, ITEM.조회])
+      toast.success('창고가 등록되었습니다.')
+      router.push('/warehouse')
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  // S3 업로드
+  const uploadS3 = async (file: File) => {
+    const s3Client = new S3Client({
+      region: REGION,
+      credentials: {
+        accessKeyId: ACCESS_KEY_ID!,
+        secretAccessKey: SECRET_ACCESS_KEY!,
+      },
+    })
+
+    try {
+      const command = new PutObjectCommand({
+        Bucket: 'naejango-s3-image',
+        Key: `upload/warehouse/${file.name}`,
+        ContentType: file.type,
+        Body: file,
+        ACL: 'public-read',
+      })
+      const response = await s3Client.send(command)
+      console.log('업로드', response)
+    } catch (error) {
+      console.error('S3 업로드 에러:', error)
+    }
+  }
+
+  // 이미지 제한
+  let imgSizeConverted = ''
+  const limitedFileSize = (file: File) => {
+    const imgSize = file.size
+    const maxSize = 1024 * 1024 // 1MB
+
+    if (imgSize >= maxSize) {
+      toast.error('이미지 용량은 1MB 이내로 등록 가능합니다.')
+      return false
+    }
+
+    if (imgSize < maxSize) {
+      if (imgSize < 1024) {
+        imgSizeConverted = imgSize + 'bytes'
+      } else if (imgSize >= 1024 && imgSize < 1048576) {
+        imgSizeConverted = (imgSize / 1024).toFixed(1) + 'KB'
+      } else if (imgSize >= 1048576) {
+        imgSizeConverted = (imgSize / 1048576).toFixed(1) + 'MB'
+      }
+    }
+    return true
+  }
+
+  const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log('event.target.files:', event.target.files)
+    const file = event.target.files![0]
+    const fileExt = file?.name.split('.').pop()
+
+    if (!file) return
+    if (!['jpeg', 'png', 'jpg', 'JPG', 'PNG', 'JPEG'].includes(fileExt!)) {
+      toast.error('jpg, png, jpg 파일만 업로드가 가능합니다.')
+      event.target.value = ''
+      return
+    }
+
+    if (!limitedFileSize(file)) {
+      event.target.value = ''
+      return
+    }
+
+    const reader = new FileReader()
+    reader.addEventListener('load', () => {
+      setImagePreview(reader.result as string)
+      setImageFile(event.target.files)
+
+      URL.revokeObjectURL(reader.result as string)
+    })
+    reader.readAsDataURL(file)
+  }
+
+  const onSubmit = async (data: WarehouseProps) => {
+    if (!_storageInfo) return
+
+    if (!setImagePreview) {
+      toast.error('이미지를 등록해주세요.')
+      return
+    }
+
+    if (imageFile && imageFile.length > 0) {
+      const file = imageFile[0]
+      await uploadS3(file)
+    }
+
+    const params: StorageParam = {
+      name: data.name,
+      description: data.description,
+      imgUrl: (imageFile! && imageFile[0].name) ?? _storageInfo?.imgUrl,
+      address: '',
+      longitude: 126,
+      latitude: 37,
+    }
+
+    mutateSave(params)
+  }
+
+  useEffect(() => {
+    // reset({ _storageInfo })
+    if (isEditMode) {
+      query.invalidateQueries([WAREHOUSE.상세])
+    }
+  }, [])
+
+  useEffect(() => {
+    if (_storageInfo) {
+      setValue('imgUrl', _storageInfo.imgUrl)
+      setImagePreview(_storageInfo.imgUrl)
+    }
+  }, [])
+
+  console.log('_storageInfo?.imgUrl:', _storageInfo?.imgUrl)
+
+  const onClickStep = (event: MouseEvent) => {
+    if (event === undefined && address.value === '') {
+      setAddress({
+        value: '',
+        coords: {
+          longitude: null,
+          latitude: null,
+        },
+      })
+    } else {
+      setAddress(address)
+    }
+    setStep(STEP.위치정보)
+  }
 
   return (
     <>
       <BackHeader canGoBack title={`창고 ${isEditMode ? '편집' : '생성'}`} />
       <form className='mt-12 space-y-4 p-2' onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label
-            htmlFor={'file'}
-            className='flex h-48 w-full cursor-pointer items-center justify-center rounded-md border-2 border-dashed border-gray-300 text-gray-600 hover:border-[#32D7A0] hover:text-[#32D7A0]'>
-            <svg className='h-12 w-12' stroke='currentColor' fill='none' viewBox='0 0 48 48' aria-hidden='true'>
-              <path
-                d='M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02'
-                strokeWidth={2}
-                strokeLinecap='round'
-                strokeLinejoin='round'
-              />
-            </svg>
-            <input id={'file'} className='hidden' type='file' />
-          </label>
+        <div className={'relative h-full w-full'}>
+          <InputFile
+            id='file'
+            dotted
+            styleOption={
+              'flex h-48 w-full items-center justify-center rounded-md border-2 border-dashed border-gray-300 text-gray-600 hover:border-[#32D7A0] hover:text-[#32D7A0]'
+            }
+            {...register('imgUrl')}
+            onChange={event => onUpload(event)}
+          />
+          {imageFile ? (
+            <Image
+              src={URL.createObjectURL(imageFile[0])}
+              defaultValue={imagePreview}
+              width={'100'}
+              height={'100'}
+              alt='이미지 미리보기'
+              className={'absolute left-0 top-0 -z-10 h-48 w-full object-cover'}
+            />
+          ) : (
+            <Image
+              src={`${
+                _storageInfo?.imgUrl === undefined
+                  ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
+                  : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${_storageInfo?.imgUrl}`
+              }`}
+              width={'100'}
+              height={'100'}
+              alt='아이템 이미지'
+              className={'absolute left-0 top-0 -z-10 h-48 w-full object-cover'}
+            />
+          )}
         </div>
         <InputField
           type='text'
@@ -82,24 +276,30 @@ const WarehouseEdit = () => {
         />
         <p className='!mt-0 text-xs text-red-400'>{errors.description?.message}</p>
         <div className={'!mt-4'}>
-          <InputField
-            type='text'
-            label={'위치'}
-            placeholder={'지역설정안함'}
-            register={register('coords', { required: '위치를 설정해주세요.' })}
-            className={'!indent-6'}
-            readOnly
-            essential
-            icon={
-              <>
-                <Image src={mapIcon} alt={'지도 아이콘'} className='absolute ml-2.5 text-sm text-[#A9A9A9]' />
-                <GrFormNext className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]' />
-              </>
-            }
-          />
+          {step === STEP.위치정보 && (
+            <InputField
+              label={'위치'}
+              placeholder={'지역설정안함'}
+              type='text'
+              readOnly
+              essential
+              className={'!indent-6'}
+              register={register('address', { required: '지역을 설정해주세요.', value: address?.value })}
+              onClick={() => setStep(STEP.위치선택)}
+              icon={
+                <>
+                  <Image src={mapIcon} alt={'지도 아이콘'} className='absolute ml-2.5 text-sm text-[#A9A9A9]' />
+                  <GrFormNext className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]' />
+                </>
+              }
+            />
+          )}
+          {step === STEP.위치선택 && (
+            <SelectCoordinate address={address} setAddress={setAddress} onClick={onClickStep} />
+          )}
         </div>
-        <p className='!mt-1.5 text-xs text-red-400'>{errors.coords?.message}</p>
-        <Button text={'등록'} />
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.address?.message}</p>
+        <Button type={'submit'} text={'등록'} />
       </form>
     </>
   )

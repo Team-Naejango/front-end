@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 import { LuEdit2 } from 'react-icons/lu'
 
 import Layout from '@/app/components/template/main/layout/Layout'
@@ -9,18 +10,27 @@ import WareHouseCarousel from '@/app/components/organism/warehouse/WareHouseCaro
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import useCustomRouter from '@/app/hooks/useCustomRouter'
 import { CRUD } from '@/app/libs/client/constants/code'
+import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+
+import { storage } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouse = () => {
   const { push } = useCustomRouter()
+
+  // 창고 조회
+  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage('1'), {
+    // enabled: !!seq,
+  })
+
+  console.log('_storageInfo:', _storageInfo)
 
   const onCreate = () => {
     const params: { crud: string; seq: null } = {
       crud: CRUD.등록,
       seq: null,
     }
-
     push({
-      pathname: '/warehouse/1',
+      pathname: `/warehouse/1`,
       query: params,
     })
   }
@@ -29,18 +39,18 @@ const WareHouse = () => {
     <Layout hasHeader seoTitle={'창고공간'}>
       <div className={'relative h-full w-full'}>
         <div className='flex flex-col justify-center'>
-          <WareHouseCarousel onClick={onCreate} />
+          <WareHouseCarousel datas={_storageInfo!} onClick={onCreate} />
           <h2 className={'mb-4 mt-16 text-center text-lg font-bold'}>창고 정보</h2>
           <div className={'h-auto w-full rounded-xl bg-[#f5f5f5] px-8 py-4 text-center'}>
             <div className='mx-auto my-4 grid grid-cols-1 grid-rows-[minmax(0,1fr)] items-center justify-center gap-x-3 gap-y-8'>
               <div className={'flex w-full items-center gap-12 text-left'}>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>이름</li>
-                  <li className={'mt-1 text-[13px] font-medium'}>내 잔고는 특별해</li>
+                  <li className={'mt-1 text-[13px] font-medium'}>{_storageInfo?.name}</li>
                 </ul>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>위치</li>
-                  <li className={'mt-1 text-[13px] font-medium'}>대충 어딘가</li>
+                  <li className={'mt-1 text-[13px] font-medium'}>{_storageInfo?.address}</li>
                 </ul>
               </div>
               <div className={'flex w-full items-center gap-14 text-left'}>
@@ -50,7 +60,7 @@ const WareHouse = () => {
                 </ul>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>소개</li>
-                  <li className={'mt-1 text-[13px] font-medium'}>가나다라마바사아자</li>
+                  <li className={'mt-1 text-[13px] font-medium'}>{_storageInfo?.description}</li>
                 </ul>
               </div>
             </div>

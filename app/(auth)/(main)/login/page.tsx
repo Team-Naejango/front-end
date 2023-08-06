@@ -5,10 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
-import axios from 'axios'
 import { toast } from 'react-hot-toast'
-import jwtDecode from 'jwt-decode'
-import { ApiError } from 'next/dist/server/api-utils'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
@@ -44,29 +41,16 @@ const Login = () => {
   }
 
   const onNonUserLogin = async () => {
-    // try {
-    //   const response = await nonUser()
-    //   // const getToken = response.accessToken
-    //   console.log('getToken:', response)
-    // } catch (error) {
-    //   console.log('error:', error)
-    // }
-
-    toast.success('비회원 로그인에 성공하였습니다.')
-    router.push('/home')
-
-    // axios
-    //   .get('http://43.202.25.203:8080/api/auth/guest')
-    //   .then(response => {
-    //     console.log('응답 데이터:', response.data)
-    //     setDeadlineCookie(AUTH_TOKEN.접근, jwtDecode(response.data))
-    //     toast.success('비회원 로그인에 성공하였습니다.')
-    //     router.push('/home')
-    //   })
-    //   .catch((error: ApiError) => {
-    //     console.error('에러 발생:', error)
-    //     toast.error(error.message)
-    //   })
+    try {
+      const response = await nonUser()
+      // console.log('response:', response.data.accessToken)
+      setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+      toast.success('비회원 로그인에 성공하였습니다.')
+      router.push('/home')
+    } catch (error: unknown) {
+      console.log('error:', error)
+      toast.error('비회원 로그인에 실패하였습니다.')
+    }
   }
 
   const onSubmit = () => {

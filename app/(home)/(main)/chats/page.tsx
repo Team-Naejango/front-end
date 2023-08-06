@@ -22,7 +22,7 @@ const Chats = () => {
 
   return (
     <Layout hasHeader seoTitle={'채팅'}>
-      <div className='my-4 divide-y-[1px]'>
+      <div className='mb-14 mt-4 divide-y-[1px]'>
         {!close && <SmallBanner onClick={onClickBanner} onClose={onCloseBanner} />}
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((_, i) => (
           <Link
