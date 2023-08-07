@@ -10,14 +10,14 @@ import { TokenValid } from '@/app/libs/client/utils/token'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { useClearSession } from '@/app/hooks/useClearSession'
-import { requestConfigurator } from '@/app/apis/config/axios'
+import { instance } from '@/app/apis/config/axios/instance'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const { ResetToken } = useClearSession()
 
   useEffect(() => {
-    const requestInterceptor = withAuth.interceptors.request.use(
+    const requestInterceptor = instance.interceptors.request.use(
       async (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
         if (!config.headers) {
           config.headers = {} as AxiosHeaders
@@ -36,15 +36,14 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           router.replace('/login')
         }
 
-        // return config
-        return requestConfigurator(config)
+        return config
       },
       undefined,
       { synchronous: true }
     )
 
     return () => {
-      withAuth.interceptors.request.eject(requestInterceptor)
+      instance.interceptors.request.eject(requestInterceptor)
     }
   }, [])
 
