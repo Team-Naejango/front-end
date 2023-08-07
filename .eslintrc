@@ -79,7 +79,8 @@
     "browser": true,
     "node": true,
     "commonjs": true,
-    "es2022": true
+    "es2022": true,
+    "worker": true
   },
   "globals": { "_": true },
   "plugins": ["import", "html"]

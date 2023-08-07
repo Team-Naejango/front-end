@@ -1,5 +1,5 @@
 {
-  "gcmKey": "GCM API Key HERE",
+  "gcmKey": "AAAAfsBfHLU:APA91bEQzzV9ziedh8mqJhXKxwYcCAXAyWUFtCyAQtpc6GGOeIUDKgY4re-mfGU3E8pLabg2HndLvr0MNxgXMSz3CGH-VAcr-RgVn5krQk9VGwZNeX5urPaQrRMak60fJIYnvp_nzxHc",
   "subject": "mailto:https://d1ad0vl3i2dudp.cloudfront.net/",
   "vapid": {
     "public": "BG5ChKDaZEdyXKWvbgvqU4rZEmbs0_RtY0cv8aJ5njd6Ks2-DgmMYHg63WPiSg0PrtTR8_9bAVwu78GhHL9GclM",

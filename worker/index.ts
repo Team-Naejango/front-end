@@ -1,5 +1,10 @@
 import axios from 'axios'
 
+/// <reference lib="webworker" />
+
+// eslint-disable-next-line no-undef
+export declare const self: ServiceWorkerGlobalScope
+
 // async function registerServiceWorker() {
 //   if (!('serviceWorker' in navigator)) return
 //
@@ -44,16 +49,90 @@ import axios from 'axios'
 //     })
 //   }
 // }
+//
+// navigator.serviceWorker.register('sw.js')
+//
+// function showNotification() {
+//   Notification.requestPermission(result => {
+//     if (result === 'granted') {
+//       navigator.serviceWorker.ready.then(registration => {
+//         registration.showNotification('Vibration Sample', {
+//           body: 'Buzz! Buzz!',
+//           icon: '../images/touch/chrome-touch-icon-192x192.png',
+//           tag: 'vibration-sample',
+//         })
+//       })
+//     }
+//   })
+// }
+//
+// const option = {
+//   // 푸시 알림을 사용자에게 보여줄지에 대한 여부이며 true로 설정
+//   userVisibleOnly: true,
+//   // 서버에서 받은 VAPID 공개키
+//   applicationServerKey: vapid,
+// }
+//
+// navigator.serviceWorker.ready.then(registration => {
+//   // @ts-ignore
+//   registration.pushManager.subscribe(option).then(subscription => {
+//     // 구독 요청 성공 후 푸시 서비스에서 PushSubscription 객체를 받는다.
+//     console.log('subscription:', subscription)
+//   })
+// })
+//
+// self.addEventListener('push', event => {
+//   const { title, body } = event.data!.json()
+//   const options = {
+//     body,
+//     icon: './image/favicon-32x32.png',
+//     badge: './image/favicon-16x16.png',
+//   }
+//
+//   event.waitUntil(self.registration.showNotification(title, options))
+// })
 
-// window.self.addEventListener('push', event => {
-//   console.log('[Service Worker] Push Received.', event.data.text())
-//   const { title, body } = event.data.json()
+// sdsdsdsdsdsdsds
+
+self.addEventListener('install', e => {
+  console.log('👀 - install', e)
+  e.waitUntil(self.skipWaiting())
+})
+
+self.addEventListener('activate', e => {
+  console.log('👀 - activate', e)
+})
+
+self.addEventListener('push', event => {
+  console.log('[Service Worker] Push Received.', event.data?.json())
+  try {
+    const message = event.data?.json()
+    event.waitUntil(self.registration.showNotification('232323', { body: 'ewewe' }))
+  } catch (error) {
+    console.log('알림 생성 중 에러 반환:', error)
+  }
+})
+
+self.addEventListener('notificationclick', e => {
+  self.clients.openWindow(e.notification.data)
+})
+
+self.addEventListener('message', e => {
+  navigator.serviceWorker.controller?.postMessage({ command: 'log', message: 'hello world' })
+  console.log('message:', e.data)
+})
+
+// sdsdsdsdsdsdsds
+
+// self.addEventListener('push', event => {
+//   console.log('[Service Worker] Push Received.', event.data?.text())
+//   const { title, body } = event.data!.json()
 //   event.waitUntil(self.registration.showNotification(title, { body }))
 // })
 //
-// window.self.addEventListener('notificationclick', event => {
+// self.addEventListener('notificationclick', event => {
 //   console.log('[Service Worker] notificationclick')
-//   clients.openWindow(event.notification.data.link)
+//   self.clients.openWindow(event.notification.data.link)
 // })
 //
 // window.self.addEventListener('install', () => {
