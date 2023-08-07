@@ -51,12 +51,15 @@ const App: NextPage = () => {
         .then(subscription => {
           // 푸시 알림 구독 성공
           console.log('푸시 알림 구독 성공', subscription)
+          const token = subscription.endpoint.split('/').pop()
+          console.log('토큰값:', token)
         })
         .catch(error => {
           // 오류 처리
           console.error('Service Worker 등록 및 푸시 알림 구독 오류:', error)
         })
     }
+
     // if ('serviceWorker' in navigator) {
     //   navigator.serviceWorker
     //     .register('/firebase-messaging-sw.js')

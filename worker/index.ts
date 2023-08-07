@@ -54,15 +54,15 @@ export declare const self: ServiceWorkerGlobalScope
 //
 // function showNotification() {
 //   Notification.requestPermission(result => {
-//     if (result === 'granted') {
-//       navigator.serviceWorker.ready.then(registration => {
-//         registration.showNotification('Vibration Sample', {
-//           body: 'Buzz! Buzz!',
-//           icon: '../images/touch/chrome-touch-icon-192x192.png',
-//           tag: 'vibration-sample',
-//         })
-//       })
-//     }
+// if (result === 'granted') {
+//   navigator.serviceWorker.ready.then(registration => {
+//     registration.showNotification('Vibration Sample', {
+//       body: 'Buzz! Buzz!',
+//       icon: '../images/touch/chrome-touch-icon-192x192.png',
+//       tag: 'vibration-sample',
+//     })
+//   })
+// }
 //   })
 // }
 //
@@ -106,8 +106,18 @@ self.addEventListener('activate', e => {
 self.addEventListener('push', event => {
   console.log('[Service Worker] Push Received.', event.data?.json())
   try {
-    const message = event.data?.json()
-    event.waitUntil(self.registration.showNotification('232323', { body: 'ewewe' }))
+    // const message = event.data?.json()
+    // event.waitUntil(self.registration.showNotification('232323', { body: 'ewewe' }))
+    Notification.requestPermission(result => {
+      if (result === 'granted') {
+        navigator.serviceWorker.ready.then(registration => {
+          registration.showNotification('Sample', {
+            body: 'test',
+            tag: 'tag test',
+          })
+        })
+      }
+    })
   } catch (error) {
     console.log('알림 생성 중 에러 반환:', error)
   }
