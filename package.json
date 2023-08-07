@@ -24,7 +24,6 @@
     "@tanstack/react-query-next-experimental": "^5.0.0-alpha.80",
     "@types/node": "20.2.5",
     "@types/react": "^18.2.17",
-    "@types/react-dom": "18.2.4",
     "@types/underscore": "^1.11.6",
     "autoprefixer": "^10.4.14",
     "aws-crt": "^1.15.21",

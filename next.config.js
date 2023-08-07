@@ -32,8 +32,8 @@ const nextConfig = {
     dest: 'public',
     register: true,
     skipWaiting: true,
-    runtimeCaching,
     customWorkerDir: 'worker',
+    runtimeCaching,
   },
 }
 

@@ -17,6 +17,10 @@ const NEXT_SEO_DEFAULT: Metadata = {
     '생필품',
     '신선품',
   ],
+  icons: [
+    { rel: 'icon', url: '/icon-192x192.png' },
+    { rel: 'apple', url: '/apple-icon-180x180.png' },
+  ],
   openGraph: {
     title: '내 잔고를 부탁해',
     description: '1인 가구 맞춤형 공동구매 및 물물교환 커뮤니티 플랫폼',

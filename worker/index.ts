@@ -1,5 +1,5 @@
-// import axios from 'axios'
-//
+import axios from 'axios'
+
 // async function registerServiceWorker() {
 //   if (!('serviceWorker' in navigator)) return
 //
@@ -44,3 +44,19 @@
 //     })
 //   }
 // }
+
+// window.self.addEventListener('push', event => {
+//   console.log('[Service Worker] Push Received.', event.data.text())
+//   const { title, body } = event.data.json()
+//   event.waitUntil(self.registration.showNotification(title, { body }))
+// })
+//
+// window.self.addEventListener('notificationclick', event => {
+//   console.log('[Service Worker] notificationclick')
+//   clients.openWindow(event.notification.data.link)
+// })
+//
+// window.self.addEventListener('install', () => {
+//   console.log('[Service Worker] install')
+//   self.skipWaiting()
+// })
