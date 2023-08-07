@@ -10,6 +10,7 @@ import { TokenValid } from '@/app/libs/client/utils/token'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { useClearSession } from '@/app/hooks/useClearSession'
+import { requestConfigurator } from '@/app/apis/config/axios'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
@@ -35,7 +36,8 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           router.replace('/login')
         }
 
-        return config
+        // return config
+        return requestConfigurator(config)
       },
       undefined,
       { synchronous: true }

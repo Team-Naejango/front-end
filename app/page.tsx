@@ -22,7 +22,7 @@ const App: NextPage = () => {
       router.push('/home')
     } else {
       ResetToken()
-      router.push('/login')
+      router.push('/')
     }
   }, [])
 
