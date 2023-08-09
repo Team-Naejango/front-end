@@ -43,8 +43,8 @@ const Login = () => {
   const onNonUserLogin = async () => {
     try {
       const response = await nonUser()
-      // console.log('response:', response.data.accessToken)
-      setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+      console.log('response:', response)
+      // setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
       toast.success('비회원 로그인에 성공하였습니다.')
       router.push('/home')
     } catch (error: unknown) {

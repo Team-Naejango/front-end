@@ -169,6 +169,7 @@ const Profile = () => {
         </ul>
       </div>
 
+      {/* 모달 영역 */}
       {_account.modal.show ? (
         <Suspense fallback={<Loading />}>
           <CustomModal id={_account.modal.id}>

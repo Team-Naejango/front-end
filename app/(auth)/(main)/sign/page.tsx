@@ -53,7 +53,7 @@ const Sign = () => {
 
   const nickname = watch('nickname')
 
-  const { mutate: mutateSign } = useMutation((params: SignProps) => sign(accessToken, params), {
+  const { mutate: mutateSign } = useMutation((params: SignProps) => sign(params), {
     onSuccess: () => {
       toast.success('회원가입이 완료되었습니다.')
       router.push('/home')
@@ -81,7 +81,7 @@ const Sign = () => {
     // if (!isNicknameDisabled) return alert('중복검사 해라')
     // if (isNicknameDisabled && selectedNickname !== nickname) return alert('다시 중복검사 해라')
 
-    if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
+    // if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
 
     const params: MemberInfo = {
       birth: getValues('birth'),

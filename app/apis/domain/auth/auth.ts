@@ -12,14 +12,10 @@ import { Response } from '@/app/apis/types/response/response'
  * @param params.phoneNumber // 폰번호
  * @param params.imgUrl / 이미지 링크
  *
- * @param accessToken
  * @param params
  */
-export async function sign(accessToken: string, params: MemberInfo): Promise<Response<null>> {
-  console.log('api accessToken:', accessToken)
-  return instance.post('/api/user/profile', params, {
-    headers: { Authorization: `Bearer ${accessToken}` },
-  })
+export async function sign(params: MemberInfo): Promise<Response<null>> {
+  return instance.post('/api/user/profile', params)
 }
 
 /**
