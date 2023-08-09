@@ -45,8 +45,20 @@ export type E_MODAL_TYPES = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]
  * 스위치
  */
 export const SWITCH_STATUS = {
-  온: 'ON',
-  오프: 'OFF',
+  온: true,
+  오프: false,
 } as const
 
 export type E_SWITCH_STATUS = (typeof SWITCH_STATUS)[keyof typeof SWITCH_STATUS]
+
+/**
+ * 알림 권한
+ */
+export const NOTIFICATION_PERMISSION = {
+  기본: 'default',
+  허용: 'granted',
+  차단: 'denied',
+  대화상자: 'prompt',
+} as const
+
+export type E_NOTIFICATION_PERMISSION = (typeof NOTIFICATION_PERMISSION)[keyof typeof NOTIFICATION_PERMISSION]

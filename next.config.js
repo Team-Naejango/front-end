@@ -5,7 +5,7 @@ const runtimeCaching = require('next-pwa/cache')
 const webPush = require('web-push')
 
 const vapidKeys = webPush.generateVAPIDKeys()
-console.log(vapidKeys)
+// console.log(vapidKeys)
 
 const nextConfig = {
   reactStrictMode: true,

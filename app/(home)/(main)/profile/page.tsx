@@ -10,7 +10,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import SwitchButton from '@/app/components/atom/SwitchButton'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { E_SWITCH_STATUS, MODAL_TYPES, NOTIFICATION_PERMISSION, SWITCH_STATUS } from '@/app/libs/client/constants/code'
 import CustomModal from '@/app/components/molecule/modal/CustomModal'
 import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
@@ -23,10 +23,13 @@ import { deleteUser } from '@/app/apis/domain/profile/profile'
 const Profile = () => {
   const router = useRouter()
   const { openModal } = useModal()
-  const [switchStatus, setSwitchStatus] = useState<boolean>(false)
+  const [switchStatus, setSwitchStatus] = useState<E_SWITCH_STATUS>(SWITCH_STATUS.오프)
+  const [isNotificationSupported, setIsNotificationSupported] = useState<boolean>(false)
   const _account = useRecoilValue(modalSelector('account'))
   const _logout = useRecoilValue(modalSelector('logout'))
   const _withdrawal = useRecoilValue(modalSelector('withdrawal'))
+
+  const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
 
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
@@ -41,6 +44,44 @@ const Profile = () => {
       router.push('/login')
     },
   })
+
+  const subscribeToNotifications = async () => {
+    if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단) return
+
+    await Notification.requestPermission(permission => {
+      console.log('permission:', permission)
+      if (permission === NOTIFICATION_PERMISSION.허용) {
+        setSwitchStatus(true)
+        toast.success('알림이 구독되었습니다.')
+      }
+      if (permission === NOTIFICATION_PERMISSION.차단) {
+        setSwitchStatus(false)
+        toast.success('알림이 차단되었습니다.')
+      }
+    }).catch(error => {
+      toast.error(error)
+    })
+  }
+
+  useEffect(() => {
+    if ('Notification' in window) setIsNotificationSupported(true)
+    if ('permissions' in navigator) navigator.permissions.query({ name: 'notifications' })
+    notificationPermission === 'granted' ? setSwitchStatus(SWITCH_STATUS.온) : setSwitchStatus(SWITCH_STATUS.오프)
+  }, [])
+
+  useEffect(() => {
+    if (switchStatus && isNotificationSupported) subscribeToNotifications()
+  }, [switchStatus])
+
+  const onSwitchConverter = () => {
+    if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단)
+      return toast.error('알림 권한을 변경하려면 브라우저 설정에서 변경해주세요.')
+    setSwitchStatus(convert => !convert)
+  }
+
+  const onLink = (value: string) => {
+    router.push(value)
+  }
 
   const onClickUserSetting = () => {
     openModal({
@@ -78,15 +119,6 @@ const Profile = () => {
     })
   }
 
-  const onClickSwitch = () => {
-    setSwitchStatus(prevState => !prevState)
-    // setValue('notificationFlag', event.target.checked ? FLAG.TRUE : FLAG.FALSE)
-  }
-
-  const onLink = (value: string) => {
-    router.push(value)
-  }
-
   return (
     <Layout hasHeader setting seoTitle={'프로필'}>
       <div className='mt-12 px-4'>
@@ -100,7 +132,7 @@ const Profile = () => {
           </li>
           <li className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
             <span className={'text-sm'}>알림 설정</span>
-            <SwitchButton value={switchStatus} changeHandler={onClickSwitch} />
+            <SwitchButton value={switchStatus} changeHandler={onSwitchConverter} />
           </li>
           <li
             role={'presentation'}
