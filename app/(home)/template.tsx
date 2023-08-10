@@ -1,9 +1,10 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { initializeApp } from '@firebase/app'
 import { getMessaging, getToken } from '@firebase/messaging'
 import { toast } from 'react-hot-toast'
+
 import {
   FIREBASE_API_KEY,
   FIREBASE_APP_ID,
@@ -12,8 +13,11 @@ import {
   FIREBASE_PROJECT_ID,
   FIREBASE_STORAGE_BUCKET,
 } from '@/app/libs/client/constants/static'
+import { NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
+
   const serviceWorkerInit = async () => {
     const permission = await Notification.requestPermission()
     if (permission !== 'granted') return
@@ -31,36 +35,47 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker
-        .register('/firebase-messaging-sw.js')
+        .register('/sw.js')
         .then(async registration => {
-          await getToken(messaging, {
+          const currentToken = await getToken(messaging, {
             vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
             serviceWorkerRegistration: registration,
           })
-            .then(currentToken => {
-              if (currentToken) {
-                console.log('clientToken:', currentToken)
-                // todo: token to backend server
-                // todo: secondary rendering
-                toast.success('알림이 구독되었습니다.')
-              } else {
-                toast.error('알림이 권한이 필요합니다.')
-              }
-            })
-            .catch(error => {
-              console.log('retrievingToken', error)
-              toast.error('알림 동의에 오류가 발생했습니다.')
-            })
+          if (currentToken) {
+            console.log('currentToken:', currentToken)
+            // todo: token to backend server
+            // todo: secondary rendering
+            notificationPermission !== NOTIFICATION_PERMISSION.허용 && toast.success('[알림] 알림이 구독되었습니다.')
+          } else {
+            toast.error('[알림] 알림이 권한이 필요합니다.')
+          }
         })
         .catch(error => {
-          console.log('ServiceWorker Failed', error)
+          console.log('실패 에러', error)
+          toast.error('[알림] 알림 동의에 오류가 발생했습니다.')
         })
     }
   }
 
+  const notificationCallback = useCallback(() => {
+    return (
+      typeof navigator !== 'undefined' &&
+      navigator.serviceWorker.addEventListener('message', event => {
+        const message = event.data
+        if (message.type === 'showToast') {
+          toast.success(message.message)
+        }
+      })
+    )
+  }, [])
+
   useEffect(() => {
     serviceWorkerInit()
   }, [])
+
+  useEffect(() => {
+    notificationCallback()
+  }, [notificationCallback])
 
   return <>{children}</>
 }

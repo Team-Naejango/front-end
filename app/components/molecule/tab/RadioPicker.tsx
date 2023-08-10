@@ -4,8 +4,8 @@ import React, { Dispatch, SetStateAction, SVGProps } from 'react'
 import { RadioGroup } from '@headlessui/react'
 
 export type DataTypes = {
-  name: string
-  value: string
+  label: string
+  value: number
 }
 
 interface RadioPickerProps {
@@ -32,7 +32,7 @@ const RadioPicker = ({ data, selectedRadio, setSelectedRadio }: RadioPickerProps
           <div className='space-y-5'>
             {data.map(value => (
               <RadioGroup.Option
-                key={value.name}
+                key={value.label}
                 value={value}
                 className={({ active, checked }) =>
                   `${active ? 'ring-1 ring-white ring-opacity-60 ring-offset-1 ring-offset-[#32D7A0]' : ''}
@@ -44,12 +44,12 @@ const RadioPicker = ({ data, selectedRadio, setSelectedRadio }: RadioPickerProps
                       <div className='flex items-center'>
                         <div>
                           <RadioGroup.Label as='p' className={`text-[13px] font-normal text-[#222]`}>
-                            {value.name}
+                            {value.value.toLocaleString()} 포인트
                           </RadioGroup.Label>
                           <RadioGroup.Description
                             as='span'
                             className={`mt-2 inline-block text-[15px] font-bold text-[#222]`}>
-                            {value.value}
+                            {value.label}
                           </RadioGroup.Description>
                         </div>
                       </div>

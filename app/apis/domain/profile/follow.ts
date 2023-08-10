@@ -19,9 +19,9 @@ export async function saveFollow(storageId: string): Promise<Response<null>> {
 }
 
 /**
- * 팔로우 해제
+ * 팔로우 취소
  *
  */
-export async function removeFollow(storageId: string): Promise<Response<null>> {
+export async function unFollow(storageId: string): Promise<Response<null>> {
   return withAuth.delete(`/api/follow/${storageId}`)
 }

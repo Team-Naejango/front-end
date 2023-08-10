@@ -16,6 +16,14 @@ export interface DealParam {
 type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: string }
 
 /**
+ * 거래 내역 조회
+ *
+ */
+export async function deal(): Promise<Response<{ transaction: Transaction[] }>> {
+  return withAuth.get('/api/transaction')
+}
+
+/**
  * 거래 등록
  *
  * @param params.date // 거래 id
@@ -27,14 +35,6 @@ type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: st
  */
 export async function saveDeal(params: DealParam): Promise<Response<{ deal: Deal }>> {
   return withAuth.post('/api/transaction', params)
-}
-
-/**
- * 거래 내역 조회
- *
- */
-export async function deal(): Promise<Response<{ transaction: Transaction[] }>> {
-  return withAuth.get('/api/transaction')
 }
 
 /**
