@@ -18,7 +18,7 @@ const WareHouse = () => {
   const { push } = useCustomRouter()
 
   // 창고 조회
-  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage('1'), {
+  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage(), {
     // enabled: !!seq,
   })
 

@@ -3,21 +3,21 @@
 import React from 'react'
 import Link from 'next/link'
 
-interface ItemProps {
-  id: number
+interface WishItemProps {
   title: string
-  hearts?: number
+  hearts: boolean
+  onClick: () => void
 }
 
-const ItemCard = ({ id, title, hearts }: ItemProps) => {
+const WishItemCard = ({ title, hearts, onClick }: WishItemProps) => {
   return (
-    <Link href={`/profile/loved`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
+    <Link href={`/profile/wish`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
       <div>
         <div className='relative h-36 w-36 rounded-md bg-gray-200 opacity-70'>
-          <div className={'absolute right-1.5 top-1.5 text-[#33CC99]'}>
+          <div role={'presentation'} className={'absolute right-1.5 top-1.5 text-[#33CC99]'} onClick={onClick}>
             <svg
               className='h-5 w-5'
-              fill='none'
+              fill={hearts ? '#33CC99' : 'none'}
               stroke='currentColor'
               viewBox='0 0 24 24'
               xmlns='http://www.w3.org/2000/svg'>
@@ -38,4 +38,4 @@ const ItemCard = ({ id, title, hearts }: ItemProps) => {
   )
 }
 
-export default ItemCard
+export default WishItemCard

@@ -34,7 +34,7 @@ export interface Storage {
   imgUrl: string
   description: string
   address: string
-  coord: {
+  coord?: {
     longitude: number
     latitude: number
   }

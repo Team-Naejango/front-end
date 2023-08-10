@@ -143,7 +143,7 @@ const Profile = () => {
           </li>
           <li
             role={'presentation'}
-            onClick={() => onLink('/profile/loved')}
+            onClick={() => onLink('/profile/wish')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
             <span className={'text-sm'}>관심 상품</span>
             <GrFormNext />
@@ -169,6 +169,7 @@ const Profile = () => {
         </ul>
       </div>
 
+      {/* 모달 영역 */}
       {_account.modal.show ? (
         <Suspense fallback={<Loading />}>
           <CustomModal id={_account.modal.id}>

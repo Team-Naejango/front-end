@@ -25,7 +25,7 @@ import {
   itemInfo,
   saveItem,
   modifyItem,
-  modifyStorage,
+  modifyStorageItem,
   ModifyStorageParam,
 } from '@/app/apis/domain/warehouse/warehouse'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
@@ -91,7 +91,7 @@ const EditItem = () => {
   })
 
   // 아이템 창고 수정
-  const { mutate: mutateStorage } = useMutation<null, ApiError, ModifyStorageParam>(modifyStorage, {
+  const { mutate: mutateStorage } = useMutation<null, ApiError, ModifyStorageParam>(modifyStorageItem, {
     onError: (error: ApiError) => {
       toast.error(error.message)
     },

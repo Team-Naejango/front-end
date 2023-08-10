@@ -185,8 +185,10 @@ const WarehouseEdit = () => {
       description: data.description,
       imgUrl: (imageFile! && imageFile[0].name) ?? _storageInfo?.imgUrl,
       address: '',
-      longitude: 126,
-      latitude: 37,
+      coord: {
+        longitude: 126,
+        latitude: 37,
+      },
     }
 
     mutateSave(params)

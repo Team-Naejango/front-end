@@ -30,6 +30,14 @@ self.addEventListener('push', event => {
         body: message.notification.body,
       })
     )
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({
+          type: 'showToast',
+          message: '[알림] 알림이 도착하였습니다.',
+        })
+      })
+    })
   } catch (error) {
     console.log('알림 생성 중 에러 반환:', error)
   }

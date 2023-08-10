@@ -3,7 +3,7 @@ import { Response } from '@/app/apis/types/response/response'
 import { Wishs } from '@/app/apis/types/domain/profile/wish'
 
 /**
- * 관심목록 조회
+ * 관심 조회
  *
  */
 export async function wish(): Promise<Response<{ wish: Wishs[] }>> {
@@ -11,7 +11,7 @@ export async function wish(): Promise<Response<{ wish: Wishs[] }>> {
 }
 
 /**
- * 관심목록 등록
+ * 관심 등록
  *
  */
 export async function saveWish(itemId: string): Promise<Response<null>> {
@@ -19,9 +19,9 @@ export async function saveWish(itemId: string): Promise<Response<null>> {
 }
 
 /**
- * 관심목록 삭제
+ * 관심 취소
  *
  */
-export async function removeWish(itemId: string): Promise<Response<null>> {
+export async function unWish(itemId: string): Promise<Response<null>> {
   return withAuth.delete(`/api/wish/${itemId}`)
 }
