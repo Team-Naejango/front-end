@@ -60,7 +60,7 @@ const EditProfile = () => {
   })
   const nickname = watch('nickname')
 
-  const { data: _userInfo } = useQuery<{ data: MemberInfo }>([OAUTH.유저정보], () => userInfo())
+  const { data: _userInfo } = useQuery<MemberInfo>([OAUTH.유저정보], () => userInfo())
 
   const { mutate: mutateUserInfoModify } = useMutation<{ user: MemberInfo }, ApiError, MemberInfo>(
     (params: MemberInfo) => modifyUserInfo({ ...params }),
@@ -179,7 +179,7 @@ const EditProfile = () => {
     const params: MemberInfo = {
       nickname: getValues('nickname'),
       gender: getValues('gender'),
-      imgUrl: (imageFile! && imageFile[0].name) ?? _userInfo.data.imgUrl,
+      imgUrl: (imageFile! && imageFile[0].name) ?? _userInfo.imgUrl,
       birth: getValues('birth'),
       intro: getValues('intro'),
       phoneNumber: getValues('phoneNumber'),
@@ -202,11 +202,11 @@ const EditProfile = () => {
   }
 
   useEffect(() => {
-    reset({ ..._userInfo?.data })
-    if (_userInfo?.data.imgUrl) {
-      setImagePreview(_userInfo.data.imgUrl)
+    reset({ ..._userInfo })
+    if (_userInfo?.imgUrl) {
+      setImagePreview(_userInfo.imgUrl)
     }
-  }, [_userInfo?.data])
+  }, [_userInfo])
 
   return (
     <Layout canGoBack title={'프로필 편집'} seoTitle={'프로필'}>
@@ -225,9 +225,9 @@ const EditProfile = () => {
             ) : (
               <Image
                 src={`${
-                  _userInfo?.data.imgUrl !== ''
-                    ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${_userInfo?.data.imgUrl}`
-                    : 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
+                  _userInfo?.imgUrl === ('' || undefined)
+                    ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png`
+                    : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${_userInfo?.imgUrl}`
                 }`}
                 width={'100'}
                 height={'100'}
@@ -242,7 +242,7 @@ const EditProfile = () => {
             <InputField
               register={register('nickname', {
                 required: '닉네임을 입력해주세요.',
-                value: _userInfo?.data.nickname,
+                value: _userInfo?.nickname,
                 onChange: event => {
                   if (event.target.value.match(/^\s/g)) {
                     setError('nickname', {
@@ -271,7 +271,7 @@ const EditProfile = () => {
             <InputField
               register={register('birth', {
                 required: '생년월일을 입력해주세요.',
-                value: _userInfo?.data.birth,
+                value: _userInfo?.birth,
                 pattern: {
                   value: /^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/,
                   message: '유효한 생년월일을 입력해주세요. (YYYYMMDD)',
@@ -291,7 +291,7 @@ const EditProfile = () => {
             <InputField
               register={register('phoneNumber', {
                 required: '휴대폰번호를 입력해주세요.',
-                value: _userInfo?.data.phoneNumber,
+                value: _userInfo?.phoneNumber,
               })}
               id='phoneNumber'
               type='text'
@@ -304,7 +304,7 @@ const EditProfile = () => {
           <TextArea
             register={register('intro', {
               required: '자기소개를 입력하세요.',
-              value: _userInfo?.data.intro,
+              value: _userInfo?.intro,
               maxLength: {
                 value: 100,
                 message: '100자 제한입니다.',

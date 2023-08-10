@@ -3,7 +3,7 @@
 import React, { useState, Suspense, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -18,7 +18,9 @@ import { removeAuthToken } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import Loading from '@/app/loading'
 
-import { deleteUser } from '@/app/apis/domain/profile/profile'
+import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 const Profile = () => {
   const router = useRouter()
@@ -30,6 +32,8 @@ const Profile = () => {
   const _withdrawal = useRecoilValue(modalSelector('withdrawal'))
 
   const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
+
+  const { data: _userInfo } = useQuery<MemberInfo>([OAUTH.유저정보], () => userInfo())
 
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
@@ -120,7 +124,15 @@ const Profile = () => {
   }
 
   return (
-    <Layout hasHeader setting seoTitle={'프로필'}>
+    <Layout
+      hasHeader
+      setting
+      seoTitle={'프로필'}
+      src={
+        _userInfo?.imgUrl === ('' || undefined)
+          ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
+          : _userInfo.imgUrl
+      }>
       <div className='mt-12 px-4'>
         <ul className={'flex flex-col gap-3.5'}>
           <li

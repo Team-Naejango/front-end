@@ -251,7 +251,7 @@ const WarehouseEdit = () => {
           ) : (
             <Image
               src={`${
-                _storageInfo?.imgUrl === undefined
+                _storageInfo?.imgUrl === ('' || undefined)
                   ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
                   : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${_storageInfo?.imgUrl}`
               }`}
@@ -291,7 +291,10 @@ const WarehouseEdit = () => {
               icon={
                 <>
                   <Image src={mapIcon} alt={'지도 아이콘'} className='absolute ml-2.5 text-sm text-[#A9A9A9]' />
-                  <GrFormNext className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]' />
+                  <GrFormNext
+                    className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]'
+                    onClick={() => setStep(STEP.위치선택)}
+                  />
                 </>
               }
             />

@@ -25,7 +25,7 @@ const Home = () => {
    * todo: 쿼리 캐싱 가비지컬렉션 처리
    * todo: 에러 핸들링 처리
    * */
-  const { data: getUserData } = useQuery<Response<{ data: MemberInfo }>>([OAUTH.유저정보], () => userInfo())
+  const { data: getUserData } = useQuery<Response<MemberInfo>>([OAUTH.유저정보], () => userInfo())
 
   console.log('getUserData:', getUserData ?? [])
 

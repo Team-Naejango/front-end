@@ -1,6 +1,6 @@
 import { withAuth } from '@/app/apis/config/axios/withAuth'
 import { Response } from '@/app/apis/types/response/response'
-import { Deal, Transaction } from '@/app/apis/types/domain/warehouse/deal'
+import { Deal, Transaction } from '@/app/apis/types/domain/place/deal'
 
 export interface DealParam {
   // 금액

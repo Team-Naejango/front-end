@@ -73,8 +73,6 @@ const WareHouseCarousel = ({ datas, onClick }: { datas: StorageParam; onClick: (
     updatePrevDisabledState()
   }, [updatePrevDisabledState])
 
-  console.log('datas:', datas)
-
   return (
     <Swiper {...swiperParams} className={'mt-20 h-40 w-full'}>
       {[datas]?.map((data: StorageParam) => {
@@ -85,7 +83,7 @@ const WareHouseCarousel = ({ datas, onClick }: { datas: StorageParam; onClick: (
                 <Image
                   priority
                   src={
-                    data?.imgUrl === null
+                    data?.imgUrl === ('' || undefined)
                       ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/box.png'
                       : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${data?.imgUrl}`
                   }
