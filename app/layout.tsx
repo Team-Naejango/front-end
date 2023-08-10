@@ -26,6 +26,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='ko-KR'>
+      {/* <head> */}
+      {/* <meta httpEquiv='Content-Security-Policy' content='upgrade-insecure-requests' /> */}
+      {/* </head> */}
       <body className={myFont.className} suppressHydrationWarning>
         <Script type='text/javascript' src={KAKAO_MAP_SDK_URL} strategy='beforeInteractive' />
         <Script type='text/javascript' src={'//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js'} async />

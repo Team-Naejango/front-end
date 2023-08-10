@@ -6,7 +6,7 @@ import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
  * 유저정보 조회
  *
  */
-export async function userInfo(): Promise<Response<{ data: MemberInfo }>> {
+export async function userInfo(): Promise<Response<MemberInfo>> {
   return withAuth.get('/api/user/profile')
 }
 

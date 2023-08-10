@@ -14,9 +14,15 @@ interface LayoutProps {
   seoTitle: string | undefined
   hasHeader?: boolean
   setting?: boolean
+  src?: string
 }
 
-const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) => {
+const Header = ({
+  seoTitle,
+  hasHeader = true,
+  setting = false,
+  src = 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png',
+}: LayoutProps) => {
   const router = useRouter()
 
   const onClickNotice = () => {
@@ -47,7 +53,14 @@ const Header = ({ seoTitle, hasHeader = true, setting = false }: LayoutProps) =>
                 setting ? 'rounded-full' : 'rounded-md'
               )}>
               {setting ? (
-                <div className={'absolute h-full w-full rounded-full bg-emerald-500'} />
+                <Image
+                  src={src}
+                  width={'100'}
+                  height={'100'}
+                  quality={100}
+                  alt='프로필 이미지'
+                  className={'absolute h-full w-full rounded-full bg-gray-300 object-cover'}
+                />
               ) : (
                 <Image src={noticeIcon} alt={'알림 아이콘'} width={24} />
               )}

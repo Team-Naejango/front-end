@@ -271,7 +271,7 @@ const EditItem = () => {
           ) : (
             <Image
               src={`${
-                _itemInfo?.imgUrl === ''
+                _itemInfo?.imgUrl === ('' || undefined)
                   ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
                   : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${_itemInfo?.imgUrl}`
               }`}
