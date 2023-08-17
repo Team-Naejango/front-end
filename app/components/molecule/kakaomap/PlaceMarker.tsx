@@ -9,7 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
-import { PositionType } from '@/app/(home)/(main)/places/dummyData'
+import { PositionType } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState } from '@/app/store/atom'
 

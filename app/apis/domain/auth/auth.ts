@@ -1,6 +1,6 @@
 import { instance } from '@/app/apis/config/axios/instance'
 import { AuthToken, MemberInfo } from '@/app/apis/types/domain/auth/auth'
-import { Response } from '@/app/apis/types/response/response'
+// import { Response } from '@/app/apis/types/response/response'
 
 /**
  * 회원가입
@@ -14,7 +14,7 @@ import { Response } from '@/app/apis/types/response/response'
  *
  * @param params
  */
-export async function sign(params: MemberInfo): Promise<Response<null>> {
+export async function sign(params: MemberInfo): Promise<Response> {
   return instance.post('/api/user/profile', params)
 }
 
@@ -22,8 +22,16 @@ export async function sign(params: MemberInfo): Promise<Response<null>> {
  * 비회원 로그인
  *
  */
-export async function nonUser(): Promise<Response<{ data: { accessToken: string } }>> {
+export async function nonUser(): Promise<Response> {
   return instance.get('/api/auth/guest')
+}
+
+/**
+ * 비회원 로그인
+ *
+ */
+export async function non(): Promise<Response> {
+  return instance.get('/')
 }
 
 /**
@@ -31,7 +39,7 @@ export async function nonUser(): Promise<Response<{ data: { accessToken: string 
  *
  * @param username 닉네임
  */
-export async function nickNameValidity(username: string): Promise<Response<boolean>> {
+export async function nickNameValidity(username: string): Promise<Response> {
   return instance.get(`/api/user/check/${username}`)
 }
 
@@ -40,6 +48,6 @@ export async function nickNameValidity(username: string): Promise<Response<boole
  *
  * @param params.refreshToken 리프래시 토큰
  */
-export async function refresh(params: { refreshToken: string }): Promise<Response<{ token: AuthToken }>> {
+export async function refresh(params: { refreshToken: string }): Promise<Response> {
   return instance.post('/', params)
 }

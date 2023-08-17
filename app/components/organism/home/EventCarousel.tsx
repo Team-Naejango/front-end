@@ -7,7 +7,7 @@ import SwiperCore, { A11y, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 
-import { homeImagesData } from '@/app/libs/client/utils/images'
+import { HOMEIMAGES } from '@/app/libs/client/constants/static'
 import { cls } from '@/app/libs/client/utils/util'
 
 import 'swiper/css'
@@ -16,7 +16,7 @@ const EventCarousel = () => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
-  const totalSlides = homeImagesData.filter(value => value.ing).length
+  const totalSlides = HOMEIMAGES.filter(value => value.ing).length
 
   SwiperCore.use([A11y, Autoplay])
 
@@ -37,7 +37,7 @@ const EventCarousel = () => {
 
   return (
     <Swiper {...swiperParams} className={'!absolute left-0 top-[90px] w-full rounded-[1rem]'}>
-      {homeImagesData.map(data => {
+      {HOMEIMAGES.map(data => {
         return (
           data.ing && (
             <SwiperSlide key={data.title}>

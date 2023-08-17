@@ -23,6 +23,6 @@ export const MODAL_STORE_KEY = {
  */
 export const AUTH_TOKEN = {
   인가: 'authorization',
-  접근: 'accessToken',
-  갱신: 'refreshToken',
+  접근: 'AccessToken',
+  갱신: 'RefreshToken',
 }

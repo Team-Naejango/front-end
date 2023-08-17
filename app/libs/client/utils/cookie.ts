@@ -5,7 +5,7 @@ const cookies = new Cookies()
 export const setDeadlineCookie = (key: string, token: string | null) => {
   cookies.set(key, token, {
     path: '/',
-    maxAge: key === 'refreshToken' ? 60 * 60 * 24 * 14 : undefined,
+    maxAge: key === 'RefreshToken' ? 60 * 60 * 24 * 14 : undefined,
   })
 }
 

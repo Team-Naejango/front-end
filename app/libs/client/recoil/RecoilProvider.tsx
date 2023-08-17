@@ -8,7 +8,6 @@ type Props = {
   children: ReactNode
 }
 
-// todo: Recoil 초기화 작업
 const initialState = ({ set }: MutableSnapshot) => {
   // set(kakaoAccessToken, '')
 }

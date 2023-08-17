@@ -4,18 +4,24 @@ import uuid from 'react-uuid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
+import dynamic from 'next/dynamic'
 
 import { useModal } from '@/app/hooks/useModal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
+import { positions, PositionType } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import CardSelectModal from '@/app/components/molecule/kakaomap/CardSelectModal'
 import { modalSelector } from '@/app/store/modal'
-import CustomModal from '@/app/components/molecule/modal/CustomModal'
 import { cls } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
+import Loading from '@/app/loading'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
+
+const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
+  ssr: false,
+  loading: () => <Loading />,
+})
 
 interface PreviewCardProps {
   previews: PositionType[]

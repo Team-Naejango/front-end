@@ -8,8 +8,8 @@ import useGeolocation from '@/app/hooks/useGeolocation'
 import PlaceMarker from '@/app/components/molecule/kakaomap/PlaceMarker'
 import Categories from '@/app/components/molecule/kakaomap/Categories'
 import PreviewCard from '@/app/components/molecule/kakaomap/PreviewCard'
-import { positions, PositionType } from '@/app/(home)/(main)/places/dummyData'
-import { CATEGORIES } from '@/app/libs/client/constants/warehouse'
+import { positions, PositionType } from '@/app/(routes)/(home)/(main)/places/dummyData'
+import { CATEGORIES } from '@/app/libs/client/constants/static'
 
 const KakaoMap = () => {
   // todo: markers, info 유사 데이터 바인딩으로 인한 리팩토링 필요

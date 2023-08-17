@@ -9,6 +9,7 @@ export interface RoundedTabProps {
   id: number
   value: string
   title: string
+  swap?: string
 }
 
 const RoundedTab = ({ tabs, children }: { tabs: any[]; children: ReactNode }) => {

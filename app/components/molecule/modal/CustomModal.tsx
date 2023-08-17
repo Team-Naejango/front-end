@@ -98,13 +98,15 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = 'í™
                         {modal.title}
                       </Dialog.Title>
                     )}
-                    <div className='p-3'>
-                      {modal.content && <div className='overflow-auto p-3 text-sm'>{modal.content}</div>}
-                    </div>
+                    {modal.content && (
+                      <div className='p-3'>
+                        <div className='overflow-auto p-3 text-sm'>{modal.content}</div>
+                      </div>
+                    )}
                     <Dialog.Description as={Fragment}>
                       <div
                         className={`p-4 ${
-                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] justify-around gap-3.5'
+                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] justify-around gap-4'
                         }`}>
                         {modal.type === MODAL_TYPES.ALERT ? (
                           <>

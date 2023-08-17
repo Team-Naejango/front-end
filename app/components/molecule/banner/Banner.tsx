@@ -3,13 +3,13 @@
 import React from 'react'
 import Image from 'next/image'
 
-import { homeImagesData } from '@/app/libs/client/utils/images'
+import { HOMEIMAGES } from '@/app/libs/client/constants/static'
 import { cls } from '@/app/libs/client/utils/util'
 
 const Banner = () => {
   return (
     <div className={'flex h-[100%] flex-col items-center justify-center space-y-6'}>
-      {homeImagesData.map(value => {
+      {HOMEIMAGES.map(value => {
         return (
           <div key={value.title} className={'relative h-[230px] w-full cursor-pointer'}>
             <Image

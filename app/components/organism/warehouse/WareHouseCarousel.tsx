@@ -7,13 +7,12 @@ import SwiperCore, { Navigation, A11y } from 'swiper'
 import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 import { BsPlusSquare } from 'react-icons/bs'
+import uuid from 'react-uuid'
 
-import { wareHouseImagesData } from '@/app/libs/client/utils/images'
+import { StorageParam } from '@/app/apis/domain/warehouse/warehouse'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
-import { StorageParam } from '@/app/apis/domain/warehouse/warehouse'
-import uuid from 'react-uuid'
 
 const WareHouseCarousel = ({ datas, onClick }: { datas: StorageParam; onClick: () => void }) => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)

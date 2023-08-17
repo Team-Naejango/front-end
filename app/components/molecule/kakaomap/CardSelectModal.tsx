@@ -7,7 +7,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 
 import SelectBox from '@/app/components/atom/SelectBox'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
-import { positions } from '@/app/(home)/(main)/places/dummyData'
+import { positions } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import TextArea from '@/app/components/atom/TextArea'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 
