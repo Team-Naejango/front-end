@@ -41,7 +41,9 @@ const Login = () => {
 
   const onNonUserLogin = async () => {
     try {
-      const nonUser = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`)
+      const nonUser = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+        withCredentials: true,
+      })
       nonUser.then(response => {
         setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
         toast.success('비회원 로그인에 성공하였습니다.')
