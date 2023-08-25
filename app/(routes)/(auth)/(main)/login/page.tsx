@@ -40,6 +40,17 @@ const Login = () => {
     router.push('/oauth/kakaoLogin')
   }
 
+  const onSubmit = () => {
+    toast.error('현재 카카오 로그인만 허용했습니다.')
+    reset()
+  }
+
+  useEffect(() => {
+    if (isSplashMounted) {
+      setMounted(true)
+    }
+  }, [isSplashMounted])
+
   const onNonUserLogin = async () => {
     const response = await nonUser()
     try {
@@ -51,17 +62,6 @@ const Login = () => {
       // toast.error('비회원 로그인에 실패하였습니다.')
     }
   }
-
-  const onSubmit = () => {
-    toast.error('현재 카카오 로그인만 허용했습니다.')
-    reset()
-  }
-
-  useEffect(() => {
-    if (isSplashMounted) {
-      setMounted(true)
-    }
-  }, [isSplashMounted])
 
   return (
     <>

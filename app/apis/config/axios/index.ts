@@ -26,13 +26,6 @@ type Refresh = {
   statusCodeValue?: number
 }
 
-const refreshAuthToken = (config: AxiosRequestConfig, token: Refresh | string) => {
-  config.headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  } as HeaderType
-}
-
 export const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
   return config
 }
@@ -46,6 +39,13 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
     throw new ApiError(response.status, response.data.error)
   }
   return response
+}
+
+const refreshAuthToken = (config: AxiosRequestConfig, token: Refresh | string) => {
+  config.headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  } as HeaderType
 }
 
 export const responseNormalizer = async (error: AxiosError) => {
