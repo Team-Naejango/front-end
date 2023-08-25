@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
@@ -14,10 +14,10 @@ import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
-
-import { nonUser } from '@/app/apis/domain/auth/auth'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+
+import { nonUser } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -41,8 +41,8 @@ const Login = () => {
   }
 
   const onNonUserLogin = async () => {
+    const response = await nonUser()
     try {
-      const response = await nonUser()
       setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
       toast.success('비회원 로그인에 성공하였습니다.')
       router.push('/home')
