@@ -5,7 +5,7 @@ import {
   requestErrorRejecter,
   responseApiErrorThrower,
   responseNormalizer,
-} from '@/app/apis/config/axios/index'
+} from '@/app/apis/config/axios'
 
 const withAuth = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
