@@ -14,7 +14,7 @@ import { CRUD } from '@/app/libs/client/constants/code'
 import { ItemInfo, ItemParams } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
-import { itemInfo } from '@/app/apis/domain/warehouse/warehouse'
+import { itemInfo, storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouseItem = () => {
   const params = useParams()
@@ -61,19 +61,20 @@ const WareHouseItem = () => {
     ],
   })
 
-  // 아이템 조회
-  const { data: _itemInfo } = useQuery<{ item: ItemInfo }>([ITEM.상세], () => itemInfo(params.id))
-  // const { data: { item: _itemInfo } = {} } = useQuery<{ item: ItemInfo }>([ITEM.상세], () => itemInfo(seq), {
-  //   enabled: !!seq,
-  // })
+  // 창고 아이템 조회
+  //   const {data: {data: _itemInfo } = {} } = useQuery([ITEM.상세], () => storageItem({
+  // storageId:
+  //   }), {
+  //     enabled: !!params.id
+  //   })
 
-  console.log('_itemInfo:', _itemInfo)
+  // console.log('_itemInfo:', _itemInfo)
 
   // todo: 삭제 팝업창과 delete api 추가
   const onDeleteProduct = () => {}
 
   return (
-    <Layout canGoBack title={`창고${params.id}`}>
+    <Layout canGoBack title={'창고'}>
       <div className='mt-8'>
         <RoundedTab tabs={categories as any}>
           {Object.values(categories).map(posts => (

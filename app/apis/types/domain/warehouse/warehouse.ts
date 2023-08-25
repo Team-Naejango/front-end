@@ -56,3 +56,27 @@ export interface Storage {
   // // 좌표값 Y
   // latitude: number
 }
+
+export type Info = {
+  address: string
+  description: string
+  id: number
+  imgUrl: string
+  name: string
+}
+
+export interface StorageInfo {
+  count: number
+  storageList: Info[]
+}
+
+export type Item = {
+  itemId: number
+  category: null
+  name: string
+  imgUrl: string
+}
+
+export interface ItemList {
+  itemList: Item[]
+}

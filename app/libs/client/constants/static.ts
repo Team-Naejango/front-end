@@ -44,10 +44,10 @@ const POINTS: DataTypes[] = [
 // 카테고리 타입
 const CATEGORIES: { name: string }[] = [
   { name: '전체' },
-  { name: '식품' },
-  { name: '가전/가구' },
-  { name: '의류/뷰티' },
-  { name: '건강/생활' },
+  { name: '의류' },
+  { name: '가구' },
+  { name: '생필품' },
+  { name: '디지털기기' },
 ]
 
 // 창고 목록

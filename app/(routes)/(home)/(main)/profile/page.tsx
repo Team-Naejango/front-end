@@ -21,6 +21,7 @@ import Loading from '@/app/loading'
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { logout as _kill } from '@/app/apis/domain/auth/auth'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -106,7 +107,8 @@ const Profile = () => {
         title: '로그아웃',
         content: '로그아웃을 하시겠습니까?',
       },
-      callback: () => {
+      callback: async () => {
+        await _kill()
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
         toast.success('로그아웃이 되었습니다.')
         router.push('/login')

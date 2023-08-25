@@ -13,11 +13,11 @@ import { PiUserCircleMinus } from 'react-icons/pi'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
-import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import { nonUser } from '@/app/apis/domain/auth/auth'
+import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 interface FormProps {
   email: string
@@ -42,46 +42,16 @@ const Login = () => {
 
   const onNonUserLogin = async () => {
     try {
-      const response = await nonUser()
-      console.log('response:', response)
-      const cookieHeader = response.headers.get('Set-Cookie')
-      console.log('cookieHeader:', cookieHeader)
-      // setDeadlineCookie(AUTH_TOKEN.접근, response.data.AccessToken)
-      toast.success('비회원 로그인에 성공하였습니다.')
-      router.push('/home')
+      await nonUser().then(response => {
+        setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+        toast.success('비회원 로그인에 성공하였습니다.')
+        router.push('/home')
+      })
     } catch (error: unknown) {
       console.log('error:', error)
-      toast.error('비회원 로그인에 실패하였습니다.')
+      // toast.error('비회원 로그인에 실패하였습니다.')
     }
   }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = fetch('http://43.202.25.203:8080/api/auth/guest', {
-          method: 'get',
-          credentials: 'include',
-        }).then(response => {
-          const cookieHeader = response.headers.get('Set-Cookie')
-          console.log('cookieHeader:', cookieHeader)
-        })
-        // const response = await nonUser() // nonUser API를 호출하여 응답을 받아옵니다.
-        console.log('response:', response)
-
-        // 응답 헤더에서 쿠키 값을 추출합니다.
-        // const cookieHeader = response.headers.get('Set-Cookie')
-        // if (cookieHeader) {
-        //   // 쿠키 값을 추출한 후 ';'로 구분하여 토큰 값을 얻습니다.
-        //   const token = cookieHeader.split(';')[0].split('=')[1]
-        //   setDeadlineCookie('AccessToken', token) // 쿠키에 토큰 값을 저장합니다.
-        // }
-      } catch (error) {
-        console.error('Error fetching data:', error)
-      }
-    }
-
-    fetchData()
-  }, [])
 
   const onSubmit = () => {
     toast.error('현재 카카오 로그인만 허용했습니다.')
