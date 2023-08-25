@@ -29,11 +29,12 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           config.headers = {
             Authorization: `Bearer ${accessToken}`,
           } as AxiosRequestHeaders
-        } else {
-          ResetToken()
-          toast.error('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
-          router.replace('/login')
         }
+        // else {
+        //   ResetToken()
+        //   toast.error('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
+        //   router.replace('/login')
+        // }
 
         return config
       },

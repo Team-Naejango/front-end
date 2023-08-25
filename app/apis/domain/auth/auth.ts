@@ -1,6 +1,6 @@
 import { instance } from '@/app/apis/config/axios/instance'
-import { AuthToken, MemberInfo } from '@/app/apis/types/domain/auth/auth'
-// import { Response } from '@/app/apis/types/response/response'
+import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { Response } from '@/app/apis/types/response/response'
 
 /**
  * 회원가입
@@ -12,26 +12,23 @@ import { AuthToken, MemberInfo } from '@/app/apis/types/domain/auth/auth'
  * @param params.phoneNumber // 폰번호
  * @param params.imgUrl / 이미지 링크
  *
+ * @param token
  * @param params
  */
-export async function sign(params: MemberInfo): Promise<Response> {
-  return instance.post('/api/user/profile', params)
+export async function sign(token: string, params: MemberInfo): Promise<Response> {
+  return instance.post('/api/user/profile', params, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
 }
 
 /**
  * 비회원 로그인
  *
  */
-export async function nonUser(): Promise<Response> {
+export async function nonUser(): Promise<Response<{ data: { accessToken: string } }>> {
   return instance.get('/api/auth/guest')
-}
-
-/**
- * 비회원 로그인
- *
- */
-export async function non(): Promise<Response> {
-  return instance.get('/')
 }
 
 /**
@@ -50,4 +47,12 @@ export async function nickNameValidity(username: string): Promise<Response> {
  */
 export async function refresh(params: { refreshToken: string }): Promise<Response> {
   return instance.post('/', params)
+}
+
+/**
+ * 로그아웃
+ *
+ */
+export async function logout(): Promise<Response> {
+  return instance.get('/api/auth/logout')
 }

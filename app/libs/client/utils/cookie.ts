@@ -1,8 +1,12 @@
 import { Cookies } from 'react-cookie'
 
+type RefreshToken = {
+  reissuedAccessToken: string
+}
+
 const cookies = new Cookies()
 
-export const setDeadlineCookie = (key: string, token: string | null) => {
+export const setDeadlineCookie = (key: string, token: string | RefreshToken | null) => {
   cookies.set(key, token, {
     path: '/',
     maxAge: key === 'RefreshToken' ? 60 * 60 * 24 * 14 : undefined,

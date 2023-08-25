@@ -3,31 +3,37 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { ApiError } from 'next/dist/server/api-utils'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
-import { Response } from '@/app/apis/types/response/response'
-import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+import { CRUD } from '@/app/libs/client/constants/code'
 
 import { userInfo } from '@/app/apis/domain/profile/profile'
-import { CRUD } from '@/app/libs/client/constants/code'
+
+async function getUser() {
+  const response = await userInfo()
+  return response
+}
 
 const Home = () => {
   const router = useRouter()
 
-  /**
-   * todo: 쿼리 캐싱 가비지컬렉션 처리
-   * todo: 에러 핸들링 처리
-   * */
-  const { data: getUserData } = useQuery<Response<MemberInfo>>([OAUTH.유저정보], () => userInfo())
+  const getUserInfo = async () => {
+    const userInfo = await getUser()
+    console.log('userInfo:', userInfo)
+    return userInfo
+  }
 
-  console.log('getUserData:', getUserData ?? [])
+  const { data: getUserData } = useQuery([OAUTH.유저정보], () => userInfo())
+
+  console.log('getUserData:', getUserData)
+
+  useEffect(() => {
+    getUserInfo()
+  }, [])
 
   return (
     <Layout hasHeader seoTitle={'홈'}>

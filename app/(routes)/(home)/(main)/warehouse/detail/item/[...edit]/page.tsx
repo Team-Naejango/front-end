@@ -74,7 +74,7 @@ const EditItem = () => {
   })
 
   // 아이템 조회
-  const { data: { item: _itemInfo } = {} } = useQuery<{ item: ItemInfo }>([ITEM.상세], () => itemInfo(seq), {
+  const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세], () => itemInfo(seq), {
     enabled: isEditMode,
   })
 
@@ -189,7 +189,7 @@ const EditItem = () => {
   }
 
   const onSubmit = async (data: ItemProps) => {
-    if (!_itemInfo) return
+    // if (!_itemInfo) return
 
     if (!setImagePreview) {
       toast.error('이미지를 등록해주세요.')
@@ -204,10 +204,10 @@ const EditItem = () => {
     const params: ItemProps = {
       name: data.name,
       description: data.description,
-      imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo.imgUrl,
+      imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.imgUrl,
       type: selectedType.name,
       category: selectedCategory.name,
-      storageIdList: storageIds,
+      storageIdList: [3],
     }
     console.log('params:', params)
 
@@ -312,7 +312,7 @@ const EditItem = () => {
           essential
         />
         <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
-        <Button text={'등록'} />
+        <Button type={'submit'} text={'등록'} />
       </form>
     </Layout>
   )

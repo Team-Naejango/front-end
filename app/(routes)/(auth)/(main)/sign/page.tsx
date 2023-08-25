@@ -10,7 +10,6 @@ import { ApiError } from 'next/dist/server/api-utils'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
-// import { useRecoilValue } from 'recoil'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
@@ -18,9 +17,9 @@ import GenderButton from '@/app/components/atom/GenderButton'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
-// import { kakaoAccessToken } from '@/app/store/atom'
 
 import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
+import axios from 'axios'
 
 interface SignProps {
   birth: string
@@ -33,7 +32,6 @@ interface SignProps {
 
 const Sign = () => {
   const router = useRouter()
-  // const accessToken = useRecoilValue(kakaoAccessToken)
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
@@ -53,12 +51,14 @@ const Sign = () => {
 
   const nickname = watch('nickname')
 
-  const { mutate: mutateSign } = useMutation((params: SignProps) => sign(params), {
+  const { mutate: mutateSign } = useMutation((params: SignProps) => sign(accessToken, params), {
     onSuccess: () => {
+      console.log('test success')
       toast.success('회원가입이 완료되었습니다.')
       router.push('/home')
     },
     onError: (error: ApiError) => {
+      console.log('test error')
       console.log('error:', error)
       toast.error(error.message)
       router.push('/sign')
@@ -77,11 +77,11 @@ const Sign = () => {
     },
   })
 
-  const onClickSubmit = () => {
+  const onClickSubmit = async () => {
     // if (!isNicknameDisabled) return toast.error('중복검사 해라')
     // if (isNicknameDisabled && selectedNickname !== nickname) return toast.error('다시 중복검사 해라')
 
-    // if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
+    if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
 
     const params: MemberInfo = {
       birth: getValues('birth'),
@@ -91,7 +91,6 @@ const Sign = () => {
       intro: '',
       imgUrl: '',
     }
-
     mutateSign(params)
   }
 

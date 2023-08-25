@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import Image from 'next/image'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
-import { ApiError } from 'next/dist/server/api-utils'
 import { GrFormNext } from 'react-icons/gr'
 import { toast } from 'react-hot-toast'
 
@@ -18,12 +17,12 @@ import InputFile from '@/app/components/atom/InputFile'
 import SelectCoordinate from '@/app/components/organism/warehouse/SelectCoordinate'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { Storage } from '@/app/apis/types/domain/warehouse/warehouse'
+import { Info, Storage } from '@/app/apis/types/domain/warehouse/warehouse'
 import { AddressType } from '@/app/components/molecule/kakaomap/SearchAddress'
 import { E_STEP, STEP } from '@/app/libs/client/constants/app/warehouse'
 import mapIcon from '@/app/assets/image/map.svg'
 
-import { saveStorage, storageInfo, StorageParam } from '@/app/apis/domain/warehouse/warehouse'
+import { saveStorage, storage, StorageParam } from '@/app/apis/domain/warehouse/warehouse'
 
 interface WarehouseProps {
   name: string
@@ -56,6 +55,7 @@ const WarehouseEdit = () => {
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
 
   console.log('isEditMode:', isEditMode)
+  console.log('seq:', seq)
 
   const {
     register,
@@ -72,22 +72,37 @@ const WarehouseEdit = () => {
   })
 
   // 창고 조회
-  const { data: { storage: _storageInfo } = {} } = useQuery<{ storage: Storage }>(
-    [WAREHOUSE.조회],
-    () => storageInfo(),
-    {
-      enabled: isEditMode,
-    }
-  )
+  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage(), {
+    enabled: isEditMode,
+  })
+  const { count, storageList } = _storageInfo || {}
+  const currentItem = storageList && storageList[Number(seq) - 1]
+
+  // let storages: Info[] = []
+  // const x = () => {
+  //   if (!_storageInfo) return
+  //
+  //   return _storageInfo.storageList.map((item, idx) => {
+  //     return storages.push({
+  //       address: item.address,
+  //       description: item.description,
+  //       id: item.id,
+  //       imgUrl: item.imgUrl,
+  //       name: item.name,
+  //     })
+  //   })
+  // }
 
   // 창고 등록
-  const { mutate: mutateSave } = useMutation<null, ApiError, StorageParam>(saveStorage, {
+  const { mutate: mutateSave } = useMutation(saveStorage, {
     onSuccess: () => {
-      query.invalidateQueries([WAREHOUSE.조회, ITEM.조회])
+      query.invalidateQueries([WAREHOUSE.조회])
+      query.invalidateQueries([ITEM.조회])
       toast.success('창고가 등록되었습니다.')
       router.push('/warehouse')
     },
-    onError: (error: ApiError) => {
+    onError: (error: any) => {
+      console.log('error:', error)
       toast.error(error.message)
     },
   })
@@ -167,8 +182,11 @@ const WarehouseEdit = () => {
     reader.readAsDataURL(file)
   }
 
+  console.log('address:', address)
+  console.log('currentItem:', currentItem)
+
   const onSubmit = async (data: WarehouseProps) => {
-    if (!_storageInfo) return
+    // if (!data) return
 
     if (!setImagePreview) {
       toast.error('이미지를 등록해주세요.')
@@ -180,35 +198,38 @@ const WarehouseEdit = () => {
       await uploadS3(file)
     }
 
+    console.log('data:', data.address)
+
     const params: StorageParam = {
       name: data.name,
       description: data.description,
-      imgUrl: (imageFile! && imageFile[0].name) ?? _storageInfo?.imgUrl,
-      address: '',
+      imgUrl: (imageFile! && imageFile[0].name) ?? data.imgUrl,
+      address: address.value,
       coord: {
-        longitude: 126,
-        latitude: 37,
+        longitude: address.coords!.longitude!,
+        latitude: address.coords!.latitude!,
       },
     }
-
     mutateSave(params)
   }
 
   useEffect(() => {
-    // reset({ _storageInfo })
+    reset({ ...currentItem })
     if (isEditMode) {
       query.invalidateQueries([WAREHOUSE.상세])
     }
-  }, [])
+  }, [currentItem, isEditMode])
 
   useEffect(() => {
-    if (_storageInfo) {
-      setValue('imgUrl', _storageInfo.imgUrl)
-      setImagePreview(_storageInfo.imgUrl)
+    if (_storageInfo && currentItem) {
+      setValue('address', currentItem.address)
+      setAddress({ value: currentItem.address })
+      setValue('imgUrl', currentItem.imgUrl)
+      setImagePreview(currentItem.imgUrl)
     }
-  }, [])
+  }, [currentItem])
 
-  console.log('_storageInfo?.imgUrl:', _storageInfo?.imgUrl)
+  // console.log('_storageInfo?.imgUrl:', _storageInfo?.storageList[Number(seq)].imgUrl)
 
   const onClickStep = (event: MouseEvent) => {
     if (event === undefined && address.value === '') {
@@ -221,9 +242,12 @@ const WarehouseEdit = () => {
       })
     } else {
       setAddress(address)
+      setValue('address', address.value)
     }
     setStep(STEP.위치정보)
   }
+
+  console.log('imageFile:', imageFile)
 
   return (
     <>
@@ -250,11 +274,11 @@ const WarehouseEdit = () => {
             />
           ) : (
             <Image
-              src={`${
-                _storageInfo?.imgUrl === ('' || undefined)
-                  ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
-                  : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${_storageInfo?.imgUrl}`
-              }`}
+              src={
+                currentItem
+                  ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${currentItem.imgUrl}`
+                  : 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
+              }
               width={'100'}
               height={'100'}
               alt='아이템 이미지'
@@ -286,7 +310,7 @@ const WarehouseEdit = () => {
               readOnly
               essential
               className={'!indent-6'}
-              register={register('address', { required: '지역을 설정해주세요.', value: address?.value })}
+              register={register('address', { required: '지역을 설정해주세요.' })}
               onClick={() => setStep(STEP.위치선택)}
               icon={
                 <>

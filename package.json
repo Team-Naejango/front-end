@@ -8,7 +8,10 @@
   },
   "scripts": {
     "dev": "env-cmd -f .env.local yarn run open-browser && next dev",
+    "dev-pass": "export PORT=3001 && env-cmd -f .env.local yarn && next dev",
+    "dev-ssl": "env-cmd -f .env.local yarn run open-browser-ssl && caddy reverse-proxy --from localhost:3000 --to localhost:3001",
     "open-browser": "open http://localhost:3000/",
+    "open-browser-ssl": "open https://localhost:3000/",
     "build": "env-cmd -f .env.production next build",
     "build-dev": "env-cmd -f .env.local next build",
     "start": "next start",

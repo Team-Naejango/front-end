@@ -6,7 +6,7 @@ import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
  * 유저정보 조회
  *
  */
-export async function userInfo(): Promise<Response<MemberInfo>> {
+export async function userInfo(): Promise<MemberInfo> {
   return withAuth.get('/api/user/profile')
 }
 
@@ -15,7 +15,7 @@ export async function userInfo(): Promise<Response<MemberInfo>> {
  *
  * @param params.birth // 생년월일
  * @param params.gender  // 성별
- * @param params.nickname // 닉네임
+ * @param params.nickn ame // 닉네임
  * @param params.intro // 소개
  * @param params.phoneNumber // 폰번호
  * @param params.imgUrl / 이미지 링크
@@ -37,8 +37,8 @@ export async function deleteUser(): Promise<Response<null>> {
  * 더미 API
  *
  */
-// export async function getUsers() {
-//   const res = await fetch('https://jsonplaceholder.typicode.com/users')
-//   const users = (await res.json()) as any[]
-//   return users
-// }
+export async function getUsers() {
+  const res = await fetch('https://jsonplaceholder.typicode.com/users')
+  const users = (await res.json()) as any[]
+  return users
+}
