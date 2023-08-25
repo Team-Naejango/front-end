@@ -17,7 +17,7 @@ import kakaoLogo from '@/app/assets/image/kakao.svg'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
-import { nonUser } from '@/app/apis/domain/auth/auth'
+// import { nonUser } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -42,14 +42,16 @@ const Login = () => {
 
   const onNonUserLogin = async () => {
     // const response = await nonUser()
-    // try {
-    //   setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
-    //   toast.success('비회원 로그인에 성공하였습니다.')
-    //   router.push('/home')
-    // } catch (error: unknown) {
-    //   console.log('error:', error)
-    //   // toast.error('비회원 로그인에 실패하였습니다.')
-    // }
+    try {
+      const { nonUser } = await import('@/app/apis/domain/auth/auth')
+      const response = await nonUser()
+      setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+      toast.success('비회원 로그인에 성공하였습니다.')
+      router.push('/home')
+    } catch (error: unknown) {
+      console.log('error:', error)
+      // toast.error('비회원 로그인에 실패하였습니다.')
+    }
   }
 
   const onSubmit = () => {
