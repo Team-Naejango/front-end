@@ -1,4 +1,4 @@
-import { withAuth } from '@/app/apis/config/axios/withAuth'
+import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Response as R } from '@/app/apis/types/response/response'
 import {
   ItemInfo,

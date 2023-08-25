@@ -5,7 +5,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
-import { withAuth } from '@/app/apis/config/axios/withAuth'
+import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 
 export interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string

@@ -5,7 +5,7 @@ import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosReq
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 
-import { withAuth } from '@/app/apis/config/axios/withAuth'
+import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'

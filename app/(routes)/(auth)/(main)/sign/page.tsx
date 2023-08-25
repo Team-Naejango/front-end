@@ -19,7 +19,6 @@ import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 
 import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
-import axios from 'axios'
 
 interface SignProps {
   birth: string

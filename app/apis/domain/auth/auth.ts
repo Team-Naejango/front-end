@@ -1,4 +1,4 @@
-import { instance } from '@/app/apis/config/axios/instance'
+import { instance } from '@/app/apis/config/axios/instance/instance'
 import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
 import { Response } from '@/app/apis/types/response/response'
 

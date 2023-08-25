@@ -1,4 +1,4 @@
-import { withAuth } from '@/app/apis/config/axios/withAuth'
+import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Response } from '@/app/apis/types/response/response'
 import { Deal, Transaction } from '@/app/apis/types/domain/place/deal'
 
