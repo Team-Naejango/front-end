@@ -40,6 +40,18 @@ const Login = () => {
     router.push('/oauth/kakaoLogin')
   }
 
+  const onNonUserLogin = async () => {
+    // const response = await nonUser()
+    // try {
+    //   setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+    //   toast.success('비회원 로그인에 성공하였습니다.')
+    //   router.push('/home')
+    // } catch (error: unknown) {
+    //   console.log('error:', error)
+    //   // toast.error('비회원 로그인에 실패하였습니다.')
+    // }
+  }
+
   const onSubmit = () => {
     toast.error('현재 카카오 로그인만 허용했습니다.')
     reset()
@@ -50,18 +62,6 @@ const Login = () => {
       setMounted(true)
     }
   }, [isSplashMounted])
-
-  const onNonUserLogin = async () => {
-    const response = await nonUser()
-    try {
-      setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
-      toast.success('비회원 로그인에 성공하였습니다.')
-      router.push('/home')
-    } catch (error: unknown) {
-      console.log('error:', error)
-      // toast.error('비회원 로그인에 실패하였습니다.')
-    }
-  }
 
   return (
     <>
