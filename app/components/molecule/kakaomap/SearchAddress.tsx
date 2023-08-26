@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import { useRecoilValue } from 'recoil'
 import { CiSearch } from 'react-icons/ci'
@@ -8,7 +8,9 @@ import { CiSearch } from 'react-icons/ci'
 import InputField from '@/app/components/atom/InputField'
 import { locationState } from '@/app/store/atom'
 
-/* global daum */
+/* global kakao, maps, daum */
+import LatLng = kakao.maps.LatLng
+
 declare global {
   interface Window {
     daum: any
@@ -34,11 +36,9 @@ const SearchAddress = ({
   address: AddressType
   setAddress: Dispatch<SetStateAction<AddressType>>
 }) => {
-  const [map, setMap] = useState<any>()
-  const [markers, setMarkers] = useState<any>()
-  const userLocal = useRecoilValue(locationState)
-
-  console.log('userLocal:', userLocal)
+  const [map, setMap] = useState<kakao.maps.Map | null>(null)
+  const [markers, setMarkers] = useState<{ lat: number | null; lng: number | null }>()
+  const userLocal = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
 
   const onClickAddr = () => {
     new window.daum.Postcode({
@@ -53,14 +53,25 @@ const SearchAddress = ({
               value: addrData.address,
               coords: { latitude: currentPos.getLat(), longitude: currentPos.getLng() },
             })
-            map.panTo(currentPos)
+            map?.panTo(currentPos)
             setMap(map)
-            setMarkers({ position: { lat: currentPos.getLat(), lng: currentPos.getLng() } })
+            setMarkers({ lat: currentPos.getLat(), lng: currentPos.getLng() })
           }
         })
       },
     }).open()
   }
+
+  // useEffect(() => {
+  //   console.log('address:', address)
+  //   if (window.kakao && window.kakao.maps && map) {
+  //     const currentPos = new window.kakao.maps.LatLng(address.coords?.latitude!, address.coords?.longitude!)
+  //
+  //     map?.panTo(currentPos)
+  //     setMap(map)
+  //     setMarkers({ lat: address.coords?.latitude || null, lng: address.coords?.longitude || null })
+  //   }
+  // }, [map])
 
   return (
     <div>
@@ -89,9 +100,9 @@ const SearchAddress = ({
               borderRadius: '8px',
             }}
             onCreate={setMap}>
-            <div key={`${markers?.position.lat}_${markers?.position.lng}`}>
+            <div key={`${markers?.lat}_${markers?.lng}`}>
               <MapMarker
-                position={{ lat: markers?.position.lat!, lng: markers?.position.lng! }}
+                position={{ lat: markers?.lat!, lng: markers?.lng! }}
                 image={{
                   src: 'https://naejango.s3.ap-northeast-2.amazonaws.com/images/place_marker.svg',
                   size: {

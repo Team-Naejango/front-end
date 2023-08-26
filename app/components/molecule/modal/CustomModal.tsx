@@ -52,7 +52,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
         <div className='fixed inset-0 top-1/2 h-[780px] -translate-y-1/2'>
           <div
             className={`flex min-h-full justify-center overflow-y-clip p-4 text-center ${
-              type === MODAL_TYPES.CONFIRM ? 'items-end' : 'items-center'
+              type === MODAL_TYPES.CONFIRM ? (btn ? '' : 'items-end') : 'items-center'
             }`}>
             <Transition.Child
               as={Fragment}
@@ -106,7 +106,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
                     <Dialog.Description as={Fragment}>
                       <div
                         className={`p-4 ${
-                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] justify-around gap-4'
+                          modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] flex-col justify-around gap-4'
                         }`}>
                         {modal.type === MODAL_TYPES.ALERT ? (
                           <>
@@ -122,20 +122,23 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
                           </>
                         ) : (
                           <>
-                            <Button
-                              small
-                              text={'확인'}
-                              className={'!py-2'}
-                              onClick={() => (callback ? modalCallback() : {})}
-                            />
-                            <Button
-                              small
-                              cancel
-                              ref={cancelButtonRef}
-                              text={'취소'}
-                              className={'!py-2'}
-                              onClick={() => onCloseModal(id)}
-                            />
+                            {children}
+                            <div className={'flex gap-4'}>
+                              <Button
+                                small
+                                text={'확인'}
+                                className={'!py-2'}
+                                onClick={() => (callback ? modalCallback() : {})}
+                              />
+                              <Button
+                                small
+                                cancel
+                                ref={cancelButtonRef}
+                                text={'취소'}
+                                className={'!py-2'}
+                                onClick={() => onCloseModal(id)}
+                              />
+                            </div>
                           </>
                         )}
                       </div>

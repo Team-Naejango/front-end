@@ -83,6 +83,6 @@ export async function wire(transactionId: string): Promise<Response<null>> {
  * @param amount // 금액
  *
  */
-export async function account(amount: number): Promise<Response<null>> {
-  return withAuth.patch('/api/account')
+export async function account(amount: number): Promise<Response> {
+  return withAuth.patch('/api/account', { amount })
 }

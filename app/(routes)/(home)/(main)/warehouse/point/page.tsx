@@ -10,7 +10,7 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import Button from '@/app/components/atom/Button'
 import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
 import { POINTS } from '@/app/libs/client/constants/static'
-import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { account } from '@/app/apis/domain/profile/deal'
 
@@ -22,7 +22,7 @@ const PointCharge = () => {
   // 포인트 충전
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
-      query.invalidateQueries([WAREHOUSE.조회])
+      query.invalidateQueries([OAUTH.유저정보])
       toast.success('포인트 충전에 성공하였습니다.')
       router.push('/warehouse')
     },
@@ -31,8 +31,9 @@ const PointCharge = () => {
     },
   })
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
     if (!selectedPoint.value) return
+
     mutateAccount(selectedPoint.value)
   }
 

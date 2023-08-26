@@ -8,7 +8,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
-import axios from 'axios'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
@@ -54,9 +53,9 @@ const EditItem = () => {
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
   const crud = searchParams.get('crud')
+  const storage = searchParams.get('storage')
   const seq = searchParams.get('seq')
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
-
   const storageIds = selectedStorage.map(value => value.id)
 
   const {
@@ -73,17 +72,18 @@ const EditItem = () => {
     },
   })
 
-  // 아이템 조회
-  const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세], () => itemInfo(seq), {
+  // 아이템 상세조회
+  const { data: { data: _itemInfo } = {}, isLoading } = useQuery([ITEM.상세], () => itemInfo(seq), {
     enabled: isEditMode,
   })
 
   // 아이템 등록
-  const { mutate: mutateSave } = useMutation<{ item: ItemParams }, ApiError, ItemParams>(saveItem, {
+  const { mutate: mutateSave } = useMutation(saveItem, {
     onSuccess: () => {
-      query.invalidateQueries([ITEM.조회, WAREHOUSE.조회])
+      query.invalidateQueries([WAREHOUSE.조회])
+      query.invalidateQueries([ITEM.조회])
       toast.success('아이템이 등록되었습니다.')
-      router.push(`/warehouse/detail/${seq}`)
+      router.push(`/warehouse/detail/${storage}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -91,27 +91,26 @@ const EditItem = () => {
   })
 
   // 아이템 창고 수정
-  const { mutate: mutateStorage } = useMutation<null, ApiError, ModifyStorageParam>(modifyStorageItem, {
+  const { mutate: mutateStorage } = useMutation(modifyStorageItem, {
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
 
   // 아이템 수정
-  const { mutate: mutateModify } = useMutation<{ item: ItemInfo }, ApiError, OmitStorageIdItemInfo>(
-    (params: OmitStorageIdItemInfo) => modifyItem(seq!, params),
-    {
-      onSuccess: () => {
-        mutateStorage({ itemId: seq!, storageIdList: storageIds })
-        query.invalidateQueries([ITEM.조회, WAREHOUSE.조회])
-        toast.success('아이템이 수정되었습니다.')
-        router.push(`/warehouse/detail/${seq}`)
-      },
-      onError: (error: ApiError) => {
-        toast.error(error.message)
-      },
-    }
-  )
+  const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemInfo) => modifyItem(seq!, params), {
+    onSuccess: () => {
+      mutateStorage({ itemId: seq!, storageIdList: storageIds })
+      query.invalidateQueries([WAREHOUSE.조회])
+      query.invalidateQueries([ITEM.조회])
+      query.invalidateQueries([ITEM.상세])
+      toast.success('아이템이 수정되었습니다.')
+      router.push(`/warehouse/detail/${seq}`)
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
 
   // S3 업로드
   const uploadS3 = async (file: File) => {
@@ -131,9 +130,8 @@ const EditItem = () => {
         Body: file,
         ACL: 'public-read',
       })
-      const response = await s3Client.send(command)
-      console.log('업로드', response)
-    } catch (error) {
+      return await s3Client.send(command)
+    } catch (error: unknown) {
       console.error('S3 업로드 에러:', error)
     }
   }
@@ -207,33 +205,21 @@ const EditItem = () => {
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.imgUrl,
       type: selectedType.name,
       category: selectedCategory.name,
-      storageIdList: [3],
+      storageIdList: storageIds,
     }
-    console.log('params:', params)
 
-    const { storageIdList, ...newParams } = params
-    const editParams = { ...newParams, id: Number(seq) }
+    const editParameters = () => {
+      const { storageIdList, ...newParams } = params
+      return { ...newParams, id: Number(seq) }
+    }
 
-    isEditMode ? mutateModify(editParams) : mutateSave(params)
+    isEditMode ? mutateModify(editParameters()) : mutateSave(params)
   }
 
-  /** **** TEST API CALL ***** */
-  // const accessToken = getCookie(AUTH_TOKEN.접근)
-  // axios
-  //   .post(`${process.env.NEXT_PUBLIC_API_URL}`, params, {
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //   })
-  //   .then(response => {
-  //     console.log('response:', response)
-  //   })
-  //   .catch(errors => {
-  //     console.log('error:', errors)
-  //   })
-
   useEffect(() => {
-    reset({ ..._itemInfo })
+    if (!isLoading) {
+      reset({ ..._itemInfo })
+    }
     if (isEditMode) {
       query.invalidateQueries([ITEM.상세])
     }
@@ -243,6 +229,9 @@ const EditItem = () => {
     if (_itemInfo) {
       setValue('imgUrl', _itemInfo.imgUrl)
       setImagePreview(_itemInfo.imgUrl)
+      // setSelectedCategory({ name: _itemInfo.category })
+      // setSelectedStorage({id: , name: })
+      // setSelectedType({name: })
     }
   }, [])
 

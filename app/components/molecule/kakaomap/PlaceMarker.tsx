@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect, useLayoutEffect, Dispatch, Set
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
 import { useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
+import uuid from 'react-uuid'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
 
@@ -191,10 +192,10 @@ const PlaceMarker = ({
             })
             isDragedMixture && setIsDragedMixture(false)
           }}>
-          {markers?.map((marker, idx) => {
+          {markers?.map(marker => {
             // console.log('marker:', marker)
             return (
-              <div key={`${marker.position.lat}_${marker.position.lng}`}>
+              <div key={uuid()}>
                 <MapMarker
                   position={{ lat: marker.position.lat, lng: marker.position.lng }}
                   image={{

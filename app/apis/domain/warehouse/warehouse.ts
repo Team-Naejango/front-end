@@ -69,7 +69,6 @@ export async function itemInfo(itemId: string | null): Promise<R<{ data: ItemInf
  *
  * @params params
  */
-// todo: response 201 테스트
 export async function saveItem(params: ItemParams): Promise<R<null>> {
   return withAuth.post('/api/item', params)
 }
@@ -144,10 +143,10 @@ export async function saveStorage(params: StorageParam): Promise<Response> {
  * */
 export async function storageItem(params: {
   storageId: string
-  status: string
+  status: boolean
   page: string
   size: string
-}): Promise<R<ItemList>> {
+}): Promise<R<{ data: ItemList }>> {
   return withAuth.get(`/api/storage/${params.storageId}`, { params })
 }
 

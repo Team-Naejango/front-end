@@ -1,28 +1,34 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { LuEdit2 } from 'react-icons/lu'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
 
 import Layout from '@/app/components/template/main/layout/Layout'
+import Loading from '@/app/loading'
 import WareHouseCarousel from '@/app/components/organism/warehouse/WareHouseCarousel'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import useCustomRouter from '@/app/hooks/useCustomRouter'
-import { CRUD, MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { CRUD, E_CRUD, MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
-import CustomModal from '@/app/components/molecule/modal/CustomModal'
 
 import { deleteStorage, storage } from '@/app/apis/domain/warehouse/warehouse'
 
+const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
+  ssr: false,
+  loading: () => <Loading />,
+})
+
 interface PathParam {
-  pathname: string
-  query: { crud: string; seq: number | null }
+  crud: E_CRUD
+  seq: number | null
 }
 
 const WareHouse = () => {
@@ -32,39 +38,21 @@ const WareHouse = () => {
   const query = useQueryClient()
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
   const _delete = useRecoilValue(modalSelector('delete'))
+
   // 창고 조회
-  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage(), {
-    // enabled: !!seq,
-  })
+  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
   const { count, storageList } = _storageInfo || {}
   const currentItem = storageList && storageList[currentSlideIndex]
   console.log('_storageInfo:', _storageInfo)
 
-  let params: PathParam = {
-    pathname: '',
-    query: { crud: '', seq: null },
-  }
-  const onBlockedButton = (event: React.MouseEvent) => {
-    event.preventDefault()
-    if (_storageInfo === undefined || count === 0) return
-
-    params = {
-      pathname: `/warehouse/${currentSlideIndex + 1}`,
-      query: {
-        crud: CRUD.수정,
-        seq: currentSlideIndex + 1,
-      },
-    }
-  }
-
   const onCreate = () => {
-    const params: { crud: string; seq: null } = {
+    const params: PathParam = {
       crud: CRUD.등록,
       seq: null,
     }
     push({
       pathname: `/warehouse/${count! + 1}`,
-      query: params,
+      query: { ...params },
     })
   }
 
@@ -79,7 +67,7 @@ const WareHouse = () => {
         content: '창고를 삭제 하시겠습니까?',
       },
       callback: async () => {
-        await deleteStorage(String(storageList && storageList[currentSlideIndex].id))
+        await deleteStorage(String(currentItem?.id))
         await query.invalidateQueries([WAREHOUSE.조회])
         toast.success('창고가 삭제되었습니다.')
         router.push('/warehouse')
@@ -128,9 +116,15 @@ const WareHouse = () => {
             </div>
           </div>
           <FloatingButton
-            href={{ ...params }}
-            className={`${count === 0 ? 'cursor-not-allowed bg-[#ddd]' : ''}`}
-            onClick={event => onBlockedButton(event)}>
+            href={{
+              pathname: `/warehouse/${currentSlideIndex + 1}`,
+              query: {
+                crud: CRUD.수정,
+                seq: currentSlideIndex + 1,
+              },
+            }}
+            prefetch={false}
+            className={`${count === 0 ? '!cursor-not-allowed bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
             <span className={'text-xs'}>
               <LuEdit2 fontSize={'21'} />
             </span>
@@ -143,8 +137,8 @@ const WareHouse = () => {
         </div>
         <div
           role={'presentation'}
-          className={`absolute right-0 top-3 cursor-pointer rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0] ${
-            count === 0 ? 'cursor-not-allowed bg-[#ddd]' : ''
+          className={`absolute right-0 top-3 rounded border border-[#ccc] px-1.5 py-1 ${
+            count === 0 ? 'cursor-not-allowed bg-[#ddd] hover:bg-[#ccc]' : 'cursor-pointer hover:border-[#32D7A0]'
           }`}
           onClick={onDelete}>
           <span className={'inline-block text-[13px]'}>창고삭제</span>

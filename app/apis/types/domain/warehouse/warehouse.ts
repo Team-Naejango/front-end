@@ -72,11 +72,17 @@ export interface StorageInfo {
 
 export type Item = {
   itemId: number
-  category: null
+  category: {
+    id: number
+    name: string
+  }
   name: string
   imgUrl: string
 }
 
 export interface ItemList {
+  page: number
+  size: number
+  result: number
   itemList: Item[]
 }

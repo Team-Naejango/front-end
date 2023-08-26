@@ -52,12 +52,10 @@ const Sign = () => {
 
   const { mutate: mutateSign } = useMutation((params: SignProps) => sign(accessToken, params), {
     onSuccess: () => {
-      console.log('test success')
       toast.success('회원가입이 완료되었습니다.')
       router.push('/home')
     },
     onError: (error: ApiError) => {
-      console.log('test error')
       console.log('error:', error)
       toast.error(error.message)
       router.push('/sign')

@@ -15,4 +15,5 @@ export type Response<T = unknown> = {
   size?: number // 사이즈
   totalPage?: number // 전체 페이지
   totalCount?: number // 전체 row
+  result: number
 }

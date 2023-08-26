@@ -8,6 +8,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { GrFormNext } from 'react-icons/gr'
 import { toast } from 'react-hot-toast'
+import { ApiError } from 'next/dist/server/api-utils'
 
 import BackHeader from '@/app/components/template/main/header/BackHeader'
 import InputField from '@/app/components/atom/InputField'
@@ -17,12 +18,11 @@ import InputFile from '@/app/components/atom/InputFile'
 import SelectCoordinate from '@/app/components/organism/warehouse/SelectCoordinate'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { Info, Storage } from '@/app/apis/types/domain/warehouse/warehouse'
 import { AddressType } from '@/app/components/molecule/kakaomap/SearchAddress'
 import { E_STEP, STEP } from '@/app/libs/client/constants/app/warehouse'
 import mapIcon from '@/app/assets/image/map.svg'
 
-import { saveStorage, storage, StorageParam } from '@/app/apis/domain/warehouse/warehouse'
+import { modifyStorage, saveStorage, storage, StorageParam } from '@/app/apis/domain/warehouse/warehouse'
 
 interface WarehouseProps {
   name: string
@@ -54,9 +54,6 @@ const WarehouseEdit = () => {
   const seq = searchParams.get('seq')
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
 
-  console.log('isEditMode:', isEditMode)
-  console.log('seq:', seq)
-
   const {
     register,
     handleSubmit,
@@ -78,21 +75,6 @@ const WarehouseEdit = () => {
   const { count, storageList } = _storageInfo || {}
   const currentItem = storageList && storageList[Number(seq) - 1]
 
-  // let storages: Info[] = []
-  // const x = () => {
-  //   if (!_storageInfo) return
-  //
-  //   return _storageInfo.storageList.map((item, idx) => {
-  //     return storages.push({
-  //       address: item.address,
-  //       description: item.description,
-  //       id: item.id,
-  //       imgUrl: item.imgUrl,
-  //       name: item.name,
-  //     })
-  //   })
-  // }
-
   // 창고 등록
   const { mutate: mutateSave } = useMutation(saveStorage, {
     onSuccess: () => {
@@ -101,8 +83,19 @@ const WarehouseEdit = () => {
       toast.success('창고가 등록되었습니다.')
       router.push('/warehouse')
     },
-    onError: (error: any) => {
-      console.log('error:', error)
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  // 창고 수정
+  const { mutate: mutateModify } = useMutation(modifyStorage, {
+    onSuccess: () => {
+      query.invalidateQueries([WAREHOUSE.조회])
+      toast.success('창고가 수정되었습니다.')
+      router.push('/warehouse')
+    },
+    onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
@@ -125,8 +118,7 @@ const WarehouseEdit = () => {
         Body: file,
         ACL: 'public-read',
       })
-      const response = await s3Client.send(command)
-      console.log('업로드', response)
+      return await s3Client.send(command)
     } catch (error) {
       console.error('S3 업로드 에러:', error)
     }
@@ -156,7 +148,6 @@ const WarehouseEdit = () => {
   }
 
   const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log('event.target.files:', event.target.files)
     const file = event.target.files![0]
     const fileExt = file?.name.split('.').pop()
 
@@ -182,9 +173,6 @@ const WarehouseEdit = () => {
     reader.readAsDataURL(file)
   }
 
-  console.log('address:', address)
-  console.log('currentItem:', currentItem)
-
   const onSubmit = async (data: WarehouseProps) => {
     // if (!data) return
 
@@ -194,23 +182,29 @@ const WarehouseEdit = () => {
     }
 
     if (imageFile && imageFile.length > 0) {
-      const file = imageFile[0]
+      let file = imageFile[0]
       await uploadS3(file)
     }
 
-    console.log('data:', data.address)
-
+    // todo: API 수정요청 후 좌표값 변경
     const params: StorageParam = {
       name: data.name,
       description: data.description,
-      imgUrl: (imageFile! && imageFile[0].name) ?? data.imgUrl,
+      imgUrl: (imageFile && imageFile[0].name) ?? data.imgUrl,
       address: address.value,
       coord: {
-        longitude: address.coords!.longitude!,
-        latitude: address.coords!.latitude!,
+        longitude: address.coords?.longitude || 0,
+        latitude: address.coords?.latitude || 0,
       },
     }
-    mutateSave(params)
+    console.log('params:', params)
+
+    const editParameters = () => {
+      const { coord, address, ...newParams } = params
+      return { ...newParams, storageId: seq || '' }
+    }
+
+    isEditMode ? mutateModify(editParameters()) : mutateSave(params)
   }
 
   useEffect(() => {
@@ -218,18 +212,15 @@ const WarehouseEdit = () => {
     if (isEditMode) {
       query.invalidateQueries([WAREHOUSE.상세])
     }
-  }, [currentItem, isEditMode])
+  }, [currentItem])
 
   useEffect(() => {
     if (_storageInfo && currentItem) {
-      setValue('address', currentItem.address)
       setAddress({ value: currentItem.address })
       setValue('imgUrl', currentItem.imgUrl)
       setImagePreview(currentItem.imgUrl)
     }
   }, [currentItem])
-
-  // console.log('_storageInfo?.imgUrl:', _storageInfo?.storageList[Number(seq)].imgUrl)
 
   const onClickStep = (event: MouseEvent) => {
     if (event === undefined && address.value === '') {
@@ -246,8 +237,6 @@ const WarehouseEdit = () => {
     }
     setStep(STEP.위치정보)
   }
-
-  console.log('imageFile:', imageFile)
 
   return (
     <>
