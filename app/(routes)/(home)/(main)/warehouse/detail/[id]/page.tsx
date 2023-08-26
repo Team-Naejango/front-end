@@ -1,21 +1,20 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import { Tab } from '@headlessui/react'
 import Link from 'next/link'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
+import Image from 'next/image'
 
 import Layout from '@/app/components/template/main/layout/Layout'
-import RoundedTab, { RoundedTabProps } from '@/app/components/molecule/tab/RoundedTab'
+import RoundedTab from '@/app/components/molecule/tab/RoundedTab'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import { cls } from '@/app/libs/client/utils/util'
 import { CRUD } from '@/app/libs/client/constants/code'
-import { ItemInfo, ItemParams } from '@/app/apis/types/domain/warehouse/warehouse'
-import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
-import { itemInfo, storageItem } from '@/app/apis/domain/warehouse/warehouse'
-import Image from 'next/image'
+import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouseItem = () => {
   const params = useParams()
