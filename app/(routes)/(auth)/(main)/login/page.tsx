@@ -46,11 +46,8 @@ const Login = () => {
       // const nonUser = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
       //   withCredentials: true,
       // })
-      await nonUser().then(response => {
-        setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
-        toast.success('비회원 로그인에 성공하였습니다.')
-        router.push('/home')
-      })
+      if (!mounted) return
+      await nonUser()
     } catch (error: unknown) {
       toast.error('비회원 로그인에 실패하였습니다.')
     }
