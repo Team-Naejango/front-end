@@ -24,4 +24,6 @@ export interface MemberInfo {
   phoneNumber: string
   // 이미지 링크
   imgUrl: string
+  // 잔고
+  balance?: number
 }

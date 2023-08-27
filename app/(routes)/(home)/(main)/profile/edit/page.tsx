@@ -60,22 +60,19 @@ const EditProfile = () => {
   })
   const nickname = watch('nickname')
 
-  const { data: _userInfo } = useQuery<MemberInfo>([OAUTH.유저정보], () => userInfo())
+  const { data: _userInfo } = useQuery([OAUTH.유저정보], () => userInfo())
 
-  const { mutate: mutateUserInfoModify } = useMutation<{ user: MemberInfo }, ApiError, MemberInfo>(
-    (params: MemberInfo) => modifyUserInfo({ ...params }),
-    {
-      onSuccess: () => {
-        query.invalidateQueries([OAUTH.유저정보])
-        toast.success('프로필이 변경되었습니다.')
-        router.push('/profile')
-      },
-      onError: (error: ApiError) => {
-        console.log('error:', error)
-        toast.error(error.message)
-      },
-    }
-  )
+  const { mutate: mutateUserInfoModify } = useMutation((params: MemberInfo) => modifyUserInfo({ ...params }), {
+    onSuccess: () => {
+      query.invalidateQueries([OAUTH.유저정보])
+      toast.success('프로필이 변경되었습니다.')
+      router.push('/profile')
+    },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
+  })
 
   // todo: API 나온 후 작업
   // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
@@ -215,7 +212,6 @@ const EditProfile = () => {
           <div className='mb-12 flex items-center justify-center gap-3'>
             {imageFile ? (
               <Image
-                // loader={''}
                 src={URL.createObjectURL(imageFile[0])}
                 defaultValue={imagePreview}
                 width={'100'}
@@ -228,7 +224,9 @@ const EditProfile = () => {
                 src={`${
                   _userInfo?.imgUrl === ('' || undefined)
                     ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png`
-                    : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${_userInfo?.imgUrl}`
+                    : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
+                        _userInfo.imgUrl
+                      )}`
                 }`}
                 width={'100'}
                 height={'100'}

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useEffect, useLayoutEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Map, MapMarker } from 'react-kakao-maps-sdk'
 import { useRecoilValue } from 'recoil'
 import { CiSearch } from 'react-icons/ci'
@@ -9,8 +9,6 @@ import InputField from '@/app/components/atom/InputField'
 import { locationState } from '@/app/store/atom'
 
 /* global kakao, maps, daum */
-import LatLng = kakao.maps.LatLng
-
 declare global {
   interface Window {
     daum: any
@@ -23,7 +21,7 @@ interface IAddr {
 
 export type AddressType = {
   value: string
-  coords?: {
+  coords: {
     latitude: number | null
     longitude: number | null
   }
@@ -62,16 +60,18 @@ const SearchAddress = ({
     }).open()
   }
 
-  // useEffect(() => {
-  //   console.log('address:', address)
-  //   if (window.kakao && window.kakao.maps && map) {
-  //     const currentPos = new window.kakao.maps.LatLng(address.coords?.latitude!, address.coords?.longitude!)
-  //
-  //     map?.panTo(currentPos)
-  //     setMap(map)
-  //     setMarkers({ lat: address.coords?.latitude || null, lng: address.coords?.longitude || null })
-  //   }
-  // }, [map])
+  useEffect(() => {
+    if (window.kakao && window.kakao.maps && map) {
+      const currentPos = new window.kakao.maps.LatLng(
+        address.coords.latitude || userLocal.latitude,
+        address.coords.longitude || userLocal.longitude
+      )
+
+      map?.panTo(currentPos)
+      setMap(map)
+      setMarkers({ lat: address.coords.latitude, lng: address.coords.longitude })
+    }
+  }, [map])
 
   return (
     <div>

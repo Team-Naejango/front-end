@@ -94,7 +94,9 @@ const WareHouseItem = () => {
                   className='relative flex items-center justify-around rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
                   <Image
                     width={'100'}
-                    src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${item.imgUrl}`}
+                    src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
+                      item.imgUrl
+                    )}`}
                     height={'100'}
                     alt='아이템 이미지'
                     className={'-ml-4 h-16 w-16 rounded-md object-cover'}

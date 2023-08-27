@@ -20,9 +20,9 @@ export interface StorageParam {
   // 주소
   address?: string
   // 좌표값 X, Y
-  coord?: {
-    longitude: number
-    latitude: number
+  coord: {
+    longitude: number | null
+    latitude: number | null
   }
 
   // TEMP
@@ -35,6 +35,7 @@ export interface ModifyStorageParam {
   storageIdList: number[]
 }
 
+// 근처 창고
 export interface NearbyStorageParam {
   // 경도
   lon: string
@@ -90,7 +91,7 @@ export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo):
     ...params,
     itemId,
   }
-  return withAuth.put(`/api/item/${itemId}`, newParams)
+  return withAuth.patch(`/api/item/${itemId}`, newParams)
 }
 
 /**
@@ -102,22 +103,14 @@ export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo):
  * @param params
  */
 export async function modifyStorageItem(params: ModifyStorageParam): Promise<null> {
-  return withAuth.put(`/api/item/connect/${params.itemId}`)
-}
-
-/**
- * 창고 조회(요청 유저)
- *
- */
-export async function storageInfo(): Promise<R<{ storage: Storage }>> {
-  return withAuth.get('/api/storage')
+  return withAuth.patch(`/api/item/connect/${params.itemId}`)
 }
 
 /**
  * 창고 조회
  *
  */
-export async function storage(): Promise<{ data: StorageInfo }> {
+export async function storage(): Promise<R<{ data: StorageInfo }>> {
   return withAuth.get('/api/storage')
 }
 
@@ -166,7 +159,12 @@ export async function deleteStorage(storageId: string): Promise<R<null>> {
  * @param params.description // 설명
  *
  */
-export async function modifyStorage(params: StorageParam): Promise<R<null>> {
+export async function modifyStorage(params: {
+  name: string
+  imgUrl: string
+  description: string
+  storageId: string
+}): Promise<R<null>> {
   return withAuth.patch(`/api/storage/${params.storageId}`, params)
 }
 

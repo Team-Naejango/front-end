@@ -186,15 +186,14 @@ const WarehouseEdit = () => {
       await uploadS3(file)
     }
 
-    // todo: API 수정요청 후 좌표값 변경
     const params: StorageParam = {
       name: data.name,
       description: data.description,
       imgUrl: (imageFile && imageFile[0].name) ?? data.imgUrl,
       address: address.value,
       coord: {
-        longitude: address.coords?.longitude || 0,
-        latitude: address.coords?.latitude || 0,
+        longitude: address.coords.longitude || (currentItem && currentItem.coord.longitude)!,
+        latitude: address.coords.latitude || (currentItem && currentItem.coord.latitude)!,
       },
     }
     console.log('params:', params)
@@ -216,7 +215,7 @@ const WarehouseEdit = () => {
 
   useEffect(() => {
     if (_storageInfo && currentItem) {
-      setAddress({ value: currentItem.address })
+      setAddress({ value: currentItem.address, coords: { ...currentItem.coord } })
       setValue('imgUrl', currentItem.imgUrl)
       setImagePreview(currentItem.imgUrl)
     }
@@ -265,7 +264,9 @@ const WarehouseEdit = () => {
             <Image
               src={
                 currentItem
-                  ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${currentItem.imgUrl}`
+                  ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${encodeURIComponent(
+                      currentItem.imgUrl
+                    )}`
                   : 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
               }
               width={'100'}
