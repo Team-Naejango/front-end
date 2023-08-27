@@ -26,11 +26,6 @@ interface FormProps {
   password: string
 }
 
-async function getUser() {
-  const response = await nonUser()
-  return response
-}
-
 const Login = () => {
   const router = useRouter()
   const [mounted, setMounted] = useState<boolean>(false)
@@ -63,7 +58,7 @@ const Login = () => {
       // const nonUser = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
       //   withCredentials: true,
       // })
-      const response = await getUser()
+      const response = await nonUser()
       setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
       toast.success('비회원 로그인에 성공하였습니다.')
       router.push('/home')
