@@ -40,12 +40,15 @@ const Login = () => {
     router.push('/oauth/kakaoLogin')
   }
 
-  const onNonUserLogin = async () => {
+  const onNonUserLogin = () => {
     try {
       // const nonUser = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
       //   withCredentials: true,
       // })
-      return nonUser().then(response => {
+      const x = async () => {
+        await nonUser()
+      }
+      x().then(response => {
         setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
         toast.success('비회원 로그인에 성공하였습니다.')
         router.push('/home')
