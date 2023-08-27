@@ -25,6 +25,10 @@ const nextConfig = {
         contextRegExp: /aws-sdk/,
       })
     )
+    config.experiments = {
+      ...config.experiments,
+      topLevelAwait: true,
+    }
     return config
   },
   pwa: {
