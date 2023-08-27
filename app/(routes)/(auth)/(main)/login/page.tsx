@@ -47,6 +47,17 @@ const Login = () => {
     router.push('/oauth/kakaoLogin')
   }
 
+  const onSubmit = () => {
+    toast.error('현재 카카오 로그인만 허용했습니다.')
+    reset()
+  }
+
+  useEffect(() => {
+    if (isSplashMounted) {
+      setMounted(true)
+    }
+  }, [isSplashMounted])
+
   const onNonUserLogin = async () => {
     try {
       // const nonUser = axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
@@ -60,17 +71,6 @@ const Login = () => {
       toast.error('비회원 로그인에 실패하였습니다.')
     }
   }
-
-  const onSubmit = () => {
-    toast.error('현재 카카오 로그인만 허용했습니다.')
-    reset()
-  }
-
-  useEffect(() => {
-    if (isSplashMounted) {
-      setMounted(true)
-    }
-  }, [isSplashMounted])
 
   return (
     <>
@@ -134,7 +134,7 @@ const Login = () => {
                   카카오 로그인
                 </button>
                 <button
-                  onClick={onNonUserLogin}
+                  onClick={() => onNonUserLogin()}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
                   비회원 로그인
