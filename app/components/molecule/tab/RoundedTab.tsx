@@ -1,19 +1,18 @@
 'use client'
 
-import React, { ReactNode, Dispatch, SetStateAction } from 'react'
+import React, { ReactNode } from 'react'
 import { Tab } from '@headlessui/react'
 
 import { cls } from '@/app/libs/client/utils/util'
 
 export interface RoundedTabProps {
-  selectedTab: 'BUY' | 'SELL'
   setSelectedTab: (tab: 'BUY' | 'SELL') => void
   children: ReactNode
 }
 
 const ButtonType: ['BUY', 'SELL'] = ['BUY', 'SELL']
 
-const RoundedTab = ({ selectedTab, setSelectedTab, children }: RoundedTabProps) => {
+const RoundedTab = ({ setSelectedTab, children }: RoundedTabProps) => {
   return (
     <div className='w-full max-w-md pt-4'>
       <Tab.Group>
