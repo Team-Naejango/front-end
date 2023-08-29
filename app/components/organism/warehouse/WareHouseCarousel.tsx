@@ -8,11 +8,11 @@ import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 import { BsPlusSquare } from 'react-icons/bs'
 
+import { cls } from '@/app/libs/client/utils/util'
 import { StorageInfo } from '@/app/apis/types/domain/warehouse/warehouse'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
-import { cls } from '@/app/libs/client/utils/util'
 
 const WareHouseCarousel = ({
   datas,
@@ -106,7 +106,7 @@ const WareHouseCarousel = ({
               quality={100}
             />
           </div>
-          <div className='absolute left-5 top-1/2 cursor-pointer'>
+          <div className='absolute left-5 top-1/2'>
             <svg
               fill='none'
               stroke='currentColor'
@@ -121,7 +121,7 @@ const WareHouseCarousel = ({
           </div>
         </SwiperSlide>
       ) : (
-        datas?.storageList?.map(data => {
+        datas?.storageList.map(data => {
           return (
             <SwiperSlide key={data.id} className={'slider_fade'}>
               <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] p-2.5 shadow-sm hover:text-white hover:transition-all hover:duration-200'>

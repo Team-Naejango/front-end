@@ -12,6 +12,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 
 import BackHeader from '@/app/components/template/main/header/BackHeader'
 import InputField from '@/app/components/atom/InputField'
+import { cls } from '@/app/libs/client/utils/util'
 import TextArea from '@/app/components/atom/TextArea'
 import Button from '@/app/components/atom/Button'
 import InputFile from '@/app/components/atom/InputFile'
@@ -54,6 +55,8 @@ const WarehouseEdit = () => {
   const seq = searchParams.get('seq')
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
 
+  console.log('isEditMode:', isEditMode)
+
   const {
     register,
     handleSubmit,
@@ -72,7 +75,7 @@ const WarehouseEdit = () => {
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage(), {
     enabled: isEditMode,
   })
-  const { count, storageList } = _storageInfo || {}
+  const { storageList } = _storageInfo || {}
   const currentItem = storageList && storageList[Number(seq) - 1]
 
   // 창고 등록
@@ -196,7 +199,6 @@ const WarehouseEdit = () => {
         latitude: address.coords.latitude || (currentItem && currentItem.coord.latitude)!,
       },
     }
-    console.log('params:', params)
 
     const editParameters = () => {
       const { coord, address, ...newParams } = params
@@ -299,7 +301,8 @@ const WarehouseEdit = () => {
               type='text'
               readOnly
               essential
-              className={'!indent-6'}
+              disabled={isEditMode}
+              className={cls('!indent-6', isEditMode ? 'bg-[#eee]' : '')}
               register={register('address', { required: '지역을 설정해주세요.' })}
               onClick={() => setStep(STEP.위치선택)}
               icon={
@@ -307,7 +310,10 @@ const WarehouseEdit = () => {
                   <Image src={mapIcon} alt={'지도 아이콘'} className='absolute ml-2.5 text-sm text-[#A9A9A9]' />
                   <GrFormNext
                     className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]'
-                    onClick={() => setStep(STEP.위치선택)}
+                    onClick={() => {
+                      if (isEditMode) return
+                      setStep(STEP.위치선택)
+                    }}
                   />
                 </>
               }
@@ -318,7 +324,7 @@ const WarehouseEdit = () => {
           )}
         </div>
         <p className='!mt-1.5 text-xs text-red-400'>{errors.address?.message}</p>
-        <Button type={'submit'} text={'등록'} />
+        <Button type={'submit'} text={`${isEditMode ? '수정' : '등록'}`} />
       </form>
     </>
   )

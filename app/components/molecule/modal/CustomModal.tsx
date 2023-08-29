@@ -15,6 +15,7 @@ interface ModalProps {
   children?: React.ReactNode
 }
 
+// todo: 페이지 전체 리팩토링 필요
 const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '확인', children }: ModalProps) => {
   const cancelButtonRef = useRef<HTMLDivElement | null>(null)
   const { closeModal } = useModal()
@@ -52,7 +53,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
         <div className='fixed inset-0 top-1/2 h-[780px] -translate-y-1/2'>
           <div
             className={`flex min-h-full justify-center overflow-y-clip p-4 text-center ${
-              type === MODAL_TYPES.CONFIRM ? (btn ? '' : 'items-end') : 'items-center'
+              type === MODAL_TYPES.CONFIRM || btn ? 'items-end' : 'items-center'
             }`}>
             <Transition.Child
               as={Fragment}

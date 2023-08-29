@@ -2,18 +2,28 @@
 
 import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface WishItemProps {
   title: string
   hearts: boolean
+  img: string
   onClick: () => void
 }
 
-const WishItemCard = ({ title, hearts, onClick }: WishItemProps) => {
+// todo: props 리팩토링 필요
+const WishItemCard = ({ title, img, hearts, onClick }: WishItemProps) => {
   return (
     <Link href={`/profile/wish`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
       <div>
-        <div className='relative h-36 w-36 rounded-md bg-gray-200 opacity-70'>
+        <div className='relative h-36 w-36 rounded border border-[#ccc]'>
+          <Image
+            width={'100'}
+            src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(img)}`}
+            height={'100'}
+            alt='아이템 이미지'
+            className={'h-36 w-36 object-cover'}
+          />
           <div role={'presentation'} className={'absolute right-1.5 top-1.5 text-[#33CC99]'} onClick={onClick}>
             <svg
               className='h-5 w-5'

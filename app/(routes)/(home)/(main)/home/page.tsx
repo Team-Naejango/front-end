@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
 
 import Layout from '@/app/components/template/main/layout/Layout'
@@ -32,7 +32,7 @@ async function getUser() {
 const Home = () => {
   const router = useRouter()
   const { openModal } = useModal()
-  const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
+  const [selectedStorage, setSelectedStorage] = useState<number>(1)
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
 
@@ -51,6 +51,14 @@ const Home = () => {
 
   console.log('getUserData:', getUserData)
 
+  const onSelectedStorage = (storageId: number) => {
+    setSelectedStorage(storageId)
+  }
+
+  const onSelectedAddStorage = () => {
+    router.push(`/warehouse/${(count || 0) + 1}?crud=C&seq=`)
+  }
+
   const onModal = () => {
     openModal({
       modal: {
@@ -60,6 +68,7 @@ const Home = () => {
     })
   }
 
+  // todo: 모달창 내에서 selectedStorage state 감지하기
   const selectedStorageModal = () => {
     openModal({
       modal: {
@@ -78,13 +87,9 @@ const Home = () => {
     getUserInfo()
   }, [])
 
-  const onSelectedAddStorage = () => {
-    router.push(`/warehouse/${(count || 0) + 1}?crud=C&seq=`)
-  }
-
-  const onSelectedGender = (storageId: number) => {
-    setSelectedStorage(storageId)
-  }
+  useEffect(() => {
+    setSelectedStorage(selectedStorage)
+  }, [selectedStorage])
 
   return (
     <Layout hasHeader seoTitle={'홈'}>
@@ -119,7 +124,7 @@ const Home = () => {
           <h2 className={'text-center text-lg font-semibold'}>선택</h2>
           <div className={'mt-6 flex gap-4'}>
             <Button small text={'창고생성'} onClick={onSelectedAddStorage} />
-            <Button small text={'아이템생성'} onClick={selectedStorageModal} />
+            <Button small text={'아이템생성'} onClick={() => selectedStorageModal()} />
           </div>
         </CustomModal>
       ) : null}
@@ -135,7 +140,7 @@ const Home = () => {
                     className={`ml-2 whitespace-nowrap rounded-md border border-gray-300 px-4 py-2.5 text-[13px] font-medium text-[#222] shadow-sm hover:border-transparent hover:bg-[#33CC99] hover:text-[#fff] focus:outline-none ${
                       selectedStorage === storage.id ? `border-transparent bg-[#33CC99] text-[#fff]` : ''
                     }`}
-                    onClick={() => onSelectedGender(storage.id)}>
+                    onClick={() => onSelectedStorage(storage.id)}>
                     {storage.name}
                   </button>
                 )

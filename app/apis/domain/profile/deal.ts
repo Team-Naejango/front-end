@@ -19,7 +19,7 @@ type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: st
  * 거래 내역 조회
  *
  */
-export async function deal(): Promise<Response<{ transaction: Transaction[] }>> {
+export async function deal(): Promise<Response<{ data: Transaction[] }>> {
   return withAuth.get('/api/transaction')
 }
 

@@ -1,3 +1,7 @@
+import { Paging } from '@/app/apis/types/response/response'
+
+/* ******************************** 아이템 ******************************** */
+
 /**
  * 아이템 생성
  */
@@ -25,7 +29,31 @@ export interface ItemInfo extends OmitStorageIdItemInfo {
   id: string
 }
 
-export type Storage = {
+/* ******************************** 창고 ******************************** */
+
+export type Storage = Paging & {
+  content: [
+    {
+      id: number
+      // 이름
+      name: string
+      // 이미지 url
+      imgUrl: string
+      // 설명
+      description: string
+      // 주소
+      address: string
+      // 좌표
+      coord: {
+        longitude: number | null
+        latitude: number | null
+      }
+      distance?: number
+    }
+  ]
+}
+
+export type Storages = {
   id: number
   // 이름
   name: string
@@ -48,15 +76,13 @@ export type Storage = {
  */
 export interface StorageInfo {
   count: number
-  storageList: Storage[]
+  storageList: Storages[]
 }
 
 export type Item = {
   itemId: number
-  category: {
-    id: number
-    name: string
-  }
+  category: string
+  type: string
   name: string
   imgUrl: string
 }

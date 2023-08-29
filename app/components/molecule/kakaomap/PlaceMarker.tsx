@@ -4,6 +4,7 @@ import React, { useState, useCallback, useEffect, useLayoutEffect, Dispatch, Set
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
 import { useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
+import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -13,6 +14,9 @@ import Button from '@/app/components/atom/Button'
 import { PositionType } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState } from '@/app/store/atom'
+import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
+
+import { nearbyStorage } from '@/app/apis/domain/place/place'
 
 /* global kakao, maps, services */
 import PlacesSearchResult = kakao.maps.services.PlacesSearchResult
@@ -190,6 +194,7 @@ const PlaceMarker = ({
                 longitude: map.getCenter().getLng(),
               },
             })
+            // setIsDragedMixture(true)
             isDragedMixture && setIsDragedMixture(false)
           }}>
           {markers?.map(marker => {

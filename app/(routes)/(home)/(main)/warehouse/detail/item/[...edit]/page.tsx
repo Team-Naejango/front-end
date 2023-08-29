@@ -17,7 +17,7 @@ import SelectBox from '@/app/components/atom/SelectBox'
 import MultiSelectBox from '@/app/components/atom/MultiSelectBox'
 import InputFile from '@/app/components/atom/InputFile'
 import { CRUD } from '@/app/libs/client/constants/code'
-import { ItemInfo, ItemParams, OmitStorageIdItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
+import { OmitStorageIdItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CATEGORIES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/static'
 
@@ -26,7 +26,7 @@ import {
   saveItem,
   modifyItem,
   modifyStorageItem,
-  ModifyStorageParam,
+  storage as _storage,
 } from '@/app/apis/domain/warehouse/warehouse'
 
 interface ItemProps {
@@ -43,7 +43,7 @@ const EditItem = () => {
   const router = useRouter()
   const query = useQueryClient()
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
-  const [selectedStorage, setSelectedStorage] = useState<{ id: number; name: string }[]>([STORAGES[0]])
+  const [selectedStorage, setSelectedStorage] = useState<{ id: number; name?: string }[]>([STORAGES[0]])
   const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
@@ -55,7 +55,8 @@ const EditItem = () => {
   const crud = searchParams.get('crud')
   const storage = searchParams.get('storage')
   const seq = searchParams.get('seq')
-  const isEditMode = (crud === CRUD.수정 && seq !== '') || false
+  const isEditMode = (crud === CRUD.수정 && seq !== '' && storage !== '') || false
+
   const storageIds = selectedStorage.map(value => value.id)
 
   const {
@@ -72,8 +73,23 @@ const EditItem = () => {
     },
   })
 
+  // 창고 조회
+  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => _storage(), {
+    enabled: isEditMode,
+  })
+  const { count, storageList } = _storageInfo || {}
+
+  // [편집모드] 창고 id 최신화
+  const updatedStorageIds = STORAGES.map(storage => {
+    if (!storageList) return
+
+    return storageList.map(v => {
+      return { ...storage, id: v.id }.id
+    })
+  }).find(value => value)
+
   // 아이템 상세조회
-  const { data: { data: _itemInfo } = {}, isLoading } = useQuery([ITEM.상세], () => itemInfo(seq), {
+  const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세, seq], () => itemInfo(seq), {
     enabled: isEditMode,
   })
 
@@ -100,7 +116,7 @@ const EditItem = () => {
   // 아이템 수정
   const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemInfo) => modifyItem(seq!, params), {
     onSuccess: () => {
-      mutateStorage({ itemId: seq!, storageIdList: storageIds })
+      mutateStorage({ itemId: seq, storageIdList: updatedStorageIds })
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])
@@ -159,8 +175,8 @@ const EditItem = () => {
     return true
   }
 
+  // 업로드 예외처리
   const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log('event.target.files:', event.target.files)
     const file = event.target.files![0]
     const fileExt = file?.name.split('.').pop()
 
@@ -189,10 +205,9 @@ const EditItem = () => {
   const onSubmit = async (data: ItemProps) => {
     // if (!_itemInfo) return
 
-    if (!setImagePreview) {
-      toast.error('이미지를 등록해주세요.')
-      return
-    }
+    if (!setImagePreview) return toast.error('이미지를 등록해주세요.')
+    if (selectedCategory.name === '전체') return toast.error('다른 카테고리를 선택해주세요.')
+    if (selectedStorage.length === 0) return toast.error('창고를 선택해주세요.')
 
     if (imageFile && imageFile.length > 0) {
       const file = imageFile[0]
@@ -205,7 +220,7 @@ const EditItem = () => {
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.imgUrl,
       type: selectedType.name,
       category: selectedCategory.name,
-      storageIdList: storageIds,
+      storageIdList: updatedStorageIds || storageIds,
     }
 
     const editParameters = () => {
@@ -216,24 +231,32 @@ const EditItem = () => {
     isEditMode ? mutateModify(editParameters()) : mutateSave(params)
   }
 
+  const getSelectedStorages = () => {
+    let storages: { id: number; name: string }[] = []
+
+    storageList &&
+      storageList.flatMap((_, idx) => {
+        return storages.push(STORAGES[idx])
+      })
+    return storages
+  }
+
   useEffect(() => {
-    if (!isLoading) {
-      reset({ ..._itemInfo })
-    }
+    reset({ ..._itemInfo })
     if (isEditMode) {
       query.invalidateQueries([ITEM.상세])
     }
-  }, [])
+  }, [_itemInfo, isEditMode])
 
   useEffect(() => {
     if (_itemInfo) {
       setValue('imgUrl', _itemInfo.imgUrl)
       setImagePreview(_itemInfo.imgUrl)
-      // setSelectedCategory({ name: _itemInfo.category })
-      // setSelectedStorage({id: , name: })
-      // setSelectedType({name: })
+      setSelectedCategory({ name: _itemInfo.category })
+      setSelectedType({ name: _itemInfo.type })
+      setSelectedStorage(getSelectedStorages() || selectedStorage)
     }
-  }, [])
+  }, [_itemInfo])
 
   return (
     <Layout canGoBack title={`아이템 ${isEditMode ? '편집' : '등록'}`}>
@@ -297,13 +320,13 @@ const EditItem = () => {
         <p className='!mt-0 text-xs text-red-400'>{errors.description?.message}</p>
         <MultiSelectBox
           title={'창고선택'}
-          data={STORAGES}
+          data={STORAGES.filter(storage => storage.id <= (count || 0))}
           selected={selectedStorage}
           setSelected={setSelectedStorage}
           essential
         />
         <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
-        <Button type={'submit'} text={'등록'} />
+        <Button type={'submit'} text={`${isEditMode ? '수정' : '등록'}`} />
       </form>
     </Layout>
   )

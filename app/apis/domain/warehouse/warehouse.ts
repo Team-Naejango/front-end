@@ -1,11 +1,10 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response as R } from '@/app/apis/types/response/response'
+import { Response } from '@/app/apis/types/response/response'
 import {
   ItemInfo,
   ItemList,
   ItemParams,
   OmitStorageIdItemInfo,
-  Storage,
   StorageInfo,
 } from '@/app/apis/types/domain/warehouse/warehouse'
 
@@ -31,22 +30,8 @@ export interface StorageParam {
 
 // 창고 수정
 export interface ModifyStorageParam {
-  itemId: string
-  storageIdList: number[]
-}
-
-// 근처 창고
-export interface NearbyStorageParam {
-  // 경도
-  lon: string
-  // 위도
-  lat: string
-  // 반경
-  rad: string
-  // 조회수
-  limit: string
-  // 페이징
-  page: string
+  itemId: string | null
+  storageIdList: number[] | undefined
 }
 
 /**
@@ -54,7 +39,7 @@ export interface NearbyStorageParam {
  *
  * @param itemId // 아이템 id
  */
-export async function itemInfo(itemId: string | null): Promise<R<{ data: ItemInfo }>> {
+export async function itemInfo(itemId: string | null): Promise<Response<{ data: ItemInfo }>> {
   return withAuth.get(`/api/item/${itemId}`)
 }
 
@@ -70,7 +55,7 @@ export async function itemInfo(itemId: string | null): Promise<R<{ data: ItemInf
  *
  * @params params
  */
-export async function saveItem(params: ItemParams): Promise<R<null>> {
+export async function saveItem(params: ItemParams): Promise<Response<null>> {
   return withAuth.post('/api/item', params)
 }
 
@@ -86,7 +71,7 @@ export async function saveItem(params: ItemParams): Promise<R<null>> {
  *
  * @param params
  */
-export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo): Promise<R<{ item: ItemInfo }>> {
+export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo): Promise<Response<{ item: ItemInfo }>> {
   const newParams = {
     ...params,
     itemId,
@@ -103,14 +88,14 @@ export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo):
  * @param params
  */
 export async function modifyStorageItem(params: ModifyStorageParam): Promise<null> {
-  return withAuth.patch(`/api/item/connect/${params.itemId}`)
+  return withAuth.patch(`/api/item/connect/${params.itemId}`, params)
 }
 
 /**
  * 창고 조회
  *
  */
-export async function storage(): Promise<R<{ data: StorageInfo }>> {
+export async function storage(): Promise<Response<{ data: StorageInfo }>> {
   return withAuth.get('/api/storage')
 }
 
@@ -139,7 +124,7 @@ export async function storageItem(params: {
   status: boolean
   page: string
   size: string
-}): Promise<R<{ data: ItemList }>> {
+}): Promise<Response<{ data: ItemList }>> {
   return withAuth.get(`/api/storage/${params.storageId}`, { params })
 }
 
@@ -147,7 +132,7 @@ export async function storageItem(params: {
  * 창고 삭제
  *
  */
-export async function deleteStorage(storageId: string): Promise<R<null>> {
+export async function deleteStorage(storageId: string): Promise<Response<null>> {
   return withAuth.delete(`/api/storage/${storageId}`)
 }
 
@@ -164,14 +149,6 @@ export async function modifyStorage(params: {
   imgUrl: string
   description: string
   storageId: string
-}): Promise<R<null>> {
+}): Promise<Response<null>> {
   return withAuth.patch(`/api/storage/${params.storageId}`, params)
-}
-
-/**
- * 근처 창고 조회
- *
- */
-export async function nearbyStorage(params: NearbyStorageParam): Promise<R<{ content: Storage[] }>> {
-  return withAuth.get('/api/storage/nearby')
 }

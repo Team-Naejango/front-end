@@ -124,7 +124,7 @@ const WareHouse = () => {
               },
             }}
             prefetch={false}
-            className={`${count === 0 ? '!cursor-not-allowed bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
+            className={`${count === 0 ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
             <span className={'text-xs'}>
               <LuEdit2 fontSize={'21'} />
             </span>
@@ -138,7 +138,7 @@ const WareHouse = () => {
         <div
           role={'presentation'}
           className={`absolute right-0 top-3 rounded border border-[#ccc] px-1.5 py-1 ${
-            count === 0 ? 'cursor-not-allowed bg-[#ddd] hover:bg-[#ccc]' : 'cursor-pointer hover:border-[#32D7A0]'
+            count === 0 ? 'bg-[#ddd] hover:bg-[#ccc]' : 'cursor-pointer hover:border-[#32D7A0]'
           }`}
           onClick={onDelete}>
           <span className={'inline-block text-[13px]'}>창고삭제</span>

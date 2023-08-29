@@ -11,13 +11,13 @@ interface MultiSelectBoxProps {
   data: { id: number; name: string }[]
   selected: {
     id: number
-    name: string
+    name?: string
   }[]
   setSelected: Dispatch<SetStateAction<any>>
 }
 
 const MultiSelectBox = ({ title, data, selected, setSelected, essential }: MultiSelectBoxProps) => {
-  const onDeleteSelectedStorage = (value: { id: number; name: string }) => {
+  const onDeleteSelectedStorage = (value: { id: number; name?: string }) => {
     const selectedStorageUpdate = selected.filter(el => el.id !== value.id)
     setSelected(selectedStorageUpdate)
   }

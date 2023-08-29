@@ -104,8 +104,7 @@ const EditProfile = () => {
         Body: file,
         ACL: 'public-read',
       })
-      const response = await s3Client.send(command)
-      console.log('업로드', response)
+      return await s3Client.send(command)
     } catch (error) {
       console.error('S3 업로드 에러:', error)
     }

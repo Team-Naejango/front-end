@@ -15,7 +15,7 @@ export async function userInfo(): Promise<MemberInfo> {
  *
  * @param params.birth // 생년월일
  * @param params.gender  // 성별
- * @param params.nickn ame // 닉네임
+ * @param params.nickname // 닉네임
  * @param params.intro // 소개
  * @param params.phoneNumber // 폰번호
  * @param params.imgUrl / 이미지 링크
