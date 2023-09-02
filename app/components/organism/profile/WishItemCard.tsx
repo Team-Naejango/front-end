@@ -4,22 +4,25 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
+import { Wishs } from '@/app/apis/types/domain/profile/wish'
+import { cls } from '@/app/libs/client/utils/util'
+
 interface WishItemProps {
-  title: string
+  wish: Wishs
   hearts: boolean
-  img: string
   onClick: () => void
 }
 
-// todo: props 리팩토링 필요
-const WishItemCard = ({ title, img, hearts, onClick }: WishItemProps) => {
+const WishItemCard = ({ wish, hearts, onClick }: WishItemProps) => {
   return (
-    <Link href={`/profile/wish`} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
+    <Link href={`/profile/wish`} prefetch={false} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
       <div>
-        <div className='relative h-36 w-36 rounded border border-[#ccc]'>
+        <div className='relative h-36 w-36 rounded border border-[#ddd]'>
           <Image
             width={'100'}
-            src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(img)}`}
+            src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
+              wish?.imgUrl
+            )}`}
             height={'100'}
             alt='아이템 이미지'
             className={'h-36 w-36 object-cover'}
@@ -40,8 +43,17 @@ const WishItemCard = ({ title, img, hearts, onClick }: WishItemProps) => {
             </svg>
           </div>
         </div>
-        <div className='flex flex-col gap-2.5 pt-2'>
-          <h3 className='text-xs font-normal text-gray-900'>{title}</h3>
+        <div className='flex w-5/6 items-center gap-1.5 pt-2'>
+          <span
+            className={cls(
+              'rounded px-0.5 py-0.5 text-[10px] text-white',
+              wish?.type === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+            )}>
+            {wish?.type}
+          </span>
+          <h3 className='overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-gray-900'>
+            {wish.name}
+          </h3>
         </div>
       </div>
     </Link>

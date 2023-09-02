@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useEffect, useLayoutEffect, Dispatch, SetStateAction } from 'react'
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
 import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
@@ -11,9 +11,9 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
-import { PositionType } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import { LocationProps } from '@/app/hooks/useGeolocation'
-import { activatedWareHouseTitleState } from '@/app/store/atom'
+import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
+import { Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 
 import { nearbyStorage } from '@/app/apis/domain/place/place'
@@ -25,17 +25,18 @@ import Pagination = kakao.maps.Pagination
 import PlacesSearchOptions = kakao.maps.services.PlacesSearchOptions
 
 interface EventProps {
-  position: { lat: number; lng: number }
+  kakaoMap: kakao.maps.Map | null
+  setKakaoMap: Dispatch<SetStateAction<kakao.maps.Map | null>>
   selectedCategory: string
-  markers: PositionType[]
-  setMarkers: Dispatch<SetStateAction<PositionType[]>>
+  markers: Storages[]
+  setMarkers: Dispatch<SetStateAction<Storages[]>>
   myLocation: LocationProps
   setMyLocation: (value: { coords: { latitude: number; longitude: number } }) => void
   setIsUpdatePreview: Dispatch<SetStateAction<boolean>>
   isDragedMixture: boolean
   setIsDragedMixture: Dispatch<SetStateAction<boolean>>
-  info: PositionType | null
-  setInfo: Dispatch<SetStateAction<PositionType | null>>
+  info: Storages | null
+  setInfo: Dispatch<SetStateAction<Storages | null>>
 }
 
 interface FormProps {
@@ -43,7 +44,8 @@ interface FormProps {
 }
 
 const PlaceMarker = ({
-  position,
+  kakaoMap,
+  setKakaoMap,
   selectedCategory,
   myLocation,
   setMyLocation,
@@ -55,38 +57,57 @@ const PlaceMarker = ({
   info,
   setInfo,
 }: EventProps) => {
-  const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map | null>(null)
-  const setWareHouseTitleValue = useSetRecoilState<string>(activatedWareHouseTitleState)
+  const setSelectedTitle = useSetRecoilState<string>(activatedWareHouseTitleState)
+  const position = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
 
-  const { watch, handleSubmit, control, reset } = useForm<FormProps>()
+  const { watch, handleSubmit, control, reset } = useForm<FormProps>({
+    mode: 'onTouched',
+  })
+
+  const { data: { data: storage } = {}, refetch } = useQuery(
+    [PLACE.조회],
+    () =>
+      nearbyStorage({
+        lat: String(position.latitude),
+        lon: String(position.longitude),
+        rad: '1000',
+        page: '0',
+        size: '10',
+      }),
+    { enabled: !!kakaoMap }
+  )
 
   const updateMarkers = useCallback(
-    (newMarkers: PositionType[]) => {
+    (newMarkers: Storages[]) => {
       setMarkers(newMarkers)
     },
     [setMarkers]
   )
 
   let isUseBounds = true
-  const kakaoMapCallback = (data: PlacesSearchResult, status: Status, _pagination: Pagination) => {
+  const kakaoMapCallback = (data?: PlacesSearchResult, status?: Status, _pagination?: Pagination) => {
     if (status === window.kakao.maps.services.Status.OK) {
       setIsUpdatePreview(true)
       const bounds = new window.kakao.maps.LatLngBounds()
 
-      let markers: PositionType[] = []
-
-      for (let i = 0; i < data.length; i++) {
-        markers.push({
-          position: {
-            lat: Number(data[i].y),
-            lng: Number(data[i].x),
+      const newMarkers = storage?.content.map(value => {
+        const markers = {
+          id: value.id,
+          address: value.address,
+          description: value.description,
+          imgUrl: value.imgUrl,
+          coord: {
+            latitude: value.coord.latitude,
+            longitude: value.coord.longitude,
           },
-          content: data[i].place_name,
-          data: data[i],
-        })
-        bounds.extend(new window.kakao.maps.LatLng(Number(data[i].y), Number(data[i].x)))
-      }
-      updateMarkers(markers)
+          name: value.name,
+        }
+
+        bounds.extend(new window.kakao.maps.LatLng(Number(value.coord.latitude), Number(value.coord.longitude)))
+        return markers
+      })
+
+      updateMarkers(newMarkers || [])
 
       if (isUseBounds) kakaoMap && kakaoMap.setBounds(bounds)
     } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -100,53 +121,57 @@ const PlaceMarker = ({
     }
   }
 
-  const keywordSearch = useCallback(
-    (type: string | undefined, query?: string) => {
-      if (!kakaoMap) return
-      const places = new window.kakao.maps.services.Places()
-
-      const options: PlacesSearchOptions = {
-        // category_group_code: '',
-        location: new window.kakao.maps.LatLng(kakaoMap.getCenter().getLat(), kakaoMap.getCenter().getLng()),
-        sort: kakao.maps.services.SortBy.ACCURACY,
-        radius: 1000,
-      }
-
-      if (type) {
-        isUseBounds = false
-        places.keywordSearch(type, kakaoMapCallback, { ...options, ...{ query: type } })
-      } else if (query) {
-        isUseBounds = false
-        places.keywordSearch(query, kakaoMapCallback, { ...options, ...{ query } })
-      }
-    },
-    [kakaoMap]
-  )
-
-  useEffect(() => {
-    keywordSearch(watch('search'), selectedCategory)
-  }, [selectedCategory, kakaoMap, updateMarkers, position, keywordSearch, watch])
+  // const keywordSearch = useCallback(
+  //   (type: string | undefined, query?: string) => {
+  //     if (!kakaoMap) return
+  //     const places = new window.kakao.maps.services.Places()
+  //
+  //     const options: PlacesSearchOptions = {
+  //       // category_group_code: '',
+  //       location: new window.kakao.maps.LatLng(kakaoMap.getCenter().getLat(), kakaoMap.getCenter().getLng()),
+  //       sort: kakao.maps.services.SortBy.ACCURACY,
+  //       radius: 1000,
+  //     }
+  //
+  //     if (type) {
+  //       isUseBounds = false
+  //       places.keywordSearch(type, kakaoMapCallback, { ...options, ...{ query: type } })
+  //     } else if (query) {
+  //       isUseBounds = false
+  //       places.keywordSearch(query, kakaoMapCallback, { ...options, ...{ query } })
+  //     }
+  //   },
+  //   [kakaoMap]
+  // )
+  //
+  // useEffect(() => {
+  //   keywordSearch(watch('search'), selectedCategory)
+  // }, [selectedCategory, kakaoMap, updateMarkers, position, keywordSearch, watch])
 
   useLayoutEffect(() => {
-    if (watch('search') !== '') {
-      reset()
-    }
+    if (watch('search') !== '') reset()
   }, [selectedCategory])
 
+  // useEffect(() => {
+  //   kakaoMapCallback()
+  // }, [])
+
   const onSubmitSearch = () => {
-    keywordSearch(watch('search'))
+    // keywordSearch(watch('search'))
     isDragedMixture && setIsDragedMixture(false)
   }
 
   const onKeyDownSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') keywordSearch(event.currentTarget.value)
+    // if (event.key === 'Enter') keywordSearch(event.currentTarget.value)
   }
 
-  const onClickDottedMarker = (event: kakao.maps.Marker, marker: PositionType) => {
+  const onClickDottedMarker = (event: kakao.maps.Marker, marker: Storages) => {
+    if (!kakaoMap) return
     setInfo(marker)
-    kakaoMap && kakaoMap.panTo(event.getPosition())
+    kakaoMap.setLevel(5)
+    kakaoMap.panTo(event.getPosition())
     setIsDragedMixture(true)
-    setWareHouseTitleValue(marker.content)
+    setSelectedTitle(marker.name)
   }
 
   return (
@@ -177,7 +202,7 @@ const PlaceMarker = ({
 
       {myLocation.isLoaded ? (
         <Map
-          center={{ lat: position.lat, lng: position.lng }}
+          center={{ lat: position.latitude, lng: position.longitude }}
           zoomable
           level={5}
           style={{
@@ -186,8 +211,35 @@ const PlaceMarker = ({
             borderRadius: '8px',
           }}
           onCreate={setKakaoMap}
-          onDragEnd={map => {
-            setInfo({ content: '', position: { lat: 0, lng: 0 }, data: '' })
+          // onBoundsChanged={async () => {
+          //   await refetch()
+          // }}
+          onDragEnd={async map => {
+            const storage = await refetch()
+            const markers = storage.data?.data.content.map(value => {
+              return {
+                id: value.id,
+                address: value.address,
+                description: value.description,
+                imgUrl: value.imgUrl,
+                coord: {
+                  latitude: value.coord.latitude,
+                  longitude: value.coord.longitude,
+                },
+                name: value.name,
+                distance: value.distance,
+              }
+            })
+            updateMarkers(markers || [])
+            setInfo({
+              name: '',
+              coord: { latitude: position.latitude, longitude: position.longitude },
+              id: 0,
+              imgUrl: '',
+              description: '',
+              address: '',
+              distance: 0,
+            })
             setMyLocation({
               coords: {
                 latitude: map.getCenter().getLat(),
@@ -202,7 +254,10 @@ const PlaceMarker = ({
             return (
               <div key={uuid()}>
                 <MapMarker
-                  position={{ lat: marker.position.lat, lng: marker.position.lng }}
+                  position={{
+                    lat: marker.coord.latitude || position.latitude,
+                    lng: marker.coord.longitude || position.longitude,
+                  }}
                   image={{
                     src: 'https://naejango.s3.ap-northeast-2.amazonaws.com/images/place_marker.svg',
                     size: {
@@ -213,12 +268,15 @@ const PlaceMarker = ({
                   onClick={event => onClickDottedMarker(event, marker)}
                 />
 
-                {info && info.content === marker.content && (
-                  <CustomOverlayMap position={{ lat: marker.position.lat, lng: marker.position.lng }} yAnchor={2.1}>
+                {info && info.name === marker.name && (
+                  <CustomOverlayMap
+                    position={{
+                      lat: marker.coord.latitude || position.latitude,
+                      lng: marker.coord.longitude || position.longitude,
+                    }}
+                    yAnchor={2.1}>
                     <div>
-                      <span className={'rounded border border-[#222] p-1 text-[13px] font-normal'}>
-                        {marker.content}
-                      </span>
+                      <span className={'rounded border border-[#222] p-1 text-[13px] font-normal'}>{marker.name}</span>
                     </div>
                   </CustomOverlayMap>
                 )}

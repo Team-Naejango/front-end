@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
@@ -9,56 +9,37 @@ import useGeolocation from '@/app/hooks/useGeolocation'
 import PlaceMarker from '@/app/components/molecule/kakaomap/PlaceMarker'
 import Categories from '@/app/components/molecule/kakaomap/Categories'
 import PreviewCard from '@/app/components/molecule/kakaomap/PreviewCard'
-import { positions, PositionType } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import { CATEGORIES } from '@/app/libs/client/constants/static'
-import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
-
-import { nearbyStorage } from '@/app/apis/domain/place/place'
+import { Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+
 import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
+/* global kakao, maps */
+
 const KakaoMap = () => {
-  // todo: markers, info 유사 데이터 바인딩으로 인한 리팩토링 필요
   const { myLocation, setMyLocation } = useGeolocation()
-  const [markers, setMarkers] = useState<PositionType[] | []>([])
-  const [info, setInfo] = useState<PositionType | null>(null)
+  const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map | null>(null)
+  const [markers, setMarkers] = useState<Storages[] | []>([])
+  const [info, setInfo] = useState<Storages | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(() => CATEGORIES[0])
   const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
   const [isDragedMixture, setIsDragedMixture] = useState<boolean>(false)
 
-  // 근처 창고 조회
-  const { data: { data: storage } = {} } = useQuery([PLACE.조회], () =>
-    nearbyStorage({
-      lon: '126.989671370346',
-      lat: '37.5700325947573',
-      rad: '1000',
-      page: '0',
-      size: '5',
-    })
-  )
-  // console.log('position:', position)
-  console.log('storage:', storage && storage.content)
-
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
-    [ITEM.조회],
+    [ITEM.조회, info],
     () =>
       storageItem({
-        storageId: '1',
+        storageId: String(info?.id),
         status: true,
         page: '0',
-        size: '1',
-      })
-    // {
-    //   enabled: !!params.id,
-    // }
+        size: '10',
+      }),
+    {
+      enabled: !!info,
+    }
   )
-
-  console.log('_itemInfo:', _itemInfo)
-
-  const getPosition = useMemo(() => {
-    return { lat: myLocation.coordinates.latitude, lng: myLocation.coordinates.longitude }
-  }, [myLocation.coordinates.latitude, myLocation.coordinates.longitude])
 
   return (
     <>
@@ -73,7 +54,8 @@ const KakaoMap = () => {
       )}
 
       <PlaceMarker
-        position={getPosition}
+        kakaoMap={kakaoMap}
+        setKakaoMap={setKakaoMap}
         myLocation={myLocation}
         setMyLocation={setMyLocation}
         markers={markers}
@@ -88,12 +70,14 @@ const KakaoMap = () => {
 
       {myLocation.isLoaded ? (
         isUpdatePreview ? (
-          // todo: 임시 더미데이터, api 받은 후 리팩토링
           <PreviewCard
-            previews={storage?.content!}
+            previews={markers.map(v => v)}
             dragedPreviews={_itemInfo?.itemList!}
-            activedItem={info?.content ?? ''}
+            activedItem={info?.name ?? ''}
+            kakaoMap={kakaoMap}
             isDragedMixture={isDragedMixture}
+            setInfo={setInfo}
+            setIsDragedMixture={setIsDragedMixture}
           />
         ) : (
           <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>

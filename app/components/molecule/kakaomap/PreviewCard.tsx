@@ -1,5 +1,5 @@
-import React from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import React, { Dispatch, SetStateAction } from 'react'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import uuid from 'react-uuid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
@@ -9,7 +9,6 @@ import dynamic from 'next/dynamic'
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { positions } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import CardSelectModal from '@/app/components/molecule/kakaomap/CardSelectModal'
 import { modalSelector } from '@/app/store/modal'
 import { cls } from '@/app/libs/client/utils/util'
@@ -19,26 +18,37 @@ import { Item, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 
+/* global kakao, maps */
+
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
   loading: () => <Loading />,
 })
 
 interface PreviewCardProps {
-  previews: [Storages]
+  previews: Storages[]
   dragedPreviews: Item[]
   isDragedMixture: boolean
   activedItem: string
+  kakaoMap: kakao.maps.Map | null
+  setInfo: Dispatch<SetStateAction<Storages | null>>
+  setIsDragedMixture: Dispatch<SetStateAction<boolean>>
 }
 
-const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }: PreviewCardProps) => {
+const PreviewCard = ({
+  previews,
+  dragedPreviews,
+  isDragedMixture,
+  activedItem,
+  kakaoMap,
+  setInfo,
+  setIsDragedMixture,
+}: PreviewCardProps) => {
   const query = useQueryClient()
-  const modalState = useRecoilValue(modalSelector('Preview'))
   const { openModal, closeModal } = useModal()
-  const [markerItemsValue, setMarkerItemsValue] = useRecoilState<{ name: any }[]>(markerItemsState)
-  const [wareHouseTitleValue, setWareHouseTitleValue] = useRecoilState<string>(activatedWareHouseTitleState)
-
-  console.log('isDragedMixture:', isDragedMixture)
+  const modalState = useRecoilValue(modalSelector('Preview'))
+  const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
+  const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
@@ -65,22 +75,34 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
     },
   })
 
+  // 모달창 오픈
   const onClickShowModal = (value: string) => {
-    setWareHouseTitleValue(value)
+    setSelectedTitle(value)
     openModal({
       modal: { id: 'Preview', type: MODAL_TYPES.CONFIRM },
       callback: () => {
         toast.success('교환신청이 완료되었습니다.')
       },
     })
-    // setMarkerItemsValue([{ name: previews.map(data => data.content) }])
     setMarkerItemsValue(
-      positions.map(data => ({
-        name: data.content,
+      dragedPreviews.map(data => ({
+        name: data.name,
       }))
     )
   }
 
+  // 프리뷰 창고목록 클릭 시
+  const onClickPreview = (marker: Storages) => {
+    if (!marker) return
+
+    setInfo(marker)
+    const place = new window.kakao.maps.LatLng(Number(marker.coord.latitude), Number(marker.coord.longitude))
+    kakaoMap && kakaoMap.panTo(place)
+    setIsDragedMixture(true)
+    setSelectedTitle(marker.name)
+  }
+
+  // 팔로우 구독/취소
   const onClickFollow = (storageId: number) => {
     if (!storageId) return
 
@@ -88,13 +110,18 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
   }
 
-  console.log('follows:', follows)
-
   return (
     <>
       <div className={'mt-2 h-[200px] overflow-hidden py-2.5'}>
-        {previews ? (
-          <ul className={'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll'}>
+        {!isDragedMixture && previews.length === 0 ? (
+          <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
+            <p className={'text-[13px]'}>범위에 존재하는 아이템이 없습니다.</p>
+          </div>
+        ) : (
+          <ul
+            className={cls(
+              'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll rounded border'
+            )}>
             {isDragedMixture
               ? dragedPreviews?.map(item => {
                   return (
@@ -107,7 +134,7 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
                       <div
                         role='presentation'
                         className={'w-full p-4'}
-                        onClick={() => onClickShowModal(item.name ?? wareHouseTitleValue)}>
+                        onClick={() => onClickShowModal(item.name || selectedTitle)}>
                         <span
                           className={cls(
                             'mr-1.5 rounded px-1 py-1 text-[10px] text-white',
@@ -128,10 +155,7 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
                         'relative w-full cursor-pointer rounded border text-xs hover:bg-[#eee]',
                         isDragedMixture ? '' : 'flex justify-between'
                       )}>
-                      <div
-                        role='presentation'
-                        className={'w-full p-4'}
-                        onClick={() => onClickShowModal(item.name ?? wareHouseTitleValue)}>
+                      <div role='presentation' className={'w-full p-4'} onClick={() => onClickPreview(item)}>
                         {item.name}
                       </div>
                       <span
@@ -156,17 +180,15 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
                   )
                 })}
           </ul>
-        ) : (
-          <div className={'mt-4 flex h-[190px] items-center justify-center'}>
-            <p className={'text-[13px]'}>범위에 존재하는 아이템이 없습니다.</p>
-          </div>
         )}
+        )
       </div>
 
       {modalState.modal.show ? (
         <CustomModal id={modalState.modal.id} btn btnTxt={'교환신청'}>
           <CardSelectModal
-            title={activedItem === '' ? wareHouseTitleValue : activedItem}
+            title={activedItem === '' ? selectedTitle : activedItem}
+            dragedPreviews={dragedPreviews}
             isDragedMixture={isDragedMixture}
             onClose={() => closeModal(modalState.modal.id)}
           />

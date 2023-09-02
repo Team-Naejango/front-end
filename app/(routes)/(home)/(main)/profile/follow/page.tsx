@@ -17,12 +17,10 @@ import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import FollowUserItemPopup from '@/app/components/organism/profile/FollowUserItemPopup'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
-
-import { follow, unFollow } from '@/app/apis/domain/profile/follow'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
-import { saveWish } from '@/app/apis/domain/profile/wish'
-import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
+
+import { follow, unFollow } from '@/app/apis/domain/profile/follow'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -57,22 +55,12 @@ const Follow = () => {
   const { mutate: mutateUnfollow } = useMutation(unFollow, {
     onSuccess: () => {
       query.invalidateQueries([FOLLOW.조회])
-      toast.success('팔로우한 창고를 취소하였습니다.')
+      toast.success('창고를 팔로우 취소하였습니다.')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
-
-  // const { mutate: mutateSaveWish } = useMutation(saveWish, {
-  //   onSuccess: () => {
-  //     query.invalidateQueries([WISH.조회])
-  //     toast.success('아이템을 관심목록에 추가하였습니다.')
-  //   },
-  //   onError: (error: ApiError) => {
-  //     toast.error(error.message)
-  //   },
-  // })
 
   const onClickUnFollow = (storageId: number) => {
     if (!storageId) return
@@ -84,11 +72,6 @@ const Follow = () => {
       modal: { id: 'itemsOfFollow', type: MODAL_TYPES.ALERT },
     })
   }
-
-  // const x = _itemInfo && _itemInfo.itemList.find(v => v.itemId)?.itemId
-  // const test = () => {
-  //   mutateSaveWish(String(x))
-  // }
 
   return (
     <Layout canGoBack title='팔로우'>
@@ -107,7 +90,7 @@ const Follow = () => {
                           follow.imgUrl
                         )}`}
                         height={'100'}
-                        alt='아이템 이미지'
+                        alt='창고 이미지'
                         className={'h-10 w-10 rounded-full border border-[#ccc] object-cover'}
                       />
                       <p className='text-[13px] font-medium'>{follow.name}</p>
@@ -127,7 +110,7 @@ const Follow = () => {
                 <div className={'flex items-center gap-2 px-2'}>
                   {_itemInfo?.itemList.map(item => {
                     return (
-                      <div key={item.imgUrl} className={'relative'}>
+                      <div key={item.itemId} className={'relative'}>
                         <Image
                           width={'100'}
                           src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
@@ -135,7 +118,7 @@ const Follow = () => {
                           )}`}
                           height={'100'}
                           alt='아이템 이미지'
-                          className={'h-24 w-24 rounded border border-[#ccc] object-cover'}
+                          className={'h-24 w-24 rounded border border-[#ddd] object-cover'}
                         />
                         <div className='absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-md bg-black bg-opacity-50 opacity-0 transition-opacity hover:opacity-100'>
                           <div className={'flex h-full items-center justify-center'}>

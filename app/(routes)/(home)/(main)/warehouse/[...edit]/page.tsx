@@ -55,8 +55,6 @@ const WarehouseEdit = () => {
   const seq = searchParams.get('seq')
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
 
-  console.log('isEditMode:', isEditMode)
-
   const {
     register,
     handleSubmit,

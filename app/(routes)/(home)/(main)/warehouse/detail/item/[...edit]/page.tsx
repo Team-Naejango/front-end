@@ -121,7 +121,7 @@ const EditItem = () => {
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])
       toast.success('아이템이 수정되었습니다.')
-      router.push(`/warehouse/detail/${seq}`)
+      router.replace(`/warehouse/detail/${seq}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -205,7 +205,7 @@ const EditItem = () => {
   const onSubmit = async (data: ItemProps) => {
     // if (!_itemInfo) return
 
-    if (!setImagePreview) return toast.error('이미지를 등록해주세요.')
+    if (!imagePreview) return toast.error('이미지를 등록해주세요.')
     if (selectedCategory.name === '전체') return toast.error('다른 카테고리를 선택해주세요.')
     if (selectedStorage.length === 0) return toast.error('창고를 선택해주세요.')
 
