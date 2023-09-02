@@ -1,16 +1,17 @@
 'use client'
 
-import React, { useState, useEffect, ChangeEvent, useLayoutEffect } from 'react'
+import React, { useState, useEffect, ChangeEvent } from 'react'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { useForm } from 'react-hook-form'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
+import face from '@/app/assets/image/face.png'
 
 import Button from '@/app/components/atom/Button'
 import InputField from '@/app/components/atom/InputField'
@@ -30,10 +31,11 @@ interface EditProfileForm {
   nickname: string
   intro: string
   phoneNumber: string
-  imageFile?: FileList
+  imageFile?: FileList | null
 }
 
 const EditProfile = () => {
+  const pathname = usePathname()
   const query = useQueryClient()
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
@@ -44,6 +46,8 @@ const EditProfile = () => {
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
+
+  const isEditMode = pathname.includes('/profile/edit')
 
   const {
     register,
@@ -60,7 +64,9 @@ const EditProfile = () => {
   })
   const nickname = watch('nickname')
 
-  const { data: _userInfo } = useQuery([OAUTH.유저정보], () => userInfo())
+  const { data: { data: _userInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+    enabled: isEditMode,
+  })
 
   const { mutate: mutateUserInfoModify } = useMutation((params: MemberInfo) => modifyUserInfo({ ...params }), {
     onSuccess: () => {
@@ -74,18 +80,17 @@ const EditProfile = () => {
     },
   })
 
-  // todo: API 나온 후 작업
-  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-  //   onSuccess: () => {
-  //     console.log('닉네임 사용 가능')
-  //     setIsNicknameDisabled(true)
-  //     setSelectedNickname(getValues('nickname'))
-  //   },
-  //   onError: (error: ApiError) => {
-  //     console.log('error:', error)
-  //     toast.error(error.message)
-  //   },
-  // })
+  // todo: API 작업 필요
+  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+    onSuccess: () => {
+      setIsNicknameDisabled(true)
+      setSelectedNickname(getValues('nickname'))
+    },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
+  })
 
   const uploadS3 = async (file: File) => {
     const s3Client = new S3Client({
@@ -199,7 +204,13 @@ const EditProfile = () => {
 
   useEffect(() => {
     reset({ ..._userInfo })
-    if (_userInfo?.imgUrl) {
+    if (isEditMode) {
+      query.invalidateQueries([OAUTH.유저정보])
+    }
+  }, [_userInfo])
+
+  useEffect(() => {
+    if (_userInfo && _userInfo) {
       setImagePreview(_userInfo.imgUrl)
     }
   }, [_userInfo])
@@ -216,22 +227,25 @@ const EditProfile = () => {
                 width={'100'}
                 height={'100'}
                 alt='이미지 미리보기'
-                className={'h-24 w-24 rounded-full bg-gray-300 object-cover'}
+                className={'h-24 w-24 rounded-full border border-[#ddd] object-cover'}
               />
-            ) : (
+            ) : _userInfo?.imgUrl === '' ? (
               <Image
-                src={`${
-                  _userInfo?.imgUrl === ('' || undefined)
-                    ? `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png`
-                    : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
-                        _userInfo.imgUrl
-                      )}`
-                }`}
+                src={face}
                 width={'100'}
                 height={'100'}
                 quality={100}
                 alt='프로필 이미지'
-                className={'h-24 w-24 rounded-full bg-gray-300 object-cover'}
+                className={'h-24 w-24 rounded-full border-[#ddd] bg-gray-300 object-cover'}
+              />
+            ) : (
+              <Image
+                src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${_userInfo?.imgUrl}`}
+                width={'100'}
+                height={'100'}
+                quality={100}
+                alt='프로필 이미지'
+                className={'h-24 w-24 rounded-full border border-[#ddd] object-cover'}
               />
             )}
             <InputFile id='picture' {...register('imageFile')} onChange={event => onUpload(event)} />

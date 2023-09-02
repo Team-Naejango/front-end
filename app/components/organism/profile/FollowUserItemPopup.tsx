@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useRef } from 'react'
+import Image from 'next/image'
 
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
-import Image from 'next/image'
 
 const FollowUserItemPopup = ({ items }: { items: Item[] }) => {
   const ref = useRef<HTMLDivElement | null>(null)

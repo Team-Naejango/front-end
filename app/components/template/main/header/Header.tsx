@@ -5,10 +5,10 @@ import Head from 'next/head'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { FiSettings } from 'react-icons/fi'
-
-import { cls } from '@/app/libs/client/utils/util'
 import mapIcon from '@/app/assets/image/map.svg'
 import noticeIcon from '@/app/assets/image/notice.svg'
+
+import { cls } from '@/app/libs/client/utils/util'
 
 interface LayoutProps {
   seoTitle: string | undefined
@@ -49,17 +49,23 @@ const Header = ({
               role='presentation'
               onClick={onClickNotice}
               className={cls(
-                'relative flex h-12 w-12 cursor-pointer items-center justify-center bg-[#f5f5f5] hover:bg-[#f0f0f0]',
-                setting ? 'rounded-full' : 'rounded-md'
+                'relative flex h-12 w-12 items-center justify-center bg-[#f5f5f5] hover:bg-[#f0f0f0]',
+                setting ? 'rounded-full' : 'cursor-pointer rounded-md'
               )}>
               {setting ? (
                 <Image
                   src={src}
+                  priority
                   width={'100'}
                   height={'100'}
                   quality={100}
                   alt='프로필 이미지'
-                  className={'absolute h-full w-full rounded-full bg-gray-300 object-cover'}
+                  className={cls(
+                    'absolute h-full w-full rounded-full border object-cover',
+                    src === 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
+                      ? 'bg-gray-300'
+                      : 'border-[#ddd]'
+                  )}
                 />
               ) : (
                 <Image src={noticeIcon} alt={'알림 아이콘'} width={24} />
