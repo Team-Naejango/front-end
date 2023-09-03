@@ -74,7 +74,7 @@ const Home = () => {
       modal: {
         id: 'item',
         type: MODAL_TYPES.CONFIRM,
-        title: '창고선택',
+        title: '창고 선택',
       },
       callback: () => {
         if (!selectedStorage) return

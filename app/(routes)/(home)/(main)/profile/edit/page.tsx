@@ -182,7 +182,7 @@ const EditProfile = () => {
       gender: getValues('gender'),
       imgUrl: (imageFile! && imageFile[0].name) ?? _userInfo.imgUrl,
       birth: getValues('birth'),
-      intro: getValues('intro'),
+      intro: getValues('intro') ?? '',
       phoneNumber: getValues('phoneNumber'),
     }
 
@@ -240,7 +240,9 @@ const EditProfile = () => {
               />
             ) : (
               <Image
-                src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${_userInfo?.imgUrl}`}
+                src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
+                  _userInfo?.imgUrl as string
+                )}`}
                 width={'100'}
                 height={'100'}
                 quality={100}
@@ -291,12 +293,23 @@ const EditProfile = () => {
               })}
               id='age'
               type='text'
+              disabled={isEditMode}
               maxLength={8}
               placeholder='생년월일(YYYYMMDD)'
               icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
-            <GenderButton gender='남' selected={watch('gender') === '남'} onClick={() => onSelectedGender('남')} />
-            <GenderButton gender='여' selected={watch('gender') === '여'} onClick={() => onSelectedGender('여')} />
+            <GenderButton
+              gender='남'
+              disabled={isEditMode && _userInfo?.gender === '여'}
+              selected={watch('gender') === '남'}
+              onClick={() => onSelectedGender('남')}
+            />
+            <GenderButton
+              gender='여'
+              disabled={isEditMode && _userInfo?.gender === '남'}
+              selected={watch('gender') === '여'}
+              onClick={() => onSelectedGender('여')}
+            />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
           <div>
@@ -315,7 +328,6 @@ const EditProfile = () => {
           <p className='!mt-1.5 text-xs text-red-400'>{errors.phoneNumber?.message}</p>
           <TextArea
             register={register('intro', {
-              required: '자기소개를 입력하세요.',
               value: _userInfo?.intro,
               maxLength: {
                 value: 100,
@@ -324,7 +336,7 @@ const EditProfile = () => {
             })}
             placeholder={'자기소개'}
           />
-          <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p>
+          {/* <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p> */}
           <Button small text='저장' className={'!mx-auto mt-4 block'} />
         </form>
       </div>

@@ -34,7 +34,7 @@ const Deal = () => {
       </div>
 
       {_deal.modal.show ? (
-        <CustomModal id={_deal.modal.id} type={MODAL_TYPES.ALERT}>
+        <CustomModal id={_deal.modal.id} type={MODAL_TYPES.ALERT} btn>
           <DetailDealPopup />
         </CustomModal>
       ) : null}

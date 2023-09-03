@@ -143,7 +143,7 @@ const Follow = () => {
       </div>
 
       {_follow.modal.show ? (
-        <CustomModal id={_follow.modal.id} type={MODAL_TYPES.ALERT}>
+        <CustomModal id={_follow.modal.id} type={MODAL_TYPES.ALERT} btn>
           <FollowUserItemPopup items={_itemInfo?.itemList || []} />
         </CustomModal>
       ) : null}

@@ -19,14 +19,13 @@ interface CardSelectProps {
   title: string
   dragedPreviews: Item[]
   isDragedMixture: boolean
-  onClose: () => void
 }
 
 interface CardProps {
-  message: string
+  description: string
 }
 
-const CardSelectModal = ({ title, dragedPreviews, isDragedMixture, onClose }: CardSelectProps) => {
+const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectProps) => {
   const query = useQueryClient()
   const [selectedType, setSelectedType] = useState<{ name: string }>({ name: '아이템 목록' })
   const markerItemsValue = useRecoilValue<{ name: string }[]>(markerItemsState)
@@ -37,8 +36,10 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture, onClose }: Ca
   const {
     register,
     getValues,
+    setValue,
     watch,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<CardProps>({
     mode: 'onSubmit',
@@ -71,6 +72,10 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture, onClose }: Ca
   })
 
   const onSubmit = () => {}
+
+  useEffect(() => {
+    reset(itemInfo)
+  }, [])
 
   useEffect(() => {
     if (isDragedMixture) setSelectedType({ name: selectedTitle })
@@ -132,15 +137,15 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture, onClose }: Ca
         </div>
       </div>
       <SelectBox data={markerItemsValue} selected={selectedType} setSelected={setSelectedType} />
-      <div className={'mt-3'}>
+      <div className={'mt-4'}>
         <TextArea
-          label={'채팅'}
-          placeholder={'메시지 내용'}
-          register={register('message', {
-            required: '메시지 내용을 입력해주세요.',
+          label={'상품 설명'}
+          readOnly
+          register={register('description', {
+            value: itemInfo?.description,
           })}
         />
-        <p className='!mt-1.5 text-xs text-red-400'>{errors.message?.message}</p>
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.description?.message}</p>
       </div>
     </form>
   )

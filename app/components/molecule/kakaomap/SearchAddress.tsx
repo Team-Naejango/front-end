@@ -36,7 +36,7 @@ const SearchAddress = ({
 }) => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null)
   const [markers, setMarkers] = useState<{ lat: number | null; lng: number | null }>()
-  const userLocal = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
+  const userLocal = useRecoilValue<{ address?: string; latitude: number; longitude: number }>(locationState)
 
   const onClickAddr = () => {
     new window.daum.Postcode({

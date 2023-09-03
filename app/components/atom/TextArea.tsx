@@ -4,6 +4,7 @@ import { UseFormRegisterReturn } from 'react-hook-form'
 interface TextAreaProps {
   label?: string
   name?: string
+  readOnly?: boolean
   register?: UseFormRegisterReturn
   essential?: boolean
   [key: string]: any
@@ -11,7 +12,16 @@ interface TextAreaProps {
   rows?: number
 }
 
-export default function TextArea({ label, name, register, essential, rows = 4, placeholder, ...rest }: TextAreaProps) {
+export default function TextArea({
+  label,
+  name,
+  readOnly = false,
+  register,
+  essential,
+  rows = 4,
+  placeholder,
+  ...rest
+}: TextAreaProps) {
   return (
     <div>
       {label ? (
@@ -22,6 +32,7 @@ export default function TextArea({ label, name, register, essential, rows = 4, p
       ) : null}
       <textarea
         id={name}
+        readOnly={readOnly}
         placeholder={placeholder}
         rows={rows}
         {...register}

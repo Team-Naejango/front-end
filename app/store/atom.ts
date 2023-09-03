@@ -5,6 +5,7 @@ import { AUTH_TOKEN, COMMON_STORE_KEY } from '@/app/libs/client/constants/store/
 import { PLACE_STORE_KEY } from '@/app/libs/client/constants/store/places'
 
 interface LocationProps {
+  address?: string
   latitude: number
   longitude: number
 }
@@ -37,6 +38,7 @@ export const splashState = atom<boolean>({
 export const locationState = atom<LocationProps>({
   key: `${COMMON_STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
+    address: '',
     latitude: 37.5704,
     longitude: 126.9922,
   },

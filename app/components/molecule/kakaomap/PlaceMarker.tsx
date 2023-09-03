@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useCallback, useEffect, useLayoutEffect, Dispatch, SetStateAction } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, Dispatch, SetStateAction } from 'react'
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
 import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
@@ -19,10 +19,11 @@ import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 import { nearbyStorage } from '@/app/apis/domain/place/place'
 
 /* global kakao, maps, services */
-import PlacesSearchResult = kakao.maps.services.PlacesSearchResult
 import Status = kakao.maps.services.Status
-import Pagination = kakao.maps.Pagination
-import PlacesSearchOptions = kakao.maps.services.PlacesSearchOptions
+// import PlacesSearchResult = kakao.maps.services.PlacesSearchResult
+// import Pagination = kakao.maps.Pagination
+// import PlacesSearchOptions = kakao.maps.services.PlacesSearchOptions
+// import PlacesSearchResultItem = kakao.maps.services.PlacesSearchResultItem
 
 interface EventProps {
   kakaoMap: kakao.maps.Map | null
@@ -57,19 +58,22 @@ const PlaceMarker = ({
   info,
   setInfo,
 }: EventProps) => {
+  const userArea = useRecoilValue<{ address?: string; latitude: number; longitude: number }>(locationState)
   const setSelectedTitle = useSetRecoilState<string>(activatedWareHouseTitleState)
-  const position = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
+
+  // let isUseBounds = true
 
   const { watch, handleSubmit, control, reset } = useForm<FormProps>({
     mode: 'onTouched',
   })
 
+  // 근처 창고 조회
   const { data: { data: storage } = {}, refetch } = useQuery(
     [PLACE.조회],
     () =>
       nearbyStorage({
-        lat: String(position.latitude),
-        lon: String(position.longitude),
+        lat: String(userArea.latitude),
+        lon: String(userArea.longitude),
         rad: '1000',
         page: '0',
         size: '10',
@@ -84,43 +88,48 @@ const PlaceMarker = ({
     [setMarkers]
   )
 
-  let isUseBounds = true
-  const kakaoMapCallback = (data?: PlacesSearchResult, status?: Status, _pagination?: Pagination) => {
-    if (status === window.kakao.maps.services.Status.OK) {
-      setIsUpdatePreview(true)
-      const bounds = new window.kakao.maps.LatLngBounds()
+  // 근처 창고 카카오 지도 검색
+  const kakaoMapCallback = useCallback(
+    (status: Status) => {
+      if (!kakaoMap) return
 
-      const newMarkers = storage?.content.map(value => {
-        const markers = {
-          id: value.id,
-          address: value.address,
-          description: value.description,
-          imgUrl: value.imgUrl,
-          coord: {
-            latitude: value.coord.latitude,
-            longitude: value.coord.longitude,
-          },
-          name: value.name,
-        }
+      if (status === window.kakao.maps.services.Status.OK) {
+        setIsUpdatePreview(true)
+        const bounds = new window.kakao.maps.LatLngBounds()
 
-        bounds.extend(new window.kakao.maps.LatLng(Number(value.coord.latitude), Number(value.coord.longitude)))
-        return markers
-      })
+        const newMarkers = storage?.content.map(value => {
+          const markers = {
+            id: value.id,
+            address: value.address,
+            description: value.description,
+            imgUrl: value.imgUrl,
+            coord: {
+              latitude: value.coord.latitude,
+              longitude: value.coord.longitude,
+            },
+            name: value.name,
+          }
 
-      updateMarkers(newMarkers || [])
+          bounds.extend(new window.kakao.maps.LatLng(Number(value.coord.latitude), Number(value.coord.longitude)))
+          return markers
+        })
+        updateMarkers(newMarkers || [])
 
-      if (isUseBounds) kakaoMap && kakaoMap.setBounds(bounds)
-    } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-      setIsUpdatePreview(false)
-      updateMarkers([])
-      console.log('데이터 없음')
-    } else if (status === kakao.maps.services.Status.ERROR) {
-      setIsUpdatePreview(false)
-      updateMarkers([])
-      console.log('원인불명 에러')
-    }
-  }
+        // if (isUseBounds) kakaoMap && kakaoMap.setBounds(bounds)
+      } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+        setIsUpdatePreview(false)
+        updateMarkers([])
+        console.log('데이터 없음')
+      } else if (status === kakao.maps.services.Status.ERROR) {
+        setIsUpdatePreview(false)
+        updateMarkers([])
+        console.log('원인불명 에러')
+      }
+    },
+    [kakaoMap, storage]
+  )
 
+  // 키워드 카카오 지도 검색
   // const keywordSearch = useCallback(
   //   (type: string | undefined, query?: string) => {
   //     if (!kakaoMap) return
@@ -143,18 +152,21 @@ const PlaceMarker = ({
   //   },
   //   [kakaoMap]
   // )
-  //
+
   // useEffect(() => {
   //   keywordSearch(watch('search'), selectedCategory)
   // }, [selectedCategory, kakaoMap, updateMarkers, position, keywordSearch, watch])
 
+  useEffect(() => {
+    if (!kakaoMap) return
+
+    const status = kakao.maps.services.Status.OK
+    kakaoMapCallback(status)
+  }, [kakaoMap, kakaoMapCallback])
+
   useLayoutEffect(() => {
     if (watch('search') !== '') reset()
   }, [selectedCategory])
-
-  // useEffect(() => {
-  //   kakaoMapCallback()
-  // }, [])
 
   const onSubmitSearch = () => {
     // keywordSearch(watch('search'))
@@ -165,8 +177,10 @@ const PlaceMarker = ({
     // if (event.key === 'Enter') keywordSearch(event.currentTarget.value)
   }
 
+  // 마커 클릭 시
   const onClickDottedMarker = (event: kakao.maps.Marker, marker: Storages) => {
     if (!kakaoMap) return
+
     setInfo(marker)
     kakaoMap.setLevel(5)
     kakaoMap.panTo(event.getPosition())
@@ -202,7 +216,7 @@ const PlaceMarker = ({
 
       {myLocation.isLoaded ? (
         <Map
-          center={{ lat: position.latitude, lng: position.longitude }}
+          center={{ lat: userArea.latitude, lng: userArea.longitude }}
           zoomable
           level={5}
           style={{
@@ -231,15 +245,6 @@ const PlaceMarker = ({
               }
             })
             updateMarkers(markers || [])
-            setInfo({
-              name: '',
-              coord: { latitude: position.latitude, longitude: position.longitude },
-              id: 0,
-              imgUrl: '',
-              description: '',
-              address: '',
-              distance: 0,
-            })
             setMyLocation({
               coords: {
                 latitude: map.getCenter().getLat(),
@@ -255,8 +260,8 @@ const PlaceMarker = ({
               <div key={uuid()}>
                 <MapMarker
                   position={{
-                    lat: marker.coord.latitude || position.latitude,
-                    lng: marker.coord.longitude || position.longitude,
+                    lat: marker.coord.latitude || userArea.latitude,
+                    lng: marker.coord.longitude || userArea.longitude,
                   }}
                   image={{
                     src: 'https://naejango.s3.ap-northeast-2.amazonaws.com/images/place_marker.svg',
@@ -271,8 +276,8 @@ const PlaceMarker = ({
                 {info && info.name === marker.name && (
                   <CustomOverlayMap
                     position={{
-                      lat: marker.coord.latitude || position.latitude,
-                      lng: marker.coord.longitude || position.longitude,
+                      lat: marker.coord.latitude || userArea.latitude,
+                      lng: marker.coord.longitude || userArea.longitude,
                     }}
                     yAnchor={2.1}>
                     <div>

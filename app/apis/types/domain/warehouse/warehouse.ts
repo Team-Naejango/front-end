@@ -85,6 +85,7 @@ export type Item = {
   type: string
   name: string
   imgUrl: string
+  description: string
 }
 
 /**

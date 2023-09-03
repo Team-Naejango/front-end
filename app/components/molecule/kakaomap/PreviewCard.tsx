@@ -15,6 +15,7 @@ import { cls } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import Button from '@/app/components/atom/Button'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 
@@ -45,8 +46,9 @@ const PreviewCard = ({
   setIsDragedMixture,
 }: PreviewCardProps) => {
   const query = useQueryClient()
-  const { openModal, closeModal } = useModal()
-  const modalState = useRecoilValue(modalSelector('Preview'))
+  const { openModal } = useModal()
+  const previewState = useRecoilValue(modalSelector('preview'))
+  const chatState = useRecoilValue(modalSelector('chat'))
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
 
@@ -75,13 +77,25 @@ const PreviewCard = ({
     },
   })
 
+  const onSelectedChatModal = () => {
+    openModal({
+      modal: {
+        id: 'chat',
+        type: MODAL_TYPES.ALERT,
+        title: '채팅방 선택',
+        // content: '채팅방을 선택해주세요.',
+      },
+    })
+  }
+
   // 모달창 오픈
   const onClickShowModal = (value: string) => {
     setSelectedTitle(value)
     openModal({
-      modal: { id: 'Preview', type: MODAL_TYPES.CONFIRM },
+      modal: { id: 'preview', type: MODAL_TYPES.CONFIRM },
       callback: () => {
-        toast.success('교환신청이 완료되었습니다.')
+        onSelectedChatModal()
+        // toast.success('채팅신청이 완료되었습니다.')
       },
     })
     setMarkerItemsValue(
@@ -108,6 +122,16 @@ const PreviewCard = ({
 
     const isSubscribe = follows && follows.some(v => v.id === storageId)
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
+  }
+
+  const selectedChatType = (type: '개인' | '그룹') => {
+    // if (!type) return
+    // if (type === '개인') {
+    /* 개인 채팅방 입장 API + router.push */
+    // } else {
+    // /api/chat/group/{channelId} post
+    /* 그룹 채팅방 입장 API + router.push */
+    // }
   }
 
   return (
@@ -184,14 +208,22 @@ const PreviewCard = ({
         )
       </div>
 
-      {modalState.modal.show ? (
-        <CustomModal id={modalState.modal.id} btn btnTxt={'교환신청'}>
+      {previewState.modal.show ? (
+        <CustomModal id={previewState.modal.id} btn btnTxt={'채팅신청'}>
           <CardSelectModal
             title={activedItem === '' ? selectedTitle : activedItem}
             dragedPreviews={dragedPreviews}
             isDragedMixture={isDragedMixture}
-            onClose={() => closeModal(modalState.modal.id)}
           />
+        </CustomModal>
+      ) : null}
+
+      {chatState.modal.show ? (
+        <CustomModal id={chatState.modal.id} type={MODAL_TYPES.ALERT}>
+          <div className={'flex gap-4 py-2'}>
+            <Button small text={'개인 채팅'} className={'!py-2'} onClick={() => selectedChatType('개인')} />
+            <Button small text={'그룹 채팅'} className={'!py-2'} onClick={() => selectedChatType('그룹')} />
+          </div>
         </CustomModal>
       ) : null}
     </>

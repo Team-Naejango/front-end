@@ -125,7 +125,7 @@ export async function storageItem(params: {
   page: string
   size: string
 }): Promise<Response<{ data: ItemList }>> {
-  return withAuth.get(`/api/storage/${params.storageId}`, { params })
+  return withAuth.get(`/api/storage/${params.storageId}/items`, { params })
 }
 
 /**

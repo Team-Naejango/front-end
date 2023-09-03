@@ -30,7 +30,7 @@ export async function modifyUserInfo(params: MemberInfo): Promise<Response<{ use
  *
  */
 export async function deleteUser(): Promise<Response<null>> {
-  return withAuth.delete('/api/user/profile')
+  return withAuth.delete('/api/user')
 }
 
 /**

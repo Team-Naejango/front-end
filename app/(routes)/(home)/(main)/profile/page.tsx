@@ -138,7 +138,9 @@ const Profile = () => {
       src={
         _userInfo?.imgUrl === ''
           ? (face as any)
-          : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${_userInfo?.imgUrl}
+          : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
+              _userInfo?.imgUrl as string
+            )}
             `
       }>
       <div className='mt-12 px-4'>
