@@ -74,10 +74,11 @@ const KakaoMap = () => {
         isUpdatePreview ? (
           <PreviewCard
             previews={markers.map(v => v)}
-            dragedPreviews={_itemInfo?.itemList!}
+            dragedPreviews={_itemInfo!}
             activedItem={info?.name ?? ''}
             kakaoMap={kakaoMap}
             isDragedMixture={isDragedMixture}
+            info={info}
             setInfo={setInfo}
             setIsDragedMixture={setIsDragedMixture}
           />

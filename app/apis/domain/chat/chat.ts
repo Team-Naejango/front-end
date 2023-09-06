@@ -22,13 +22,15 @@ export async function getChatId(channelId: string): Promise<Response<{ data: Cha
 }
 
 /**
- * 채팅방 이름 변경
+ * 채팅방 제목 변경
  *
- * @param chatId // 변경하고자 하는 채팅방 id
- * @param title // 변경할 이름
+ * @param params.chatId // 변경하고자 하는 채팅방 id
+ * @param params.title // 변경할 제목
+ *
+ * @param params
  */
-export async function convertedName(chatId: string, title: string): Promise<Response<{ data: ChatName }>> {
-  return withAuth.patch(`/api/chat/${chatId}`, { title })
+export async function convertedName(params: { chatId: string; title: string }): Promise<Response<{ data: ChatName }>> {
+  return withAuth.patch(`/api/chat/${params.chatId}`, { params })
 }
 
 /**

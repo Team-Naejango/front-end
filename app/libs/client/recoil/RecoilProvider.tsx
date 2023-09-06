@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react'
 import { MutableSnapshot, RecoilRoot } from 'recoil'
-import { kakaoAccessToken } from '@/app/store/atom'
+// import { kakaoAccessToken } from '@/app/store/atom'
 
 type Props = {
   children: ReactNode

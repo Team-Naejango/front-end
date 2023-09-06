@@ -19,7 +19,8 @@ import InputFile from '@/app/components/atom/InputFile'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { OmitStorageIdItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { CATEGORIES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/static'
+import { CATEGORIES, EXCHANGE_TYPES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/static'
+import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 
 import {
   itemInfo,
@@ -28,9 +29,12 @@ import {
   modifyStorageItem,
   storage as _storage,
 } from '@/app/apis/domain/warehouse/warehouse'
+import { openGroupChat } from '@/app/apis/domain/chat/chanel'
 
 interface ItemProps {
   name: string
+  groupName?: string
+  limit?: number
   description: string
   imgUrl: string
   type: string
@@ -45,6 +49,7 @@ const EditItem = () => {
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
   const [selectedStorage, setSelectedStorage] = useState<{ id: number; name?: string }[]>([STORAGES[0]])
   const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
+  const [selectedExchangeType, setSelectedExchangeType] = useState<{ name: string }>(EXCHANGE_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
 
@@ -62,6 +67,7 @@ const EditItem = () => {
   const {
     register,
     handleSubmit,
+    getValues,
     setValue,
     formState: { errors },
     reset,
@@ -79,7 +85,7 @@ const EditItem = () => {
   })
   const { count, storageList } = _storageInfo || {}
 
-  // [편집모드] 창고 id 최신화
+  // [편집모드] 창고 ID 최신화
   const updatedStorageIds = STORAGES.map(storage => {
     if (!storageList) return
 
@@ -93,9 +99,21 @@ const EditItem = () => {
     enabled: isEditMode,
   })
 
+  // 그룹 채팅방 개설
+  const { mutate: mutateOpenGroup } = useMutation(openGroupChat, {
+    onSuccess: () => {
+      query.invalidateQueries([CHAT.조회])
+      toast.success('그룹 채팅방이 개설되었습니다.')
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
   // 아이템 등록
   const { mutate: mutateSave } = useMutation(saveItem, {
     onSuccess: () => {
+      // mutateOpenGroup({ limit: getValues('limit')!, storageId: 2, defaultTitle: getValues('groupName')! })
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       toast.success('아이템이 등록되었습니다.')
@@ -231,6 +249,7 @@ const EditItem = () => {
     isEditMode ? mutateModify(editParameters()) : mutateSave(params)
   }
 
+  // 선택된 창고
   const getSelectedStorages = () => {
     let storages: { id: number; name: string }[] = []
 
@@ -280,15 +299,19 @@ const EditItem = () => {
               alt='이미지 미리보기'
               className={'absolute left-0 top-0 -z-10 h-48 w-full object-cover'}
             />
+          ) : _itemInfo?.imgUrl === '' ? (
+            <Image
+              src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'}
+              width={'100'}
+              height={'100'}
+              alt='아이템 이미지'
+              className={'absolute left-0 top-0 -z-10 h-48 w-full object-cover'}
+            />
           ) : (
             <Image
-              src={`${
-                _itemInfo?.imgUrl === ('' || undefined)
-                  ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'
-                  : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
-                      _itemInfo.imgUrl
-                    )}`
-              }`}
+              src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
+                _itemInfo?.imgUrl as string
+              )}`}
               width={'100'}
               height={'100'}
               alt='아이템 이미지'
@@ -326,6 +349,48 @@ const EditItem = () => {
           essential
         />
         <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
+        <SelectBox
+          title={'거래'}
+          data={EXCHANGE_TYPES}
+          selected={selectedExchangeType}
+          setSelected={setSelectedExchangeType}
+          essential
+        />
+        {selectedExchangeType.name === '공동구매' && (
+          <>
+            <InputField
+              type='text'
+              register={register('groupName', { required: '그룹채팅 제목을 입력해주세요.' })}
+              label='그룹 제목'
+              placeholder='그룹 제목'
+              essential
+            />
+            <p className='!mt-1.5 text-xs text-red-400'>{errors.groupName?.message}</p>
+            <InputField
+              type='number'
+              label='제한 인원'
+              essential
+              register={register('limit', {
+                required: '제한 인원을 입력해주세요.',
+                value: 2,
+                validate: {
+                  checkLimit: value => {
+                    if (!value) return
+
+                    if (value < 2) {
+                      return '제한 인원이 최소 2명 이상입니다.'
+                    }
+                    if (value > 6) {
+                      return '제한 인원이 최대 6명 이하입니다.'
+                    }
+                  },
+                },
+              })}
+              className={'!w-[48px] text-center'}
+            />
+            <p className='!mt-1.5 text-xs text-red-400'>{errors.limit?.message}</p>
+          </>
+        )}
         <Button type={'submit'} text={`${isEditMode ? '수정' : '등록'}`} />
       </form>
     </Layout>

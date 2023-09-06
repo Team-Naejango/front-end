@@ -7,6 +7,7 @@ export const COMMON_STORE_KEY = {
   다이얼로그: 'storeDialog',
   위치정보: 'storeLocation',
   토큰검증: 'storeTokenValidated',
+  주소: 'storeAddress',
 }
 
 /**

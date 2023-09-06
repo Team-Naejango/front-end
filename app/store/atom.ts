@@ -5,7 +5,6 @@ import { AUTH_TOKEN, COMMON_STORE_KEY } from '@/app/libs/client/constants/store/
 import { PLACE_STORE_KEY } from '@/app/libs/client/constants/store/places'
 
 interface LocationProps {
-  address?: string
   latitude: number
   longitude: number
 }
@@ -32,13 +31,12 @@ export const splashState = atom<boolean>({
 /**
  * 유저 위치정보
  *
- * @property latitude / x좌표
- * @property longitude / y좌표
+ * @property latitude // x좌표
+ * @property longitude // y좌표
  * */
 export const locationState = atom<LocationProps>({
   key: `${COMMON_STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
-    address: '',
     latitude: 37.5704,
     longitude: 126.9922,
   },
@@ -47,7 +45,7 @@ export const locationState = atom<LocationProps>({
 /**
  * 지도 유저창고 아이템 리스트
  *
- * @property name / 아이템명
+ * @property name // 아이템명
  * */
 export const markerItemsState = atom<{ name: string }[]>({
   key: `${PLACE_STORE_KEY.마커아이템}/${new Date().getUTCMilliseconds() * Math.random()}`,

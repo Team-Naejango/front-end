@@ -15,15 +15,16 @@ import { useClearSession } from '@/app/hooks/useClearSession'
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const { ResetToken } = useClearSession()
+  const { resetToken } = useClearSession()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isSplashMounted, setIsSplashMounted] = useRecoilState<boolean>(splashState)
+
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
   useEffect(() => {
     const onBeforeUnload = () => {
-      if (accessToken && !refreshToken) return ResetToken()
+      if (accessToken && !refreshToken) return resetToken()
     }
     window.addEventListener('beforeunload', onBeforeUnload)
     return () => {

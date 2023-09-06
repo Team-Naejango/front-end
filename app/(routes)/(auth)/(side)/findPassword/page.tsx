@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 
@@ -15,7 +14,6 @@ interface FormProps {
 }
 
 const FindPassword = () => {
-  const searchParams = useSearchParams()
   const [isEmailValid, setIsEmailValid] = useState<boolean>(false)
 
   const {

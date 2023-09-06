@@ -14,6 +14,14 @@ export interface NearbyStorageParam {
   page: string
   // 조회수
   size: string
+  // 카테고리 ID
+  cat?: string
+  // 검색 키워드(2~10자)
+  keyword?: string
+  // BUY/SELL
+  type?: string
+  // 상태 (true/false)
+  status?: string
 }
 
 /**
@@ -21,5 +29,5 @@ export interface NearbyStorageParam {
  *
  */
 export async function nearbyStorage(params: NearbyStorageParam): Promise<Response<{ data: Storage }>> {
-  return withAuth.get('/api/storage/nearby', { params })
+  return withAuth.get('/api/storage/search', { params })
 }

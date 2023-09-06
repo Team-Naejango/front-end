@@ -13,7 +13,7 @@ import { useClearSession } from '@/app/hooks/useClearSession'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
-  const { ResetToken } = useClearSession()
+  const { resetToken } = useClearSession()
 
   useEffect(() => {
     const requestInterceptor = withAuth.interceptors.request.use(
@@ -31,7 +31,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           } as AxiosRequestHeaders
         }
         // else {
-        //   ResetToken()
+        //   resetToken()
         //   toast.error('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
         //   router.replace('/login')
         // }

@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
@@ -14,10 +15,14 @@ import { modalSelector } from '@/app/store/modal'
 import { cls } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
-import { Item, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ItemList, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
+import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
+import { joinChat } from '@/app/apis/domain/chat/chanel'
+import { joinGroupChat } from '@/app/apis/domain/chat/chat'
+import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps */
 
@@ -28,10 +33,11 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 interface PreviewCardProps {
   previews: Storages[]
-  dragedPreviews: Item[]
+  dragedPreviews: ItemList
   isDragedMixture: boolean
   activedItem: string
   kakaoMap: kakao.maps.Map | null
+  info: Storages | null
   setInfo: Dispatch<SetStateAction<Storages | null>>
   setIsDragedMixture: Dispatch<SetStateAction<boolean>>
 }
@@ -42,9 +48,11 @@ const PreviewCard = ({
   isDragedMixture,
   activedItem,
   kakaoMap,
+  info,
   setInfo,
   setIsDragedMixture,
 }: PreviewCardProps) => {
+  const router = useRouter()
   const query = useQueryClient()
   const { openModal } = useModal()
   const previewState = useRecoilValue(modalSelector('preview'))
@@ -56,6 +64,15 @@ const PreviewCard = ({
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
     enabled: !isDragedMixture,
   })
+
+  // 창고 그룹 채널 조회
+  const { data: { data: groupChat } = {} } = useQuery(
+    [WAREHOUSE.그룹채널조회, info],
+    () => storageGroupChannel(String(info?.id)),
+    {
+      enabled: !isDragedMixture,
+    }
+  )
 
   // 팔로우 등록
   const { mutate: mutateFollow } = useMutation(saveFollow, {
@@ -77,13 +94,38 @@ const PreviewCard = ({
     },
   })
 
+  // 개인 채팅 개설
+  const { mutate: mutateJoin } = useMutation(joinChat, {
+    onSuccess: data => {
+      console.log('1:1 데이터:', data.data)
+      router.push(`/chats/${data.data.channelId}`)
+      toast.success('개인 채팅방 입장하였습니다.')
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  // 그룹 채팅방 참여
+  const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
+    onSuccess: data => {
+      console.log('그룹 데이터:', data.data)
+      router.push(`/chats/${data.data.channelId}`)
+      toast.success('그룹 채팅방 입장하였습니다.')
+      // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 id 를 응답합니다.
+      // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
   const onSelectedChatModal = () => {
     openModal({
       modal: {
         id: 'chat',
         type: MODAL_TYPES.ALERT,
         title: '채팅방 선택',
-        // content: '채팅방을 선택해주세요.',
       },
     })
   }
@@ -95,11 +137,10 @@ const PreviewCard = ({
       modal: { id: 'preview', type: MODAL_TYPES.CONFIRM },
       callback: () => {
         onSelectedChatModal()
-        // toast.success('채팅신청이 완료되었습니다.')
       },
     })
     setMarkerItemsValue(
-      dragedPreviews.map(data => ({
+      dragedPreviews.itemList.map(data => ({
         name: data.name,
       }))
     )
@@ -124,14 +165,16 @@ const PreviewCard = ({
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
   }
 
+  // 채팅방 참여
   const selectedChatType = (type: '개인' | '그룹') => {
-    // if (!type) return
-    // if (type === '개인') {
-    /* 개인 채팅방 입장 API + router.push */
-    // } else {
-    // /api/chat/group/{channelId} post
-    /* 그룹 채팅방 입장 API + router.push */
-    // }
+    if (!type) return
+    if (!groupChat) return
+
+    if (type === '개인') {
+      mutateJoin(String(dragedPreviews.userId))
+    } else {
+      mutateGroupJoin(String(groupChat.channelInfo.channelId))
+    }
   }
 
   return (
@@ -147,7 +190,7 @@ const PreviewCard = ({
               'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll rounded border'
             )}>
             {isDragedMixture
-              ? dragedPreviews?.map(item => {
+              ? dragedPreviews?.itemList.map(item => {
                   return (
                     <li
                       key={`${uuid()}_${item.itemId}`}

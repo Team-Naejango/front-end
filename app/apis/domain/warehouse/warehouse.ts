@@ -100,11 +100,11 @@ export async function modifyStorage(params: {
 }
 
 /**
- * 창고 그룹 채팅 조회
+ * 창고 그룹 채널 조회
  *
  * @param storageId // 창고 id
  * */
-export async function storageGroupChat(storageId: string): Promise<Response<{ data: StorageGroupChat }>> {
+export async function storageGroupChannel(storageId: string): Promise<Response<{ data: StorageGroupChat }>> {
   return withAuth.get(`/api/storage/${storageId}/channel`)
 }
 

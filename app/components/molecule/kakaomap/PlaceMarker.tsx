@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useLayoutEffect, Dispatch, SetStateAction } from 'react'
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
 import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
@@ -11,7 +11,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
-import { LocationProps } from '@/app/hooks/useGeolocation'
+import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
 import { Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
@@ -58,7 +58,8 @@ const PlaceMarker = ({
   info,
   setInfo,
 }: EventProps) => {
-  const userArea = useRecoilValue<{ address?: string; latitude: number; longitude: number }>(locationState)
+  const { getUserAddress } = useGeolocation()
+  const userArea = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
   const setSelectedTitle = useSetRecoilState<string>(activatedWareHouseTitleState)
 
   // let isUseBounds = true
@@ -97,9 +98,11 @@ const PlaceMarker = ({
         setIsUpdatePreview(true)
         const bounds = new window.kakao.maps.LatLngBounds()
 
-        const newMarkers = storage?.content.map(value => {
+        getUserAddress()
+
+        const newMarkers = storage?.searchResult.map(value => {
           const markers = {
-            id: value.id,
+            id: Number(value.storageId),
             address: value.address,
             description: value.description,
             imgUrl: value.imgUrl,
@@ -108,6 +111,7 @@ const PlaceMarker = ({
               longitude: value.coord.longitude,
             },
             name: value.name,
+            distance: value.distance,
           }
 
           bounds.extend(new window.kakao.maps.LatLng(Number(value.coord.latitude), Number(value.coord.longitude)))
@@ -128,7 +132,6 @@ const PlaceMarker = ({
     },
     [kakaoMap, storage]
   )
-
   // 키워드 카카오 지도 검색
   // const keywordSearch = useCallback(
   //   (type: string | undefined, query?: string) => {
@@ -230,9 +233,9 @@ const PlaceMarker = ({
           // }}
           onDragEnd={async map => {
             const storage = await refetch()
-            const markers = storage.data?.data.content.map(value => {
+            const markers = storage.data?.data.searchResult.map(value => {
               return {
-                id: value.id,
+                id: Number(value.storageId),
                 address: value.address,
                 description: value.description,
                 imgUrl: value.imgUrl,

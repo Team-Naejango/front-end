@@ -14,7 +14,7 @@ export type ChatInfoList = {
   // 안읽은 메세지 수
   unreadCount: number
   // 마지막 대화 시각
-  lastChatAt: Date
+  lastChatAt: string
 }
 
 /**

@@ -10,14 +10,14 @@ import SelectBox from '@/app/components/atom/SelectBox'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import TextArea from '@/app/components/atom/TextArea'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
-import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ItemList } from '@/app/apis/types/domain/warehouse/warehouse'
 import { cls } from '@/app/libs/client/utils/util'
 
 import { wish, saveWish, unWish } from '@/app/apis/domain/profile/wish'
 
 interface CardSelectProps {
   title: string
-  dragedPreviews: Item[]
+  dragedPreviews: ItemList
   isDragedMixture: boolean
 }
 
@@ -31,7 +31,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   const markerItemsValue = useRecoilValue<{ name: string }[]>(markerItemsState)
   const selectedTitle = useRecoilValue<string>(activatedWareHouseTitleState)
 
-  const itemInfo = dragedPreviews.find(v => v.name === selectedType.name)
+  const itemInfo = dragedPreviews.itemList.find(v => v.name === selectedType.name)
 
   const {
     register,

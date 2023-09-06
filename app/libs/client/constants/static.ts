@@ -60,6 +60,9 @@ const STORAGES: { id: number; name: string }[] = [
 // 판매 상태
 const KEEP_TYPES: { name: string }[] = [{ name: 'BUY' }, { name: 'SELL' }]
 
+// 거래 종류
+const EXCHANGE_TYPES: { name: string }[] = [{ name: '개인거래' }, { name: '공동구매' }]
+
 // 이벤트 정보
 const HOMEIMAGES = [
   {
@@ -132,6 +135,7 @@ export {
   CATEGORIES,
   STORAGES,
   KEEP_TYPES,
+  EXCHANGE_TYPES,
   HOMEIMAGES,
   WAREHOUSEIMAGES,
 }

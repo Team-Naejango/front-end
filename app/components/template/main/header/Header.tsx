@@ -9,6 +9,7 @@ import mapIcon from '@/app/assets/image/map.svg'
 import noticeIcon from '@/app/assets/image/notice.svg'
 
 import { cls } from '@/app/libs/client/utils/util'
+import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 
 interface LayoutProps {
   seoTitle: string | undefined
@@ -24,6 +25,8 @@ const Header = ({
   src = 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png',
 }: LayoutProps) => {
   const router = useRouter()
+
+  const address = typeof localStorage === 'undefined' ? undefined : localStorage.getItem(COMMON_STORE_KEY.주소)
 
   const onClickNotice = () => {
     if (setting) return
@@ -42,7 +45,7 @@ const Header = ({
               <span>근처동네</span>
               <div className='mt-1 flex items-center justify-center gap-1'>
                 <Image src={mapIcon} alt={'지도 아이콘'} />
-                <p className={'text-sm font-light text-[#8B8688]'}>서울, 여의도한강공원</p>
+                <p className={'text-sm font-light text-[#8B8688]'}>{address || '현재 위치'}</p>
               </div>
             </div>
             <div

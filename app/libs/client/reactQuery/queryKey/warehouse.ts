@@ -12,4 +12,5 @@ export const WAREHOUSE = {
   등록: 'createWarehouse',
   조회: 'readWarehouse',
   상세: 'detailWarehouse',
+  그룹채널조회: 'detailGroupChatWarehouse',
 } as const
