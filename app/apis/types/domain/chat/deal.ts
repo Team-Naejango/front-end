@@ -2,13 +2,13 @@
  * 거래 정보
  */
 export interface Transaction {
-  // id
+  // 거레 id
   id: number
-  // 날짜
+  // 거래 금액
   amount: number
-  // 금액
+  // 거래 날짜 및 시간
   date: string
-  // 상태
+  // 거래 상태(구매/판매)
   status: string
   // 거래자 이름
   traderName: string
@@ -22,13 +22,13 @@ export interface Transaction {
  * 거래 등록
  */
 export interface Deal {
-  // id
+  // 거래 id
   id?: number
-  // 금액
+  // 거래 날짜 및 시간
   date: string
-  // 날짜
+  // 거래 금액
   amount: number
-  // 상태
+  // 거래 상태
   status?: string
   // 유저 id
   userId?: number

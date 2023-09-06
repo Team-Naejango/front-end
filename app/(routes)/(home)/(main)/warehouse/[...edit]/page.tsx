@@ -55,8 +55,6 @@ const WarehouseEdit = () => {
   const seq = searchParams.get('seq')
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
 
-  console.log('isEditMode:', isEditMode)
-
   const {
     register,
     handleSubmit,
@@ -302,7 +300,7 @@ const WarehouseEdit = () => {
               readOnly
               essential
               disabled={isEditMode}
-              className={cls('!indent-6', isEditMode ? 'bg-[#eee]' : '')}
+              className={cls('!indent-6')}
               register={register('address', { required: '지역을 설정해주세요.' })}
               onClick={() => setStep(STEP.위치선택)}
               icon={

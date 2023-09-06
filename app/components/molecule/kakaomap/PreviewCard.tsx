@@ -1,23 +1,30 @@
-import React from 'react'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import React, { Dispatch, SetStateAction } from 'react'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import uuid from 'react-uuid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { positions } from '@/app/(routes)/(home)/(main)/places/dummyData'
 import CardSelectModal from '@/app/components/molecule/kakaomap/CardSelectModal'
 import { modalSelector } from '@/app/store/modal'
 import { cls } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
-import { Item, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ItemList, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import Button from '@/app/components/atom/Button'
+import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
+import { joinChat } from '@/app/apis/domain/chat/chanel'
+import { joinGroupChat } from '@/app/apis/domain/chat/chat'
+import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
+
+/* global kakao, maps */
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -25,25 +32,47 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 })
 
 interface PreviewCardProps {
-  previews: [Storages]
-  dragedPreviews: Item[]
+  previews: Storages[]
+  dragedPreviews: ItemList
   isDragedMixture: boolean
   activedItem: string
+  kakaoMap: kakao.maps.Map | null
+  info: Storages | null
+  setInfo: Dispatch<SetStateAction<Storages | null>>
+  setIsDragedMixture: Dispatch<SetStateAction<boolean>>
 }
 
-const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }: PreviewCardProps) => {
+const PreviewCard = ({
+  previews,
+  dragedPreviews,
+  isDragedMixture,
+  activedItem,
+  kakaoMap,
+  info,
+  setInfo,
+  setIsDragedMixture,
+}: PreviewCardProps) => {
+  const router = useRouter()
   const query = useQueryClient()
-  const modalState = useRecoilValue(modalSelector('Preview'))
-  const { openModal, closeModal } = useModal()
-  const [markerItemsValue, setMarkerItemsValue] = useRecoilState<{ name: any }[]>(markerItemsState)
-  const [wareHouseTitleValue, setWareHouseTitleValue] = useRecoilState<string>(activatedWareHouseTitleState)
-
-  console.log('isDragedMixture:', isDragedMixture)
+  const { openModal } = useModal()
+  const previewState = useRecoilValue(modalSelector('preview'))
+  const chatState = useRecoilValue(modalSelector('chat'))
+  const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
+  const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
     enabled: !isDragedMixture,
   })
+
+  // 창고 그룹 채널 조회
+  const { data: { data: groupChat } = {} } = useQuery(
+    [WAREHOUSE.그룹채널조회, info],
+    () => storageGroupChannel(String(info?.id)),
+    {
+      enabled: !isDragedMixture,
+    }
+  )
 
   // 팔로우 등록
   const { mutate: mutateFollow } = useMutation(saveFollow, {
@@ -65,22 +94,70 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
     },
   })
 
-  const onClickShowModal = (value: string) => {
-    setWareHouseTitleValue(value)
+  // 개인 채팅 개설
+  const { mutate: mutateJoin } = useMutation(joinChat, {
+    onSuccess: data => {
+      console.log('1:1 데이터:', data.data)
+      router.push(`/chats/${data.data.channelId}`)
+      toast.success('개인 채팅방 입장하였습니다.')
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  // 그룹 채팅방 참여
+  const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
+    onSuccess: data => {
+      console.log('그룹 데이터:', data.data)
+      router.push(`/chats/${data.data.channelId}`)
+      toast.success('그룹 채팅방 입장하였습니다.')
+      // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 id 를 응답합니다.
+      // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
+  const onSelectedChatModal = () => {
     openModal({
-      modal: { id: 'Preview', type: MODAL_TYPES.CONFIRM },
-      callback: () => {
-        toast.success('교환신청이 완료되었습니다.')
+      modal: {
+        id: 'chat',
+        type: MODAL_TYPES.ALERT,
+        title: '채팅방 선택',
       },
     })
-    // setMarkerItemsValue([{ name: previews.map(data => data.content) }])
+  }
+
+  // 모달창 오픈
+  const onClickShowModal = (value: string) => {
+    setSelectedTitle(value)
+    openModal({
+      modal: { id: 'preview', type: MODAL_TYPES.CONFIRM },
+      callback: () => {
+        onSelectedChatModal()
+      },
+    })
     setMarkerItemsValue(
-      positions.map(data => ({
-        name: data.content,
+      dragedPreviews.itemList.map(data => ({
+        name: data.name,
       }))
     )
   }
 
+  // 프리뷰 창고목록 클릭 시
+  const onClickPreview = (marker: Storages) => {
+    if (!marker) return
+
+    setInfo(marker)
+    const place = new window.kakao.maps.LatLng(Number(marker.coord.latitude), Number(marker.coord.longitude))
+    kakaoMap && kakaoMap.panTo(place)
+    setIsDragedMixture(true)
+    setSelectedTitle(marker.name)
+  }
+
+  // 팔로우 구독/취소
   const onClickFollow = (storageId: number) => {
     if (!storageId) return
 
@@ -88,15 +165,32 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
   }
 
-  console.log('follows:', follows)
+  // 채팅방 참여
+  const selectedChatType = (type: '개인' | '그룹') => {
+    if (!type) return
+    if (!groupChat) return
+
+    if (type === '개인') {
+      mutateJoin(String(dragedPreviews.userId))
+    } else {
+      mutateGroupJoin(String(groupChat.channelInfo.channelId))
+    }
+  }
 
   return (
     <>
       <div className={'mt-2 h-[200px] overflow-hidden py-2.5'}>
-        {previews ? (
-          <ul className={'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll'}>
+        {!isDragedMixture && previews.length === 0 ? (
+          <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
+            <p className={'text-[13px]'}>범위에 존재하는 아이템이 없습니다.</p>
+          </div>
+        ) : (
+          <ul
+            className={cls(
+              'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll rounded border'
+            )}>
             {isDragedMixture
-              ? dragedPreviews?.map(item => {
+              ? dragedPreviews?.itemList.map(item => {
                   return (
                     <li
                       key={`${uuid()}_${item.itemId}`}
@@ -107,7 +201,7 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
                       <div
                         role='presentation'
                         className={'w-full p-4'}
-                        onClick={() => onClickShowModal(item.name ?? wareHouseTitleValue)}>
+                        onClick={() => onClickShowModal(item.name || selectedTitle)}>
                         <span
                           className={cls(
                             'mr-1.5 rounded px-1 py-1 text-[10px] text-white',
@@ -128,10 +222,7 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
                         'relative w-full cursor-pointer rounded border text-xs hover:bg-[#eee]',
                         isDragedMixture ? '' : 'flex justify-between'
                       )}>
-                      <div
-                        role='presentation'
-                        className={'w-full p-4'}
-                        onClick={() => onClickShowModal(item.name ?? wareHouseTitleValue)}>
+                      <div role='presentation' className={'w-full p-4'} onClick={() => onClickPreview(item)}>
                         {item.name}
                       </div>
                       <span
@@ -156,20 +247,26 @@ const PreviewCard = ({ previews, dragedPreviews, isDragedMixture, activedItem }:
                   )
                 })}
           </ul>
-        ) : (
-          <div className={'mt-4 flex h-[190px] items-center justify-center'}>
-            <p className={'text-[13px]'}>범위에 존재하는 아이템이 없습니다.</p>
-          </div>
         )}
+        )
       </div>
 
-      {modalState.modal.show ? (
-        <CustomModal id={modalState.modal.id} btn btnTxt={'교환신청'}>
+      {previewState.modal.show ? (
+        <CustomModal id={previewState.modal.id} btn btnTxt={'채팅신청'}>
           <CardSelectModal
-            title={activedItem === '' ? wareHouseTitleValue : activedItem}
+            title={activedItem === '' ? selectedTitle : activedItem}
+            dragedPreviews={dragedPreviews}
             isDragedMixture={isDragedMixture}
-            onClose={() => closeModal(modalState.modal.id)}
           />
+        </CustomModal>
+      ) : null}
+
+      {chatState.modal.show ? (
+        <CustomModal id={chatState.modal.id} type={MODAL_TYPES.ALERT}>
+          <div className={'flex gap-4 py-2'}>
+            <Button small text={'개인 채팅'} className={'!py-2'} onClick={() => selectedChatType('개인')} />
+            <Button small text={'그룹 채팅'} className={'!py-2'} onClick={() => selectedChatType('그룹')} />
+          </div>
         </CustomModal>
       ) : null}
     </>

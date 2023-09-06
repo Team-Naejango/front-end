@@ -1,6 +1,6 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Response } from '@/app/apis/types/response/response'
-import { Deal, Transaction } from '@/app/apis/types/domain/place/deal'
+import { Deal, Transaction } from '@/app/apis/types/domain/chat/deal'
 
 export interface DealParam {
   // 금액
@@ -33,8 +33,8 @@ export async function deal(): Promise<Response<{ data: Transaction[] }>> {
  *
  * @param params
  */
-export async function saveDeal(params: DealParam): Promise<Response<{ deal: Deal }>> {
-  return withAuth.post('/api/transaction', params)
+export async function saveDeal(params: DealParam): Promise<Response<{ data: Deal }>> {
+  return withAuth.post('/api/transaction', { params })
 }
 
 /**
@@ -46,8 +46,8 @@ export async function saveDeal(params: DealParam): Promise<Response<{ deal: Deal
  *
  * @param params
  */
-export async function modifyDeal(params: ModifyParam): Promise<Response<{ deal: ModifyParam }>> {
-  return withAuth.patch(`/api/transaction/${params.transactionId}`)
+export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: ModifyParam }>> {
+  return withAuth.patch(`/api/transaction/${params.transactionId}`, { params })
 }
 
 /**
@@ -75,14 +75,4 @@ export async function complete(transactionId: string): Promise<Response<null>> {
  */
 export async function wire(transactionId: string): Promise<Response<null>> {
   return withAuth.patch(`/api/transaction/remittance/${transactionId}`)
-}
-
-/**
- * 계좌 금액 충전
- *
- * @param amount // 금액
- *
- */
-export async function account(amount: number): Promise<Response> {
-  return withAuth.patch('/api/account', { amount })
 }

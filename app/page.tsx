@@ -12,7 +12,7 @@ import { useClearSession } from '@/app/hooks/useClearSession'
 
 const App: NextPage = () => {
   const router = useRouter()
-  const { ResetToken } = useClearSession()
+  const { resetToken } = useClearSession()
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
   const accessToken = getCookie(AUTH_TOKEN.접근)
 
@@ -21,7 +21,7 @@ const App: NextPage = () => {
       setIsLoggedIn(true)
       router.push('/home')
     } else {
-      ResetToken()
+      resetToken()
       router.push('/')
     }
   }, [])

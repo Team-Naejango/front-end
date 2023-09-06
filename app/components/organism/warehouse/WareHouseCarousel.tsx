@@ -134,7 +134,7 @@ const WareHouseCarousel = ({
                     alt={'창고 이미지'}
                     width={144}
                     height={144}
-                    style={{ objectFit: 'cover', margin: '0 auto' }}
+                    style={{ objectFit: 'cover', width: '144px', height: '144px', margin: '0 auto' }}
                     quality={100}
                   />
                 </Link>

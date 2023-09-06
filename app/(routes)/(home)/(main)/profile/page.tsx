@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
+import face from '@/app/assets/image/face.png'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import SwitchButton from '@/app/components/atom/SwitchButton'
@@ -17,10 +18,9 @@ import { useModal } from '@/app/hooks/useModal'
 import { removeAuthToken } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import Loading from '@/app/loading'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
-import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
-import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { logout as _kill } from '@/app/apis/domain/auth/auth'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
@@ -39,7 +39,7 @@ const Profile = () => {
 
   const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
 
-  const { data: _userInfo } = useQuery<MemberInfo>([OAUTH.유저정보], () => userInfo())
+  const { data: { data: _userInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo())
 
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
@@ -136,9 +136,12 @@ const Profile = () => {
       setting
       seoTitle={'프로필'}
       src={
-        _userInfo?.imgUrl === ('' || undefined)
-          ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
-          : _userInfo.imgUrl
+        _userInfo?.imgUrl === ''
+          ? (face as any)
+          : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
+              _userInfo?.imgUrl as string
+            )}
+            `
       }>
       <div className='mt-12 px-4'>
         <ul className={'flex flex-col gap-3.5'}>
@@ -181,13 +184,6 @@ const Profile = () => {
             <span className={'text-sm'}>거래 내역</span>
             <GrFormNext />
           </li>
-          {/* <li */}
-          {/*  role={'presentation'} */}
-          {/*  onClick={() => onLink('/profile/account')} */}
-          {/*  className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}> */}
-          {/*  <span className={'text-sm'}>계좌 내역</span> */}
-          {/*  <GrFormNext /> */}
-          {/* </li> */}
         </ul>
         <div className={'pb-2 pt-6'}>
           <span className={`block h-[1px] w-full bg-gray-300`} />

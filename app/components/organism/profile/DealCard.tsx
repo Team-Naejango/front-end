@@ -6,9 +6,9 @@ import { useQuery } from '@tanstack/react-query'
 
 import { cls } from '@/app/libs/client/utils/util'
 import RoundedTab, { RoundedTabProps } from '@/app/components/molecule/tab/RoundedTab'
-import { DEAL } from '@/app/libs/client/reactQuery/queryKey/profile/deal'
+import { DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 
-import { deal } from '@/app/apis/domain/profile/deal'
+import { deal } from '@/app/apis/domain/chat/deal'
 
 const DealCard = ({ onClick }: { onClick: () => void }) => {
   const [selectedTab, setSelectedTab] = useState<'BUY' | 'SELL'>('BUY')

@@ -1,3 +1,5 @@
+'use client'
+
 // 팔로우
 export const FOLLOW = {
   조회: 'readFollow',

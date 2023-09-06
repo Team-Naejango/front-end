@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useRef } from 'react'
+import Image from 'next/image'
 
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
-import Image from 'next/image'
 
 const FollowUserItemPopup = ({ items }: { items: Item[] }) => {
   const ref = useRef<HTMLDivElement | null>(null)
@@ -20,7 +20,7 @@ const FollowUserItemPopup = ({ items }: { items: Item[] }) => {
               )}`}
               height={'100'}
               alt='아이템 이미지'
-              className={'h-28 w-28 cursor-pointer rounded-md border border-[#ccc] object-cover'}
+              className={'h-28 w-28 cursor-pointer rounded-md border border-[#ddd] object-cover'}
             />
             {/* hover */}
             <div className='absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-md bg-black bg-opacity-50 opacity-0 transition-opacity hover:opacity-100'>

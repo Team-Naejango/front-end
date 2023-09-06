@@ -17,11 +17,11 @@ const Wish = () => {
   // 관심 조회
   const { data: { data: wishs } = {} } = useQuery([WISH.조회], () => wish())
 
-  // 관심 취소
+  // 관심 삭제
   const { mutate: mutateUnWish } = useMutation(unWish, {
     onSuccess: () => {
       query.invalidateQueries([WISH.조회])
-      toast.success('관심 상품이 취소되었습니다.')
+      toast.success('관심 아이템에서 삭제되었습니다.')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -42,15 +42,7 @@ const Wish = () => {
               <p className={'text-[15px]'}>관심상품 목록이 없습니다.</p>
             </div>
           ) : (
-            wishs?.map(wish => (
-              <WishItemCard
-                key={wish.id}
-                img={wish.imgUrl}
-                hearts
-                title={wish.name}
-                onClick={() => onClickUnWish(wish.id)}
-              />
-            ))
+            wishs?.map(wish => <WishItemCard key={wish.id} hearts wish={wish} onClick={() => onClickUnWish(wish.id)} />)
           )}
         </div>
       </div>

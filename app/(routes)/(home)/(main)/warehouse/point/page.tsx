@@ -12,7 +12,7 @@ import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicke
 import { POINTS } from '@/app/libs/client/constants/static'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
-import { account } from '@/app/apis/domain/profile/deal'
+import { account } from '@/app/apis/domain/warehouse/account'
 
 const PointCharge = () => {
   const query = useQueryClient()

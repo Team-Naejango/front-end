@@ -86,7 +86,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
                           cancel
                           ref={cancelButtonRef}
                           text={'취소'}
-                          className={'ml-2 !py-2'}
+                          className={'ml-3 !py-2'}
                           onClick={() => onCloseModal(id)}
                         />
                       </div>
@@ -110,17 +110,21 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
                           modal.type === MODAL_TYPES.ALERT ? '' : 'mx-auto flex w-[200px] flex-col justify-around gap-4'
                         }`}>
                         {modal.type === MODAL_TYPES.ALERT ? (
-                          <>
-                            {children}
-                            <div className={'mt-4 text-center'}>
-                              <Button
-                                small
-                                text={'확인'}
-                                className={'!flex-grow-0 !py-2'}
-                                onClick={() => modalCallback()}
-                              />
-                            </div>
-                          </>
+                          btn ? (
+                            <>
+                              {children}
+                              <div className={'mt-4 text-center'}>
+                                <Button
+                                  small
+                                  text={'확인'}
+                                  className={'!flex-grow-0 !py-2'}
+                                  onClick={() => modalCallback()}
+                                />
+                              </div>
+                            </>
+                          ) : (
+                            <> {children}</>
+                          )
                         ) : (
                           <>
                             {children}
