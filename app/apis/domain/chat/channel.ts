@@ -9,7 +9,7 @@ export interface GroupChatParam {
   limit: number
   // 채팅 채널 디폴트 제목
   defaultTitle: string
-  // 그룹 채팅이 할당될 창고 id
+  // 그룹 채팅이 할당될 창고 ID
   storageId: number
 }
 
@@ -24,7 +24,7 @@ export async function nearbyGroupChat(): Promise<Response<{ data: Chat }>> {
 /**
  * 특정 채널 참가한 참여자 정보
  *
- * @param channelId // 참여자 조회를 하고자 하는 채널 id
+ * @param channelId // 참여자 조회를 하고자 하는 채널 ID
  */
 export async function groupChatUserInfo(channelId: string): Promise<Response<{ data: GroupChatUserInfo }>> {
   return withAuth.get(`/api/channel/${channelId}/participants`)
@@ -46,7 +46,7 @@ export async function openGroupChat(params: GroupChatParam): Promise<Response<{ 
 /**
  * 특정 회원과 1:1 채팅 개설
  *
- * @param receiverId // 상대방 id
+ * @param receiverId // 상대방 ID
  */
 export async function joinChat(receiverId: string): Promise<Response<{ data: GroupChat }>> {
   return withAuth.post(`/api/channel/private/${receiverId}`)

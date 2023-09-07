@@ -21,7 +21,7 @@ const defaultQueryCache = new QueryCache({
   onError: (error: unknown) => {
     const { name, message } = error as Error
     console.log(`${name}: ${message}`)
-    toast.error('서버 요청 에러가 발생했습니다.')
+    // toast.error('서버 요청 에러가 발생했습니다.')
     return Promise.reject(error)
   },
 })

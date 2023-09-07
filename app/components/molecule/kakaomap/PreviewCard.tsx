@@ -20,7 +20,7 @@ import Button from '@/app/components/atom/Button'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
-import { joinChat } from '@/app/apis/domain/chat/chanel'
+import { joinChat } from '@/app/apis/domain/chat/channel'
 import { joinGroupChat } from '@/app/apis/domain/chat/chat'
 import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 

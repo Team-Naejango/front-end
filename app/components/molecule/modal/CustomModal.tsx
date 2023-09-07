@@ -68,7 +68,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = 'í™
               <Dialog.Panel
                 ref={cancelButtonRef}
                 className={`${
-                  type === MODAL_TYPES.CONFIRM ? 'w-[375px] p-6' : 'w-[330px] px-5 pb-2 pt-6 text-center'
+                  type === MODAL_TYPES.CONFIRM ? 'w-[375px] p-6' : 'w-[330px] px-5 py-2 text-center'
                 } max-w-md transform rounded-2xl bg-white text-left align-middle shadow-xl transition-all`}>
                 {type === MODAL_TYPES.CONFIRM ? (
                   <>
@@ -95,7 +95,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = 'í™
                 ) : (
                   <>
                     {modal.title && (
-                      <Dialog.Title as='h2' className='text-lg font-semibold'>
+                      <Dialog.Title as='h2' className='pt-4 text-lg font-semibold'>
                         {modal.title}
                       </Dialog.Title>
                     )}

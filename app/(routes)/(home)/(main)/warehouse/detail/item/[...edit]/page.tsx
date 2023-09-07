@@ -19,7 +19,7 @@ import InputFile from '@/app/components/atom/InputFile'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { OmitStorageIdItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { CATEGORIES, EXCHANGE_TYPES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/static'
+import { CATEGORIES, DEAL_TYPES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/static'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 
 import {
@@ -29,7 +29,7 @@ import {
   modifyStorageItem,
   storage as _storage,
 } from '@/app/apis/domain/warehouse/warehouse'
-import { openGroupChat } from '@/app/apis/domain/chat/chanel'
+import { openGroupChat } from '@/app/apis/domain/chat/channel'
 
 interface ItemProps {
   name: string
@@ -49,7 +49,7 @@ const EditItem = () => {
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
   const [selectedStorage, setSelectedStorage] = useState<{ id: number; name?: string }[]>([STORAGES[0]])
   const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
-  const [selectedExchangeType, setSelectedExchangeType] = useState<{ name: string }>(EXCHANGE_TYPES[0])
+  const [selectedExchangeType, setSelectedExchangeType] = useState<{ name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
 
@@ -351,7 +351,7 @@ const EditItem = () => {
         <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
         <SelectBox
           title={'거래'}
-          data={EXCHANGE_TYPES}
+          data={DEAL_TYPES}
           selected={selectedExchangeType}
           setSelected={setSelectedExchangeType}
           essential

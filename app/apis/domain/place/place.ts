@@ -2,7 +2,6 @@ import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Response } from '@/app/apis/types/response/response'
 import { Storage } from '@/app/apis/types/domain/warehouse/warehouse'
 
-// 근처 창고
 export interface NearbyStorageParam {
   // 경도
   lon: string
@@ -21,7 +20,7 @@ export interface NearbyStorageParam {
   // BUY/SELL
   type?: string
   // 상태 (true/false)
-  status?: string
+  status?: boolean
 }
 
 /**

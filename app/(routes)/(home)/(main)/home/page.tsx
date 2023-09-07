@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useLayoutEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
 
 import Layout from '@/app/components/template/main/layout/Layout'

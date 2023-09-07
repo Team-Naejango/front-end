@@ -1,9 +1,9 @@
 /* ******************************** 챗 ******************************** */
 
 export type ChatInfoList = {
-  // 채널 id
+  // 채널 ID
   channelId: number
-  // 채팅 id
+  // 채팅 ID
   chatId: number
   // 채팅 타입(개인, 그룹)
   chatType: string
@@ -30,10 +30,10 @@ export interface Chat {
 }
 
 /**
- * 채팅방 id 정보
+ * 채팅방 ID 정보
  */
 export interface ChatId {
-  // 내 채팅방의 id(없으면 null)
+  // 내 채팅방의 ID(없으면 null)
   chatId: number | null
   // 조회 결과 메세지
   message: string
@@ -43,7 +43,7 @@ export interface ChatId {
  * 채팅방 이름 정보
  */
 export interface ChatName {
-  // 제목이 변경된 채팅방 id
+  // 제목이 변경된 채팅방 ID
   chatId: number
   // 변경된 제목
   changedTitle: string
@@ -55,16 +55,16 @@ export interface ChatName {
  * 그룹 채팅방 정보
  */
 export interface GroupChat {
-  // 내 채팅방 id
+  // 내 채팅방 ID
   chatId: number
-  // 참여한 채널 id
+  // 참여한 채널 ID
   channelId: number
   // 그룹 채널 참여 결과 메세지
   message: string
 }
 
 export type Participant = {
-  // 참여자 id
+  // 참여자 ID
   participantId: number
   // 참여자 닉네임
   nickname: string

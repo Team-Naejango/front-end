@@ -13,9 +13,9 @@ export async function chat(): Promise<Response<{ data: Chat }>> {
 }
 
 /**
- * 특정 채널의 내 채팅방 id 조회
+ * 특정 채널의 내 채팅방 ID 조회
  *
- * @param channelId // 조회하고자 하는 채널 id
+ * @param channelId // 조회하고자 하는 채널 ID
  */
 export async function getChatId(channelId: string): Promise<Response<{ data: ChatId }>> {
   return withAuth.get(`/api/chat/${channelId}/myChat`)
@@ -24,7 +24,7 @@ export async function getChatId(channelId: string): Promise<Response<{ data: Cha
 /**
  * 채팅방 제목 변경
  *
- * @param params.chatId // 변경하고자 하는 채팅방 id
+ * @param params.chatId // 변경하고자 하는 채팅방 ID
  * @param params.title // 변경할 제목
  *
  * @param params
@@ -36,7 +36,7 @@ export async function convertedName(params: { chatId: string; title: string }): 
 /**
  * 채팅방 종료
  *
- * @param chatId // 종료하고자 하는 채팅방 id
+ * @param chatId // 종료하고자 하는 채팅방 ID
  */
 export async function deleteChat(chatId: string): Promise<Response<{ data: ChatId }>> {
   return withAuth.delete(`/api/chat/${chatId}`)
@@ -45,7 +45,7 @@ export async function deleteChat(chatId: string): Promise<Response<{ data: ChatI
 /**
  * 그룹 채팅 참여
  *
- * @param channelId // 그룹 채널 id
+ * @param channelId // 그룹 채널 ID
  */
 export async function joinGroupChat(channelId: string): Promise<Response<{ data: GroupChat }>> {
   return withAuth.post(`/api/chat/group/${channelId}`)
