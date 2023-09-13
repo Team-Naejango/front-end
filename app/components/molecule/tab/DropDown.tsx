@@ -3,6 +3,7 @@
 import React, { Fragment } from 'react'
 import { Menu } from '@headlessui/react'
 import { CiMenuKebab } from 'react-icons/ci'
+import { IoLogOutOutline, IoSettingsOutline } from 'react-icons/io5'
 
 import { cls } from '@/app/libs/client/utils/util'
 
@@ -43,6 +44,8 @@ const DropDown = ({ title, labels, onClick }: DropDownProps) => {
                       active ? 'bg-[#33CC99] text-white' : 'text-gray-900'
                     )}
                     onClick={() => (onClick ? onClick(value.label) : {})}>
+                    {value.label === '설정' && <IoSettingsOutline className={'mr-1.5'} />}
+                    {value.label === '나가기' && <IoLogOutOutline className={'mr-1.5'} />}
                     {value.label}
                   </span>
                 )}

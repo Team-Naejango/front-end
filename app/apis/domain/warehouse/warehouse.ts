@@ -13,7 +13,7 @@ import {
 export interface StorageParam {
   // 이름
   name: string
-  // 이미지 url
+  // 이미지 URL
   imgUrl: string
   // 설명
   description: string
@@ -49,7 +49,7 @@ export async function storage(): Promise<Response<{ data: StorageInfo }>> {
  * 창고 등록
  *
  * @param params.name // 이름
- * @param params.imgUrl // 이미지 url
+ * @param params.imgUrl // 이미지 URL
  * @param params.description // 설명
  * @param params.address // 주소
  * @param params.longitude // 좌표값 X
@@ -86,7 +86,7 @@ export async function deleteStorage(storageId: string): Promise<Response<null>> 
  * 창고 수정
  *
  * @param params.name // 이름
- * @param params.imgUrl  // 이미지 url
+ * @param params.imgUrl  // 이미지 URL
  * @param params.description // 설명
  *
  */
@@ -102,10 +102,10 @@ export async function modifyStorage(params: {
 /**
  * 창고 그룹 채널 조회
  *
- * @param storageId // 창고 id
+ * @param itemId // 공동 구매 아이템 ID
  * */
-export async function storageGroupChannel(storageId: string): Promise<Response<{ data: StorageGroupChat }>> {
-  return withAuth.get(`/api/storage/${storageId}/channel`)
+export async function storageGroupChannel(itemId: string): Promise<Response<{ data: StorageGroupChat }>> {
+  return withAuth.get(`/api/storage/${itemId}/channel`)
 }
 
 /* ************************************ 아이템 엔터티 ************************************ */
@@ -113,7 +113,7 @@ export async function storageGroupChannel(storageId: string): Promise<Response<{
 /**
  * 아이템 조회
  *
- * @param itemId // 아이템 id
+ * @param itemId // 아이템 ID
  */
 export async function itemInfo(itemId: string | null): Promise<Response<{ data: ItemInfo }>> {
   return withAuth.get(`/api/item/${itemId}`)
@@ -124,10 +124,10 @@ export async function itemInfo(itemId: string | null): Promise<Response<{ data: 
  *
  * @param params.name // 이름
  * @param params.description // 설명
- * @param params.imgUrl // 이미지 url
+ * @param params.imgUrl // 이미지 URL
  * @param params.type // 타입
  * @param params.category // 카테고리
- * @param params.storageIdList[] // 창고 id
+ * @param params.storageIdList[] // 창고 ID
  *
  * @params params
  */
@@ -138,10 +138,10 @@ export async function saveItem(params: ItemParams): Promise<Response<null>> {
 /**
  * 아이템 수정
  *
- * @param itemId // 아이템 id
+ * @param itemId // 아이템 ID
  * @param params.name // 이름
  * @param params.description // 설명
- * @param params.imgUrl // 이미지 url
+ * @param params.imgUrl // 이미지 URL
  * @param params.type // 타입
  * @param params.category // 카테고리
  *
@@ -158,8 +158,8 @@ export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo):
 /**
  * 아이템 창고 수정
  *
- * @param params.itemId // 아이템 id
- * @param params.storageIdList[] // 창고 id
+ * @param params.itemId // 아이템 ID
+ * @param params.storageIdList[] // 창고 ID
  *
  * @param params
  */

@@ -48,7 +48,7 @@ export type Storages = {
   id: number
   // 이름
   name: string
-  // 이미지 url
+  // 이미지 URL
   imgUrl: string
   // 설명
   description: string
@@ -104,12 +104,12 @@ export interface ItemList {
 /* ******************************** 창고 그룹 채널 ******************************** */
 
 export type ChannelInfo = {
-  // 채팅 id
+  // 채팅 ID
   channelId: number
-  // 개설한 유저 id
+  // 개설한 유저 ID
   ownerId: number
-  // 창고 id
-  storageId: number
+  // 창고 ID
+  itemId: number
   // 참여한 인원
   participantsCount: number
   // 채팅방 이름
@@ -138,7 +138,7 @@ export interface ItemParams {
   name: string
   // 아이템 설명
   description: string
-  // 이미지 url
+  // 이미지 URL
   imgUrl: string
   // 타입
   type: string
@@ -153,6 +153,6 @@ export interface ItemParams {
  */
 export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageIdList'>
 export interface ItemInfo extends OmitStorageIdItemInfo {
-  // 아이템 id
+  // 아이템 ID
   id: string
 }

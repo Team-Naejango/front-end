@@ -4,10 +4,10 @@ import React, { useLayoutEffect, useRef } from 'react'
 import Image from 'next/image'
 import gsap from 'gsap'
 import { useSetRecoilState } from 'recoil'
+import splashLogo from '@/app/assets/image/splash_logo_white.svg'
 
 import { cls } from '@/app/libs/client/utils/util'
 import { splashState } from '@/app/store/atom'
-import splashLogo from '@/app/assets/image/splash_logo_white.svg'
 
 interface SplashProps {
   isSplashMounted: boolean

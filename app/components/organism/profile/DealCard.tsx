@@ -14,9 +14,9 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
   const [selectedTab, setSelectedTab] = useState<'BUY' | 'SELL'>('BUY')
 
   // 거래 조회
-  const { data: { data: _deal } = {} } = useQuery([DEAL.조회], () => deal())
+  const { data: { data: deals } = {} } = useQuery([DEAL.조회], () => deal())
 
-  const [deals] = useState({
+  const [dummyData] = useState({
     구매: [
       {
         id: 1,
@@ -65,11 +65,11 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
     ],
   })
 
-  // const filteredDealList = _deal?.filter(item => item.type === selectedTab)
+  // const filteredDealList = deals?.filter(item => item.type === selectedTab)
 
   return (
     <RoundedTab setSelectedTab={setSelectedTab}>
-      {Object.values(deals).map(deal => (
+      {Object.values(dummyData).map(deal => (
         <Tab.Panel key={deal[0].title} className={cls('rounded-xl bg-white pb-5 pt-2')}>
           <span className={'mr-1 flex justify-end text-[13px]'}>{deal.length} 건</span>
           {/* <ul className={'flex flex-col p-0.5'}> */}

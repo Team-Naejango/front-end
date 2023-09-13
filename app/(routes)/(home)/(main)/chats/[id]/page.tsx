@@ -25,6 +25,7 @@ import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import SettingModal from '@/app/components/organism/chat/SettingModal'
+import MenuBox from '@/app/components/organism/chat/MenuBox'
 
 import { deleteChat, getChatId } from '@/app/apis/domain/chat/chat'
 
@@ -48,18 +49,20 @@ const ChatDetail: NextPage = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const query = getQueryClient()
+  const { openModal } = useModal()
   const client = useRef<CompatClient>()
   const scrollRef = useRef<HTMLDivElement>(null)
   const accessToken = getCookie(AUTH_TOKEN.접근)
-  const { openModal } = useModal()
   const [chatMessageList, setChatMessageList] = useState<MessageForm[]>([])
+  const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const setting = useRecoilValue(modalSelector('setting'))
 
+  const chatType = searchParams.get('chatType')
   const title = searchParams.get('title')
 
   const { register, handleSubmit, reset } = useForm<MessageForm>({ mode: 'onSubmit' })
 
-  // 채팅방 ID 조회
+  // 내 채팅방 ID 조회
   const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(params.id), {
     enabled: !!params,
   })
@@ -132,27 +135,50 @@ const ChatDetail: NextPage = () => {
     }
   }
 
+  const selectedMenuBox = (open: boolean) => {
+    setIsOpenBox(open)
+  }
+
   // 드롭다운 라벨링
   const labels = [{ label: '설정' }, { label: '나가기' }]
 
   return (
     <Layout canGoBack title={title!}>
       <DropDown labels={labels} onClick={onDropdownSelection} />
-      <div className='mt-8 space-y-4 py-10 pb-16'>
+      <div className='space-y-6 py-10 pb-16'>
+        <span className={'block text-center text-xs'}>2023.08.29 (화)</span>
         {dummyData.map(data => {
           return <Message key={data.message} message={data.message} avatarUrl={''} reversed={data.reversed} />
         })}
         <div ref={scrollRef} />
-        <form onSubmit={handleSubmit(onSend)} className='fixed inset-x-4 bottom-20 bg-white py-2'>
-          <div className='relative mx-auto flex w-full  max-w-md items-center'>
+        <form
+          onSubmit={handleSubmit(onSend)}
+          className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white py-2 pb-5'>
+          <MenuBox
+            channelId={params.id}
+            chatId={chatId?.chatId || null}
+            chatType={chatType || null}
+            isOpen={isOpenBox}
+            onClick={e => {
+              e.preventDefault()
+              selectedMenuBox(true)
+            }}
+          />
+          <div
+            role={'presentation'}
+            className='relative mx-auto flex w-[90%] items-center'
+            onClick={e => {
+              e.preventDefault()
+              selectedMenuBox(false)
+            }}>
             <InputField
               type={'text'}
               register={register('message', {
                 required: true,
               })}
-              className='w-full !rounded-full border-gray-300 pr-12 !indent-2 shadow-sm focus:border-[#33CC99] focus:outline-none focus:ring-[#33CC99]'
+              className='mt-4 w-full !rounded-full border-gray-300 pr-12 !indent-2 shadow-sm focus:border-[#33CC99] focus:outline-none focus:ring-[#33CC99]'
             />
-            <div className='absolute inset-y-0 right-0 flex py-1.5 pr-1.5'>
+            <div className='absolute inset-y-0 right-0 mt-4 flex py-1.5 pr-1.5'>
               <button className='flex items-center rounded-full bg-[#33CC99] px-4 text-[15px] text-white hover:bg-[#32D7A0] focus:ring-2 focus:ring-[#33CC99] focus:ring-offset-2'>
                 &rarr;
               </button>

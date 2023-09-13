@@ -31,7 +31,7 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
   } = useForm<SettingProps>({ mode: 'onSubmit', reValidateMode: 'onChange' })
 
   // 채팅 참여자 정보
-  const { data: { data: memberInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId), {
+  const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId), {
     enabled: !!channelId,
   })
 
@@ -52,7 +52,7 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
 
   return (
     <div>
-      <h2 className={'text-center text-lg font-semibold'}>설정</h2>
+      <h2 className={'text-center'}>설정</h2>
       <button
         type='button'
         onClick={() => closeModal('setting')}
@@ -64,7 +64,7 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
       </button>
 
       <div className={'mt-6'}>
-        <h3 className={'mb-1 text-left text-[13px] font-semibold'}>방 제목</h3>
+        <h3 className={'mb-2 text-left text-xs font-medium leading-none text-gray-700'}>방 제목</h3>
         <div className={'flex items-center'}>
           <InputField
             type='text'
@@ -82,9 +82,11 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
       </div>
 
       <div className={'mt-6'}>
-        <h3 className={'mb-1 text-left text-[13px] font-semibold'}>참가자</h3>
+        <h3 className={'mb-2 text-left text-xs font-medium leading-none text-gray-700'}>
+          참가자 {membersInfo?.total}명
+        </h3>
         <div className={'flex flex-col gap-2'}>
-          {memberInfo?.participants.map(info => {
+          {membersInfo?.participants.map(info => {
             return (
               <div key={info.participantId} className={'flex items-center gap-2'}>
                 <Image

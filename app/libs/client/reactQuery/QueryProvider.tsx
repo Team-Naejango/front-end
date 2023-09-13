@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { QueryClient, QueryCache, QueryClientProvider, Hydrate, dehydrate } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { toast } from 'react-hot-toast'
+import { ApiError } from 'next/dist/server/api-utils'
 
 // 전역 옵션
 const defaultQueryClientOptions = {
@@ -19,9 +20,12 @@ const defaultQueryClientOptions = {
 // 에러 전역 처리
 const defaultQueryCache = new QueryCache({
   onError: (error: unknown) => {
-    const { name, message } = error as Error
-    console.log(`${name}: ${message}`)
-    // toast.error('서버 요청 에러가 발생했습니다.')
+    if (error instanceof ApiError) {
+      const errorMessage = error.message || '알 수 없는 오류 발생'
+      toast.error(errorMessage)
+    } else {
+      toast.error('알 수 없는 오류 발생')
+    }
     return Promise.reject(error)
   },
 })

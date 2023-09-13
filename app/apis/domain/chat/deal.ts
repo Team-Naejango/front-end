@@ -3,17 +3,17 @@ import { Response } from '@/app/apis/types/response/response'
 import { Deal, Transaction } from '@/app/apis/types/domain/chat/deal'
 
 export interface DealParam {
-  // 금액
-  date: string
   // 날짜
+  date: string
+  // 금액
   amount: number
-  // 교환상대 id
+  // 거래자 ID
   traderId: number
-  // 아이템 Id
+  // 아이템 ID
   itemId: number
 }
 
-type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: string }
+export type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: string }
 
 /**
  * 거래 내역 조회
@@ -26,10 +26,10 @@ export async function deal(): Promise<Response<{ data: Transaction[] }>> {
 /**
  * 거래 등록
  *
- * @param params.date // 거래 id
- * @param params.amount // 날짜
- * @param params.traderId // 교환상대 id
- * @param params.itemId // 아이템 id
+ * @param params.date // 거래 날짜 및 시간
+ * @param params.amount // 거래 금액
+ * @param params.traderId // 거래자 ID
+ * @param params.itemId // 아이템 ID
  *
  * @param params
  */
@@ -42,7 +42,7 @@ export async function saveDeal(params: DealParam): Promise<Response<{ data: Deal
  *
  * @param params.date // 날짜
  * @param params.amount // 금액
- * @param params.transactionId // 거래 id
+ * @param params.transactionId // 거래 ID
  *
  * @param params
  */
@@ -53,7 +53,7 @@ export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: 
 /**
  * 거래 삭제
  *
- * @param transactionId // 거래 id
+ * @param transactionId // 거래 ID
  */
 export async function deleteDeal(transactionId: string): Promise<Response<null>> {
   return withAuth.delete(`/api/transaction/${transactionId}`)
@@ -62,7 +62,7 @@ export async function deleteDeal(transactionId: string): Promise<Response<null>>
 /**
  * 거래 완료 요청
  *
- * @param transactionId // 거래 id
+ * @param transactionId // 거래 ID
  */
 export async function complete(transactionId: string): Promise<Response<null>> {
   return withAuth.patch(`/api/transaction/completion/${transactionId}`)
@@ -71,7 +71,7 @@ export async function complete(transactionId: string): Promise<Response<null>> {
 /**
  * 송금 완료 요청
  *
- * @param transactionId // 거래 id
+ * @param transactionId // 거래 ID
  */
 export async function wire(transactionId: string): Promise<Response<null>> {
   return withAuth.patch(`/api/transaction/remittance/${transactionId}`)
