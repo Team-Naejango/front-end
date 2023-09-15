@@ -195,7 +195,7 @@ const PlaceMarker = ({
     <>
       {myLocation.isLoaded ? (
         <form onSubmit={handleSubmit(onSubmitSearch)}>
-          <div className={'mt-4 flex'}>
+          <div className={'mb-2 mt-4 flex'}>
             <Controller
               control={control}
               name='search'

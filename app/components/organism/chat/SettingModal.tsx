@@ -83,10 +83,10 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
 
       <div className={'mt-6'}>
         <h3 className={'mb-2 text-left text-xs font-medium leading-none text-gray-700'}>
-          참가자 {membersInfo?.total}명
+          참가자 {membersInfo?.result.length}명
         </h3>
         <div className={'flex flex-col gap-2'}>
-          {membersInfo?.participants.map(info => {
+          {membersInfo?.result.map(info => {
             return (
               <div key={info.participantId} className={'flex items-center gap-2'}>
                 <Image

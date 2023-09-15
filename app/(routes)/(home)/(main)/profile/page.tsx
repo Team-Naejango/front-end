@@ -136,14 +136,14 @@ const Profile = () => {
       setting
       seoTitle={'프로필'}
       src={
-        _userInfo?.imgUrl === ''
+        _userInfo?.result.imgUrl === ''
           ? (face as any)
           : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
-              _userInfo?.imgUrl as string
+              _userInfo?.result.imgUrl as string
             )}
             `
       }>
-      <div className='mt-12 px-4'>
+      <div className='mt-4 px-4'>
         <ul className={'flex flex-col gap-3.5'}>
           <li
             role={'presentation'}

@@ -19,7 +19,7 @@ import GenderButton from '@/app/components/atom/GenderButton'
 import Layout from '@/app/components/template/main/layout/Layout'
 import TextArea from '@/app/components/atom/TextArea'
 import InputFile from '@/app/components/atom/InputFile'
-import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { Member } from '@/app/apis/types/domain/profile/profile'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
@@ -64,11 +64,12 @@ const EditProfile = () => {
   })
   const nickname = watch('nickname')
 
-  const { data: { data: _userInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+  const { data: { data } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
     enabled: isEditMode,
   })
+  const _userInfo = data?.result
 
-  const { mutate: mutateUserInfoModify } = useMutation((params: MemberInfo) => modifyUserInfo({ ...params }), {
+  const { mutate: mutateUserInfoModify } = useMutation((params: Member) => modifyUserInfo({ ...params }), {
     onSuccess: () => {
       query.invalidateQueries([OAUTH.유저정보])
       toast.success('프로필이 변경되었습니다.')
@@ -177,7 +178,7 @@ const EditProfile = () => {
       await uploadS3(file)
     }
 
-    const params: MemberInfo = {
+    const params: Member = {
       nickname: getValues('nickname'),
       gender: getValues('gender'),
       imgUrl: (imageFile! && imageFile[0].name) ?? _userInfo.imgUrl,

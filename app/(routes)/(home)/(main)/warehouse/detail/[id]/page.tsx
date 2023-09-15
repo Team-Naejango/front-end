@@ -32,7 +32,7 @@ const WareHouseItem = () => {
       enabled: !!params.id,
     }
   )
-  const filteredItemList = (_itemInfo && _itemInfo.itemList.filter(item => item.type === selectedTab)) || []
+  const filteredItemList = (_itemInfo && _itemInfo.result.filter(item => item.itemType === selectedTab)) || []
 
   const onSelectedTab = (tab: 'BUY' | 'SELL') => {
     if (tab === selectedTab) return

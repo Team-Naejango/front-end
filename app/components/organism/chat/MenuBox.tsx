@@ -47,13 +47,13 @@ export interface FormFields {
 const MenuBox = ({
   channelId,
   chatId,
-  chatType,
+  channelType,
   isOpen,
   onClick,
 }: {
   channelId: string
   chatId: number | null
-  chatType: string | null
+  channelType: string | null
   isOpen: boolean
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void
 }) => {
@@ -153,7 +153,7 @@ const MenuBox = ({
 
   // [판매자기준] 거래 ID 조회
   const getTransactionId = () => {
-    const getTraderName = membersInfo?.participants.find(value => {
+    const getTraderName = membersInfo?.result.find(value => {
       return value.participantId !== chatId
     })?.nickname
 
@@ -162,7 +162,7 @@ const MenuBox = ({
   }
 
   // 판매자 유저 판별
-  const isSeller = membersInfo?.participants.some(v => v.participantId === chatId)
+  const isSeller = membersInfo?.result.some(v => v.participantId === chatId)
 
   useEffect(() => {
     getTransactionId()
@@ -170,7 +170,7 @@ const MenuBox = ({
 
   // 1:1 상대 거래자 ID
   const getTraderId = () => {
-    return membersInfo?.participants.find(value => {
+    return membersInfo?.result.find(value => {
       return value.participantId !== chatId
     })?.participantId
   }
@@ -305,7 +305,7 @@ const MenuBox = ({
       {_register.modal.show ? (
         <FormProvider {...formMethods}>
           <CustomModal id={_register.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'등록'}>
-            <Register chatId={chatId} participants={membersInfo?.participants || []} />
+            <Register chatId={chatId} participants={membersInfo?.result || []} />
           </CustomModal>
         </FormProvider>
       ) : null}

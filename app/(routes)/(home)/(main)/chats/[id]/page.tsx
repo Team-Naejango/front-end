@@ -27,7 +27,8 @@ import { useModal } from '@/app/hooks/useModal'
 import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 
-import { deleteChat, getChatId } from '@/app/apis/domain/chat/chat'
+import { getChatId } from '@/app/apis/domain/chat/chat'
+import { deleteChat } from '@/app/apis/domain/chat/channel'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -57,7 +58,7 @@ const ChatDetail: NextPage = () => {
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const setting = useRecoilValue(modalSelector('setting'))
 
-  const chatType = searchParams.get('chatType')
+  const channelType = searchParams.get('channelType')
   const title = searchParams.get('title')
 
   const { register, handleSubmit, reset } = useForm<MessageForm>({ mode: 'onSubmit' })
@@ -81,7 +82,7 @@ const ChatDetail: NextPage = () => {
   })
 
   // 양방향 연결
-  const onConnect = (roomId: string) => {
+  const onConnect = (channelId: string) => {
     client.current = Stomp.over(() => {
       const sockjs = new SockJS(`${process.env.NEXT_PUBLIC_API_URL}/ws-endpoint`)
       return sockjs
@@ -93,7 +94,7 @@ const ChatDetail: NextPage = () => {
       },
       () => {
         client.current!.subscribe(
-          `/topic/chat/${roomId}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/sub/channel/${channelId}`,
           message => {
             console.log('message:', message)
             const newMessage = JSON.parse(message.body)
@@ -109,10 +110,11 @@ const ChatDetail: NextPage = () => {
   const onSend = (data: MessageForm) => {
     if (!data) return
 
-    client.current?.send(`/ws/chat/${params.id}`, {}, JSON.stringify(data))
+    client.current?.send(`${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${params.id}`, {}, JSON.stringify(data))
     reset()
   }
 
+  // todo: 언마운트 시 커넥트 취소 처리
   useEffect(() => {
     onConnect(params.id)
   }, [])
@@ -131,7 +133,7 @@ const ChatDetail: NextPage = () => {
         },
       })
     } else if (label === '나가기') {
-      mutateDelete(String(chatId && chatId.chatId))
+      mutateDelete(String(chatId && chatId.result))
     }
   }
 
@@ -156,8 +158,8 @@ const ChatDetail: NextPage = () => {
           className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white py-2 pb-5'>
           <MenuBox
             channelId={params.id}
-            chatId={chatId?.chatId || null}
-            chatType={chatType || null}
+            chatId={chatId?.result || null}
+            channelType={channelType || null}
             isOpen={isOpenBox}
             onClick={e => {
               e.preventDefault()
@@ -189,7 +191,7 @@ const ChatDetail: NextPage = () => {
 
       {setting.modal.show ? (
         <CustomModal id={setting.modal.id} type={MODAL_TYPES.ALERT}>
-          <SettingModal channelId={params.id} chatId={chatId?.chatId as number | null} title={title!} />
+          <SettingModal channelId={params.id} chatId={chatId?.result as number | null} title={title!} />
         </CustomModal>
       ) : null}
     </Layout>

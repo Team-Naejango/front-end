@@ -52,7 +52,7 @@ const KakaoMap = () => {
           setSelectedCategory={setSelectedCategory}
         />
       ) : (
-        <Skeleton className={'mt-8'} width={330} height={30} baseColor={'rgba(240, 240, 240, 0.5)'} />
+        <Skeleton className={'mt-2'} width={330} height={30} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
 
       <PlaceMarker
@@ -83,12 +83,12 @@ const KakaoMap = () => {
             setIsDragedMixture={setIsDragedMixture}
           />
         ) : (
-          <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
+          <div className={'flex h-[190px] items-center justify-center rounded border'}>
             <p className={'text-[13px]'}>범위에 존재하는 창고가 없습니다.</p>
           </div>
         )
       ) : (
-        <Skeleton width={330} height={190} className={'mt-[1.125rem]'} baseColor={'rgba(240, 240, 240, 0.5)'} />
+        <Skeleton width={330} height={190} className={'mt-5'} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
     </>
   )

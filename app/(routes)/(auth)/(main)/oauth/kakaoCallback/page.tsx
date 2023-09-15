@@ -20,11 +20,11 @@ const KakaoCallback = () => {
     // setDeadlineCookie(AUTH_TOKEN.갱신, refreshToken)
   }
 
-  let SIGNSTATUS = 'TEMPORAL'
+  let SIGN_STATUS = 'TEMPORAL'
   useEffect(() => {
     getToken().then(() => {
       try {
-        loginStatus === SIGNSTATUS ? router.push('/sign') : router.push('/home')
+        loginStatus === SIGN_STATUS ? router.push('/sign') : router.push('/home')
       } catch (error: unknown) {
         return Promise.reject(error)
       }

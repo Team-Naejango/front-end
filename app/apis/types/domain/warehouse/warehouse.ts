@@ -45,6 +45,7 @@ export interface Storage {
 }
 
 export type Storages = {
+  // 창고 ID
   id: number
   // 이름
   name: string
@@ -66,8 +67,8 @@ export type Storages = {
  * 창고 정보
  */
 export interface StorageInfo {
-  count: number
-  storageList: Storages[]
+  message: string
+  result: Storages[]
 }
 
 export type Item = {
@@ -75,8 +76,8 @@ export type Item = {
   itemId: number
   // 아이템 카테고리
   category: string
-  // 아이템 타입(BUY/SELL)
-  type: string
+  // 아이템 타입(INDIVIDUAL_BUY / INDIVIDUAL_BUY / GROUP_BUY)
+  itemType: string
   // 아이템 제목
   name: string
   // 아이템 이미지 링크
@@ -98,7 +99,7 @@ export interface ItemList {
   // 창고의 유저 ID
   userId: number
   // 아이템 정보
-  itemList: Item[]
+  result: Item[]
 }
 
 /* ******************************** 창고 그룹 채널 ******************************** */
@@ -145,13 +146,13 @@ export interface ItemParams {
   // 카테고리
   category: string
   // 창고 리스트
-  storageIdList: number[]
+  storageId: number
 }
 
 /**
  * 아이템 정보
  */
-export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageIdList'>
+export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageId'>
 export interface ItemInfo extends OmitStorageIdItemInfo {
   // 아이템 ID
   id: string

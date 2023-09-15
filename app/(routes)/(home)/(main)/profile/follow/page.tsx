@@ -108,7 +108,7 @@ const Follow = () => {
                   </div>
                 </div>
                 <div className={'flex items-center gap-2 px-2'}>
-                  {_itemInfo?.itemList.map(item => {
+                  {_itemInfo?.result.map(item => {
                     return (
                       <div key={item.itemId} className={'relative'}>
                         <Image
@@ -144,7 +144,7 @@ const Follow = () => {
 
       {_follow.modal.show ? (
         <CustomModal id={_follow.modal.id} type={MODAL_TYPES.ALERT} btn>
-          <FollowUserItemPopup items={_itemInfo?.itemList || []} />
+          <FollowUserItemPopup items={_itemInfo?.result || []} />
         </CustomModal>
       ) : null}
     </Layout>

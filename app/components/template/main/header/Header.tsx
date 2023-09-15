@@ -40,7 +40,7 @@ const Header = ({
       </Head>
       {hasHeader ? (
         <header>
-          <div className={'flex items-center justify-between bg-white pl-2'}>
+          <div className={'flex items-center justify-between rounded-[30px] bg-white pb-4 pl-2'}>
             <div>
               <span>근처동네</span>
               <div className='mt-1 flex items-center justify-center gap-1'>

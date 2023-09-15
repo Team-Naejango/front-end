@@ -17,7 +17,7 @@ const Categories = ({
   }
 
   return (
-    <div className={'mt-8'}>
+    <div className={'mt-2'}>
       <ul className={'flex items-center justify-between'}>
         {categoriesData.map(category => {
           return (

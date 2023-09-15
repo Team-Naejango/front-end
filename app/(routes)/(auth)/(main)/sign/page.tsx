@@ -16,18 +16,9 @@ import Button from '@/app/components/atom/Button'
 import GenderButton from '@/app/components/atom/GenderButton'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
-import { MemberInfo } from '@/app/apis/types/domain/auth/auth'
+import { Member } from '@/app/apis/types/domain/profile/profile'
 
-import { nickNameValidity, sign } from '@/app/apis/domain/auth/auth'
-
-interface SignProps {
-  birth: string
-  gender: string
-  nickname: string
-  intro: string
-  phoneNumber: string
-  imgUrl: string
-}
+import { nickNameValidity, sign, SignParam } from '@/app/apis/domain/auth/auth'
 
 const Sign = () => {
   const router = useRouter()
@@ -43,14 +34,14 @@ const Sign = () => {
     handleSubmit,
     setError,
     formState: { errors },
-  } = useForm<SignProps>({
+  } = useForm<SignParam>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
   })
 
   const nickname = watch('nickname')
 
-  const { mutate: mutateSign } = useMutation((params: SignProps) => sign(accessToken, params), {
+  const { mutate: mutateSign } = useMutation(sign, {
     onSuccess: () => {
       toast.success('회원가입이 완료되었습니다.')
       router.push('/home')
@@ -75,12 +66,12 @@ const Sign = () => {
   })
 
   const onClickSubmit = async () => {
-    // if (!isNicknameDisabled) return toast.error('중복검사 해라')
-    // if (isNicknameDisabled && selectedNickname !== nickname) return toast.error('다시 중복검사 해라')
+    // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')
+    // if (isNicknameDisabled && selectedNickname !== nickname) return toast.error('닉네임 중복검사가 필요합니다.)
 
     if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
 
-    const params: MemberInfo = {
+    const params: Member = {
       birth: getValues('birth'),
       nickname,
       gender,
@@ -88,7 +79,7 @@ const Sign = () => {
       intro: '',
       imgUrl: '',
     }
-    mutateSign(params)
+    mutateSign({ ...params, accessToken })
   }
 
   const onValidUserName = (event: React.MouseEvent) => {

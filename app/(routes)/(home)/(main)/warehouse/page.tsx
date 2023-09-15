@@ -41,8 +41,8 @@ const WareHouse = () => {
 
   // 창고 조회
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
-  const { count, storageList } = _storageInfo || {}
-  const currentItem = storageList && storageList[currentSlideIndex]
+  const { result } = _storageInfo || {}
+  const currentItem = result && result[currentSlideIndex]
   console.log('_storageInfo:', _storageInfo)
 
   const onCreate = () => {
@@ -51,13 +51,13 @@ const WareHouse = () => {
       seq: null,
     }
     push({
-      pathname: `/warehouse/${(count || 0) + 1}`,
+      pathname: `/warehouse/${(result?.length || 0) + 1}`,
       query: { ...params },
     })
   }
 
   const onDelete = () => {
-    if (count === 0) return
+    if (result?.length === 0) return
 
     openModal({
       modal: {
@@ -90,14 +90,12 @@ const WareHouse = () => {
               <div className={'flex w-full items-center gap-12 text-left'}>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>이름</li>
-                  {currentItem && (
-                    <li className={'mt-1 text-[13px] font-medium'}>{storageList[currentSlideIndex].name}</li>
-                  )}
+                  {currentItem && <li className={'mt-1 text-[13px] font-medium'}>{result[currentSlideIndex].name}</li>}
                 </ul>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>위치</li>
                   {currentItem && (
-                    <li className={'mt-1 text-[13px] font-medium'}>{storageList[currentSlideIndex].address}</li>
+                    <li className={'mt-1 text-[13px] font-medium'}>{result[currentSlideIndex].address}</li>
                   )}
                 </ul>
               </div>
@@ -109,7 +107,7 @@ const WareHouse = () => {
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>소개</li>
                   {currentItem && (
-                    <li className={'mt-1 text-[13px] font-medium'}>{storageList[currentSlideIndex].description}</li>
+                    <li className={'mt-1 text-[13px] font-medium'}>{result[currentSlideIndex].description}</li>
                   )}
                 </ul>
               </div>
@@ -124,21 +122,21 @@ const WareHouse = () => {
               },
             }}
             prefetch={false}
-            className={`${count === 0 ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
+            className={`${result?.length === 0 ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
             <span className={'text-xs'}>
               <LuEdit2 fontSize={'21'} />
             </span>
           </FloatingButton>
         </div>
-        <div className={'absolute right-16 top-3 mx-1 rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0]'}>
+        <div className={'absolute right-16 top-0 mx-1 rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0]'}>
           <Link href={'/warehouse/point'}>
             <span className={'inline-block text-[13px]'}>포인트 충전</span>
           </Link>
         </div>
         <div
           role={'presentation'}
-          className={`absolute right-0 top-3 rounded border border-[#ccc] px-1.5 py-1 ${
-            count === 0 ? 'bg-[#ddd] hover:bg-[#ccc]' : 'cursor-pointer hover:border-[#32D7A0]'
+          className={`absolute right-0 top-0 rounded border border-[#ccc] px-1.5 py-1 ${
+            result?.length === 0 ? 'bg-[#ddd] hover:bg-[#ccc]' : 'cursor-pointer hover:border-[#32D7A0]'
           }`}
           onClick={onDelete}>
           <span className={'inline-block text-[13px]'}>창고삭제</span>

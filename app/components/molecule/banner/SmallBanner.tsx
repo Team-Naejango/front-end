@@ -2,7 +2,7 @@ import React from 'react'
 
 const SmallBanner = ({ onClick, onClose }: { onClick: () => void; onClose: () => void }) => {
   return (
-    <div className='relative isolate mt-4 flex items-center justify-around gap-4 overflow-hidden bg-gray-50 py-2.5 pl-6'>
+    <div className='relative isolate flex items-center justify-around gap-4 overflow-hidden bg-gray-50 py-2.5 pl-6'>
       <div
         className='absolute left-[max(-7rem,calc(50%-52rem))] top-1/2 -z-10 -translate-y-1/2 transform-gpu blur-2xl'
         aria-hidden='true'>

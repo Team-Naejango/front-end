@@ -8,11 +8,11 @@ import { Swiper, SwiperProps, SwiperSlide } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 import { BsPlusSquare } from 'react-icons/bs'
 
-import { cls } from '@/app/libs/client/utils/util'
-import { StorageInfo } from '@/app/apis/types/domain/warehouse/warehouse'
-
 import 'swiper/css'
 import 'swiper/css/navigation'
+
+import { cls } from '@/app/libs/client/utils/util'
+import { StorageInfo } from '@/app/apis/types/domain/warehouse/warehouse'
 
 const WareHouseCarousel = ({
   datas,
@@ -25,7 +25,7 @@ const WareHouseCarousel = ({
 }) => {
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
 
-  const totalSlides = datas?.count || 0
+  const totalSlides = datas?.result.length || 0
   const findLastIdx = swiper && swiper.realIndex === totalSlides - 1
 
   SwiperCore.use([Navigation, A11y])
@@ -92,8 +92,8 @@ const WareHouseCarousel = ({
   }, [updatePrevDisabledState])
 
   return (
-    <Swiper {...swiperParams} className={'mt-20 h-40 w-full'}>
-      {datas?.count === 0 ? (
+    <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
+      {datas?.result.length === 0 ? (
         <SwiperSlide className={'slider_fade'}>
           <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] bg-white shadow-sm hover:border-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
             <Image
@@ -121,7 +121,7 @@ const WareHouseCarousel = ({
           </div>
         </SwiperSlide>
       ) : (
-        datas?.storageList.map(data => {
+        datas?.result.map(data => {
           return (
             <SwiperSlide key={data.id} className={'slider_fade'}>
               <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] p-2.5 shadow-sm hover:text-white hover:transition-all hover:duration-200'>

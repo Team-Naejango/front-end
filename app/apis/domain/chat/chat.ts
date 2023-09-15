@@ -34,15 +34,6 @@ export async function convertedName(params: { chatId: string; title: string }): 
 }
 
 /**
- * 채팅방 종료
- *
- * @param chatId // 종료하고자 하는 채팅방 ID
- */
-export async function deleteChat(chatId: string): Promise<Response<{ data: ChatId }>> {
-  return withAuth.delete(`/api/chat/${chatId}`)
-}
-
-/**
  * 그룹 채팅 참여
  *
  * @param channelId // 그룹 채널 ID

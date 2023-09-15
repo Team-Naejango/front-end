@@ -73,8 +73,8 @@ const WarehouseEdit = () => {
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage(), {
     enabled: isEditMode,
   })
-  const { storageList } = _storageInfo || {}
-  const currentItem = storageList && storageList[Number(seq) - 1]
+  const { result } = _storageInfo || {}
+  const currentItem = result && result[Number(seq) - 1]
 
   // 창고 등록
   const { mutate: mutateSave } = useMutation(saveStorage, {

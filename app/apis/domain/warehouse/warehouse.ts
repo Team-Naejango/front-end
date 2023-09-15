@@ -9,6 +9,8 @@ import {
   StorageInfo,
 } from '@/app/apis/types/domain/warehouse/warehouse'
 
+/* ************************************ 창고 엔터티 ************************************ */
+
 // 창고 정보
 export interface StorageParam {
   // 이름
@@ -30,12 +32,28 @@ export interface StorageParam {
 }
 
 // 창고 수정
-export interface ModifyStorageParam {
-  itemId: string | null
-  storageIdList: number[] | undefined
+export interface ModifyParam {
+  // 이름
+  name: string
+  // 이미지 URL
+  imgUrl: string
+  // 설명
+  description: string
+  // 창고 ID
+  storageId: string
 }
 
-/* ************************************ 창고 엔터티 ************************************ */
+// 창고 아이템 조회
+export interface StorageItemParam {
+  // 창고 ID
+  storageId: string
+  // 아이템 상태 (true=거래중, false=거래완료)
+  status: boolean
+  // 요청 페이지
+  page: string
+  // 페이지 당 결과 수
+  size: string
+}
 
 /**
  * 창고 조회
@@ -43,6 +61,27 @@ export interface ModifyStorageParam {
  */
 export async function storage(): Promise<Response<{ data: StorageInfo }>> {
   return withAuth.get('/api/storage')
+}
+
+/**
+ * 특정 창고 아이템 조회
+ *
+ * @param params.storageId // 창고 ID
+ * @param params.status // 아이템 상태 (true=거래중, false=거래완료)
+ * @param params.page // 요청 페이지
+ * @param params.size // 페이지 당 결과 수
+ * */
+export async function storageItem(params: StorageItemParam): Promise<Response<{ data: ItemList }>> {
+  return withAuth.get(`/api/storage/${params.storageId}/items`, { params })
+}
+
+/**
+ * 창고 그룹 채널 조회
+ *
+ * @param itemId // 공동 구매 아이템 ID
+ * */
+export async function storageGroupChannel(itemId: string): Promise<Response<{ data: StorageGroupChat }>> {
+  return withAuth.get(`/api/item/${itemId}/channel`)
 }
 
 /**
@@ -57,29 +96,8 @@ export async function storage(): Promise<Response<{ data: StorageInfo }>> {
  *
  * @params params
  */
-export async function saveStorage(params: StorageParam): Promise<Response> {
-  return withAuth.post('/api/storage', params)
-}
-
-/**
- * 창고 아이템 조회
- *
- * */
-export async function storageItem(params: {
-  storageId: string
-  status: boolean
-  page: string
-  size: string
-}): Promise<Response<{ data: ItemList }>> {
-  return withAuth.get(`/api/storage/${params.storageId}/items`, { params })
-}
-
-/**
- * 창고 삭제
- *
- */
-export async function deleteStorage(storageId: string): Promise<Response<null>> {
-  return withAuth.delete(`/api/storage/${storageId}`)
+export async function saveStorage(params: StorageParam): Promise<Response<null>> {
+  return withAuth.post('/api/storage', { params })
 }
 
 /**
@@ -90,25 +108,27 @@ export async function deleteStorage(storageId: string): Promise<Response<null>> 
  * @param params.description // 설명
  *
  */
-export async function modifyStorage(params: {
-  name: string
-  imgUrl: string
-  description: string
-  storageId: string
-}): Promise<Response<null>> {
+export async function modifyStorage(params: ModifyParam): Promise<Response<null>> {
   return withAuth.patch(`/api/storage/${params.storageId}`, params)
 }
 
 /**
- * 창고 그룹 채널 조회
+ * 창고 삭제
  *
- * @param itemId // 공동 구매 아이템 ID
- * */
-export async function storageGroupChannel(itemId: string): Promise<Response<{ data: StorageGroupChat }>> {
-  return withAuth.get(`/api/storage/${itemId}/channel`)
+ */
+export async function deleteStorage(storageId: string): Promise<Response<null>> {
+  return withAuth.delete(`/api/storage/${storageId}`)
 }
 
 /* ************************************ 아이템 엔터티 ************************************ */
+
+// 아이템 창고 수정
+// export interface ModifyStorageParam {
+//   // 아이템 ID
+//   itemId: string | null
+//   // 창고 ID 리스트
+//   storageIdList: number[] | undefined
+// }
 
 /**
  * 아이템 조회
@@ -127,12 +147,12 @@ export async function itemInfo(itemId: string | null): Promise<Response<{ data: 
  * @param params.imgUrl // 이미지 URL
  * @param params.type // 타입
  * @param params.category // 카테고리
- * @param params.storageIdList[] // 창고 ID
+ * @param params.storageId // 창고 ID
  *
  * @params params
  */
 export async function saveItem(params: ItemParams): Promise<Response<null>> {
-  return withAuth.post('/api/item', params)
+  return withAuth.post('/api/item', { params })
 }
 
 /**
@@ -147,7 +167,7 @@ export async function saveItem(params: ItemParams): Promise<Response<null>> {
  *
  * @param params
  */
-export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo): Promise<Response<{ item: ItemInfo }>> {
+export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo): Promise<Response<{ data: ItemInfo }>> {
   const newParams = {
     ...params,
     itemId,
@@ -155,14 +175,14 @@ export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo):
   return withAuth.patch(`/api/item/${itemId}`, newParams)
 }
 
-/**
- * 아이템 창고 수정
- *
- * @param params.itemId // 아이템 ID
- * @param params.storageIdList[] // 창고 ID
- *
- * @param params
- */
-export async function modifyStorageItem(params: ModifyStorageParam): Promise<null> {
-  return withAuth.patch(`/api/item/connect/${params.itemId}`, params)
-}
+// /**
+//  * 아이템 창고 수정
+//  *
+//  * @param params.itemId // 아이템 ID
+//  * @param params.storageIdList[] // 창고 ID 리스트
+//  *
+//  * @param params
+//  */
+// export async function modifyStorageItem(params: ModifyStorageParam): Promise<null> {
+//   return withAuth.patch(`/api/item/connect/${params.itemId}`, params)
+// }

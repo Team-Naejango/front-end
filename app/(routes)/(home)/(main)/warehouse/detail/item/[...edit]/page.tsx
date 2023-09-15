@@ -19,16 +19,10 @@ import InputFile from '@/app/components/atom/InputFile'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { OmitStorageIdItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { CATEGORIES, DEAL_TYPES, KEEP_TYPES, STORAGES } from '@/app/libs/client/constants/static'
+import { CATEGORIES, DEAL_TYPES, STORAGES } from '@/app/libs/client/constants/static'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 
-import {
-  itemInfo,
-  saveItem,
-  modifyItem,
-  modifyStorageItem,
-  storage as _storage,
-} from '@/app/apis/domain/warehouse/warehouse'
+import { itemInfo, saveItem, modifyItem, storage as _storage } from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
 
 interface ItemProps {
@@ -39,17 +33,16 @@ interface ItemProps {
   imgUrl: string
   type: string
   category: string
-  storageIdList: number[]
+  storageId: number
 }
 
 const EditItem = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const query = useQueryClient()
-  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
+  const [selectedCategory, setSelectedCategory] = useState<{ label?: string; name: string }>(CATEGORIES[0])
   const [selectedStorage, setSelectedStorage] = useState<{ id: number; name?: string }[]>([STORAGES[0]])
-  const [selectedType, setSelectedType] = useState<{ name: string }>(KEEP_TYPES[0])
-  const [selectedExchangeType, setSelectedExchangeType] = useState<{ name: string }>(DEAL_TYPES[0])
+  const [selectedType, setSelectedType] = useState<{ label?: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
 
@@ -83,13 +76,13 @@ const EditItem = () => {
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => _storage(), {
     enabled: isEditMode,
   })
-  const { count, storageList } = _storageInfo || {}
+  const { result } = _storageInfo || {}
 
   // [편집모드] 창고 ID 최신화
   const updatedStorageIds = STORAGES.map(storage => {
-    if (!storageList) return
+    if (!result) return
 
-    return storageList.map(v => {
+    return result.map(v => {
       return { ...storage, id: v.id }.id
     })
   }).find(value => value)
@@ -113,7 +106,7 @@ const EditItem = () => {
   // 아이템 등록
   const { mutate: mutateSave } = useMutation(saveItem, {
     onSuccess: () => {
-      // mutateOpenGroup({ limit: getValues('limit')!, storageId: 2, defaultTitle: getValues('groupName')! })
+      mutateOpenGroup({ itemId: 2, defaultTitle: getValues('groupName')!, limit: getValues('limit')! })
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       toast.success('아이템이 등록되었습니다.')
@@ -125,16 +118,16 @@ const EditItem = () => {
   })
 
   // 아이템 창고 수정
-  const { mutate: mutateStorage } = useMutation(modifyStorageItem, {
-    onError: (error: ApiError) => {
-      toast.error(error.message)
-    },
-  })
+  // const { mutate: mutateStorage } = useMutation(modifyStorageItem, {
+  //   onError: (error: ApiError) => {
+  //     toast.error(error.message)
+  //   },
+  // })
 
   // 아이템 수정
   const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemInfo) => modifyItem(seq!, params), {
     onSuccess: () => {
-      mutateStorage({ itemId: seq, storageIdList: updatedStorageIds })
+      // mutateStorage({ itemId: seq, storageIdList: updatedStorageIds })
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])
@@ -238,11 +231,11 @@ const EditItem = () => {
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.imgUrl,
       type: selectedType.name,
       category: selectedCategory.name,
-      storageIdList: updatedStorageIds || storageIds,
+      storageId: data.storageId,
     }
 
     const editParameters = () => {
-      const { storageIdList, ...newParams } = params
+      const { storageId, ...newParams } = params
       return { ...newParams, id: Number(seq) }
     }
 
@@ -253,8 +246,8 @@ const EditItem = () => {
   const getSelectedStorages = () => {
     let storages: { id: number; name: string }[] = []
 
-    storageList &&
-      storageList.flatMap((_, idx) => {
+    result &&
+      result.flatMap((_, idx) => {
         return storages.push(STORAGES[idx])
       })
     return storages
@@ -343,20 +336,13 @@ const EditItem = () => {
         <p className='!mt-0 text-xs text-red-400'>{errors.description?.message}</p>
         <MultiSelectBox
           title={'창고선택'}
-          data={STORAGES.filter(storage => storage.id <= (count || 0))}
+          data={STORAGES.filter(storage => storage.id <= (result?.length || 0))}
           selected={selectedStorage}
           setSelected={setSelectedStorage}
           essential
         />
-        <SelectBox title={'분류'} data={KEEP_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
-        <SelectBox
-          title={'거래'}
-          data={DEAL_TYPES}
-          selected={selectedExchangeType}
-          setSelected={setSelectedExchangeType}
-          essential
-        />
-        {selectedExchangeType.name === '공동구매' && (
+        <SelectBox title={'분류'} data={DEAL_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
+        {selectedType.label === '공동 구매' && (
           <>
             <InputField
               type='text'

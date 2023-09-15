@@ -10,12 +10,12 @@ import event4 from '@/app/assets/image/event_trip_04.png'
 import boxImg from '@/app/assets/image/box.png'
 
 // 파이어베이스 키
-const FIREBASE_API_KEY = 'AIzaSyAxyOdpGIONpW9y2xwnskMxvHotpystoK0'
-const FIREBASE_AUTH_DOMAIN = 'naejango-9f387.firebaseapp.com'
-const FIREBASE_PROJECT_ID = 'naejango-9f387'
-const FIREBASE_STORAGE_BUCKET = 'naejango-9f387.appspot.com'
-const FIREBASE_MESSAGING_SENDER_ID = '544393338037'
-const FIREBASE_APP_ID = '1:544393338037:web:0da3309952fdf3547172fc'
+// const FIREBASE_API_KEY = 'AIzaSyAxyOdpGIONpW9y2xwnskMxvHotpystoK0'
+// const FIREBASE_AUTH_DOMAIN = 'naejango-9f387.firebaseapp.com'
+// const FIREBASE_PROJECT_ID = 'naejango-9f387'
+// const FIREBASE_STORAGE_BUCKET = 'naejango-9f387.appspot.com'
+// const FIREBASE_MESSAGING_SENDER_ID = '544393338037'
+// const FIREBASE_APP_ID = '1:544393338037:web:0da3309952fdf3547172fc'
 
 // 포인트 충전
 const POINTS: DataTypes[] = [
@@ -57,11 +57,12 @@ const STORAGES: { id: number; name: string }[] = [
   { id: 3, name: '창고3' },
 ]
 
-// 아이템 타입
-const KEEP_TYPES: { name: string }[] = [{ name: 'BUY' }, { name: 'SELL' }]
-
 // 거래 타입
-const DEAL_TYPES: { name: string }[] = [{ name: '개인거래' }, { name: '공동구매' }]
+const DEAL_TYPES: { label: string; name: string }[] = [
+  { label: '개인 교환(구매)', name: 'INDIVIDUAL_BUY' },
+  { label: '개인 교환(판매)', name: 'INDIVIDUAL_SELL' },
+  { label: '공동 구매', name: 'GROUP_BUY' },
+]
 
 // 이벤트 정보
 const HOMEIMAGES = [
@@ -124,18 +125,4 @@ const WAREHOUSEIMAGES: WareHouseProps[] = [
   },
 ]
 
-export {
-  FIREBASE_API_KEY,
-  FIREBASE_AUTH_DOMAIN,
-  FIREBASE_PROJECT_ID,
-  FIREBASE_STORAGE_BUCKET,
-  FIREBASE_MESSAGING_SENDER_ID,
-  FIREBASE_APP_ID,
-  POINTS,
-  CATEGORIES,
-  STORAGES,
-  KEEP_TYPES,
-  DEAL_TYPES,
-  HOMEIMAGES,
-  WAREHOUSEIMAGES,
-}
+export { POINTS, CATEGORIES, STORAGES, DEAL_TYPES, HOMEIMAGES, WAREHOUSEIMAGES }

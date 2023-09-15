@@ -14,6 +14,12 @@ export interface DealParam {
 }
 
 export type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: string }
+type ModifyResponse = {
+  // 날짜
+  date: string
+  // 금액
+  amount: number
+}
 
 /**
  * 거래 내역 조회
@@ -46,7 +52,7 @@ export async function saveDeal(params: DealParam): Promise<Response<{ data: Deal
  *
  * @param params
  */
-export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: ModifyParam }>> {
+export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: ModifyResponse }>> {
   return withAuth.patch(`/api/transaction/${params.transactionId}`, { params })
 }
 

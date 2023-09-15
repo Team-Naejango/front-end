@@ -1,12 +1,12 @@
-/* ******************************** 챗 ******************************** */
+/* ************************************ 챗 ************************************ */
 
 export type ChatInfoList = {
   // 채널 ID
   channelId: number
   // 채팅 ID
   chatId: number
-  // 채팅 타입(개인, 그룹)
-  chatType: string
+  // 채팅 타입(PRIVATE / GROUP)
+  channelType: string
   // 제목
   title: string
   // 마지막 대화 내용
@@ -21,22 +21,17 @@ export type ChatInfoList = {
  * 채팅방 목록 정보
  */
 export interface Chat {
-  page: number
-  size: number
-  // 조회할 결과물이 남았는지 여부
-  hasNext: boolean
-  // 채팅방 정보
-  chatInfoList: ChatInfoList[]
+  message: string
+  result: ChatInfoList[]
 }
 
 /**
  * 채팅방 ID 정보
  */
 export interface ChatId {
-  // 내 채팅방의 ID(없으면 null)
-  chatId: number | null
-  // 조회 결과 메세지
   message: string
+  // 내 채팅방 ID
+  result: number
 }
 
 /**
@@ -49,18 +44,21 @@ export interface ChatName {
   changedTitle: string
 }
 
-/* ******************************** 채널 ******************************** */
+/* ************************************ 채널 ************************************ */
+
+export type GroupChatResult = {
+  // 내 채팅방 ID
+  chatId: number
+  // 그룹 채널 ID
+  channelId: number
+}
 
 /**
  * 그룹 채팅방 정보
  */
 export interface GroupChat {
-  // 내 채팅방 ID
-  chatId: number
-  // 참여한 채널 ID
-  channelId: number
-  // 그룹 채널 참여 결과 메세지
   message: string
+  result: GroupChatResult
 }
 
 export type Participant = {
@@ -76,8 +74,29 @@ export type Participant = {
  * 그룹 채팅방 참여자 정보
  */
 export interface GroupChatUserInfo {
-  // 채널에 속한 총원
-  total: number
-  // 채널 참여자 정보
-  participants: Participant[]
+  message: string
+  result: Participant[]
+}
+
+export type NearbyResult = {
+  // 채널 ID
+  channelId: number
+  // 채널 주인(창고 주인)
+  ownerId: number
+  // 공동 구매 아이템 ID
+  itemId: number
+  // 채널 참여자 수
+  participantsCount: number
+  // 채널 제목
+  defaultTitle: string
+  // 채널 정원
+  channelLimit: number
+}
+
+/**
+ * 근처 그룹 채널 정보
+ */
+export interface NearbyGroupChat {
+  message: string
+  result: NearbyResult[]
 }

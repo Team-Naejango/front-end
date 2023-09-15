@@ -98,7 +98,7 @@ const PreviewCard = ({
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       console.log('1:1 데이터:', data.data)
-      router.push(`/chats/${data.data.channelId}`)
+      router.push(`/chats/${data.data.result.channelId}`)
       toast.success('개인 채팅방 입장하였습니다.')
     },
     onError: (error: ApiError) => {
@@ -110,8 +110,8 @@ const PreviewCard = ({
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       console.log('그룹 데이터:', data.data)
-      router.push(`/chats/${data.data.channelId}`)
-      toast.success('그룹 채팅방 입장하였습니다.')
+      router.push(`/chats/${data.data.result.channelId}`)
+      toast.success('그룹 채팅방에 입장하였습니다.')
       // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 id 를 응답합니다.
       // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
     },
@@ -140,7 +140,7 @@ const PreviewCard = ({
       },
     })
     setMarkerItemsValue(
-      dragedPreviews.itemList.map(data => ({
+      dragedPreviews.result.map(data => ({
         name: data.name,
       }))
     )
@@ -179,9 +179,9 @@ const PreviewCard = ({
 
   return (
     <>
-      <div className={'mt-2 h-[200px] overflow-hidden py-2.5'}>
+      <div className={'mt-2 h-[200px] overflow-hidden py-2'}>
         {!isDragedMixture && previews.length === 0 ? (
-          <div className={'mt-4 flex h-[190px] items-center justify-center rounded border'}>
+          <div className={'flex h-[190px] items-center justify-center rounded border'}>
             <p className={'text-[13px]'}>범위에 존재하는 아이템이 없습니다.</p>
           </div>
         ) : (
@@ -190,7 +190,7 @@ const PreviewCard = ({
               'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll rounded border'
             )}>
             {isDragedMixture
-              ? dragedPreviews?.itemList.map(item => {
+              ? dragedPreviews?.result.map(item => {
                   return (
                     <li
                       key={`${uuid()}_${item.itemId}`}
@@ -205,9 +205,9 @@ const PreviewCard = ({
                         <span
                           className={cls(
                             'mr-1.5 rounded px-1 py-1 text-[10px] text-white',
-                            item.type === 'BUY' ? 'bg-[#30BD81] !px-1.5' : 'bg-[#A3D139]'
+                            item.itemType === 'BUY' ? 'bg-[#30BD81] !px-1.5' : 'bg-[#A3D139]'
                           )}>
-                          {item.type}
+                          {item.itemType}
                         </span>
                         {item.name}
                       </div>

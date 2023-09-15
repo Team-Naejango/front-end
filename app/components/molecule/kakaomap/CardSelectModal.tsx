@@ -27,11 +27,11 @@ interface CardProps {
 
 const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectProps) => {
   const query = useQueryClient()
-  const [selectedType, setSelectedType] = useState<{ name: string }>({ name: '아이템 목록' })
+  const [selectedType, setSelectedType] = useState<{ label?: string; name: string }>({ name: '아이템 목록' })
   const markerItemsValue = useRecoilValue<{ name: string }[]>(markerItemsState)
   const selectedTitle = useRecoilValue<string>(activatedWareHouseTitleState)
 
-  const itemInfo = dragedPreviews.itemList.find(v => v.name === selectedType.name)
+  const itemInfo = dragedPreviews.result.find(v => v.name === selectedType.name)
 
   const {
     register,
@@ -128,9 +128,9 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
           <span
             className={cls(
               'inline-block rounded px-0.5 py-0.5 text-[10px] text-white',
-              itemInfo?.type === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+              itemInfo?.itemType === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
             )}>
-            {itemInfo?.type}
+            {itemInfo?.itemType}
           </span>
           <span className={'ml-1.5 inline-block align-middle text-[13px]'}>{itemInfo?.category}</span>
           <span className={'mt-2 block text-sm'}>{itemInfo?.name}</span>
