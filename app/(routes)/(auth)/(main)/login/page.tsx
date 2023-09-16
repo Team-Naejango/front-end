@@ -18,6 +18,9 @@ import { splashState } from '@/app/store/atom'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { nonUser } from '@/app/apis/domain/auth/auth'
+import { useQuery } from '@tanstack/react-query'
+import { AUTH, OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { userInfo } from '@/app/apis/domain/profile/profile'
 
 interface FormProps {
   email: string
@@ -45,29 +48,45 @@ const Login = () => {
     reset()
   }
 
+  // 비로그인 함수
+  const useNonLogin = async () => {
+    try {
+      const response = await useQuery([AUTH.비회원], () => nonUser())
+      const accessToken = response.data?.data.accessToken
+      return accessToken
+    } catch (error) {
+      console.error('에러:', error)
+      // 에러 처리 로직 추가
+      throw error
+    }
+  }
+
   useEffect(() => {
     if (isSplashMounted) {
       setMounted(true)
     }
   }, [isSplashMounted])
 
-  const onNonUserLogin = async () => {
+  const UseonNonUserLogin = async () => {
     try {
-      await nonUser()
-        .then(response => {
-          try {
-            // JSON.parse(JSON.stringify(res))
-            setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
-            toast.success('비회원 로그인에 성공하였습니다.')
-            router.push('/home')
-          } catch (error) {
-            console.log('error:', error)
-          }
-        })
-        .catch(error => {
-          console.log('error:', error)
-        })
+      const accessToken = await useNonLogin()
 
+      console.log('accessToken:', accessToken)
+      setDeadlineCookie(AUTH_TOKEN.접근, String(accessToken))
+      toast.success('비회원 로그인에 성공하였습니다.')
+      router.push('/home')
+
+      // await nonUser()
+      //   .then(response => {
+      //     try {
+      //       // JSON.parse(JSON.stringify(res))
+      //     } catch (error) {
+      //       console.log('error:', error)
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.log('error:', error)
+      //   })
       // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
       //   withCredentials: true,
       // })
@@ -139,7 +158,7 @@ const Login = () => {
                   카카오 로그인
                 </button>
                 <button
-                  onClick={() => onNonUserLogin()}
+                  onClick={() => UseonNonUserLogin()}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
                   비회원 로그인
