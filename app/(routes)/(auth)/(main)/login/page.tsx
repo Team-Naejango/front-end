@@ -65,32 +65,23 @@ const Login = () => {
     }
 
     try {
-      await axios
-        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
-          withCredentials: true,
-        })
-        .then(response => {
-          setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
-          toast.success('비회원 로그인에 성공하였습니다.')
-          router.push('/home')
-        })
-        .catch(error => {
-          if (error instanceof AxiosError) {
-            // const { data } = error.response
-            const { data } = error.response!.data
-            if (data.status === 409) {
-              try {
-                const data = error.response?.data as { reissuedAccessToken: string }
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+        withCredentials: true,
+      })
+      try {
+        setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+        toast.success('비회원 로그인에 성공하였습니다.')
+        router.push('/home')
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const data = error.response?.data as { reissuedAccessToken: string }
 
-                refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
-                setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
-                window.location.href = '/home'
-              } catch (error: unknown) {
-                return false
-              }
-            }
-          }
-        })
+          refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
+          setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
+          window.location.href = '/home'
+        }
+      }
+
       // console.log('response:', response)
     } catch (error: unknown) {
       toast.error('비회원 로그인에 실패하였습니다.')
