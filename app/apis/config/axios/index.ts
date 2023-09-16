@@ -129,17 +129,17 @@ export const responseNormalizer = async (error: AxiosError) => {
   //   }
   // }
 
-  // if (data.status === 409) {
-  //   try {
-  //     const data = error.response?.data as { reissuedAccessToken: string }
-  //
-  //     refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
-  //     setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
-  //     window.location.href = '/home'
-  //   } catch (error: unknown) {
-  //     return false
-  //   }
-  // }
+  if (data.status === 409) {
+    try {
+      const data = error.response?.data as { reissuedAccessToken: string }
+
+      refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
+      setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
+      window.location.href = '/home'
+    } catch (error: unknown) {
+      return false
+    }
+  }
 
   return Promise.reject(error)
 }

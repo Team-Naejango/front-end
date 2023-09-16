@@ -53,13 +53,21 @@ const Login = () => {
 
   const onNonUserLogin = async () => {
     try {
-      // const response = await nonUser()
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
-        withCredentials: true,
-      })
-      setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
-      toast.success('비회원 로그인에 성공하였습니다.')
-      router.push('/home')
+      await nonUser()
+        .then(response => {
+          // JSON.parse(JSON.stringify(res))
+          setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+          toast.success('비회원 로그인에 성공하였습니다.')
+          router.push('/home')
+        })
+        .catch(error => {
+          console.log('error:', error)
+        })
+
+      // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      //   withCredentials: true,
+      // })
+      // console.log('response:', response)
     } catch (error: unknown) {
       toast.error('비회원 로그인에 실패하였습니다.')
     }

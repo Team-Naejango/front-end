@@ -4,7 +4,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { useForm } from 'react-hook-form'
 import Image from 'next/image'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
@@ -35,7 +35,8 @@ interface EditProfileForm {
 }
 
 const EditProfile = () => {
-  const pathname = usePathname()
+  // const pathname = usePathname()
+  // const searchParams = useSearchParams()
   const query = useQueryClient()
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
@@ -47,7 +48,9 @@ const EditProfile = () => {
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
-  const isEditMode = pathname.includes('/profile/edit')
+  // const isEditMode = pathname.includes('/profile/edit')
+
+  // console.log('searchParams:', searchParams.get('/profile/edit'))
 
   const {
     register,
@@ -65,7 +68,7 @@ const EditProfile = () => {
   const nickname = watch('nickname')
 
   const { data: { data } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
-    enabled: isEditMode,
+    // enabled: isEditMode,
   })
   const _userInfo = data?.result
 
@@ -205,9 +208,9 @@ const EditProfile = () => {
 
   useEffect(() => {
     reset({ ..._userInfo })
-    if (isEditMode) {
-      query.invalidateQueries([OAUTH.유저정보])
-    }
+    // if (isEditMode) {
+    query.invalidateQueries([OAUTH.유저정보])
+    // }
   }, [_userInfo])
 
   useEffect(() => {
@@ -294,20 +297,20 @@ const EditProfile = () => {
               })}
               id='age'
               type='text'
-              disabled={isEditMode}
+              // disabled={isEditMode}
               maxLength={8}
               placeholder='생년월일(YYYYMMDD)'
               icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
             <GenderButton
               gender='남'
-              disabled={isEditMode && _userInfo?.gender === '여'}
+              // disabled={isEditMode && _userInfo?.gender === '여'}
               selected={watch('gender') === '남'}
               onClick={() => onSelectedGender('남')}
             />
             <GenderButton
               gender='여'
-              disabled={isEditMode && _userInfo?.gender === '남'}
+              // disabled={isEditMode && _userInfo?.gender === '남'}
               selected={watch('gender') === '여'}
               onClick={() => onSelectedGender('여')}
             />
