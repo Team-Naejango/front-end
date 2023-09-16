@@ -51,8 +51,10 @@ const Login = () => {
   // 비로그인 함수
   const useNonLogin = async () => {
     try {
-      const response = await useQuery([AUTH.비회원], () => nonUser())
+      const response = await useQuery([AUTH.비회원], nonUser)
       const accessToken = response.data?.data.accessToken
+
+      console.log('accessToken:', accessToken)
       return accessToken
     } catch (error) {
       console.error('에러:', error)
@@ -158,7 +160,7 @@ const Login = () => {
                   카카오 로그인
                 </button>
                 <button
-                  onClick={() => UseonNonUserLogin()}
+                  onClick={useNonLogin}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
                   비회원 로그인
