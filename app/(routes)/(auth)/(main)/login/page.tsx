@@ -9,7 +9,7 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
-import axios from 'axios'
+import axios, { AxiosError, AxiosRequestConfig } from 'axios'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
@@ -21,6 +21,8 @@ import { nonUser } from '@/app/apis/domain/auth/auth'
 import { useQuery } from '@tanstack/react-query'
 import { AUTH, OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import { ApiError } from 'next/dist/server/api-utils'
+import { HeaderType } from '@/app/apis/config/axios'
 
 interface FormProps {
   email: string
@@ -48,50 +50,47 @@ const Login = () => {
     reset()
   }
 
-  // 비로그인 함수
-  const useNonLogin = async () => {
-    try {
-      const response = await useQuery([AUTH.비회원], nonUser)
-      const accessToken = response.data?.data.accessToken
-
-      console.log('accessToken:', accessToken)
-      return accessToken
-    } catch (error) {
-      console.error('에러:', error)
-      // 에러 처리 로직 추가
-      throw error
-    }
-  }
-
   useEffect(() => {
     if (isSplashMounted) {
       setMounted(true)
     }
   }, [isSplashMounted])
 
-  const UseonNonUserLogin = async () => {
+  const onNonUserLogin = async () => {
+    const refreshAuthToken = (config: AxiosRequestConfig, token: string) => {
+      config.headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      } as HeaderType
+    }
+
     try {
-      const accessToken = await useNonLogin()
+      await axios
+        .get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+          withCredentials: true,
+        })
+        .then(response => {
+          setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+          toast.success('비회원 로그인에 성공하였습니다.')
+          router.push('/home')
+        })
+        .catch(error => {
+          if (error instanceof AxiosError) {
+            // const { data } = error.response
+            const { data } = error.response!.data
+            if (data.status === 409) {
+              try {
+                const data = error.response?.data as { reissuedAccessToken: string }
 
-      console.log('accessToken:', accessToken)
-      setDeadlineCookie(AUTH_TOKEN.접근, String(accessToken))
-      toast.success('비회원 로그인에 성공하였습니다.')
-      router.push('/home')
-
-      // await nonUser()
-      //   .then(response => {
-      //     try {
-      //       // JSON.parse(JSON.stringify(res))
-      //     } catch (error) {
-      //       console.log('error:', error)
-      //     }
-      //   })
-      //   .catch(error => {
-      //     console.log('error:', error)
-      //   })
-      // const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
-      //   withCredentials: true,
-      // })
+                refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
+                setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
+                window.location.href = '/home'
+              } catch (error: unknown) {
+                return false
+              }
+            }
+          }
+        })
       // console.log('response:', response)
     } catch (error: unknown) {
       toast.error('비회원 로그인에 실패하였습니다.')
@@ -160,7 +159,7 @@ const Login = () => {
                   카카오 로그인
                 </button>
                 <button
-                  onClick={useNonLogin}
+                  onClick={() => onNonUserLogin()}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
                   비회원 로그인
