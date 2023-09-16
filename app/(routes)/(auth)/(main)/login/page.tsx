@@ -84,7 +84,14 @@ const Login = () => {
 
       // console.log('response:', response)
     } catch (error: unknown) {
-      toast.error('비회원 로그인에 실패하였습니다.')
+      // toast.error('비회원 로그인에 실패하였습니다.')
+      if (error instanceof AxiosError) {
+        const data = error.response?.data as { reissuedAccessToken: string }
+
+        refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
+        setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
+        window.location.href = '/home'
+      }
     }
   }
 
