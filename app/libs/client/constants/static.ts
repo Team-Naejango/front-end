@@ -51,10 +51,10 @@ const CATEGORIES: { name: string }[] = [
 ]
 
 // 창고 목록
-const STORAGES: { id: number; name: string }[] = [
-  { id: 1, name: '창고1' },
-  { id: 2, name: '창고2' },
-  { id: 3, name: '창고3' },
+const STORAGES: { label: string; name: string }[] = [
+  { label: '창고1', name: '1' },
+  { label: '창고2', name: '2' },
+  { label: '창고3', name: '3' },
 ]
 
 // 거래 타입

@@ -23,12 +23,11 @@ const WareHouseCarousel = ({
   onClick: () => void
   onSlideChange: (index: number) => void
 }) => {
+  SwiperCore.use([Navigation, A11y])
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
 
   const totalSlides = datas?.result.length || 0
   const findLastIdx = swiper && swiper.realIndex === totalSlides - 1
-
-  SwiperCore.use([Navigation, A11y])
 
   const updatePrevDisabledState = useCallback(() => {
     if (swiper && swiper.realIndex === 0) {
@@ -36,7 +35,7 @@ const WareHouseCarousel = ({
     } else {
       document.querySelector('.swiper-button-prev')?.classList.remove('swiper-button-disabled')
     }
-  }, [swiper])
+  }, [swiper, findLastIdx])
 
   const onSlideControls = () => {
     if (swiper) {
@@ -73,8 +72,8 @@ const WareHouseCarousel = ({
     slidesPerView: 1,
     loop: true,
     navigation: {
-      prevEl: '.swiper-button-prev',
-      nextEl: '.swiper-button-next',
+      // prevEl: '.swiper-button-prev',
+      // nextEl: '.swiper-button-next',
       disabledClass: 'swiper-button-disabled',
     },
     onSwiper: setSwiper,

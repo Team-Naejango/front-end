@@ -11,7 +11,7 @@ import { DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { deal } from '@/app/apis/domain/chat/deal'
 
 const DealCard = ({ onClick }: { onClick: () => void }) => {
-  const [selectedTab, setSelectedTab] = useState<'BUY' | 'SELL'>('BUY')
+  const [selectedTab, setSelectedTab] = useState<string>('INDIVIDUAL_BUY')
 
   // 거래 조회
   const { data: { data: deals } = {} } = useQuery([DEAL.조회], () => deal())

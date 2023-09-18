@@ -47,11 +47,11 @@ const WareHouse = () => {
 
   const onCreate = () => {
     const params: PathParam = {
+      seq: (result?.length || 0) + 1,
       crud: CRUD.등록,
-      seq: null,
     }
     push({
-      pathname: `/warehouse/seq?seq=${(result?.length || 0) + 1}`,
+      pathname: `/warehouse/seq`,
       query: { ...params },
     })
   }
@@ -115,10 +115,10 @@ const WareHouse = () => {
           </div>
           <FloatingButton
             href={{
-              pathname: `/warehouse/${currentSlideIndex + 1}`,
+              pathname: '/warehouse/seq',
               query: {
-                crud: CRUD.수정,
                 seq: currentSlideIndex + 1,
+                crud: CRUD.수정,
               },
             }}
             prefetch={false}

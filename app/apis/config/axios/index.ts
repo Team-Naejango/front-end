@@ -76,10 +76,10 @@ export const responseNormalizer = async (error: AxiosError) => {
   }
 
   if (data && data.status === 401) {
-    if (data.error === 'UNAUTHORIZED') {
-      window.location.href = '/login'
-      return false
-    }
+    // if (data.error === 'UNAUTHORIZED') {
+    //   window.location.href = '/login'
+    //   return false
+    // }
 
     const isHasToken = TokenValid()
 

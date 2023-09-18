@@ -16,7 +16,7 @@ import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouseItem = () => {
   const params = useParams()
-  const [selectedTab, setSelectedTab] = useState<'BUY' | 'SELL'>('BUY')
+  const [selectedTab, setSelectedTab] = useState<('INDIVIDUAL_BUY' | 'GROUP_BUY') | 'INDIVIDUAL_SELL'>('INDIVIDUAL_BUY')
 
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
@@ -34,9 +34,11 @@ const WareHouseItem = () => {
   )
   const filteredItemList = (_itemInfo && _itemInfo.result.filter(item => item.itemType === selectedTab)) || []
 
-  const onSelectedTab = (tab: 'BUY' | 'SELL') => {
+  const onSelectedTab = (tab: string) => {
     if (tab === selectedTab) return
-    setSelectedTab(currentTab => (currentTab === 'BUY' ? 'SELL' : 'BUY'))
+    setSelectedTab(currentTab =>
+      currentTab === ('INDIVIDUAL_BUY' || 'GROUP_BUY') ? 'INDIVIDUAL_SELL' : 'INDIVIDUAL_BUY' || 'GROUP_BUY'
+    )
   }
 
   // todo: 삭제 팝업창과 delete api 추가
@@ -47,7 +49,7 @@ const WareHouseItem = () => {
       <div className='mt-8'>
         <RoundedTab setSelectedTab={onSelectedTab}>
           <Tab.Panel>
-            {selectedTab === 'BUY' &&
+            {selectedTab === ('INDIVIDUAL_BUY' || 'GROUP_BUY') &&
               (filteredItemList.length === 0 ? (
                 <div className='flex h-[450px] items-center justify-center'>
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
@@ -57,7 +59,7 @@ const WareHouseItem = () => {
               ))}
           </Tab.Panel>
           <Tab.Panel>
-            {selectedTab === 'SELL' &&
+            {selectedTab === 'INDIVIDUAL_SELL' &&
               (filteredItemList.length === 0 ? (
                 <div className='flex h-[450px] items-center justify-center'>
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>

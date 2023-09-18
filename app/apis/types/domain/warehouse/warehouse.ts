@@ -136,9 +136,26 @@ export interface ItemParams {
  * 아이템 정보
  */
 export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageId'>
-export interface ItemInfo extends OmitStorageIdItemInfo {
+
+export type ItemInfoResult = {
   // 아이템 ID
-  id: string
+  id: number
+  // 아이템 이름
+  name: string
+  // 아이템 설명
+  description: string
+  // 이미지 URL
+  imgUrl: string
+  // 아이템 타입
+  itemType: string
+  // 카테고리
+  category: string
+  // 아이템 조회 수
+  viewCount: number
+}
+export interface ItemInfo {
+  message: string
+  result: ItemInfoResult
 }
 
 export type SearchCondition = {
@@ -170,4 +187,24 @@ export type SearchCondition = {
 export interface ItemSearchInfo {
   message: string
   searchResult: SearchCondition[]
+}
+
+export type SaveItemResult = {
+  // 아이템 ID
+  id: number
+  // 아이템 이름
+  name: string
+  // 아이템 설명
+  description: string
+  // 이미지 URL
+  imgUrl: string
+  // 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
+  itemType: string
+  // 카테고리
+  category: string
+}
+
+export interface SaveItem {
+  message: string
+  result: SaveItemResult
 }

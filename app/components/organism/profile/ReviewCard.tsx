@@ -8,7 +8,7 @@ import RoundedTab, { RoundedTabProps } from '@/app/components/molecule/tab/Round
 import { cls } from '@/app/libs/client/utils/util'
 
 const ReviewCard = () => {
-  const [selectedTab, setSelectedTab] = useState<'BUY' | 'SELL'>('BUY')
+  const [selectedTab, setSelectedTab] = useState<string>('INDIVIDUAL_BUY')
 
   const [reviews] = useState({
     '작성 가능한 리뷰': [

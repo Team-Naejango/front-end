@@ -52,7 +52,7 @@ export async function groupChatUserInfo(channelId: string): Promise<Response<{ d
  * @param params
  */
 export async function openGroupChat(params: GroupChatParam): Promise<Response<{ data: GroupChat }>> {
-  return withAuth.post('/api/channel/group', { params })
+  return withAuth.post('/api/channel/group', params)
 }
 
 /**

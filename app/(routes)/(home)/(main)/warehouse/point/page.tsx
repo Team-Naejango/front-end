@@ -23,7 +23,7 @@ const PointCharge = () => {
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
       query.invalidateQueries([OAUTH.유저정보])
-      toast.success('포인트 충전에 성공하였습니다.')
+      toast.success('포인트 충전이 완료되었습니다.')
       router.push('/warehouse')
     },
     onError: (error: ApiError) => {

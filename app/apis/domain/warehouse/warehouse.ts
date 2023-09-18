@@ -6,6 +6,7 @@ import {
   ItemParams,
   ItemSearchInfo,
   OmitStorageIdItemInfo,
+  SaveItem,
   StorageGroupChat,
   StorageInfo,
 } from '@/app/apis/types/domain/warehouse/warehouse'
@@ -98,7 +99,7 @@ export async function storageGroupChannel(itemId: string): Promise<Response<{ da
  * @params params
  */
 export async function saveStorage(params: StorageParam): Promise<Response<null>> {
-  return withAuth.post('/api/storage', { params })
+  return withAuth.post('/api/storage', params)
 }
 
 /**
@@ -182,8 +183,8 @@ export async function itemSearch(params: ItemSearchParam): Promise<Response<{ da
  *
  * @params params
  */
-export async function saveItem(params: ItemParams): Promise<Response<null>> {
-  return withAuth.post('/api/item', { params })
+export async function saveItem(params: ItemParams): Promise<Response<{ data: SaveItem }>> {
+  return withAuth.post('/api/item', params)
 }
 
 /**

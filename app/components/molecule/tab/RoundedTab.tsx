@@ -6,9 +6,14 @@ import { Tab } from '@headlessui/react'
 import { cls } from '@/app/libs/client/utils/util'
 
 export interface RoundedTabProps {
-  setSelectedTab: (tab: 'BUY' | 'SELL') => void
+  setSelectedTab: (tab: string) => void
   children: ReactNode
 }
+
+const DEAL_TYPE_MAPPING: { label: string; name: string[] }[] = [
+  { label: 'BUY', name: ['INDIVIDUAL_BUY' || 'GROUP_BUY'] },
+  { label: 'SELL', name: ['INDIVIDUAL_SELL'] },
+]
 
 const ButtonType: ['BUY', 'SELL'] = ['BUY', 'SELL']
 
@@ -17,10 +22,10 @@ const RoundedTab = ({ setSelectedTab, children }: RoundedTabProps) => {
     <div className='w-full max-w-md pt-4'>
       <Tab.Group>
         <Tab.List className='flex p-2'>
-          {ButtonType.map(tab => {
+          {DEAL_TYPE_MAPPING.map(tab => {
             return (
               <Tab
-                key={tab}
+                key={tab.label}
                 className={({ selected }) =>
                   cls(
                     'w-full border py-2.5 text-sm font-medium leading-5 focus:outline-none',
@@ -29,8 +34,8 @@ const RoundedTab = ({ setSelectedTab, children }: RoundedTabProps) => {
                       : 'border-[#ccc] hover:border-[#33CC99] hover:!border-l-white hover:!border-r-white hover:bg-[#33CC99] hover:text-white'
                   )
                 }
-                onClick={() => setSelectedTab(tab)}>
-                {tab}
+                onClick={() => setSelectedTab(tab.label)}>
+                {tab.label}
               </Tab>
             )
           })}
