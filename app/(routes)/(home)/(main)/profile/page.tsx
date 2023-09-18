@@ -136,7 +136,7 @@ const Profile = () => {
       setting
       seoTitle={'프로필'}
       src={
-        _userInfo?.result.imgUrl === ''
+        _userInfo?.result.imgUrl === ('' || undefined)
           ? (face as any)
           : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
               _userInfo?.result.imgUrl as string
