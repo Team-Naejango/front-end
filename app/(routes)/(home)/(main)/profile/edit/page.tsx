@@ -36,7 +36,7 @@ interface EditProfileForm {
 
 const EditProfile = () => {
   // const pathname = usePathname()
-  // const searchParams = useSearchParams()
+  const searchParams = useSearchParams()
   const query = useQueryClient()
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
@@ -48,7 +48,8 @@ const EditProfile = () => {
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
-  // const isEditMode = pathname.includes('/profile/edit')
+  const isEditMode = searchParams.get('auth')
+  console.log('isEditMode:', isEditMode)
 
   // console.log('searchParams:', searchParams.get('/profile/edit'))
 
