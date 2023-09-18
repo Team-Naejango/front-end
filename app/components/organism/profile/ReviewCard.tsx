@@ -60,7 +60,7 @@ const ReviewCard = () => {
           {/* <ul className={'flex flex-col gap-5 p-0.5'}> */}
           {/*  {posts.map((post: RoundedTabProps) => ( */}
           {/*    <li */}
-          {/*      key={post.id} */}
+          {/*      key={post.seq} */}
           {/*      className='relative flex items-center justify-around gap-8 rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'> */}
           {/*      <div className={'h-16 w-16 rounded-md bg-gray-500'} /> */}
           {/*      <div className={'-ml-4 flex w-1/2 flex-col gap-0.5'}> */}

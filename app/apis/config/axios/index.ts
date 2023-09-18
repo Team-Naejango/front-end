@@ -52,20 +52,14 @@ export const responseNormalizer = async (error: AxiosError) => {
   if (!error.config) {
     return false
   }
-  // if (getCookie(AUTH_TOKEN.접근) === null) {
-  //   window.location.href = '/login'
-  //   return false
-  // }
-
-  console.log('error:', error)
 
   const data = error.response?.data as Refresh
 
   if (data.body && data.body.status === 401) {
-    if (data.body.error === 'UNAUTHORIZED') {
-      window.location.href = '/login'
-      return false
-    }
+    // if (data.body.error === 'UNAUTHORIZED') {
+    //   window.location.href = '/login'
+    //   return false
+    // }
 
     const isHasToken = TokenValid()
 
@@ -87,23 +81,18 @@ export const responseNormalizer = async (error: AxiosError) => {
       return false
     }
 
-    // const isHasToken = TokenValid()
-    //
-    // if (!isHasToken) {
-    //   let value = ''
-    //   try {
-    //     refreshAuthToken({ ...error.config }, data.reissuedAccessToken || value)
-    //     setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken || value)
-    //
-    //     if (value === '') {
-    //       window.location.href = '/sign'
-    //       return false
-    //     }
-    //     return await withAuth.request(error.config)
-    //   } catch (error: unknown) {
-    //     return false
-    //   }
-    // }
+    const isHasToken = TokenValid()
+
+    if (!isHasToken) {
+      try {
+        refreshAuthToken({ ...error.config }, data.reissuedAccessToken!)
+        setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken!)
+
+        return await withAuth.request(error.config)
+      } catch (error: unknown) {
+        return false
+      }
+    }
   }
 
   if (data && data.status === 403) {
@@ -123,26 +112,6 @@ export const responseNormalizer = async (error: AxiosError) => {
       } catch (error: unknown) {
         return false
       }
-    }
-  }
-
-  // if (data && data.status === 404)) {
-  //   try {
-  //     window.location.href = '/login'
-  //   } catch (error: unknown) {
-  //     return false
-  //   }
-  // }
-
-  if (data.status === 409) {
-    try {
-      const data = error.response?.data as { reissuedAccessToken: string }
-
-      refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
-      setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
-      window.location.href = '/home'
-    } catch (error: unknown) {
-      return false
     }
   }
 

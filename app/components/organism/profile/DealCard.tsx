@@ -77,7 +77,7 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
           {/*    deal.result.map((post: RoundedTabProps) => ( */}
           {/*      // <li */}
           {/*      //   role={'presentation'} */}
-          {/*      //   key={post.id} */}
+          {/*      //   key={post.seq} */}
           {/*      //   className='relative flex cursor-pointer items-center rounded-xl p-4' */}
           {/*      //   onClick={onClick}> */}
           {/*      //   <div className={'h-16 w-16 rounded-md bg-gray-500'} /> */}

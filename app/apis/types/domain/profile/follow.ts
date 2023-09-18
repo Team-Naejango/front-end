@@ -1,5 +1,5 @@
 export type FollowResult = {
-  // id
+  // seq
   id: number
   // 창고 이름
   name: string

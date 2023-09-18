@@ -234,7 +234,7 @@ const EditProfile = () => {
                 alt='이미지 미리보기'
                 className={'h-24 w-24 rounded-full border border-[#ddd] object-cover'}
               />
-            ) : _userInfo?.imgUrl === '' ? (
+            ) : _userInfo?.imgUrl === ('' || undefined) ? (
               <Image
                 src={face}
                 width={'100'}

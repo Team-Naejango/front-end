@@ -51,7 +51,7 @@ const WareHouse = () => {
       seq: null,
     }
     push({
-      pathname: `/warehouse/${(result?.length || 0) + 1}`,
+      pathname: `/warehouse/seq?seq=${(result?.length || 0) + 1}`,
       query: { ...params },
     })
   }
