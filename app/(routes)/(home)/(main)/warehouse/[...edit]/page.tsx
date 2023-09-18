@@ -33,7 +33,7 @@ interface WarehouseProps {
 }
 
 export function generateStaticParams() {
-  return { crud: CRUD.등록 }
+  return [{ crud: CRUD.등록 }]
 }
 
 const WarehouseEdit = ({ params }: { params: { crud: string } }) => {
