@@ -32,28 +32,29 @@ interface WarehouseProps {
   address: string
 }
 
-const WarehouseEdit = () => {
-  const searchParams = useSearchParams()
-  const query = useQueryClient()
-  const router = useRouter()
-  const [imageFile, setImageFile] = useState<FileList | null>(null)
-  const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
-  const [step, setStep] = useState<E_STEP>(STEP.위치정보)
-  const [address, setAddress] = useState<AddressType>({
-    value: '',
-    coords: {
-      latitude: null,
-      longitude: null,
-    },
-  })
-
-  const REGION = process.env.NEXT_PUBLIC_AWS_REGION
-  const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
-  const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
-
-  const crud = searchParams.get('crud') || CRUD.등록
-  const seq = searchParams.get('seq') || null
-  const isEditMode = (crud === CRUD.수정 && seq !== null) || false
+const WarehouseEdit = ({ params }: any) => {
+  console.log('params:', params)
+  // const searchParams = useSearchParams()
+  // const query = useQueryClient()
+  // const router = useRouter()
+  // const [imageFile, setImageFile] = useState<FileList | null>(null)
+  // const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
+  // const [step, setStep] = useState<E_STEP>(STEP.위치정보)
+  // const [address, setAddress] = useState<AddressType>({
+  //   value: '',
+  //   coords: {
+  //     latitude: null,
+  //     longitude: null,
+  //   },
+  // })
+  //
+  // const REGION = process.env.NEXT_PUBLIC_AWS_REGION
+  // const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
+  // const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
+  //
+  // const crud = searchParams.get('crud') || CRUD.등록
+  // const seq = searchParams.get('seq') || null
+  // const isEditMode = (crud === CRUD.수정 && seq !== null) || false
 
   // const {
   //   register,
@@ -239,7 +240,7 @@ const WarehouseEdit = () => {
 
   return (
     <>
-      <BackHeader canGoBack title={`창고 ${isEditMode ? '편집' : '생성'}`} />
+      <BackHeader canGoBack title={`창고`} />
       {/* <form className='mt-12 space-y-4 p-2' onSubmit={handleSubmit(onSubmit)}> */}
       {/*  <div className={'relative h-full w-full'}> */}
       {/*    <InputFile */}
