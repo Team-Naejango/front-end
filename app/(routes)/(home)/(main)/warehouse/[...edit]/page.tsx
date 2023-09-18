@@ -32,8 +32,12 @@ interface WarehouseProps {
   address: string
 }
 
-const WarehouseEdit = ({ params }: any) => {
-  console.log('params:', params)
+export function generateStaticParams() {
+  return { crud: CRUD.등록 }
+}
+
+const WarehouseEdit = ({ params }: { params: { crud: string } }) => {
+  console.log('params:', params.crud)
   // const searchParams = useSearchParams()
   // const query = useQueryClient()
   // const router = useRouter()
