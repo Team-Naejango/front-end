@@ -21,7 +21,7 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
       {
         id: 1,
         value: '내 잔고를 부탁해',
-        title: '모던리빙 호텔 수건 180g 코마사 40수 세트wwwwwwwwwwww',
+        title: '모던리빙 호텔 수건 180g 코마사 40수 세트',
         swap: 'BUY',
       },
       {
