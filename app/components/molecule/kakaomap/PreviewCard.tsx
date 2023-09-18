@@ -112,7 +112,7 @@ const PreviewCard = ({
       console.log('그룹 데이터:', data.data)
       router.push(`/chats/${data.data.result.channelId}`)
       toast.success('그룹 채팅방에 입장하였습니다.')
-      // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 seq 를 응답합니다.
+      // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.
       // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
     },
     onError: (error: ApiError) => {

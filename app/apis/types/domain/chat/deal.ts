@@ -1,5 +1,5 @@
 export type TransactionResult = {
-  // 거레 seq
+  // 거레 edit
   id: number
   // 거래 금액
   amount: number
@@ -11,7 +11,7 @@ export type TransactionResult = {
   traderName: string
   // 아이템 이름
   itemName: string
-  // 아이템 seq
+  // 아이템 edit
   itemId: number
 }
 
@@ -24,7 +24,7 @@ export interface Transaction {
 }
 
 export type DealResult = {
-  // 거래 seq
+  // 거래 edit
   id?: number
   // 거래 날짜 및 시간
   date: string
@@ -32,9 +32,9 @@ export type DealResult = {
   amount: number
   // 거래 상태
   status?: string
-  // 유저 seq
+  // 유저 edit
   userId?: number
-  // 교환 상대 seq
+  // 교환 상대 edit
   traderId: number
   // 아이템 Id
   itemId: number

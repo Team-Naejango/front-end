@@ -53,17 +53,17 @@ const Sign = () => {
     },
   })
 
-  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-    onSuccess: () => {
-      console.log('닉네임 사용 가능')
-      setIsNicknameDisabled(true)
-      setSelectedNickname(getValues('nickname'))
-    },
-    onError: (error: ApiError) => {
-      console.log('error:', error)
-      toast.error(error.message)
-    },
-  })
+  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+  //   onSuccess: () => {
+  //     console.log('닉네임 사용 가능')
+  //     setIsNicknameDisabled(true)
+  //     setSelectedNickname(getValues('nickname'))
+  //   },
+  //   onError: (error: ApiError) => {
+  //     console.log('error:', error)
+  //     toast.error(error.message)
+  //   },
+  // })
 
   const onClickSubmit = async () => {
     // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')

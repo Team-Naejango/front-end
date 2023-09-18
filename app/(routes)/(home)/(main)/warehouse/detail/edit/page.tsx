@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Tab } from '@headlessui/react'
 import { useQuery } from '@tanstack/react-query'
 
@@ -15,37 +15,43 @@ import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouseItem = () => {
-  const params = useParams()
+  const searchParams = useSearchParams()
   const [selectedTab, setSelectedTab] = useState<('INDIVIDUAL_BUY' | 'GROUP_BUY') | 'INDIVIDUAL_SELL'>('INDIVIDUAL_BUY')
+
+  const seq = searchParams.get('seq')
 
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
-    [ITEM.조회, params.id],
+    [ITEM.조회, seq],
     () =>
       storageItem({
-        storageId: params.id,
+        storageId: String(seq),
         status: true,
         page: '0',
         size: '10',
       }),
     {
-      enabled: !!params.id,
+      enabled: !!seq,
     }
   )
   const filteredItemList = (_itemInfo && _itemInfo.result.filter(item => item.itemType === selectedTab)) || []
 
-  const onSelectedTab = (tab: string) => {
-    if (tab === selectedTab) return
-    setSelectedTab(currentTab =>
-      currentTab === ('INDIVIDUAL_BUY' || 'GROUP_BUY') ? 'INDIVIDUAL_SELL' : 'INDIVIDUAL_BUY' || 'GROUP_BUY'
-    )
+  const onSelectedTab = (tab: string[] | string) => {
+    if (String(tab) === selectedTab) return
+
+    setSelectedTab(currentTab => {
+      if (currentTab === 'INDIVIDUAL_BUY' || currentTab === 'GROUP_BUY') {
+        return 'INDIVIDUAL_SELL'
+      }
+      return 'INDIVIDUAL_BUY' || 'GROUP_BUY'
+    })
   }
 
   // todo: 삭제 팝업창과 delete api 추가
   const onDeleteProduct = () => {}
 
   return (
-    <Layout canGoBack title={`창고${params.id}`}>
+    <Layout canGoBack title={`창고${seq}`}>
       <div className='mt-8'>
         <RoundedTab setSelectedTab={onSelectedTab}>
           <Tab.Panel>
@@ -55,7 +61,7 @@ const WareHouseItem = () => {
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
                 </div>
               ) : (
-                <ItemList items={filteredItemList} onDeleteProduct={onDeleteProduct} params={params} />
+                <ItemList items={filteredItemList} onDeleteProduct={onDeleteProduct} params={String(seq)} />
               ))}
           </Tab.Panel>
           <Tab.Panel>
@@ -65,7 +71,7 @@ const WareHouseItem = () => {
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
                 </div>
               ) : (
-                <ItemList items={filteredItemList} onDeleteProduct={onDeleteProduct} params={params} />
+                <ItemList items={filteredItemList} onDeleteProduct={onDeleteProduct} params={String(seq)} />
               ))}
           </Tab.Panel>
         </RoundedTab>
@@ -74,7 +80,7 @@ const WareHouseItem = () => {
             pathname: '/warehouse/detail/item/edit',
             query: {
               crud: CRUD.등록,
-              storage: params.id,
+              storage: seq,
               seq: null,
             },
           }}>

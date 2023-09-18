@@ -73,7 +73,7 @@ const WareHouseCarousel = ({
     loop: true,
     navigation: {
       // prevEl: '.swiper-button-prev',
-      // nextEl: '.swiper-button-next',
+      nextEl: '.swiper-button-next',
       disabledClass: 'swiper-button-disabled',
     },
     onSwiper: setSwiper,
@@ -124,7 +124,13 @@ const WareHouseCarousel = ({
           return (
             <SwiperSlide key={data.storageId} className={'slider_fade'}>
               <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] p-2.5 shadow-sm hover:text-white hover:transition-all hover:duration-200'>
-                <Link href={`/warehouse/detail/${data.storageId}`}>
+                <Link
+                  href={{
+                    pathname: '/warehouse/detail/edit',
+                    query: {
+                      seq: data.storageId,
+                    },
+                  }}>
                   <Image
                     priority
                     src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${encodeURIComponent(

@@ -51,7 +51,7 @@ const WareHouse = () => {
       crud: CRUD.등록,
     }
     push({
-      pathname: `/warehouse/seq`,
+      pathname: `/warehouse/edit`,
       query: { ...params },
     })
   }
@@ -115,7 +115,7 @@ const WareHouse = () => {
           </div>
           <FloatingButton
             href={{
-              pathname: '/warehouse/seq',
+              pathname: '/warehouse/edit',
               query: {
                 seq: currentSlideIndex + 1,
                 crud: CRUD.수정,

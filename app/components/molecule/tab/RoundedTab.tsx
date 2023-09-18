@@ -6,7 +6,7 @@ import { Tab } from '@headlessui/react'
 import { cls } from '@/app/libs/client/utils/util'
 
 export interface RoundedTabProps {
-  setSelectedTab: (tab: string) => void
+  setSelectedTab: (tab: string[] | string) => void
   children: ReactNode
 }
 
@@ -34,7 +34,7 @@ const RoundedTab = ({ setSelectedTab, children }: RoundedTabProps) => {
                       : 'border-[#ccc] hover:border-[#33CC99] hover:!border-l-white hover:!border-r-white hover:bg-[#33CC99] hover:text-white'
                   )
                 }
-                onClick={() => setSelectedTab(tab.label)}>
+                onClick={() => setSelectedTab(tab.name)}>
                 {tab.label}
               </Tab>
             )

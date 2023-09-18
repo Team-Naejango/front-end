@@ -17,7 +17,7 @@ const ItemLIst = ({
 }: {
   items: Item[]
   onDeleteProduct: () => void
-  params: Params
+  params: string
 }) => {
   return (
     <ul className='flex flex-col gap-5 p-0.5'>
@@ -54,7 +54,7 @@ const ItemLIst = ({
               pathname: '/warehouse/detail/item/edit',
               query: {
                 crud: CRUD.수정,
-                storage: params.id,
+                storage: params,
                 seq: item.itemId,
               },
             }}

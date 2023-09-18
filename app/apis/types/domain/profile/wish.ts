@@ -1,5 +1,5 @@
 export type WishResult = {
-  // seq
+  // edit
   id: number
   // 아이템 이름
   name: string

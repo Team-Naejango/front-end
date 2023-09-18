@@ -135,7 +135,7 @@ const EditItem = () => {
   // 아이템 수정
   const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemInfo) => modifyItem(seq!, params), {
     onSuccess: () => {
-      // mutateStorage({ itemId: seq, storageIdList: updatedStorageIds })
+      // mutateStorage({ itemId: edit, storageIdList: updatedStorageIds })
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])

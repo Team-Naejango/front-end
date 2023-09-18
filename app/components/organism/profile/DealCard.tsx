@@ -11,7 +11,7 @@ import { DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { deal } from '@/app/apis/domain/chat/deal'
 
 const DealCard = ({ onClick }: { onClick: () => void }) => {
-  const [selectedTab, setSelectedTab] = useState<string>('INDIVIDUAL_BUY')
+  const [selectedTab, setSelectedTab] = useState<string | string[]>('INDIVIDUAL_BUY')
 
   // 거래 조회
   const { data: { data: deals } = {} } = useQuery([DEAL.조회], () => deal())
@@ -77,7 +77,7 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
           {/*    deal.result.map((post: RoundedTabProps) => ( */}
           {/*      // <li */}
           {/*      //   role={'presentation'} */}
-          {/*      //   key={post.seq} */}
+          {/*      //   key={post.edit} */}
           {/*      //   className='relative flex cursor-pointer items-center rounded-xl p-4' */}
           {/*      //   onClick={onClick}> */}
           {/*      //   <div className={'h-16 w-16 rounded-md bg-gray-500'} /> */}
