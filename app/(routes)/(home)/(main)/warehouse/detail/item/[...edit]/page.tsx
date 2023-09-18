@@ -31,7 +31,7 @@ interface ItemProps {
   limit?: number
   description: string
   imgUrl: string
-  type: string
+  itemType: string
   category: string
   storageId: number
 }
@@ -83,7 +83,7 @@ const EditItem = () => {
     if (!result) return
 
     return result.map(v => {
-      return { ...storage, id: v.id }.id
+      return { ...storage, id: v.storageId }.id
     })
   }).find(value => value)
 
@@ -229,7 +229,7 @@ const EditItem = () => {
       name: data.name,
       description: data.description,
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.imgUrl,
-      type: selectedType.name,
+      itemType: selectedType.name,
       category: selectedCategory.name,
       storageId: data.storageId,
     }
@@ -265,7 +265,7 @@ const EditItem = () => {
       setValue('imgUrl', _itemInfo.imgUrl)
       setImagePreview(_itemInfo.imgUrl)
       setSelectedCategory({ name: _itemInfo.category })
-      setSelectedType({ name: _itemInfo.type })
+      setSelectedType({ name: _itemInfo.itemType })
       setSelectedStorage(getSelectedStorages() || selectedStorage)
     }
   }, [_itemInfo])

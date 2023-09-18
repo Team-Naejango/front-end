@@ -4,6 +4,7 @@ import {
   ItemInfo,
   ItemList,
   ItemParams,
+  ItemSearchInfo,
   OmitStorageIdItemInfo,
   StorageGroupChat,
   StorageInfo,
@@ -122,6 +123,27 @@ export async function deleteStorage(storageId: string): Promise<Response<null>> 
 
 /* ************************************ 아이템 엔터티 ************************************ */
 
+export interface ItemSearchParam {
+  // 경도
+  lon: string
+  // 위도
+  lat: string
+  // 반경
+  rad: string
+  // 페이징
+  page: string
+  // 조회수
+  size: string
+  // 카테고리 이름
+  category: string
+  // 검색 키워드(2~10자)
+  keyword: string
+  // 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
+  itemType: string
+  // 상태 (거래중:true/거래완료:false)
+  status: boolean
+}
+
 // 아이템 창고 수정
 // export interface ModifyStorageParam {
 //   // 아이템 ID
@@ -140,12 +162,21 @@ export async function itemInfo(itemId: string | null): Promise<Response<{ data: 
 }
 
 /**
+ * 아이템 검색
+ *
+ * @param params
+ */
+export async function itemSearch(params: ItemSearchParam): Promise<Response<{ data: ItemSearchInfo }>> {
+  return withAuth.get('/api/item/search')
+}
+
+/**
  * 아이템 등록
  *
  * @param params.name // 이름
  * @param params.description // 설명
  * @param params.imgUrl // 이미지 URL
- * @param params.type // 타입
+ * @param params.itemType // 타입
  * @param params.category // 카테고리
  * @param params.storageId // 창고 ID
  *
@@ -162,7 +193,7 @@ export async function saveItem(params: ItemParams): Promise<Response<null>> {
  * @param params.name // 이름
  * @param params.description // 설명
  * @param params.imgUrl // 이미지 URL
- * @param params.type // 타입
+ * @param params.itemType // 타입
  * @param params.category // 카테고리
  *
  * @param params

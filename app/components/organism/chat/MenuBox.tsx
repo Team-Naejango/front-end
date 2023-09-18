@@ -84,7 +84,7 @@ const MenuBox = ({
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(registered, {
     onSuccess: data => {
-      setTransactionId(data.data.id)
+      setTransactionId(data.data.result.id)
 
       // todo: 거래 등록 메세지 전달
       query.invalidateQueries([DEAL.조회])
@@ -157,7 +157,7 @@ const MenuBox = ({
       return value.participantId !== chatId
     })?.nickname
 
-    const transactionId = deals && deals.find(v => v.traderName === getTraderName)!.id
+    const transactionId = deals && deals.result.find(v => v.traderName === getTraderName)!.id
     setTransactionId(transactionId)
   }
 

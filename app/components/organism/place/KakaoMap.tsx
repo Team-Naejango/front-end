@@ -33,7 +33,7 @@ const KakaoMap = () => {
     [ITEM.조회, info],
     () =>
       storageItem({
-        storageId: String(info?.id),
+        storageId: String(info?.storageId),
         status: true,
         page: '0',
         size: '10',
@@ -74,7 +74,7 @@ const KakaoMap = () => {
         isUpdatePreview ? (
           <PreviewCard
             previews={markers.map(v => v)}
-            dragedPreviews={_itemInfo!}
+            dragedPreviews={_itemInfo?.result || []}
             activedItem={info?.name ?? ''}
             kakaoMap={kakaoMap}
             isDragedMixture={isDragedMixture}

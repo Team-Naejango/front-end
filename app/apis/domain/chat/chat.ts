@@ -18,7 +18,7 @@ export async function chat(): Promise<Response<{ data: Chat }>> {
  * @param channelId // 조회하고자 하는 채널 ID
  */
 export async function getChatId(channelId: string): Promise<Response<{ data: ChatId }>> {
-  return withAuth.get(`/api/chat/${channelId}/myChat`)
+  return withAuth.get(`/api/chat/${channelId}`)
 }
 
 /**

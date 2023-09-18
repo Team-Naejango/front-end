@@ -9,6 +9,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { GrFormNext } from 'react-icons/gr'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
+import mapIcon from '@/app/assets/image/map.svg'
 
 import BackHeader from '@/app/components/template/main/header/BackHeader'
 import InputField from '@/app/components/atom/InputField'
@@ -21,7 +22,6 @@ import { CRUD } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { AddressType } from '@/app/components/molecule/kakaomap/SearchAddress'
 import { E_STEP, STEP } from '@/app/libs/client/constants/app/warehouse'
-import mapIcon from '@/app/assets/image/map.svg'
 
 import { modifyStorage, saveStorage, storage, StorageParam } from '@/app/apis/domain/warehouse/warehouse'
 
@@ -51,8 +51,8 @@ const WarehouseEdit = () => {
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
-  const crud = searchParams.get('crud')
-  const seq = searchParams.get('seq')
+  const crud = searchParams.get('crud') || ''
+  const seq = searchParams.get('seq') || ''
   const isEditMode = (crud === CRUD.수정 && seq !== '') || false
 
   const {

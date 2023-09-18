@@ -1,7 +1,4 @@
-/**
- * 거래 정보
- */
-export interface Transaction {
+export type TransactionResult = {
   // 거레 id
   id: number
   // 거래 금액
@@ -19,9 +16,14 @@ export interface Transaction {
 }
 
 /**
- * 거래 등록
+ * 거래 정보
  */
-export interface Deal {
+export interface Transaction {
+  message: string
+  result: TransactionResult[]
+}
+
+export type DealResult = {
   // 거래 id
   id?: number
   // 거래 날짜 및 시간
@@ -36,4 +38,12 @@ export interface Deal {
   traderId: number
   // 아이템 Id
   itemId: number
+}
+
+/**
+ * 거래 등록
+ */
+export interface Deal {
+  message: string
+  result: DealResult
 }

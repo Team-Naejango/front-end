@@ -126,11 +126,11 @@ const Home = () => {
               result.map(storage => {
                 return (
                   <button
-                    key={storage.id}
+                    key={storage.storageId}
                     className={`ml-2 whitespace-nowrap rounded-md border border-gray-300 px-4 py-2.5 text-[13px] font-medium text-[#222] shadow-sm hover:border-transparent hover:bg-[#33CC99] hover:text-[#fff] focus:outline-none ${
-                      selectedStorage === storage.id ? `border-transparent bg-[#33CC99] text-[#fff]` : ''
+                      selectedStorage === storage.storageId ? `border-transparent bg-[#33CC99] text-[#fff]` : ''
                     }`}
-                    onClick={() => onSelectedStorage(storage.id)}>
+                    onClick={() => onSelectedStorage(storage.storageId)}>
                     {storage.name}
                   </button>
                 )

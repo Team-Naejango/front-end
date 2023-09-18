@@ -102,7 +102,8 @@ const PlaceMarker = ({
 
         const newMarkers = storage?.searchResult.map(value => {
           const markers = {
-            id: Number(value.storageId),
+            storageId: Number(value.storageId),
+            ownerId: Number(value.ownerId),
             address: value.address,
             description: value.description,
             imgUrl: value.imgUrl,
@@ -235,7 +236,8 @@ const PlaceMarker = ({
             const storage = await refetch()
             const markers = storage.data?.data.searchResult.map(value => {
               return {
-                id: Number(value.storageId),
+                storageId: Number(value.storageId),
+                ownerId: Number(value.ownerId),
                 address: value.address,
                 description: value.description,
                 imgUrl: value.imgUrl,

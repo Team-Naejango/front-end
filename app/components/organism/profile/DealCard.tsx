@@ -65,7 +65,7 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
     ],
   })
 
-  // const filteredDealList = deals?.filter(item => item.type === selectedTab)
+  // const filteredDealList = deals?.result.filter(item => item.status === selectedTab)
 
   return (
     <RoundedTab setSelectedTab={setSelectedTab}>
@@ -73,8 +73,8 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
         <Tab.Panel key={deal[0].title} className={cls('rounded-xl bg-white pb-5 pt-2')}>
           <span className={'mr-1 flex justify-end text-[13px]'}>{deal.length} 건</span>
           {/* <ul className={'flex flex-col p-0.5'}> */}
-          {/*  {deal && deal.length !== 0 ? ( */}
-          {/*    deal.map((post: RoundedTabProps) => ( */}
+          {/*  {deal && deal.result.length !== 0 ? ( */}
+          {/*    deal.result.map((post: RoundedTabProps) => ( */}
           {/*      // <li */}
           {/*      //   role={'presentation'} */}
           {/*      //   key={post.id} */}

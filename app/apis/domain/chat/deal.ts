@@ -1,5 +1,5 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response } from '@/app/apis/types/response/response'
+import { Common, Response } from '@/app/apis/types/response/response'
 import { Deal, Transaction } from '@/app/apis/types/domain/chat/deal'
 
 export interface DealParam {
@@ -14,18 +14,22 @@ export interface DealParam {
 }
 
 export type ModifyParam = Omit<DealParam, 'traderId' | 'itemId'> & { transactionId?: string }
+
 type ModifyResponse = {
-  // 날짜
-  date: string
-  // 금액
-  amount: number
+  message: string
+  result: {
+    // 날짜
+    date: string
+    // 금액
+    amount: number
+  }
 }
 
 /**
  * 거래 내역 조회
  *
  */
-export async function deal(): Promise<Response<{ data: Transaction[] }>> {
+export async function deal(): Promise<Response<{ data: Transaction }>> {
   return withAuth.get('/api/transaction')
 }
 
@@ -61,7 +65,7 @@ export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: 
  *
  * @param transactionId // 거래 ID
  */
-export async function deleteDeal(transactionId: string): Promise<Response<null>> {
+export async function deleteDeal(transactionId: string): Promise<Response<Common>> {
   return withAuth.delete(`/api/transaction/${transactionId}`)
 }
 
@@ -70,8 +74,8 @@ export async function deleteDeal(transactionId: string): Promise<Response<null>>
  *
  * @param transactionId // 거래 ID
  */
-export async function complete(transactionId: string): Promise<Response<null>> {
-  return withAuth.patch(`/api/transaction/completion/${transactionId}`)
+export async function complete(transactionId: string): Promise<Response<Common>> {
+  return withAuth.patch(`/api/transaction/${transactionId}/complete`)
 }
 
 /**
@@ -79,6 +83,6 @@ export async function complete(transactionId: string): Promise<Response<null>> {
  *
  * @param transactionId // 거래 ID
  */
-export async function wire(transactionId: string): Promise<Response<null>> {
-  return withAuth.patch(`/api/transaction/remittance/${transactionId}`)
+export async function wire(transactionId: string): Promise<Response<Common>> {
+  return withAuth.patch(`/api/transaction/${transactionId}/remit`)
 }

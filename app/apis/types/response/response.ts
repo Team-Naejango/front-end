@@ -6,6 +6,11 @@ export interface Paging {
   result?: number // 검색 결과 수
 }
 
+export type Common = {
+  message: string
+  result: any | any[]
+}
+
 export type Response<T = unknown> = {
   [K in keyof T]: T[keyof T]
 } & {

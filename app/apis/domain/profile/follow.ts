@@ -6,7 +6,7 @@ import { Follows } from '@/app/apis/types/domain/profile/follow'
  * 팔로우 조회
  *
  */
-export async function follow(): Promise<Response<{ data: Follows[] }>> {
+export async function follow(): Promise<Response<{ data: Follows }>> {
   return withAuth.get('/api/follow')
 }
 

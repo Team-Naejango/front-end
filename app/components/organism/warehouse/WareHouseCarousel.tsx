@@ -123,9 +123,9 @@ const WareHouseCarousel = ({
       ) : (
         datas?.result.map(data => {
           return (
-            <SwiperSlide key={data.id} className={'slider_fade'}>
+            <SwiperSlide key={data.storageId} className={'slider_fade'}>
               <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] p-2.5 shadow-sm hover:text-white hover:transition-all hover:duration-200'>
-                <Link href={`/warehouse/detail/${data.id}`}>
+                <Link href={`/warehouse/detail/${data.storageId}`}>
                   <Image
                     priority
                     src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${encodeURIComponent(

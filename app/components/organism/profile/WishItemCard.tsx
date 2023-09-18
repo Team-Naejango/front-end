@@ -4,11 +4,11 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { Wishs } from '@/app/apis/types/domain/profile/wish'
+import { WishResult } from '@/app/apis/types/domain/profile/wish'
 import { cls } from '@/app/libs/client/utils/util'
 
 interface WishItemProps {
-  wish: Wishs
+  wish: WishResult
   hearts: boolean
   onClick: () => void
 }
@@ -47,9 +47,9 @@ const WishItemCard = ({ wish, hearts, onClick }: WishItemProps) => {
           <span
             className={cls(
               'rounded px-0.5 py-0.5 text-[10px] text-white',
-              wish?.type === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+              wish?.itemType === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
             )}>
-            {wish?.type}
+            {wish?.itemType}
           </span>
           <h3 className='overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-gray-900'>
             {wish.name}

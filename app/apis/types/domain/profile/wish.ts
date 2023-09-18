@@ -1,7 +1,4 @@
-/**
- * 관심목록 정보
- */
-export interface Wishs {
+export type WishResult = {
   // id
   id: number
   // 아이템 이름
@@ -11,7 +8,15 @@ export interface Wishs {
   // 이미지 url
   imgUrl: string
   // 타입
-  type: string
+  itemType: string
   // 카테고리
   category: string
+}
+
+/**
+ * 관심목록 정보
+ */
+export interface Wishs {
+  message: string
+  result: WishResult[]
 }

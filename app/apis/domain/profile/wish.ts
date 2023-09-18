@@ -6,7 +6,7 @@ import { Wishs } from '@/app/apis/types/domain/profile/wish'
  * 관심 조회
  *
  */
-export async function wish(): Promise<Response<{ data: Wishs[] }>> {
+export async function wish(): Promise<Response<{ data: Wishs }>> {
   return withAuth.get('/api/wish')
 }
 

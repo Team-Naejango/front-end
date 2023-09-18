@@ -7,7 +7,7 @@ import { AnotherMemberInfo, Member, MemberInfo } from '@/app/apis/types/domain/p
  *
  */
 export async function userInfo(): Promise<Response<{ data: MemberInfo }>> {
-  return withAuth.get('/api/user/me')
+  return withAuth.get('/api/user/profile')
 }
 
 /**

@@ -67,7 +67,7 @@ const WareHouse = () => {
         content: '창고를 삭제 하시겠습니까?',
       },
       callback: async () => {
-        await deleteStorage(String(currentItem?.id))
+        await deleteStorage(String(currentItem?.storageId))
         await query.invalidateQueries([WAREHOUSE.조회])
         toast.success('창고가 삭제되었습니다.')
         router.push('/warehouse')

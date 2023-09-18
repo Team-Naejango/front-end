@@ -34,7 +34,7 @@ const Follow = () => {
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow())
-  const storageId = follows && follows.find(v => v.id)?.id
+  const storageId = follows && follows.result.find(v => v.id)?.id
 
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
@@ -76,8 +76,8 @@ const Follow = () => {
   return (
     <Layout canGoBack title='팔로우'>
       <div className={'mt-6'}>
-        {follows && follows.length !== 0 ? (
-          follows.map(follow => {
+        {follows && follows.result.length !== 0 ? (
+          follows.result.map(follow => {
             return (
               <div key={follow.id} className='border-b py-6'>
                 <div className='mb-3 flex cursor-pointer items-center space-x-3 px-2 pb-3'>

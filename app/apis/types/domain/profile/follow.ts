@@ -1,7 +1,4 @@
-/**
- * 팔로우 정보
- */
-export interface Follows {
+export type FollowResult = {
   // id
   id: number
   // 창고 이름
@@ -10,4 +7,12 @@ export interface Follows {
   description: string
   // 창고 url
   imgUrl: string
+}
+
+/**
+ * 팔로우 정보
+ */
+export interface Follows {
+  message: string
+  result: FollowResult[]
 }

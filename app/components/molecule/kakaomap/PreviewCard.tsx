@@ -15,7 +15,7 @@ import { modalSelector } from '@/app/store/modal'
 import { cls } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
-import { ItemList, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import { Item, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
@@ -33,7 +33,7 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 interface PreviewCardProps {
   previews: Storages[]
-  dragedPreviews: ItemList
+  dragedPreviews: Item[]
   isDragedMixture: boolean
   activedItem: string
   kakaoMap: kakao.maps.Map | null
@@ -68,7 +68,7 @@ const PreviewCard = ({
   // 창고 그룹 채널 조회
   const { data: { data: groupChat } = {} } = useQuery(
     [WAREHOUSE.그룹채널조회, info],
-    () => storageGroupChannel(String(info?.id)),
+    () => storageGroupChannel(String(info?.storageId)),
     {
       enabled: !isDragedMixture,
     }
@@ -140,7 +140,7 @@ const PreviewCard = ({
       },
     })
     setMarkerItemsValue(
-      dragedPreviews.result.map(data => ({
+      dragedPreviews.map(data => ({
         name: data.name,
       }))
     )
@@ -161,7 +161,7 @@ const PreviewCard = ({
   const onClickFollow = (storageId: number) => {
     if (!storageId) return
 
-    const isSubscribe = follows && follows.some(v => v.id === storageId)
+    const isSubscribe = follows && follows.result.some(v => v.id === storageId)
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
   }
 
@@ -171,7 +171,8 @@ const PreviewCard = ({
     if (!groupChat) return
 
     if (type === '개인') {
-      mutateJoin(String(dragedPreviews.userId))
+      const { ownerId } = dragedPreviews.find(v => v.ownerId)!
+      mutateJoin(String(ownerId))
     } else {
       mutateGroupJoin(String(groupChat.channelInfo.channelId))
     }
@@ -190,7 +191,7 @@ const PreviewCard = ({
               'flex h-[190px] flex-col items-center gap-2 overflow-x-hidden overflow-y-scroll rounded border'
             )}>
             {isDragedMixture
-              ? dragedPreviews?.result.map(item => {
+              ? dragedPreviews?.map(item => {
                   return (
                     <li
                       key={`${uuid()}_${item.itemId}`}
@@ -217,7 +218,7 @@ const PreviewCard = ({
               : previews?.map(item => {
                   return (
                     <li
-                      key={`${uuid()}_${item.id}`}
+                      key={`${uuid()}_${item.storageId}`}
                       className={cls(
                         'relative w-full cursor-pointer rounded border text-xs hover:bg-[#eee]',
                         isDragedMixture ? '' : 'flex justify-between'
@@ -228,10 +229,10 @@ const PreviewCard = ({
                       <span
                         role={'presentation'}
                         className={'absolute right-5 top-1/2 -translate-y-1/2 text-[#33CC99]'}
-                        onClick={() => onClickFollow(item.id)}>
+                        onClick={() => onClickFollow(item.storageId)}>
                         <svg
                           className='h-4 w-4'
-                          fill={follows?.some(follow => follow.id === item.id) ? '#33CC99' : 'none'}
+                          fill={follows?.result.some(follow => follow.id === item.storageId) ? '#33CC99' : 'none'}
                           stroke='currentColor'
                           viewBox='0 0 22 22'
                           xmlns='http://www.w3.org/2000/svg'>

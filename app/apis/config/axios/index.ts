@@ -62,10 +62,10 @@ export const responseNormalizer = async (error: AxiosError) => {
   const data = error.response?.data as Refresh
 
   if (data.body && data.body.status === 401) {
-    // if (data.body.error === 'UNAUTHORIZED') {
-    //   window.location.href = '/login'
-    //   return false
-    // }
+    if (data.body.error === 'UNAUTHORIZED') {
+      window.location.href = '/login'
+      return false
+    }
 
     const isHasToken = TokenValid()
 
@@ -90,10 +90,10 @@ export const responseNormalizer = async (error: AxiosError) => {
         refreshAuthToken({ ...error.config }, data.reissuedAccessToken || value)
         setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken || value)
 
-        // if (value === '') {
-        //   window.location.href = '/login'
-        //   return false
-        // }
+        if (value === '') {
+          window.location.href = '/login'
+          return false
+        }
         return await withAuth.request(error.config)
       } catch (error: unknown) {
         return false
@@ -121,13 +121,13 @@ export const responseNormalizer = async (error: AxiosError) => {
     }
   }
 
-  // if (data && data.status === 404) {
-  //   try {
-  //     window.location.href = '/login'
-  //   } catch (error: unknown) {
-  //     return false
-  //   }
-  // }
+  if (data && data.status === 404) {
+    try {
+      window.location.href = '/login'
+    } catch (error: unknown) {
+      return false
+    }
+  }
 
   if (data.status === 409) {
     try {
