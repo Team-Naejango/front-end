@@ -32,9 +32,9 @@ interface WarehouseProps {
   address: string
 }
 
-export async function generateStaticParams() {
-  return [{ id: 1 }]
-}
+// export async function generateStaticParams() {
+//   return [{ id: 1 }]
+// }
 
 const WarehouseEdit = ({ params }: { params: { id: string } }) => {
   console.log('params:', params)
