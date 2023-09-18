@@ -51,9 +51,9 @@ const WarehouseEdit = () => {
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
-  const crud = searchParams.get('crud') || ''
-  const seq = searchParams.get('seq') || ''
-  const isEditMode = (crud === CRUD.수정 && seq !== '') || false
+  const crud = searchParams.get('crud') || CRUD.등록
+  const seq = searchParams.get('seq') || null
+  const isEditMode = (crud === CRUD.수정 && seq !== null) || false
 
   const {
     register,
