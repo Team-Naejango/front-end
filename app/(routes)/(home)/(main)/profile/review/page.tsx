@@ -11,8 +11,8 @@ import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import Loading from '@/app/loading'
-import ReviewCard from '@/app/components/organism/profile/ReviewCard'
-import WriteReviewPopup from '@/app/components/organism/profile/WriteReviewPopup'
+import ReviewCard from '@/app/components/organism/profile/review/ReviewCard'
+import WriteReviewPopup from '@/app/components/organism/profile/review/WriteReviewPopup'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -23,6 +23,7 @@ const Review = () => {
   const { openModal } = useModal()
   const _review = useRecoilValue(modalSelector('writeReview'))
 
+  // 리뷰등록 모달
   const onClickWriteReview = () => {
     openModal({
       modal: { id: 'writeReview', type: MODAL_TYPES.CONFIRM },
@@ -43,6 +44,7 @@ const Review = () => {
 
       {_review.modal.show ? (
         <CustomModal id={_review.modal.id} btn>
+          {/* todo: 작업 보류 */}
           <WriteReviewPopup />
         </CustomModal>
       ) : null}

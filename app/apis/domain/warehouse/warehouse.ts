@@ -78,12 +78,12 @@ export async function storageItem(params: StorageItemParam): Promise<Response<{ 
 }
 
 /**
- * 창고 그룹 채널 조회
+ * 창고 아이템 그룹 채널 조회
  *
  * @param itemId // 공동 구매 아이템 ID
  * */
 export async function storageGroupChannel(itemId: string): Promise<Response<{ data: StorageGroupChat }>> {
-  return withAuth.get(`/api/item/${itemId}/channel`)
+  return withAuth.get(`/api/channel/group/${itemId}`)
 }
 
 /**

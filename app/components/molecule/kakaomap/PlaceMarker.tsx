@@ -138,11 +138,12 @@ const PlaceMarker = ({
         console.log('원인불명 에러')
       }
     },
-    [kakaoMap]
+    [kakaoMap, storages]
   )
+
   // 키워드 또는 카테고리로 근처 창고 검색
   const onSearchKeywordOrCategories = useCallback(
-    async (type: string | undefined, query?: string) => {
+    async (keyword: string, category: string) => {
       if (!kakaoMap) return
 
       setIsUpdatePreview(true)
@@ -154,8 +155,8 @@ const PlaceMarker = ({
         rad: '1000',
         page: '0',
         size: '20',
-        category: query || '',
-        keyword: type || '',
+        keyword: String(keyword),
+        category: String(category),
         itemType: ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매 || ITEM_TYPE.공동구매,
         status: true,
       }
@@ -200,9 +201,9 @@ const PlaceMarker = ({
     [kakaoMap]
   )
 
-  useEffect(() => {
-    onSearchKeywordOrCategories(search, selectedCategory)
-  }, [selectedCategory, kakaoMap, updateMarkers, onSearchKeywordOrCategories, watch])
+  // useEffect(() => {
+  //   onSearchKeywordOrCategories(search, selectedCategory)
+  // }, [selectedCategory, kakaoMap, updateMarkers, onSearchKeywordOrCategories, watch])
 
   useEffect(() => {
     if (!kakaoMap) return
@@ -218,12 +219,12 @@ const PlaceMarker = ({
   }, [selectedCategory])
 
   const onSubmitSearch = () => {
-    onSearchKeywordOrCategories(search)
+    onSearchKeywordOrCategories(search, selectedCategory)
     isDragedMixture && setIsDragedMixture(false)
   }
 
   const onKeyDownSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') onSearchKeywordOrCategories(event.currentTarget.value)
+    if (event.key === 'Enter') onSearchKeywordOrCategories(event.currentTarget.value, selectedCategory)
   }
 
   // 마커 클릭 시

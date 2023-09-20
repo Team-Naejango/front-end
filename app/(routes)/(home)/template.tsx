@@ -2,14 +2,20 @@
 
 import React, { useCallback, useEffect } from 'react'
 import { toast } from 'react-hot-toast'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 import { NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 
 import { subscribe } from '@/app/apis/domain/profile/alarm'
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
   const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
 
+  // 서비스워커 시작
   const serviceWorkerInit = async () => {
     const permission = await Notification.requestPermission()
     if (permission !== 'granted') return
@@ -32,6 +38,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // 알림 전달
   const notificationCallback = useCallback(() => {
     return (
       typeof navigator !== 'undefined' &&
@@ -47,6 +54,20 @@ export default function Template({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     serviceWorkerInit()
   }, [])
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const onLimitBack = () => {
+        window.addEventListener('popstate', () => {
+          router.replace('/home')
+        })
+      }
+      window.addEventListener('popstate', onLimitBack)
+      return () => {
+        window.removeEventListener('popstate', onLimitBack)
+      }
+    }
+  }, [isLoggedIn, router])
 
   useEffect(() => {
     notificationCallback()

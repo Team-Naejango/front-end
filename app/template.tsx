@@ -34,13 +34,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isSplashMounted) {
-      const onBackButton = () => {
+      const onBack = () => {
         window.addEventListener('popstate', () => {
           pathname === '/' ? router.replace('/login') : router.back()
         })
       }
+      window.addEventListener('popstate', onBack)
       return () => {
-        window.removeEventListener('popstate', onBackButton)
+        window.removeEventListener('popstate', onBack)
       }
     }
   }, [])

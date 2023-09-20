@@ -4,7 +4,7 @@ import React, { useState, useEffect, ChangeEvent } from 'react'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 import { useForm } from 'react-hook-form'
 import Image from 'next/image'
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
@@ -21,6 +21,7 @@ import TextArea from '@/app/components/atom/TextArea'
 import InputFile from '@/app/components/atom/InputFile'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
 import { nickNameValidity } from '@/app/apis/domain/auth/auth'
@@ -35,8 +36,7 @@ interface EditProfileForm {
 }
 
 const EditProfile = () => {
-  // const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const pathname = usePathname()
   const query = useQueryClient()
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
@@ -48,10 +48,7 @@ const EditProfile = () => {
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
-  const isEditMode = searchParams.get('auth')
-  console.log('isEditMode:', isEditMode)
-
-  // console.log('searchParams:', searchParams.get('/profile/edit'))
+  const isEditMode = pathname.includes('profile/edit')
 
   const {
     register,
@@ -69,14 +66,14 @@ const EditProfile = () => {
   const nickname = watch('nickname')
 
   const { data: { data } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
-    // enabled: isEditMode,
+    enabled: isEditMode,
   })
   const _userInfo = data?.result
 
   const { mutate: mutateUserInfoModify } = useMutation((params: Member) => modifyUserInfo({ ...params }), {
     onSuccess: () => {
-      query.invalidateQueries([OAUTH.유저정보])
       toast.success('프로필이 변경되었습니다.')
+      query.invalidateQueries([OAUTH.유저정보])
       router.push('/profile')
     },
     onError: (error: ApiError) => {
@@ -85,7 +82,7 @@ const EditProfile = () => {
     },
   })
 
-  // todo: API 작업 필요
+  // todo: API 필요
   const { mutate: mutateNickname } = useMutation(nickNameValidity, {
     onSuccess: () => {
       setIsNicknameDisabled(true)
@@ -143,7 +140,6 @@ const EditProfile = () => {
   }
 
   const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
-    console.log('event.target.files:', event.target.files)
     const file = event.target.files![0]
     const fileExt = file?.name.split('.').pop()
 
@@ -203,15 +199,15 @@ const EditProfile = () => {
     // mutateNickname(watch('nickname'))
   }
 
-  const onSelectedGender = (gender: '남' | '여') => {
+  const onSelectedGender = (gender: E_GENDER_TYPE) => {
     setValue('gender', gender)
   }
 
   useEffect(() => {
     reset({ ..._userInfo })
-    // if (isEditMode) {
-    query.invalidateQueries([OAUTH.유저정보])
-    // }
+    if (isEditMode) {
+      query.invalidateQueries([OAUTH.유저정보])
+    }
   }, [_userInfo])
 
   useEffect(() => {
@@ -234,7 +230,7 @@ const EditProfile = () => {
                 alt='이미지 미리보기'
                 className={'h-24 w-24 rounded-full border border-[#ddd] object-cover'}
               />
-            ) : _userInfo?.imgUrl === ('' || undefined) ? (
+            ) : _userInfo?.imgUrl === (undefined || '') ? (
               <Image
                 src={face}
                 width={'100'}
@@ -298,22 +294,22 @@ const EditProfile = () => {
               })}
               id='age'
               type='text'
-              // disabled={isEditMode}
+              disabled={isEditMode}
               maxLength={8}
               placeholder='생년월일(YYYYMMDD)'
               icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
             <GenderButton
               gender='남'
-              // disabled={isEditMode && _userInfo?.gender === '여'}
-              selected={watch('gender') === '남'}
-              onClick={() => onSelectedGender('남')}
+              disabled={isEditMode && _userInfo?.gender === GENDER_TYPE.여자}
+              selected={watch('gender') === GENDER_TYPE.남자}
+              onClick={() => onSelectedGender(GENDER_TYPE.남자)}
             />
             <GenderButton
               gender='여'
-              // disabled={isEditMode && _userInfo?.gender === '남'}
-              selected={watch('gender') === '여'}
-              onClick={() => onSelectedGender('여')}
+              disabled={isEditMode && _userInfo?.gender === GENDER_TYPE.남자}
+              selected={watch('gender') === GENDER_TYPE.여자}
+              onClick={() => onSelectedGender(GENDER_TYPE.여자)}
             />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>

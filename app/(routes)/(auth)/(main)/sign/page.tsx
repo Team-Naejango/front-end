@@ -17,11 +17,15 @@ import GenderButton from '@/app/components/atom/GenderButton'
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { Member } from '@/app/apis/types/domain/profile/profile'
+import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
+import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { nickNameValidity, sign, SignParam } from '@/app/apis/domain/auth/auth'
 
 const Sign = () => {
   const router = useRouter()
+  const query = getQueryClient()
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
@@ -41,29 +45,32 @@ const Sign = () => {
 
   const nickname = watch('nickname')
 
+  // 회원가입
   const { mutate: mutateSign } = useMutation(sign, {
     onSuccess: () => {
       toast.success('회원가입이 완료되었습니다.')
-      router.push('/home')
+      query.invalidateQueries([OAUTH.유저정보])
+      router.replace('/home')
     },
     onError: (error: ApiError) => {
       console.log('error:', error)
       toast.error(error.message)
-      router.push('/sign')
+      router.replace('/sign')
     },
   })
 
-  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-  //   onSuccess: () => {
-  //     console.log('닉네임 사용 가능')
-  //     setIsNicknameDisabled(true)
-  //     setSelectedNickname(getValues('nickname'))
-  //   },
-  //   onError: (error: ApiError) => {
-  //     console.log('error:', error)
-  //     toast.error(error.message)
-  //   },
-  // })
+  // todo: API 필요
+  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+    onSuccess: () => {
+      console.log('닉네임 사용 가능')
+      setIsNicknameDisabled(true)
+      setSelectedNickname(getValues('nickname'))
+    },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
+  })
 
   const onClickSubmit = async () => {
     // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')
@@ -90,7 +97,7 @@ const Sign = () => {
     // mutateNickname(watch('nickname'))
   }
 
-  const onSelectedGender = (gender: '남' | '여') => {
+  const onSelectedGender = (gender: E_GENDER_TYPE) => {
     setGender(gender)
   }
 
@@ -153,8 +160,16 @@ const Sign = () => {
               placeholder='생년월일(YYYYMMDD)'
               icon={<FiActivity className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
             />
-            <GenderButton gender='남' selected={gender === '남'} onClick={() => onSelectedGender('남')} />
-            <GenderButton gender='여' selected={gender === '여'} onClick={() => onSelectedGender('여')} />
+            <GenderButton
+              gender='남'
+              selected={gender === GENDER_TYPE.남자}
+              onClick={() => onSelectedGender(GENDER_TYPE.남자)}
+            />
+            <GenderButton
+              gender='여'
+              selected={gender === GENDER_TYPE.여자}
+              onClick={() => onSelectedGender(GENDER_TYPE.여자)}
+            />
           </div>
           <p className='!mt-1.5 text-xs text-red-400'>{errors.birth?.message}</p>
           <div>

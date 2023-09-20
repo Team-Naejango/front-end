@@ -6,19 +6,7 @@ import { cls } from '@/app/libs/client/utils/util'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
 
-interface Params {
-  [key: string]: string
-}
-
-const ItemLIst = ({
-  items,
-  onDeleteProduct,
-  params,
-}: {
-  items: Item[]
-  onDeleteProduct: () => void
-  params: string
-}) => {
+const ItemLIst = ({ items, params, onDelete }: { items: Item[]; params: string; onDelete: () => void }) => {
   return (
     <ul className='flex flex-col gap-5 p-0.5'>
       {items.map(item => (
@@ -38,7 +26,7 @@ const ItemLIst = ({
             <span className='text-xs'>{item.category}</span>
             <p className='text-[13px] font-semibold'>{item.name}</p>
           </div>
-          <span role='presentation' onClick={onDeleteProduct} className='absolute right-2 top-2'>
+          <span role='presentation' onClick={onDelete} className='absolute right-2 top-2'>
             <svg
               xmlns='http://www.w3.org/2000/svg'
               fill='none'

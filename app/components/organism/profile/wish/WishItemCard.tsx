@@ -6,6 +6,7 @@ import Image from 'next/image'
 
 import { WishResult } from '@/app/apis/types/domain/profile/wish'
 import { cls } from '@/app/libs/client/utils/util'
+import { E_ITEM_TYPE, ITEM_TYPE } from '@/app/libs/client/constants/code'
 
 interface WishItemProps {
   wish: WishResult
@@ -14,6 +15,21 @@ interface WishItemProps {
 }
 
 const WishItemCard = ({ wish, hearts, onClick }: WishItemProps) => {
+  // 아이템 타입 변환기
+  const convertedItemTypeNm = (type: E_ITEM_TYPE) => {
+    let itemTypeNm: string = ''
+
+    if (type === ITEM_TYPE.개인구매) {
+      itemTypeNm = '개인구매'
+    } else if (type === ITEM_TYPE.개인판매) {
+      itemTypeNm = '개인판매'
+    } else if (type === ITEM_TYPE.공동구매) {
+      itemTypeNm = '공동구매'
+    }
+
+    return itemTypeNm
+  }
+
   return (
     <Link href={`/profile/wish`} prefetch={false} className='flex w-1/2 flex-row flex-wrap px-4 pt-5'>
       <div>
@@ -25,7 +41,7 @@ const WishItemCard = ({ wish, hearts, onClick }: WishItemProps) => {
             )}`}
             height={'100'}
             alt='아이템 이미지'
-            className={'h-36 w-36 object-cover'}
+            className={'h-36 w-36 object-cover p-1'}
           />
           <div role={'presentation'} className={'absolute right-1.5 top-1.5 text-[#33CC99]'} onClick={onClick}>
             <svg
@@ -46,10 +62,10 @@ const WishItemCard = ({ wish, hearts, onClick }: WishItemProps) => {
         <div className='flex w-5/6 items-center gap-1.5 pt-2'>
           <span
             className={cls(
-              'rounded px-0.5 py-0.5 text-[10px] text-white',
-              wish?.itemType === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+              'whitespace-nowrap rounded px-0.5 py-0.5 text-[10px] text-white',
+              wish?.itemType === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
             )}>
-            {wish?.itemType}
+            {convertedItemTypeNm(wish?.itemType)}
           </span>
           <h3 className='overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal text-gray-900'>
             {wish.name}

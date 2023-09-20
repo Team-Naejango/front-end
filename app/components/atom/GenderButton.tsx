@@ -24,7 +24,7 @@ const GenderButton = ({ gender, selected, disabled, onClick }: Props) => {
       className={cls(
         'ml-2 whitespace-nowrap rounded-md border border-gray-300 px-4 py-2.5 text-[13px] font-medium text-[#222] shadow-sm hover:border-transparent hover:bg-[#33CC99] hover:text-[#fff] focus:outline-none',
         buttonClasses,
-        disabled ? 'bg-[#eee] hover:border-gray-300 hover:bg-[#eee] hover:text-[#222]' : ''
+        disabled ? '!bg-[#eee] hover:!border-gray-300 hover:!bg-[#eee] hover:!text-[#222]' : ''
       )}
       onClick={handleClick}>
       {gender}

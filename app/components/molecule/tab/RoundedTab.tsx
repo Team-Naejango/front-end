@@ -4,6 +4,7 @@ import React, { ReactNode } from 'react'
 import { Tab } from '@headlessui/react'
 
 import { cls } from '@/app/libs/client/utils/util'
+import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 
 export interface RoundedTabProps {
   setSelectedTab: (tab: string[] | string) => void
@@ -11,11 +12,11 @@ export interface RoundedTabProps {
 }
 
 const DEAL_TYPE_MAPPING: { label: string; name: string[] }[] = [
-  { label: 'BUY', name: ['INDIVIDUAL_BUY' || 'GROUP_BUY'] },
-  { label: 'SELL', name: ['INDIVIDUAL_SELL'] },
+  { label: 'BUY', name: [ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매] },
+  { label: 'SELL', name: [ITEM_TYPE.개인판매] },
 ]
 
-const ButtonType: ['BUY', 'SELL'] = ['BUY', 'SELL']
+// const ButtonType: ['BUY', 'SELL'] = ['BUY', 'SELL']
 
 const RoundedTab = ({ setSelectedTab, children }: RoundedTabProps) => {
   return (

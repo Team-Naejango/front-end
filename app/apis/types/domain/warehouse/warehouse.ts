@@ -1,5 +1,7 @@
 /* ******************************** 창고 ******************************** */
 
+import { E_ITEM_TYPE } from '@/app/libs/client/constants/code'
+
 export type SearchResult = {
   // 창고 ID
   storageId: number
@@ -66,8 +68,8 @@ export type Item = {
   ownerId: number
   // 아이템 카테고리
   category: string
-  // 아이템 타입(INDIVIDUAL_BUY / INDIVIDUAL_BUY / GROUP_BUY)
-  itemType: string
+  // 아이템 타입(INDIVIDUAL_BUY / INDIVIDUAL_SELL / GROUP_BUY)
+  itemType: E_ITEM_TYPE
   // 아이템 제목
   name: string
   // 아이템 이미지 링크
@@ -107,10 +109,10 @@ export type ChannelInfo = {
  * 창고 그룹 정보
  */
 export interface StorageGroupChat {
-  // 창고 그룹 정보
-  channelInfo: ChannelInfo
   // 조회 결과 메세지
   message: string
+  // 창고 그룹 정보
+  result: ChannelInfo
 }
 
 /* ******************************** 아이템 ******************************** */

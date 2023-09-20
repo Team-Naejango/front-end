@@ -73,3 +73,23 @@ export const ITEM_TYPE = {
 } as const
 
 export type E_ITEM_TYPE = (typeof ITEM_TYPE)[keyof typeof ITEM_TYPE]
+
+/**
+ * 채팅 타입
+ */
+export const CHAT_TYPE = {
+  개인: 'solo',
+  그룹: 'group',
+} as const
+
+export type E_CHAT_TYPE = (typeof CHAT_TYPE)[keyof typeof CHAT_TYPE]
+
+/**
+ * 남/여 타입
+ */
+export const GENDER_TYPE = {
+  남자: '남',
+  여자: '여',
+} as const
+
+export type E_GENDER_TYPE = (typeof GENDER_TYPE)[keyof typeof GENDER_TYPE]

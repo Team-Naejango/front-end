@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { ApiError } from 'next/dist/server/api-utils'
 
 import Layout from '@/app/components/template/main/layout/Layout'
-import WishItemCard from '@/app/components/organism/profile/WishItemCard'
+import WishItemCard from '@/app/components/organism/profile/wish/WishItemCard'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 
 import { unWish, wish } from '@/app/apis/domain/profile/wish'
@@ -20,8 +20,8 @@ const Wish = () => {
   // 관심 삭제
   const { mutate: mutateUnWish } = useMutation(unWish, {
     onSuccess: () => {
-      query.invalidateQueries([WISH.조회])
       toast.success('관심 아이템에서 삭제되었습니다.')
+      query.invalidateQueries([WISH.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -30,6 +30,7 @@ const Wish = () => {
 
   const onClickUnWish = (itemId: number) => {
     if (!itemId) return
+
     mutateUnWish(String(itemId))
   }
 

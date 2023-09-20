@@ -9,14 +9,16 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import RoundedTab from '@/app/components/molecule/tab/RoundedTab'
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import ItemList from '@/app/components/organism/warehouse/ItemList'
-import { CRUD } from '@/app/libs/client/constants/code'
+import { CRUD, ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouseItem = () => {
   const searchParams = useSearchParams()
-  const [selectedTab, setSelectedTab] = useState<('INDIVIDUAL_BUY' | 'GROUP_BUY') | 'INDIVIDUAL_SELL'>('INDIVIDUAL_BUY')
+  const [selectedTab, setSelectedTab] = useState<('INDIVIDUAL_BUY' | 'GROUP_BUY') | 'INDIVIDUAL_SELL'>(
+    ITEM_TYPE.개인구매
+  )
 
   const seq = searchParams.get('seq')
 
@@ -40,38 +42,38 @@ const WareHouseItem = () => {
     if (String(tab) === selectedTab) return
 
     setSelectedTab(currentTab => {
-      if (currentTab === 'INDIVIDUAL_BUY' || currentTab === 'GROUP_BUY') {
-        return 'INDIVIDUAL_SELL'
+      if (currentTab === ITEM_TYPE.개인구매 || currentTab === ITEM_TYPE.공동구매) {
+        return ITEM_TYPE.개인판매
       }
-      return 'INDIVIDUAL_BUY' || 'GROUP_BUY'
+      return ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매
     })
   }
 
   // todo: 삭제 팝업창과 delete api 추가
-  const onDeleteProduct = () => {}
+  const onDeleteItem = () => {}
 
   return (
     <Layout canGoBack title={`창고${seq}`}>
       <div className='mt-8'>
         <RoundedTab setSelectedTab={onSelectedTab}>
           <Tab.Panel>
-            {selectedTab === ('INDIVIDUAL_BUY' || 'GROUP_BUY') &&
+            {selectedTab === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) &&
               (filteredItemList.length === 0 ? (
                 <div className='flex h-[450px] items-center justify-center'>
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
                 </div>
               ) : (
-                <ItemList items={filteredItemList} onDeleteProduct={onDeleteProduct} params={String(seq)} />
+                <ItemList items={filteredItemList} params={String(seq)} onDelete={onDeleteItem} />
               ))}
           </Tab.Panel>
           <Tab.Panel>
-            {selectedTab === 'INDIVIDUAL_SELL' &&
+            {selectedTab === ITEM_TYPE.개인판매 &&
               (filteredItemList.length === 0 ? (
                 <div className='flex h-[450px] items-center justify-center'>
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
                 </div>
               ) : (
-                <ItemList items={filteredItemList} onDeleteProduct={onDeleteProduct} params={String(seq)} />
+                <ItemList items={filteredItemList} params={String(seq)} onDelete={onDeleteItem} />
               ))}
           </Tab.Panel>
         </RoundedTab>

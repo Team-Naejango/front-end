@@ -12,6 +12,7 @@ import TextArea from '@/app/components/atom/TextArea'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
 import { cls } from '@/app/libs/client/utils/util'
+import { E_ITEM_TYPE, ITEM_TYPE } from '@/app/libs/client/constants/code'
 
 import { wish, saveWish, unWish } from '@/app/apis/domain/profile/wish'
 
@@ -31,7 +32,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   const markerItemsValue = useRecoilValue<{ name: string }[]>(markerItemsState)
   const selectedTitle = useRecoilValue<string>(activatedWareHouseTitleState)
 
-  const itemInfo = dragedPreviews.find(v => v.name === selectedType.name)
+  const itemInfo = [...dragedPreviews].find(v => v.name === selectedType.name)
 
   const {
     register,
@@ -88,7 +89,20 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
     isSubscribe ? mutateUnWish(String(itemId)) : mutateWish(String(itemId))
   }
 
-  // todo: react-hook-form 폼 프로바이더 적용해야 함
+  const convertedItemTypeNm = (type: E_ITEM_TYPE) => {
+    let itemTypeNm: string = ''
+
+    if (type === ITEM_TYPE.개인구매) {
+      itemTypeNm = '개인구매'
+    } else if (type === ITEM_TYPE.개인판매) {
+      itemTypeNm = '개인판매'
+    } else if (type === ITEM_TYPE.공동구매) {
+      itemTypeNm = '공동구매'
+    }
+
+    return itemTypeNm
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className={'text-center'}>
@@ -128,9 +142,9 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
           <span
             className={cls(
               'inline-block rounded px-0.5 py-0.5 text-[10px] text-white',
-              itemInfo?.itemType === 'BUY' ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+              itemInfo?.itemType === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
             )}>
-            {itemInfo?.itemType}
+            {convertedItemTypeNm(itemInfo?.itemType!)}
           </span>
           <span className={'ml-1.5 inline-block align-middle text-[13px]'}>{itemInfo?.category}</span>
           <span className={'mt-2 block text-sm'}>{itemInfo?.name}</span>

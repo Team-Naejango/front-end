@@ -9,20 +9,12 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
-import axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import axios, { AxiosError } from 'axios'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
-import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
-import { nonUser } from '@/app/apis/domain/auth/auth'
-import { useQuery } from '@tanstack/react-query'
-import { AUTH, OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { userInfo } from '@/app/apis/domain/profile/profile'
-import { ApiError } from 'next/dist/server/api-utils'
-import { HeaderType } from '@/app/apis/config/axios'
 
 interface FormProps {
   email: string
@@ -57,27 +49,16 @@ const Login = () => {
   }, [isSplashMounted])
 
   const onNonUserLogin = async () => {
-    const refreshAuthToken = (config: AxiosRequestConfig, token: string) => {
-      config.headers = {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      } as HeaderType
-    }
-
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
-      setDeadlineCookie(AUTH_TOKEN.접근, response.data.accessToken)
+      router.replace('/home?isLoggedIn=true')
       toast.success('비회원 로그인에 성공하였습니다.')
-      router.push('/home')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        const data = error.response?.data as { reissuedAccessToken: string }
-
-        refreshAuthToken({ ...error.config }, data.reissuedAccessToken)
-        setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken)
-        window.location.href = '/home'
+        router.replace('/home?isLoggedIn=true')
+        toast.success('비회원 로그인에 성공하였습니다.')
       } else {
         toast.error('비회원 로그인에 실패하였습니다.')
       }

@@ -15,11 +15,11 @@ import Button from '@/app/components/atom/Button'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import FollowUserItemPopup from '@/app/components/organism/profile/FollowUserItemPopup'
+import FollowUserItemPopup from '@/app/components/organism/profile/follow/FollowUserItemPopup'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
+import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 import { follow, unFollow } from '@/app/apis/domain/profile/follow'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
@@ -29,7 +29,7 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 const Follow = () => {
   const query = useQueryClient()
-  const { openModal } = useModal()
+  const { openModal, closeModal } = useModal()
   const _follow = useRecoilValue(modalSelector('itemsOfFollow'))
 
   // 팔로우 조회
@@ -54,8 +54,8 @@ const Follow = () => {
   // 팔로우 취소
   const { mutate: mutateUnfollow } = useMutation(unFollow, {
     onSuccess: () => {
-      query.invalidateQueries([FOLLOW.조회])
       toast.success('창고를 팔로우 취소하였습니다.')
+      query.invalidateQueries([FOLLOW.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -64,9 +64,11 @@ const Follow = () => {
 
   const onClickUnFollow = (storageId: number) => {
     if (!storageId) return
+
     mutateUnfollow(String(storageId))
   }
 
+  // 상세 모달
   const onClickReadMore = () => {
     openModal({
       modal: { id: 'itemsOfFollow', type: MODAL_TYPES.ALERT },
@@ -108,7 +110,7 @@ const Follow = () => {
                   </div>
                 </div>
                 <div className={'flex items-center gap-2 px-2'}>
-                  {_itemInfo?.result.map(item => {
+                  {_itemInfo?.result.slice(0, 3).map(item => {
                     return (
                       <div key={item.itemId} className={'relative'}>
                         <Image
@@ -143,8 +145,11 @@ const Follow = () => {
       </div>
 
       {_follow.modal.show ? (
-        <CustomModal id={_follow.modal.id} type={MODAL_TYPES.ALERT} btn>
+        <CustomModal id={_follow.modal.id} type={MODAL_TYPES.ALERT}>
           <FollowUserItemPopup items={_itemInfo?.result || []} />
+          <div className={'mt-4 text-center'}>
+            <Button small text={'확인'} className={'!flex-grow-0 !py-2'} onClick={() => closeModal(_follow.modal.id)} />
+          </div>
         </CustomModal>
       ) : null}
     </Layout>

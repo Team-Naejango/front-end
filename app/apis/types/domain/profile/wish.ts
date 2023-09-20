@@ -1,3 +1,5 @@
+import { E_ITEM_TYPE } from '@/app/libs/client/constants/code'
+
 export type WishResult = {
   // edit
   id: number
@@ -8,7 +10,7 @@ export type WishResult = {
   // 이미지 url
   imgUrl: string
   // 타입
-  itemType: string
+  itemType: E_ITEM_TYPE
   // 카테고리
   category: string
 }

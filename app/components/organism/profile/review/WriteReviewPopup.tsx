@@ -4,13 +4,14 @@ import React from 'react'
 
 import TextArea from '@/app/components/atom/TextArea'
 
+// todo: 작업 보류
 const WriteReviewPopup = () => {
   return (
     <div>
       <div className='flex items-center space-x-4'>
         <div className='h-12 w-12 rounded-full bg-slate-500' />
         <div>
-          <h4 className='text-sm font-bold text-gray-800'>내 잔고를 부탁해</h4>
+          <h4 className='text-sm font-bold text-gray-800'>거래자 이름1</h4>
           <div className='flex items-center'>
             {[...Array.from({ length: 5 }).keys()].map(value => {
               return (

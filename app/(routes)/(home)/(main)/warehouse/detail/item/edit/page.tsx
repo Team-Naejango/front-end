@@ -56,7 +56,6 @@ const EditItem = () => {
   const isEditMode = (crud === CRUD.수정 && seq !== '' && storage !== '') || false
 
   // const storageIds = selectedStorage.map(value => value.id)
-  console.log('isEditMode:', isEditMode)
 
   const {
     register,
@@ -233,7 +232,6 @@ const EditItem = () => {
       await uploadS3(file)
     }
 
-    console.log('selectedStorage:', selectedStorage)
     const params: ItemProps = {
       name: data.name,
       description: data.description,
@@ -308,7 +306,7 @@ const EditItem = () => {
               alt='이미지 미리보기'
               className={'absolute left-0 top-0 -z-10 h-48 w-full object-cover'}
             />
-          ) : _itemInfo?.result.imgUrl === ('' || undefined) ? (
+          ) : _itemInfo?.result.imgUrl === (undefined || '') ? (
             <Image
               src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'}
               width={'100'}
