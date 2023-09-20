@@ -10,7 +10,7 @@ import PlaceMarker from '@/app/components/molecule/kakaomap/PlaceMarker'
 import Categories from '@/app/components/molecule/kakaomap/Categories'
 import PreviewCard from '@/app/components/molecule/kakaomap/PreviewCard'
 import { CATEGORIES } from '@/app/libs/client/constants/static'
-import { Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
@@ -20,8 +20,8 @@ import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 const KakaoMap = () => {
   const { myLocation, setMyLocation } = useGeolocation()
   const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map | null>(null)
-  const [markers, setMarkers] = useState<Storages[] | []>([])
-  const [info, setInfo] = useState<Storages | null>(null)
+  const [markers, setMarkers] = useState<SearchCondition[] | Storages[] | []>([])
+  const [info, setInfo] = useState<SearchCondition | Storages | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(() => CATEGORIES[0])
   const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
   const [isDragedMixture, setIsDragedMixture] = useState<boolean>(false)
@@ -73,7 +73,7 @@ const KakaoMap = () => {
       {myLocation.isLoaded ? (
         isUpdatePreview ? (
           <PreviewCard
-            previews={markers.map(v => v)}
+            previews={markers.map(v => v) as []}
             dragedPreviews={_itemInfo?.result || []}
             activedItem={info?.name ?? ''}
             kakaoMap={kakaoMap}

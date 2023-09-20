@@ -15,7 +15,7 @@ import { modalSelector } from '@/app/store/modal'
 import { cls } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
-import { Item, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
@@ -32,13 +32,13 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 })
 
 interface PreviewCardProps {
-  previews: Storages[]
+  previews: SearchCondition[] | Storages[]
   dragedPreviews: Item[]
   isDragedMixture: boolean
   activedItem: string
   kakaoMap: kakao.maps.Map | null
-  info: Storages | null
-  setInfo: Dispatch<SetStateAction<Storages | null>>
+  info: SearchCondition | Storages | null
+  setInfo: Dispatch<SetStateAction<SearchCondition | Storages | null>>
   setIsDragedMixture: Dispatch<SetStateAction<boolean>>
 }
 
@@ -70,7 +70,7 @@ const PreviewCard = ({
     [WAREHOUSE.그룹채널조회, info],
     () => storageGroupChannel(String(info?.storageId)),
     {
-      enabled: !isDragedMixture,
+      enabled: !isDragedMixture && !!info,
     }
   )
 
@@ -147,7 +147,7 @@ const PreviewCard = ({
   }
 
   // 프리뷰 창고목록 클릭 시
-  const onClickPreview = (marker: Storages) => {
+  const onClickPreview = (marker: SearchCondition | Storages) => {
     if (!marker) return
 
     setInfo(marker)

@@ -2,9 +2,9 @@
 
 export type SearchResult = {
   // 창고 ID
-  storageId: string
+  storageId: number
   // 창고 소유자 ID
-  ownerId: string
+  ownerId: number
   // 창고 이름
   name: string
   // 창고 이미지 URL
@@ -21,13 +21,14 @@ export type SearchResult = {
   // 창고 소개
   description: string
 }
+export type OmitDistanceSearch = Omit<SearchResult, 'distance'>
 
 /**
  * 근처 창고 정보
  */
 export interface Storage {
   message: string
-  searchResult: SearchResult[]
+  result: SearchResult[]
 }
 
 export type Storages = {
@@ -186,7 +187,7 @@ export type SearchCondition = {
 
 export interface ItemSearchInfo {
   message: string
-  searchResult: SearchCondition[]
+  result: SearchCondition[]
 }
 
 export type SaveItemResult = {

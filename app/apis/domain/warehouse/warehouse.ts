@@ -168,7 +168,7 @@ export async function itemInfo(itemId: string | null): Promise<Response<{ data: 
  * @param params
  */
 export async function itemSearch(params: ItemSearchParam): Promise<Response<{ data: ItemSearchInfo }>> {
-  return withAuth.get('/api/item/search')
+  return withAuth.get('/api/item/search', { params })
 }
 
 /**

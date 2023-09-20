@@ -13,8 +13,15 @@ import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
 import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
-import { Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import {
+  OmitDistanceSearch,
+  SearchCondition,
+  SearchResult,
+  Storages,
+} from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
+import { itemSearch, ItemSearchParam } from '@/app/apis/domain/warehouse/warehouse'
+import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 
 import { nearbyStorage } from '@/app/apis/domain/place/place'
 
@@ -29,15 +36,15 @@ interface EventProps {
   kakaoMap: kakao.maps.Map | null
   setKakaoMap: Dispatch<SetStateAction<kakao.maps.Map | null>>
   selectedCategory: string
-  markers: Storages[]
-  setMarkers: Dispatch<SetStateAction<Storages[]>>
+  markers: SearchCondition[] | Storages[]
+  setMarkers: Dispatch<SetStateAction<SearchCondition[] | Storages[]>>
   myLocation: LocationProps
   setMyLocation: (value: { coords: { latitude: number; longitude: number } }) => void
   setIsUpdatePreview: Dispatch<SetStateAction<boolean>>
   isDragedMixture: boolean
   setIsDragedMixture: Dispatch<SetStateAction<boolean>>
-  info: Storages | null
-  setInfo: Dispatch<SetStateAction<Storages | null>>
+  info: SearchCondition | Storages | null
+  setInfo: Dispatch<SetStateAction<SearchCondition | Storages | null>>
 }
 
 interface FormProps {
@@ -67,29 +74,30 @@ const PlaceMarker = ({
   const { watch, handleSubmit, control, reset } = useForm<FormProps>({
     mode: 'onTouched',
   })
+  const search = watch('search')
 
   // 근처 창고 조회
-  const { data: { data: storage } = {}, refetch } = useQuery(
+  const { data: { data: storages } = {}, refetch } = useQuery(
     [PLACE.조회],
     () =>
       nearbyStorage({
-        lat: String(userArea.latitude),
         lon: String(userArea.longitude),
+        lat: String(userArea.latitude),
         rad: '1000',
         page: '0',
-        size: '10',
+        size: '20',
       }),
     { enabled: !!kakaoMap }
   )
 
   const updateMarkers = useCallback(
-    (newMarkers: Storages[]) => {
+    (newMarkers: SearchCondition[] | Storages[]) => {
       setMarkers(newMarkers)
     },
     [setMarkers]
   )
 
-  // 근처 창고 카카오 지도 검색
+  // 근처 창고 검색
   const kakaoMapCallback = useCallback(
     (status: Status) => {
       if (!kakaoMap) return
@@ -100,22 +108,21 @@ const PlaceMarker = ({
 
         getUserAddress()
 
-        const newMarkers = storage?.searchResult.map(value => {
-          const markers = {
-            storageId: Number(value.storageId),
-            ownerId: Number(value.ownerId),
-            address: value.address,
-            description: value.description,
-            imgUrl: value.imgUrl,
+        const newMarkers = storages?.result.map(storage => {
+          const markers: OmitDistanceSearch = {
+            storageId: storage.storageId,
+            ownerId: storage.ownerId,
+            name: storage.name,
+            imgUrl: storage.imgUrl,
+            address: storage.address,
             coord: {
-              latitude: value.coord.latitude,
-              longitude: value.coord.longitude,
+              longitude: storage.coord.longitude,
+              latitude: storage.coord.latitude,
             },
-            name: value.name,
-            distance: value.distance,
+            description: storage.description,
           }
 
-          bounds.extend(new window.kakao.maps.LatLng(Number(value.coord.latitude), Number(value.coord.longitude)))
+          bounds.extend(new window.kakao.maps.LatLng(storage.coord.latitude!, storage.coord.longitude!))
           return markers
         })
         updateMarkers(newMarkers || [])
@@ -131,35 +138,71 @@ const PlaceMarker = ({
         console.log('원인불명 에러')
       }
     },
-    [kakaoMap, storage]
+    [kakaoMap]
   )
-  // 키워드 카카오 지도 검색
-  // const keywordSearch = useCallback(
-  //   (type: string | undefined, query?: string) => {
-  //     if (!kakaoMap) return
-  //     const places = new window.kakao.maps.services.Places()
-  //
-  //     const options: PlacesSearchOptions = {
-  //       // category_group_code: '',
-  //       location: new window.kakao.maps.LatLng(kakaoMap.getCenter().getLat(), kakaoMap.getCenter().getLng()),
-  //       sort: kakao.maps.services.SortBy.ACCURACY,
-  //       radius: 1000,
-  //     }
-  //
-  //     if (type) {
-  //       isUseBounds = false
-  //       places.keywordSearch(type, kakaoMapCallback, { ...options, ...{ query: type } })
-  //     } else if (query) {
-  //       isUseBounds = false
-  //       places.keywordSearch(query, kakaoMapCallback, { ...options, ...{ query } })
-  //     }
-  //   },
-  //   [kakaoMap]
-  // )
+  // 키워드 또는 카테고리로 근처 창고 검색
+  const onSearchKeywordOrCategories = useCallback(
+    async (type: string | undefined, query?: string) => {
+      if (!kakaoMap) return
 
-  // useEffect(() => {
-  //   keywordSearch(watch('search'), selectedCategory)
-  // }, [selectedCategory, kakaoMap, updateMarkers, position, keywordSearch, watch])
+      setIsUpdatePreview(true)
+      const bounds = new window.kakao.maps.LatLngBounds()
+
+      const searchParams: ItemSearchParam = {
+        lon: String(userArea.longitude),
+        lat: String(userArea.latitude),
+        rad: '1000',
+        page: '0',
+        size: '20',
+        category: query || '',
+        keyword: type || '',
+        itemType: ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매 || ITEM_TYPE.공동구매,
+        status: true,
+      }
+
+      try {
+        const { data: items } = await itemSearch(searchParams)
+
+        const newMarkers = items?.result.map(item => {
+          const markers: SearchCondition = {
+            id: item.id,
+            storageId: item.storageId,
+            storageName: item.storageName,
+            distance: item.distance,
+            coord: {
+              longitude: item.coord.longitude,
+              latitude: item.coord.latitude,
+            },
+            name: item.name,
+            imgUrl: item.imgUrl,
+            itemType: item.itemType,
+            categoryName: item.categoryName,
+            description: item.description,
+          }
+
+          bounds.extend(new window.kakao.maps.LatLng(item.coord.latitude, item.coord.longitude))
+          return markers
+        })
+
+        updateMarkers(newMarkers || [])
+      } catch (error) {
+        console.log('아이템 검색 오류:', error)
+      }
+
+      // if (type) {
+      //   // isUseBounds = false
+      //   // places.keywordSearch(type, kakaoMapCallback, { ...options, ...{ query: type } })
+      // } else if (query) {
+      //   // isUseBounds = false
+      //   // places.keywordSearch(query, kakaoMapCallback, { ...options, ...{ query } })
+      // }
+    },
+    [kakaoMap]
+  )
+
+  useEffect(() => {
+    onSearchKeywordOrCategories(search, selectedCategory)
+  }, [selectedCategory, kakaoMap, updateMarkers, onSearchKeywordOrCategories, watch])
 
   useEffect(() => {
     if (!kakaoMap) return
@@ -169,20 +212,22 @@ const PlaceMarker = ({
   }, [kakaoMap, kakaoMapCallback])
 
   useLayoutEffect(() => {
-    if (watch('search') !== '') reset()
+    if (search !== '') {
+      reset()
+    }
   }, [selectedCategory])
 
   const onSubmitSearch = () => {
-    // keywordSearch(watch('search'))
+    onSearchKeywordOrCategories(search)
     isDragedMixture && setIsDragedMixture(false)
   }
 
   const onKeyDownSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // if (event.key === 'Enter') keywordSearch(event.currentTarget.value)
+    if (event.key === 'Enter') onSearchKeywordOrCategories(event.currentTarget.value)
   }
 
   // 마커 클릭 시
-  const onClickDottedMarker = (event: kakao.maps.Marker, marker: Storages) => {
+  const onClickDottedMarker = (event: kakao.maps.Marker, marker: SearchCondition | Storages) => {
     if (!kakaoMap) return
 
     setInfo(marker)
@@ -233,31 +278,37 @@ const PlaceMarker = ({
           //   await refetch()
           // }}
           onDragEnd={async map => {
-            const storage = await refetch()
-            const markers = storage.data?.data.searchResult.map(value => {
-              return {
-                storageId: Number(value.storageId),
-                ownerId: Number(value.ownerId),
-                address: value.address,
-                description: value.description,
-                imgUrl: value.imgUrl,
-                coord: {
-                  latitude: value.coord.latitude,
-                  longitude: value.coord.longitude,
+            try {
+              const storage = await refetch()
+
+              const markers = storage.data?.data.result.map(value => {
+                return {
+                  storageId: Number(value.storageId),
+                  ownerId: Number(value.ownerId),
+                  address: value.address,
+                  description: value.description,
+                  imgUrl: value.imgUrl,
+                  coord: {
+                    latitude: value.coord.latitude,
+                    longitude: value.coord.longitude,
+                  },
+                  name: value.name,
+                  distance: value.distance,
+                }
+              })
+              updateMarkers(markers || [])
+              setMyLocation({
+                coords: {
+                  latitude: map.getCenter().getLat(),
+                  longitude: map.getCenter().getLng(),
                 },
-                name: value.name,
-                distance: value.distance,
-              }
-            })
-            updateMarkers(markers || [])
-            setMyLocation({
-              coords: {
-                latitude: map.getCenter().getLat(),
-                longitude: map.getCenter().getLng(),
-              },
-            })
-            // setIsDragedMixture(true)
-            isDragedMixture && setIsDragedMixture(false)
+              })
+
+              // setIsDragedMixture(true)
+              isDragedMixture && setIsDragedMixture(false)
+            } catch (error) {
+              console.log('error:', error)
+            }
           }}>
           {markers?.map(marker => {
             // console.log('marker:', marker)

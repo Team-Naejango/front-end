@@ -20,5 +20,5 @@ export interface NearbyStorageParam {
  *
  */
 export async function nearbyStorage(params: NearbyStorageParam): Promise<Response<{ data: Storage }>> {
-  return withAuth.get('/api/storage/search', { params })
+  return withAuth.get('/api/storage/nearby', { params })
 }

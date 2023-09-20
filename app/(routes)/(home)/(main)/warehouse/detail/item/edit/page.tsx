@@ -118,7 +118,7 @@ const EditItem = () => {
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       toast.success('아이템이 등록되었습니다.')
-      router.push(`/warehouse/detail/${storage}`)
+      router.push(`/warehouse/detail/edit?seq=${storage}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -140,7 +140,7 @@ const EditItem = () => {
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])
       toast.success('아이템이 수정되었습니다.')
-      router.replace(`/warehouse/detail/${seq}`)
+      router.replace(`/warehouse/detail/edit?seq=${seq}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)

@@ -62,3 +62,14 @@ export const NOTIFICATION_PERMISSION = {
 } as const
 
 export type E_NOTIFICATION_PERMISSION = (typeof NOTIFICATION_PERMISSION)[keyof typeof NOTIFICATION_PERMISSION]
+
+/**
+ * 아이템 타입
+ */
+export const ITEM_TYPE = {
+  개인구매: 'INDIVIDUAL_BUY',
+  개인판매: 'INDIVIDUAL_SELL',
+  공동구매: 'GROUP_BUY',
+} as const
+
+export type E_ITEM_TYPE = (typeof ITEM_TYPE)[keyof typeof ITEM_TYPE]

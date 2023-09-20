@@ -73,7 +73,7 @@ const WareHouseCarousel = ({
     loop: true,
     navigation: {
       // prevEl: '.swiper-button-prev',
-      nextEl: '.swiper-button-next',
+      // nextEl: '.swiper-button-next',
       disabledClass: 'swiper-button-disabled',
     },
     onSwiper: setSwiper,
