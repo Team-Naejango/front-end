@@ -28,7 +28,7 @@ import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 
 import { getChatId } from '@/app/apis/domain/chat/chat'
-import { deleteChat } from '@/app/apis/domain/chat/channel'
+import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -37,16 +37,10 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 interface MessageForm {
   message: string
+  reversed?: boolean
 }
 
-const dummyData = [
-  { message: '미친놈을 보면 짓는 개', reversed: false },
-  { message: '테스트테스트 테스트', reversed: true },
-  { message: '왈왈', reversed: false },
-]
-
 const ChatDetail: NextPage = () => {
-  const params = useParams()
   const searchParams = useSearchParams()
   const router = useRouter()
   const query = getQueryClient()
@@ -58,14 +52,20 @@ const ChatDetail: NextPage = () => {
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const setting = useRecoilValue(modalSelector('setting'))
 
-  const channelType = searchParams.get('channelType')
+  const channelId = searchParams.get('id')
+  const channelType = searchParams.get('type')
   const title = searchParams.get('title')
 
   const { register, handleSubmit, reset } = useForm<MessageForm>({ mode: 'onSubmit' })
 
   // 내 채팅방 ID 조회
-  const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(params.id), {
-    enabled: !!params,
+  const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(channelId!), {
+    enabled: !!channelId,
+  })
+
+  // 채팅 참여자 정보
+  const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId!), {
+    enabled: !!channelId,
   })
 
   // 채팅방 종료
@@ -110,13 +110,13 @@ const ChatDetail: NextPage = () => {
   const onSend = (data: MessageForm) => {
     if (!data) return
 
-    client.current?.send(`${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${params.id}`, {}, JSON.stringify(data))
+    client.current?.send(`${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`, {}, JSON.stringify(data))
     reset()
   }
 
   // todo: 언마운트 시 커넥트 취소 처리
   useEffect(() => {
-    onConnect(params.id)
+    onConnect(channelId!)
   }, [])
 
   useEffect(() => {
@@ -149,7 +149,7 @@ const ChatDetail: NextPage = () => {
       <DropDown labels={labels} onClick={onDropdownSelection} />
       <div className='space-y-6 py-10 pb-16'>
         <span className={'block text-center text-xs'}>2023.08.29 (화)</span>
-        {dummyData.map(data => {
+        {chatMessageList.map(data => {
           return <Message key={data.message} message={data.message} avatarUrl={''} reversed={data.reversed} />
         })}
         <div ref={scrollRef} />
@@ -157,7 +157,7 @@ const ChatDetail: NextPage = () => {
           onSubmit={handleSubmit(onSend)}
           className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white py-2 pb-5'>
           <MenuBox
-            channelId={params.id}
+            channelId={channelId!}
             chatId={chatId?.result || null}
             channelType={channelType || null}
             isOpen={isOpenBox}
@@ -191,7 +191,7 @@ const ChatDetail: NextPage = () => {
 
       {setting.modal.show ? (
         <CustomModal id={setting.modal.id} type={MODAL_TYPES.ALERT}>
-          <SettingModal channelId={params.id} chatId={chatId?.result as number | null} title={title!} />
+          <SettingModal channelId={channelId!} chatId={chatId?.result as number | null} title={title!} />
         </CustomModal>
       ) : null}
     </Layout>

@@ -18,14 +18,11 @@ import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
-import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
-import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { sign, SignParam } from '@/app/apis/domain/auth/auth'
 
 const Sign = () => {
   const router = useRouter()
-  // const query = getQueryClient()
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
@@ -49,7 +46,6 @@ const Sign = () => {
   const { mutate: mutateSign } = useMutation(sign, {
     onSuccess: () => {
       toast.success('회원가입이 완료되었습니다.')
-      // query.invalidateQueries([OAUTH.유저정보])
       router.replace('/home')
     },
     onError: (error: ApiError) => {

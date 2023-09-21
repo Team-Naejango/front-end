@@ -3,9 +3,8 @@ import { Response } from '@/app/apis/types/response/response'
 import {
   ItemInfo,
   ItemList,
-  ItemParams,
+  ItemMatchInfo,
   ItemSearchInfo,
-  OmitStorageIdItemInfo,
   SaveItem,
   StorageGroupChat,
   StorageInfo,
@@ -13,7 +12,9 @@ import {
 
 /* ************************************ 창고 엔터티 ************************************ */
 
-// 창고 정보
+/**
+ * 창고 정보
+ */
 export interface StorageParam {
   // 이름
   name: string
@@ -33,7 +34,9 @@ export interface StorageParam {
   storageId?: string
 }
 
-// 창고 수정
+/**
+ * 창고 수정
+ */
 export interface ModifyParam {
   // 이름
   name: string
@@ -45,7 +48,9 @@ export interface ModifyParam {
   storageId: string
 }
 
-// 창고 아이템 조회
+/**
+ * 창고 아이템 조회
+ */
 export interface StorageItemParam {
   // 창고 ID
   storageId: string
@@ -124,6 +129,34 @@ export async function deleteStorage(storageId: string): Promise<Response<null>> 
 
 /* ************************************ 아이템 엔터티 ************************************ */
 
+/**
+ * 아이템 생성
+ */
+export interface ItemParam {
+  // 아이템 이름
+  name: string
+  // 아이템 설명
+  description: string
+  // 이미지 URL
+  imgUrl: string
+  // 해시 태그
+  hashTag: string[]
+  // 타입
+  itemType: string
+  // 카테고리
+  category: string
+  // 창고 리스트
+  storageId: number
+}
+
+/**
+ * 아이템 수정
+ */
+export type OmitStorageIdItemParam = Omit<ItemParam, 'storageId' | 'hashTag'>
+
+/**
+ * 아이템 검색
+ */
 export interface ItemSearchParam {
   // 경도
   lon: string
@@ -145,7 +178,9 @@ export interface ItemSearchParam {
   status: boolean
 }
 
-// 아이템 창고 수정
+// /**
+//  * 아이템 창고 수정
+//  */
 // export interface ModifyStorageParam {
 //   // 아이템 ID
 //   itemId: string | null
@@ -163,6 +198,23 @@ export async function itemInfo(itemId: string | null): Promise<Response<{ data: 
 }
 
 /**
+ * 아이템 매칭
+ *
+ * @param params.rad // 반경(1000~5000m)
+ * @param params.size // 매칭 결과 수(1~10)
+ * @param params.itemId // 아이템 ID
+ *
+ * @param params
+ */
+export async function itemMatch(params: {
+  rad: string
+  size: string
+  itemId: string
+}): Promise<Response<{ data: ItemMatchInfo }>> {
+  return withAuth.get('/api/item/match', { params })
+}
+
+/**
  * 아이템 검색
  *
  * @param params
@@ -177,13 +229,14 @@ export async function itemSearch(params: ItemSearchParam): Promise<Response<{ da
  * @param params.name // 이름
  * @param params.description // 설명
  * @param params.imgUrl // 이미지 URL
+ * @param params.hashTag // 해시태그
  * @param params.itemType // 타입
  * @param params.category // 카테고리
  * @param params.storageId // 창고 ID
  *
  * @params params
  */
-export async function saveItem(params: ItemParams): Promise<Response<{ data: SaveItem }>> {
+export async function saveItem(params: ItemParam): Promise<Response<{ data: SaveItem }>> {
   return withAuth.post('/api/item', params)
 }
 
@@ -199,7 +252,10 @@ export async function saveItem(params: ItemParams): Promise<Response<{ data: Sav
  *
  * @param params
  */
-export async function modifyItem(itemId: string, params: OmitStorageIdItemInfo): Promise<Response<{ data: ItemInfo }>> {
+export async function modifyItem(
+  itemId: string,
+  params: OmitStorageIdItemParam
+): Promise<Response<{ data: ItemInfo }>> {
   const newParams = {
     ...params,
     itemId,

@@ -26,6 +26,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
 
         if (isHasToken) {
           const accessToken = getCookie(AUTH_TOKEN.접근)
+
           config.headers = {
             Authorization: `Bearer ${accessToken}`,
           } as AxiosRequestHeaders

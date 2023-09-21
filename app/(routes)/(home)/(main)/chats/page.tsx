@@ -40,8 +40,9 @@ const Chats = () => {
           chats?.result.map((chat, idx) => (
             <Link
               href={{
-                pathname: `/chats/${chat.channelId}`,
+                pathname: `/chats/edit`,
                 query: {
+                  id: chat.channelId,
                   type: chat.channelType,
                   title: chat.title,
                 },

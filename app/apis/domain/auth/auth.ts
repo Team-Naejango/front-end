@@ -57,6 +57,14 @@ export async function logout(): Promise<Response<null>> {
   return instance.get('/api/auth/logout')
 }
 
+/**
+ * 토큰 재발급
+ *
+ */
+export async function refresh(): Promise<Response<null>> {
+  return instance.post('/api/auth/refresh')
+}
+
 // /**
 //  * 닉네임 중복확인
 //  *
@@ -64,13 +72,4 @@ export async function logout(): Promise<Response<null>> {
 //  */
 // export async function nickNameValidity(username: string): Promise<Response<boolean>> {
 //   return instance.get(`/api/user/check/${username}`)
-// }
-
-// /**
-//  * 토큰 재발급
-//  *
-//  * @param params.refreshToken 리프래시 토큰
-//  */
-// export async function refresh(params: { refreshToken: string }): Promise<Response> {
-//   return instance.post('/api/auth/refresh', { params })
 // }

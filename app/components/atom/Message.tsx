@@ -7,7 +7,7 @@ import { cls } from '@/app/libs/client/utils/util'
 
 interface MessageProps {
   message: string
-  reversed: boolean
+  reversed?: boolean
   avatarUrl: string
 }
 

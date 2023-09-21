@@ -10,11 +10,11 @@ import { cls } from '@/app/libs/client/utils/util'
 import { splashState } from '@/app/store/atom'
 
 interface SplashProps {
-  isSplashMounted: boolean
+  isMountedSplash: boolean
   closeSplash: () => void
 }
 
-const SplashScreen = ({ isSplashMounted, closeSplash }: SplashProps) => {
+const SplashScreen = ({ isMountedSplash, closeSplash }: SplashProps) => {
   const splashRef = useRef<HTMLDivElement>(null)
   const isSetSplashVisible = useSetRecoilState(splashState)
 
@@ -67,7 +67,7 @@ const SplashScreen = ({ isSplashMounted, closeSplash }: SplashProps) => {
       ref={splashRef}
       className={cls(
         'rounded-30px absolute left-0 top-0 flex h-full w-full items-center justify-center bg-gradient-to-b from-[#60C1CA] to-[#3EE4BD] p-4',
-        isSplashMounted ? 'visible' : 'invisible'
+        isMountedSplash ? 'visible' : 'invisible'
       )}>
       <Image
         id='splash'

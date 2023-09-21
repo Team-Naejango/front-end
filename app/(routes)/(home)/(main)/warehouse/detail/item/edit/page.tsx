@@ -16,13 +16,18 @@ import TextArea from '@/app/components/atom/TextArea'
 import SelectBox from '@/app/components/atom/SelectBox'
 // import MultiSelectBox from '@/app/components/atom/MultiSelectBox'
 import InputFile from '@/app/components/atom/InputFile'
-import { CRUD } from '@/app/libs/client/constants/code'
-import { OmitStorageIdItemInfo } from '@/app/apis/types/domain/warehouse/warehouse'
+import { CRUD, ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CATEGORIES, DEAL_TYPES, STORAGES } from '@/app/libs/client/constants/static'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 
-import { itemInfo, saveItem, modifyItem, storage as _storage } from '@/app/apis/domain/warehouse/warehouse'
+import {
+  itemInfo,
+  saveItem,
+  modifyItem,
+  storage as _storage,
+  OmitStorageIdItemParam,
+} from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
 
 interface ItemProps {
@@ -32,6 +37,7 @@ interface ItemProps {
   description: string
   imgUrl: string
   itemType: string
+  hashTag: string[]
   category: string
   storageId: number
 }
@@ -107,7 +113,7 @@ const EditItem = () => {
   // 아이템 등록
   const { mutate: mutateSave } = useMutation(saveItem, {
     onSuccess: data => {
-      if (selectedType.name === 'GROUP_BUY') {
+      if (selectedType.name === ITEM_TYPE.공동구매) {
         mutateOpenGroup({
           itemId: data.data.result.id,
           defaultTitle: getValues('groupName')!,
@@ -132,7 +138,7 @@ const EditItem = () => {
   // })
 
   // 아이템 수정
-  const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemInfo) => modifyItem(seq!, params), {
+  const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemParam) => modifyItem(seq!, params), {
     onSuccess: () => {
       // mutateStorage({ itemId: edit, storageIdList: updatedStorageIds })
       query.invalidateQueries([WAREHOUSE.조회])
@@ -237,13 +243,14 @@ const EditItem = () => {
       description: data.description,
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.result.imgUrl,
       itemType: selectedType.name,
+      hashTag: [],
       category: selectedCategory.name,
       storageId: Number(selectedStorage.name),
     }
 
     const editParameters = () => {
-      const { storageId, ...newParams } = params
-      return { ...newParams, id: Number(seq) }
+      const { storageId, hashTag, groupName, limit, ...newParams } = params
+      return { ...newParams }
     }
 
     isEditMode ? mutateModify(editParameters()) : mutateSave(params)
@@ -306,7 +313,7 @@ const EditItem = () => {
               alt='이미지 미리보기'
               className={'absolute left-0 top-0 -z-10 h-48 w-full object-cover'}
             />
-          ) : _itemInfo?.result.imgUrl === (undefined || '') ? (
+          ) : _itemInfo?.result.imgUrl === undefined ? (
             <Image
               src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/bg-white.png'}
               width={'100'}

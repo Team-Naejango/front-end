@@ -111,7 +111,7 @@ const Profile = () => {
         await _kill()
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
         toast.success('로그아웃이 되었습니다.')
-        router.push('/login')
+        router.replace('/login')
       },
     })
   }

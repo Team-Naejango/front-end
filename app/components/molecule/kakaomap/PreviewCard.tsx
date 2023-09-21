@@ -5,7 +5,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/navigation'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
@@ -19,6 +18,7 @@ import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehou
 import Button from '@/app/components/atom/Button'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
+import UseCustomRouter from '@/app/hooks/useCustomRouter'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 import { joinChat } from '@/app/apis/domain/chat/channel'
@@ -53,9 +53,9 @@ const PreviewCard = ({
   setInfo,
   setIsDragedMixture,
 }: PreviewCardProps) => {
-  const router = useRouter()
   const query = useQueryClient()
   const { openModal } = useModal()
+  const { push } = UseCustomRouter()
   const previewState = useRecoilValue(modalSelector('preview'))
   const chatState = useRecoilValue(modalSelector('chat'))
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
@@ -99,7 +99,12 @@ const PreviewCard = ({
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       query.invalidateQueries([CHAT.조회])
-      router.push(`/chats/${data.data.result.channelId}`)
+      push({
+        pathname: '/chats/edit',
+        query: {
+          id: data.data.result.channelId,
+        },
+      })
       toast.success('개인 채팅방 입장하였습니다.')
     },
     onError: (error: ApiError) => {
@@ -111,7 +116,12 @@ const PreviewCard = ({
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       query.invalidateQueries([CHAT.조회])
-      router.push(`/chats/${data.data.result.channelId}`)
+      push({
+        pathname: '/chats/edit',
+        query: {
+          id: data.data.result.channelId,
+        },
+      })
       toast.success('그룹 채팅방에 입장하였습니다.')
       // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.
       // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.

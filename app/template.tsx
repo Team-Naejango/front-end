@@ -16,9 +16,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const { resetToken } = useClearSession()
-  const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
-  const [isSplashMounted, setIsSplashMounted] = useRecoilState<boolean>(splashState)
-
+  const [isLoading, setIsLoading] = useState<boolean>(pathname === '/' || false)
+  const [isMountedSplash, setIsMountedSplash] = useRecoilState<boolean>(splashState)
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
@@ -33,7 +32,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (isSplashMounted) {
+    if (isMountedSplash) {
       const onBack = () => {
         window.addEventListener('popstate', () => {
           pathname === '/' ? router.replace('/login') : router.back()
@@ -47,8 +46,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, [])
 
   useEffect(() => {
-    setIsSplashMounted(true)
-  }, [setIsSplashMounted])
+    setIsMountedSplash(true)
+  }, [setIsMountedSplash])
 
   return (
     <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
@@ -62,12 +61,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
             'h-inherit w-inherit relative mx-auto max-w-xl rounded-[30px] p-4',
             isLoading ? 'overflow-auto' : ''
           )}>
-          {isLoading && isSplashMounted ? (
+          {isLoading && isMountedSplash ? (
             <Splash
               closeSplash={() => {
                 setIsLoading(false)
               }}
-              isSplashMounted={isSplashMounted}
+              isMountedSplash={isMountedSplash}
             />
           ) : (
             children

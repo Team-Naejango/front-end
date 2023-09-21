@@ -1,6 +1,6 @@
-/* ******************************** 창고 ******************************** */
-
 import { E_ITEM_TYPE } from '@/app/libs/client/constants/code'
+
+/* ******************************** 창고 ******************************** */
 
 export type SearchResult = {
   // 창고 ID
@@ -117,28 +117,30 @@ export interface StorageGroupChat {
 
 /* ******************************** 아이템 ******************************** */
 
-/**
- * 아이템 생성
- */
-export interface ItemParams {
+export type SaveItemResult = {
+  // 아이템 ID
+  id: number
   // 아이템 이름
   name: string
   // 아이템 설명
   description: string
   // 이미지 URL
   imgUrl: string
-  // 타입
+  // 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
   itemType: string
+  // 해시태그
+  hashTag: string[]
   // 카테고리
   category: string
-  // 창고 리스트
-  storageId: number
 }
 
 /**
- * 아이템 정보
+ * 아이템 생성
  */
-export type OmitStorageIdItemInfo = Omit<ItemParams, 'storageId'>
+export interface SaveItem {
+  message: string
+  result: SaveItemResult
+}
 
 export type ItemInfoResult = {
   // 아이템 ID
@@ -156,6 +158,10 @@ export type ItemInfoResult = {
   // 아이템 조회 수
   viewCount: number
 }
+
+/**
+ * 아이템 정보
+ */
 export interface ItemInfo {
   message: string
   result: ItemInfoResult
@@ -187,27 +193,35 @@ export type SearchCondition = {
   categoryName: string
 }
 
+/**
+ * 아이템 검색
+ */
 export interface ItemSearchInfo {
   message: string
   result: SearchCondition[]
 }
 
-export type SaveItemResult = {
+export type ItemMatchResult = {
   // 아이템 ID
-  id: number
-  // 아이템 이름
-  name: string
-  // 아이템 설명
-  description: string
-  // 이미지 URL
-  imgUrl: string
-  // 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
-  itemType: string
+  itemId: number
   // 카테고리
   category: string
+  // 아이템 이름
+  name: string
+  // 아이템 이미지 URL
+  imgUrl: string
+  // 아이템 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
+  itemType: E_ITEM_TYPE
+  // 아이템과의 거리
+  distance: number
+  // 태그
+  tag: string[]
 }
 
-export interface SaveItem {
+/**
+ * 아이템 매칭
+ */
+export interface ItemMatchInfo {
   message: string
-  result: SaveItemResult
+  result: ItemMatchResult[]
 }
