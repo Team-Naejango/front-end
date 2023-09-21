@@ -24,13 +24,9 @@ const Chats = () => {
     router.push('/events')
   }
 
-  const onCloseBanner = () => {
-    setClose(true)
-  }
-
   return (
     <Layout hasHeader seoTitle={'채팅'}>
-      {!close && <SmallBanner onClick={onClickBanner} onClose={onCloseBanner} />}
+      {!close && <SmallBanner onClick={onClickBanner} onClose={() => setClose(true)} />}
       <div className='mb-14 mt-4 divide-y-[1px]'>
         {chats?.result.length === 0 ? (
           <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>

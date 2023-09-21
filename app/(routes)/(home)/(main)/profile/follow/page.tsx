@@ -34,7 +34,7 @@ const Follow = () => {
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow())
-  const storageId = follows && follows.result.find(v => v.id)?.id
+  const storageId = follows?.result.find(v => v.id)?.id
 
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
@@ -54,7 +54,7 @@ const Follow = () => {
   // 팔로우 취소
   const { mutate: mutateUnfollow } = useMutation(unFollow, {
     onSuccess: () => {
-      toast.success('창고를 팔로우 취소하였습니다.')
+      toast.success('팔로우 취소하였습니다.')
       query.invalidateQueries([FOLLOW.조회])
     },
     onError: (error: ApiError) => {

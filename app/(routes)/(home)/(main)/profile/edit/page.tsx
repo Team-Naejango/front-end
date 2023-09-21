@@ -321,6 +321,7 @@ const EditProfile = () => {
               })}
               id='phoneNumber'
               type='text'
+              disabled={isEditMode}
               maxLength={11}
               placeholder='휴대폰번호'
               icon={<BsPhone className='absolute ml-2.5 text-sm text-[#A9A9A9]' />}
@@ -332,12 +333,12 @@ const EditProfile = () => {
               value: _userInfo?.intro,
               maxLength: {
                 value: 100,
-                message: '100자 제한입니다.',
+                message: '최대 100자 제한입니다.',
               },
             })}
             placeholder={'자기소개'}
           />
-          {/* <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p> */}
+          <p className='!mt-0 text-xs text-red-400'>{errors.intro?.message}</p>
           <Button small text='저장' className={'!mx-auto mt-4 block'} />
         </form>
       </div>

@@ -8,13 +8,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
+import { BsPlusSquare } from 'react-icons/bs'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import TextArea from '@/app/components/atom/TextArea'
 import SelectBox from '@/app/components/atom/SelectBox'
-// import MultiSelectBox from '@/app/components/atom/MultiSelectBox'
 import InputFile from '@/app/components/atom/InputFile'
 import { CRUD, ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
@@ -51,6 +51,7 @@ const EditItem = () => {
   const [selectedType, setSelectedType] = useState<{ label?: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
+  const [hashTags, setHashTags] = useState<string[]>([])
 
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
@@ -66,6 +67,7 @@ const EditItem = () => {
   const {
     register,
     handleSubmit,
+    watch,
     getValues,
     setValue,
     formState: { errors },
@@ -97,7 +99,6 @@ const EditItem = () => {
   const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세, seq], () => itemInfo(seq), {
     enabled: isEditMode,
   })
-  console.log('_itemInfo:', _itemInfo)
 
   // 그룹 채팅방 개설
   const { mutate: mutateOpenGroup } = useMutation(openGroupChat, {
@@ -243,7 +244,7 @@ const EditItem = () => {
       description: data.description,
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.result.imgUrl,
       itemType: selectedType.name,
-      hashTag: [],
+      hashTag: hashTags,
       category: selectedCategory.name,
       storageId: Number(selectedStorage.name),
     }
@@ -291,13 +292,31 @@ const EditItem = () => {
     }
   }, [_itemInfo])
 
+  // 해시태그 추가
+  const onAddHashTag = (hashTag: string[]) => {
+    if (hashTag.length <= 0) return toast.error('해시태그를 입력해주세요.')
+    if (hashTag.length > 10) return toast.error('최대 10글자 이하로 입력해주세요.')
+
+    if (hashTags.length <= 2) {
+      setHashTags(prevHashTag => [...prevHashTag, String(hashTag)])
+      setValue('hashTag', [])
+    } else {
+      toast.error('해시태그는 최대 3개까지 가능합니다.')
+    }
+  }
+
+  // 해시태그 삭제
+  const onDeleteHashTag = (hashTag: string) => {
+    setHashTags(prevHashTag => [...prevHashTag].filter(v => v !== hashTag))
+  }
+
   return (
     <Layout canGoBack title={`아이템 ${isEditMode ? '편집' : '등록'}`}>
       <form className='mt-12 space-y-4 p-2' onSubmit={handleSubmit(onSubmit)}>
         <div className={'relative h-full w-full'}>
           <InputFile
-            id='file'
             dotted
+            id='file'
             styleOption={
               'flex h-48 w-full items-center justify-center rounded-md border-2 border-dashed border-gray-300 text-gray-600 hover:border-[#32D7A0] hover:text-[#32D7A0]'
             }
@@ -334,50 +353,90 @@ const EditItem = () => {
           )}
         </div>
         <SelectBox
+          essential
           title={'카테고리'}
           data={CATEGORIES}
           selected={selectedCategory}
           setSelected={setSelectedCategory}
-          essential
         />
         <InputField
+          essential
           type='text'
-          register={register('name', { required: '상품명을 입력해주세요.' })}
           label='상품명'
           placeholder='상품명'
-          essential
+          register={register('name', { required: '상품명을 입력해주세요.' })}
         />
         <p className='!mt-1.5 text-xs text-red-400'>{errors.name?.message}</p>
         <TextArea
-          register={register('description', { required: '상품설명을 입력해주세요.' })}
+          essential
           label='상품설명'
           placeholder='상품설명'
-          essential
+          register={register('description', { required: '상품설명을 입력해주세요.' })}
         />
         <p className='!mt-0 text-xs text-red-400'>{errors.description?.message}</p>
-        {/* <MultiSelectBox */}
-        {/*  title={'창고선택'} */}
-        {/*  data={STORAGES.filter(storage => storage.id <= (result?.length || 0))} */}
-        {/*  selected={selectedStorage} */}
-        {/*  setSelected={setSelectedStorage} */}
-        {/*  essential */}
-        {/* /> */}
-        <SelectBox title={'저장창고'} data={[]} selected={selectedStorage} setSelected={setSelectedStorage} essential />
-        <SelectBox title={'분류'} data={DEAL_TYPES} selected={selectedType} setSelected={setSelectedType} essential />
+        <div className={'relative'}>
+          <InputField
+            essential
+            type='text'
+            label='해시태그'
+            placeholder='해시태그는 최대 3개까지 추가할 수 있습니다.'
+            register={register('hashTag', {
+              required: '해시태그를 입력해주세요.',
+              validate: {
+                checkLimit: hashTag => {
+                  if (!hashTag) return
+
+                  if (hashTag.length > 10) {
+                    return '최대 10글자 이하로 입력해주세요.'
+                  }
+                },
+              },
+            })}
+          />
+          <BsPlusSquare
+            className='absolute right-4 top-1/2 cursor-pointer text-xl text-[#222] hover:text-[#32D7A0]'
+            onClick={() => onAddHashTag(watch('hashTag'))}
+          />
+        </div>
+        <p className='!mt-1.5 text-xs text-red-400'>{errors.hashTag?.message}</p>
+        <div className={'!mt-2.5 flex gap-2'}>
+          {hashTags.map(hashTag => {
+            return (
+              <div key={hashTag} className={'flex items-center rounded-[20px] border py-1.5 pl-3 pr-1.5'}>
+                <span className={'block truncate text-xs'}>{hashTag}</span>
+                <span
+                  role='presentation'
+                  className='ml-2 flex cursor-pointer text-gray-500 hover:text-red-500 focus:outline-none'
+                  onClick={() => onDeleteHashTag(hashTag)}>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    className='h-4 w-4'
+                    fill='none'
+                    viewBox='0 0 24 24'
+                    stroke='currentColor'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
+                  </svg>
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        <SelectBox essential title={'저장창고'} data={[]} selected={selectedStorage} setSelected={setSelectedStorage} />
+        <SelectBox essential title={'분류'} data={DEAL_TYPES} selected={selectedType} setSelected={setSelectedType} />
         {selectedType.label === '공동 구매' && (
           <>
             <InputField
+              essential
               type='text'
-              register={register('groupName', { required: '그룹채팅 제목을 입력해주세요.' })}
               label='그룹 제목'
               placeholder='그룹 제목'
-              essential
+              register={register('groupName', { required: '그룹채팅 제목을 입력해주세요.' })}
             />
             <p className='!mt-1.5 text-xs text-red-400'>{errors.groupName?.message}</p>
             <InputField
+              essential
               type='number'
               label='제한 인원'
-              essential
               register={register('limit', {
                 required: '제한 인원을 입력해주세요.',
                 value: 2,

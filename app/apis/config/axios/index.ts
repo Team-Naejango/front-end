@@ -49,38 +49,16 @@ const refreshAuthToken = (config: AxiosRequestConfig, token: Refresh | string) =
 }
 
 export const responseNormalizer = async (error: AxiosError) => {
-  if (!error.config) {
-    return false
-  }
+  if (!error.config) return false
 
   const data = error.response?.data as Refresh
 
-  if (data.body && data.body.status === 401) {
-    // if (data.body.error === 'UNAUTHORIZED') {
-    //   window.location.href = '/login'
-    //   return false
-    // }
-
-    const isHasToken = TokenValid()
-
-    if (!isHasToken) {
-      try {
-        refreshAuthToken({ ...error.config }, data.body.reissuedAccessToken)
-        setDeadlineCookie(AUTH_TOKEN.접근, data.body.reissuedAccessToken)
-
-        return await withAuth.request(error.config)
-      } catch (error: unknown) {
-        return false
-      }
-    }
+  if (data && data.status === 400) {
+    window.location.href = '/login'
+    return false
   }
 
-  if (data && data.status === 401) {
-    // if (data.error === 'UNAUTHORIZED') {
-    //   window.location.href = '/login'
-    //   return false
-    // }
-
+  if (data && (data.status || data.body.status) === 401) {
     const isHasToken = TokenValid()
 
     if (!isHasToken) {
@@ -92,6 +70,17 @@ export const responseNormalizer = async (error: AxiosError) => {
       } catch (error: unknown) {
         return false
       }
+    }
+
+    const accessToken = getCookie(AUTH_TOKEN.접근)
+    if (accessToken === undefined) {
+      window.location.href = '/login'
+      return false
+    }
+
+    if (data.error === 'BAD_REQUEST') {
+      window.location.href = '/login'
+      return false
     }
   }
 

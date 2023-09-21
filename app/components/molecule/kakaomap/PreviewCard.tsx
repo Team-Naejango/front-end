@@ -78,6 +78,7 @@ const PreviewCard = ({
   // 팔로우 등록
   const { mutate: mutateFollow } = useMutation(saveFollow, {
     onSuccess: () => {
+      toast.success('팔로우 성공하였습니다.')
       query.invalidateQueries([FOLLOW.조회])
     },
     onError: (error: ApiError) => {
@@ -88,6 +89,7 @@ const PreviewCard = ({
   // 팔로우 취소
   const { mutate: mutateUnfollow } = useMutation(unFollow, {
     onSuccess: () => {
+      toast.success('팔로우 취소하였습니다.')
       query.invalidateQueries([FOLLOW.조회])
     },
     onError: (error: ApiError) => {
@@ -98,6 +100,7 @@ const PreviewCard = ({
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
+      toast.success('개인 채팅방 입장하였습니다.')
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -105,7 +108,6 @@ const PreviewCard = ({
           id: data.data.result.channelId,
         },
       })
-      toast.success('개인 채팅방 입장하였습니다.')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -115,6 +117,7 @@ const PreviewCard = ({
   // 그룹 채팅방 참여
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
+      toast.success('그룹 채팅방에 입장하였습니다.')
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -122,7 +125,6 @@ const PreviewCard = ({
           id: data.data.result.channelId,
         },
       })
-      toast.success('그룹 채팅방에 입장하였습니다.')
       // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.
       // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
     },

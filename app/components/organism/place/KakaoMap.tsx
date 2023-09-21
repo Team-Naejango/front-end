@@ -73,7 +73,7 @@ const KakaoMap = () => {
       {myLocation.isLoaded ? (
         isUpdatePreview ? (
           <PreviewCard
-            previews={markers.map(v => v) as []}
+            previews={markers}
             dragedPreviews={_itemInfo?.result || []}
             activedItem={info?.name ?? ''}
             kakaoMap={kakaoMap}

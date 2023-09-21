@@ -36,10 +36,6 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
 
   const {
     register,
-    getValues,
-    setValue,
-    watch,
-    handleSubmit,
     reset,
     formState: { errors },
   } = useForm<CardProps>({
@@ -53,8 +49,8 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   // 관심 등록
   const { mutate: mutateWish } = useMutation(saveWish, {
     onSuccess: () => {
+      toast.success('관심목록에 추가하였습니다.')
       query.invalidateQueries([WISH.조회])
-      toast.success('아이템을 관심목록에 추가하였습니다.')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -64,15 +60,13 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   // 관심 삭제
   const { mutate: mutateUnWish } = useMutation(unWish, {
     onSuccess: () => {
+      toast.success('관심목록에서 삭제되었습니다.')
       query.invalidateQueries([WISH.조회])
-      toast.success('관심 아이템에서 삭제되었습니다.')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
-
-  const onSubmit = () => {}
 
   useEffect(() => {
     reset(itemInfo)
@@ -89,6 +83,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
     isSubscribe ? mutateUnWish(String(itemId)) : mutateWish(String(itemId))
   }
 
+  // 아이템 타입 변환기
   const convertedItemTypeNm = (type: E_ITEM_TYPE) => {
     let itemTypeNm: string = ''
 
@@ -104,7 +99,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <>
       <div className={'text-center'}>
         <span className={'font-semibold'}>{title}</span>
       </div>
@@ -161,7 +156,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
         />
         <p className='!mt-1.5 text-xs text-red-400'>{errors.description?.message}</p>
       </div>
-    </form>
+    </>
   )
 }
 
