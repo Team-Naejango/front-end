@@ -24,7 +24,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
-import { nickNameValidity } from '@/app/apis/domain/auth/auth'
+// import { nickNameValidity } from '@/app/apis/domain/auth/auth'
 
 interface EditProfileForm {
   birth: string
@@ -83,16 +83,16 @@ const EditProfile = () => {
   })
 
   // todo: API 필요
-  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-    onSuccess: () => {
-      setIsNicknameDisabled(true)
-      setSelectedNickname(getValues('nickname'))
-    },
-    onError: (error: ApiError) => {
-      console.log('error:', error)
-      toast.error(error.message)
-    },
-  })
+  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+  //   onSuccess: () => {
+  //     setIsNicknameDisabled(true)
+  //     setSelectedNickname(getValues('nickname'))
+  //   },
+  //   onError: (error: ApiError) => {
+  //     console.log('error:', error)
+  //     toast.error(error.message)
+  //   },
+  // })
 
   const uploadS3 = async (file: File) => {
     const s3Client = new S3Client({

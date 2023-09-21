@@ -21,11 +21,11 @@ import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
 import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
-import { nickNameValidity, sign, SignParam } from '@/app/apis/domain/auth/auth'
+import { sign, SignParam } from '@/app/apis/domain/auth/auth'
 
 const Sign = () => {
   const router = useRouter()
-  const query = getQueryClient()
+  // const query = getQueryClient()
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const [gender, setGender] = useState<string>('')
   const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
@@ -49,7 +49,7 @@ const Sign = () => {
   const { mutate: mutateSign } = useMutation(sign, {
     onSuccess: () => {
       toast.success('회원가입이 완료되었습니다.')
-      query.invalidateQueries([OAUTH.유저정보])
+      // query.invalidateQueries([OAUTH.유저정보])
       router.replace('/home')
     },
     onError: (error: ApiError) => {
@@ -60,19 +60,19 @@ const Sign = () => {
   })
 
   // todo: API 필요
-  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-    onSuccess: () => {
-      console.log('닉네임 사용 가능')
-      setIsNicknameDisabled(true)
-      setSelectedNickname(getValues('nickname'))
-    },
-    onError: (error: ApiError) => {
-      console.log('error:', error)
-      toast.error(error.message)
-    },
-  })
+  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+  //   onSuccess: () => {
+  //     console.log('닉네임 사용 가능')
+  //     setIsNicknameDisabled(true)
+  //     setSelectedNickname(getValues('nickname'))
+  //   },
+  //   onError: (error: ApiError) => {
+  //     console.log('error:', error)
+  //     toast.error(error.message)
+  //   },
+  // })
 
-  const onClickSubmit = async () => {
+  const onSubmit = () => {
     // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')
     // if (isNicknameDisabled && selectedNickname !== nickname) return toast.error('닉네임 중복검사가 필요합니다.)
 
@@ -86,8 +86,19 @@ const Sign = () => {
       intro: '',
       imgUrl: '',
     }
+
     mutateSign({ ...params, accessToken })
   }
+
+  useEffect(() => {
+    setGender(gender)
+  }, [gender])
+
+  // useEffect(() => {
+  //   if (selectedNickname !== nickname) {
+  //     setIsNicknameDisabled(true)
+  //   }
+  // }, [nickname, selectedNickname])
 
   const onValidUserName = (event: React.MouseEvent) => {
     event.preventDefault()
@@ -101,21 +112,11 @@ const Sign = () => {
     setGender(gender)
   }
 
-  useEffect(() => {
-    setGender(gender)
-  }, [gender])
-
-  useEffect(() => {
-    // if (selectedNickname !== nickname) {
-    //   setIsNicknameDisabled(true)
-    // }
-  }, [nickname, selectedNickname])
-
   return (
     <div className='mt-20 px-4'>
       <h3 className='text-center text-2xl font-semibold text-[#33CC99]'>회원가입</h3>
       <div className='mt-[4.75rem]'>
-        <form onSubmit={handleSubmit(onClickSubmit)} className='mt-8 flex flex-col space-y-2'>
+        <form onSubmit={handleSubmit(onSubmit)} className='mt-8 flex flex-col space-y-2'>
           <div className={'flex flex-row items-center'}>
             <InputField
               register={register('nickname', {

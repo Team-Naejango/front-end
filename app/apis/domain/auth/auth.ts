@@ -50,21 +50,21 @@ export async function nonUser(): Promise<Response<{ data: { accessToken: string 
 }
 
 /**
- * 닉네임 중복확인
- *
- * @param username 닉네임
- */
-export async function nickNameValidity(username: string): Promise<Response<boolean>> {
-  return instance.get(`/api/user/check/${username}`)
-}
-
-/**
  * 로그아웃
  *
  */
 export async function logout(): Promise<Response<null>> {
   return instance.get('/api/auth/logout')
 }
+
+// /**
+//  * 닉네임 중복확인
+//  *
+//  * @param username 닉네임
+//  */
+// export async function nickNameValidity(username: string): Promise<Response<boolean>> {
+//   return instance.get(`/api/user/check/${username}`)
+// }
 
 // /**
 //  * 토큰 재발급
