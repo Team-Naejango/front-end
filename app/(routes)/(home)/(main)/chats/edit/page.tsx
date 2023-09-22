@@ -6,11 +6,12 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { CompatClient, Stomp } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
 import { useRecoilValue } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
+import uuid from 'react-uuid'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Message from '@/app/components/atom/Message'
@@ -26,9 +27,11 @@ import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { getChatId } from '@/app/apis/domain/chat/chat'
 import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
+import { userInfo } from '@/app/apis/domain/profile/profile'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -63,17 +66,27 @@ const ChatDetail: NextPage = () => {
     enabled: !!channelId,
   })
 
-  // 채팅 참여자 정보
+  // 채팅 참여자 조회
   const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId!), {
     enabled: !!channelId,
   })
 
+  // 프로필 조회
+  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+    enabled: !!channelId,
+  })
+
+  const isMe = [...(membersInfo?.result || [])].some(v => v.participantId === mineInfo?.result.userId)
+  const userImage = [...(membersInfo?.result || [])]
+    .filter(v => v.participantId === mineInfo?.result.userId)
+    .find(v => v.imgUrl)?.imgUrl
+
   // 채팅방 종료
   const { mutate: mutateDelete } = useMutation(deleteChat, {
     onSuccess: () => {
+      toast.success('채팅방이 종료되었습니다.')
       query.invalidateQueries([CHAT.조회])
       query.invalidateQueries([CHAT.참여자조회])
-      toast.success('채팅방이 종료되었습니다.')
       router.push('/chats')
     },
     onError: (error: ApiError) => {
@@ -110,13 +123,27 @@ const ChatDetail: NextPage = () => {
   const onSend = (data: MessageForm) => {
     if (!data) return
 
-    client.current?.send(`${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`, {}, JSON.stringify(data))
-    reset()
+    if (client.current && client.current?.connected) {
+      client.current?.send(
+        `${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`,
+        {},
+        JSON.stringify(data.message)
+      )
+      setChatMessageList(prevMessages => [...prevMessages, data])
+      reset()
+    } else {
+      console.log('전송 에러')
+    }
   }
 
-  // todo: 언마운트 시 커넥트 취소 처리
   useEffect(() => {
     onConnect(channelId!)
+
+    return () => {
+      if (client.current) {
+        client.current?.disconnect()
+      }
+    }
   }, [])
 
   useEffect(() => {
@@ -133,11 +160,11 @@ const ChatDetail: NextPage = () => {
         },
       })
     } else if (label === '나가기') {
-      mutateDelete(String(chatId && chatId.result))
+      mutateDelete(String(channelId))
     }
   }
 
-  const selectedMenuBox = (open: boolean) => {
+  const onSelectedMenuBox = (open: boolean) => {
     setIsOpenBox(open)
   }
 
@@ -148,13 +175,18 @@ const ChatDetail: NextPage = () => {
     <Layout canGoBack title={title!}>
       <DropDown labels={labels} onClick={onDropdownSelection} />
       <div className='space-y-6 py-10 pb-16'>
-        <span className={'block text-center text-xs'}>2023.08.29 (화)</span>
+        <span className={'block text-center text-xs'}>
+          {chatMessageList.length === 0 ? new Date().toLocaleDateString() : ''}
+        </span>
         {chatMessageList.map(data => {
-          return <Message key={data.message} message={data.message} avatarUrl={''} reversed={data.reversed} />
+          return <Message key={uuid()} message={data.message} imgUrl={userImage} reverse={isMe} />
         })}
         <div ref={scrollRef} />
         <form
-          onSubmit={handleSubmit(onSend)}
+          onSubmit={handleSubmit((formData, event) => {
+            event?.preventDefault()
+            onSend(formData)
+          })}
           className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white py-2 pb-5'>
           <MenuBox
             channelId={channelId!}
@@ -163,16 +195,13 @@ const ChatDetail: NextPage = () => {
             isOpen={isOpenBox}
             onClick={e => {
               e.preventDefault()
-              selectedMenuBox(true)
+              onSelectedMenuBox(true)
             }}
           />
           <div
             role={'presentation'}
             className='relative mx-auto flex w-[90%] items-center'
-            onClick={e => {
-              e.preventDefault()
-              selectedMenuBox(false)
-            }}>
+            onClick={() => onSelectedMenuBox(false)}>
             <InputField
               type={'text'}
               register={register('message', {
@@ -181,7 +210,9 @@ const ChatDetail: NextPage = () => {
               className='mt-4 w-full !rounded-full border-gray-300 pr-12 !indent-2 shadow-sm focus:border-[#33CC99] focus:outline-none focus:ring-[#33CC99]'
             />
             <div className='absolute inset-y-0 right-0 mt-4 flex py-1.5 pr-1.5'>
-              <button className='flex items-center rounded-full bg-[#33CC99] px-4 text-[15px] text-white hover:bg-[#32D7A0] focus:ring-2 focus:ring-[#33CC99] focus:ring-offset-2'>
+              <button
+                type={'submit'}
+                className='flex items-center rounded-full bg-[#33CC99] px-4 text-[15px] text-white hover:bg-[#32D7A0] focus:ring-2 focus:ring-[#33CC99] focus:ring-offset-2'>
                 &rarr;
               </button>
             </div>

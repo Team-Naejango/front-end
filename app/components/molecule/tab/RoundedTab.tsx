@@ -7,13 +7,13 @@ import { cls } from '@/app/libs/client/utils/util'
 import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 
 export interface RoundedTabProps {
-  setSelectedTab: (tab: string[] | string) => void
+  setSelectedTab: (tab: string | string[]) => void
   children: ReactNode
 }
 
-const DEAL_TYPE_MAPPING: { label: string; name: string[] }[] = [
-  { label: 'BUY', name: [ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매] },
-  { label: 'SELL', name: [ITEM_TYPE.개인판매] },
+const DEAL_TYPE_MAPPING: { label: string; name: string | string[] }[] = [
+  { label: 'BUY', name: [ITEM_TYPE.개인구매, ITEM_TYPE.공동구매] },
+  { label: 'SELL', name: ITEM_TYPE.개인판매 },
 ]
 
 // const ButtonType: ['BUY', 'SELL'] = ['BUY', 'SELL']

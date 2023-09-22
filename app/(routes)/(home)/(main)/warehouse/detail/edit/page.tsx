@@ -16,36 +16,41 @@ import { storageItem } from '@/app/apis/domain/warehouse/warehouse'
 
 const WareHouseItem = () => {
   const searchParams = useSearchParams()
-  const [selectedTab, setSelectedTab] = useState<('INDIVIDUAL_BUY' | 'GROUP_BUY') | 'INDIVIDUAL_SELL'>(
-    ITEM_TYPE.개인구매
-  )
+  const [selectedTab, setSelectedTab] = useState<string | string[]>([ITEM_TYPE.개인구매, ITEM_TYPE.공동구매])
 
-  const seq = searchParams.get('seq')
+  const storageId = searchParams.get('storage')
+  const count = searchParams.get('count')
 
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
-    [ITEM.조회, seq],
+    [ITEM.조회, storageId],
     () =>
       storageItem({
-        storageId: String(seq),
+        storageId: String(storageId),
         status: true,
         page: '0',
         size: '10',
       }),
     {
-      enabled: !!seq,
+      enabled: !!storageId,
     }
   )
-  const filteredItemList = (_itemInfo && _itemInfo.result.filter(item => item.itemType === selectedTab)) || []
 
-  const onSelectedTab = (tab: string[] | string) => {
-    if (String(tab) === selectedTab) return
+  // 아이템 필터링
+  const filteredItemList =
+    [...(_itemInfo?.result || [])].filter(item => [...selectedTab].some(tab => tab === item.itemType)) || []
 
-    setSelectedTab(currentTab => {
-      if (currentTab === ITEM_TYPE.개인구매 || currentTab === ITEM_TYPE.공동구매) {
+  // 탭 선택
+  const onSelectedTab = (tab: string | string[]) => {
+    const PERSONAL_OR_GROUP = ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매
+
+    if (tab.includes(PERSONAL_OR_GROUP) === selectedTab.includes(PERSONAL_OR_GROUP)) return
+
+    setSelectedTab(() => {
+      if (selectedTab.includes(PERSONAL_OR_GROUP)) {
         return ITEM_TYPE.개인판매
       }
-      return ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매
+      return [ITEM_TYPE.개인구매, ITEM_TYPE.공동구매]
     })
   }
 
@@ -53,17 +58,21 @@ const WareHouseItem = () => {
   const onDeleteItem = () => {}
 
   return (
-    <Layout canGoBack title={`창고${seq}`}>
+    <Layout canGoBack title={`창고${Number(count) + 1}`}>
       <div className='mt-8'>
         <RoundedTab setSelectedTab={onSelectedTab}>
           <Tab.Panel>
-            {selectedTab === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) &&
+            {selectedTab.includes(ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) &&
               (filteredItemList.length === 0 ? (
                 <div className='flex h-[450px] items-center justify-center'>
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
                 </div>
               ) : (
-                <ItemList items={filteredItemList} params={String(seq)} onDelete={onDeleteItem} />
+                <ItemList
+                  items={filteredItemList}
+                  params={{ storageId: String(storageId), count: String(count) }}
+                  onDelete={onDeleteItem}
+                />
               ))}
           </Tab.Panel>
           <Tab.Panel>
@@ -73,7 +82,11 @@ const WareHouseItem = () => {
                   <p className='text-sm'>존재하는 아이템이 없습니다.</p>
                 </div>
               ) : (
-                <ItemList items={filteredItemList} params={String(seq)} onDelete={onDeleteItem} />
+                <ItemList
+                  items={filteredItemList}
+                  params={{ storageId: String(storageId), count: String(count) }}
+                  onDelete={onDeleteItem}
+                />
               ))}
           </Tab.Panel>
         </RoundedTab>
@@ -82,8 +95,9 @@ const WareHouseItem = () => {
             pathname: '/warehouse/detail/item/edit',
             query: {
               crud: CRUD.등록,
-              storage: seq,
-              seq: null,
+              storage: storageId,
+              item: null,
+              count: count!,
             },
           }}>
           <svg

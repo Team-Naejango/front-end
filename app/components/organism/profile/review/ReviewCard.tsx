@@ -21,10 +21,10 @@ const ReviewCard = () => {
         itemId: 1,
       },
     ],
-  })
+  }) // 더미 데이터
 
   // 탭 선택
-  const onSelectedTab = (tab: string[] | string) => {
+  const onSelectedTab = (tab: string | string[]) => {
     if (String(tab) === selectedTab) return
 
     setSelectedTab(currentTab => {

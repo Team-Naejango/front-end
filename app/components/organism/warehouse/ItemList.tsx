@@ -6,7 +6,15 @@ import { cls } from '@/app/libs/client/utils/util'
 import { CRUD } from '@/app/libs/client/constants/code'
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
 
-const ItemLIst = ({ items, params, onDelete }: { items: Item[]; params: string; onDelete: () => void }) => {
+const ItemLIst = ({
+  items,
+  params,
+  onDelete,
+}: {
+  items: Item[]
+  params: { storageId: string; count: string }
+  onDelete: () => void
+}) => {
   return (
     <ul className='flex flex-col gap-5 p-0.5'>
       {items.map(item => (
@@ -42,8 +50,9 @@ const ItemLIst = ({ items, params, onDelete }: { items: Item[]; params: string; 
               pathname: '/warehouse/detail/item/edit',
               query: {
                 crud: CRUD.수정,
-                storage: params,
-                seq: item.itemId,
+                storage: params.storageId,
+                item: item.itemId,
+                count: params.count,
               },
             }}
             className={cls('absolute inset-0 rounded-xl', 'ring-[#32D7A0] focus:z-10 focus:outline-none focus:ring-1')}

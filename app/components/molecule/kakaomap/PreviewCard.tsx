@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import uuid from 'react-uuid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -60,6 +60,7 @@ const PreviewCard = ({
   const chatState = useRecoilValue(modalSelector('chat'))
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
+  const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
@@ -68,10 +69,10 @@ const PreviewCard = ({
 
   // 창고 아이템 그룹 채널 조회
   const { data: { data: groupChat } = {} } = useQuery(
-    [WAREHOUSE.그룹채널조회, info],
-    () => storageGroupChannel(String(info!.storageId)),
+    [WAREHOUSE.그룹채널조회, selectedItemId],
+    () => storageGroupChannel(String(selectedItemId)),
     {
-      enabled: !isDragedMixture && !!info,
+      enabled: !isDragedMixture && !!selectedItemId,
     }
   )
 
@@ -237,7 +238,10 @@ const PreviewCard = ({
                       <div
                         role='presentation'
                         className={'w-full p-4'}
-                        onClick={() => onClickShowModal(item.name || selectedTitle)}>
+                        onClick={() => {
+                          setSelectedItemId(item.itemId)
+                          onClickShowModal(item.name || selectedTitle)
+                        }}>
                         <span
                           className={cls(
                             'mr-1.5 rounded px-1 py-1 text-[10px] text-white',

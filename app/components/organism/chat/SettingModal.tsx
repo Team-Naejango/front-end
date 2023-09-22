@@ -4,6 +4,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import Image from 'next/image'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
+import face from '@/app/assets/image/face.png'
 
 import InputField from '@/app/components/atom/InputField'
 import { cls } from '@/app/libs/client/utils/util'
@@ -30,7 +31,7 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
     formState: { errors },
   } = useForm<SettingProps>({ mode: 'onSubmit', reValidateMode: 'onChange' })
 
-  // 채팅 참여자 정보
+  // 채팅 참여자 조회
   const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId), {
     enabled: !!channelId,
   })
@@ -52,7 +53,7 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
 
   return (
     <div>
-      <h2 className={'text-center'}>설정</h2>
+      <h2 className={'text-center text-lg'}>설정</h2>
       <button
         type='button'
         onClick={() => closeModal('setting')}
@@ -64,12 +65,12 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
       </button>
 
       <div className={'mt-6'}>
-        <h3 className={'mb-2 text-left text-xs font-medium leading-none text-gray-700'}>방 제목</h3>
+        <h3 className={'mb-2 text-left text-xs font-medium leading-none text-gray-700'}>채팅방 제목</h3>
         <div className={'flex items-center'}>
           <InputField
             type='text'
             register={register('title', { required: '채팅방 제목을 입력해주세요.', value: title })}
-            placeholder='방 제목'
+            placeholder='채팅방 제목'
           />
           <Button
             small
@@ -89,17 +90,29 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
           {membersInfo?.result.map(info => {
             return (
               <div key={info.participantId} className={'flex items-center gap-2'}>
-                <Image
-                  src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
-                    info.imgUrl as string
-                  )}`}
-                  priority
-                  width={'30'}
-                  height={'30'}
-                  quality={100}
-                  alt='프로필 이미지'
-                  className={cls('rounded-full border bg-gray-300 object-cover')}
-                />
+                {info.imgUrl === '' ? (
+                  <Image
+                    src={face}
+                    priority
+                    width={'30'}
+                    height={'30'}
+                    quality={100}
+                    alt='프로필 이미지'
+                    className={cls('rounded-full border bg-gray-300 object-cover')}
+                  />
+                ) : (
+                  <Image
+                    src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
+                      info.imgUrl as string
+                    )}`}
+                    priority
+                    width={'30'}
+                    height={'30'}
+                    quality={100}
+                    alt='프로필 이미지'
+                    className={cls('rounded-full border bg-gray-300 object-cover')}
+                  />
+                )}
                 <span className={'text-xs'}>{info.nickname}</span>
               </div>
             )

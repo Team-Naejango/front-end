@@ -2,7 +2,7 @@
 
 import jwtDecode from 'jwt-decode'
 
-import { getCookie } from '@/app/libs/client/utils/cookie'
+import { getCookie, removeAllCookies } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 /**
@@ -28,7 +28,9 @@ export const TokenValid = () => {
       return false
     }
   } catch (error) {
-    console.error('토큰 디코딩 오류:', error)
+    console.error('토큰 전달 못받았음')
+    removeAllCookies()
+    window.location.href = '/login'
     return false
   }
 

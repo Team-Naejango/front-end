@@ -52,8 +52,10 @@ const WarehouseEdit = () => {
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
   const crud = searchParams.get('crud') || CRUD.등록
-  const seq = searchParams.get('seq') || null
-  const isEditMode = (crud === CRUD.수정 && seq !== null) || false
+  const storageId = searchParams.get('storage')
+  const count = searchParams.get('count') || null
+
+  const isEditMode = (crud === CRUD.수정 && count !== null) || false
 
   const {
     register,
@@ -74,7 +76,7 @@ const WarehouseEdit = () => {
     enabled: isEditMode,
   })
   const { result } = _storageInfo || {}
-  const currentItem = result && result[Number(seq) - 1]
+  const currentItem = result && result[Number(count) - 1]
 
   // 창고 등록
   const { mutate: mutateSave } = useMutation(saveStorage, {
@@ -148,6 +150,7 @@ const WarehouseEdit = () => {
     return true
   }
 
+  // 업로드 예외처리
   const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0]
     const fileExt = file?.name.split('.').pop()
@@ -200,7 +203,7 @@ const WarehouseEdit = () => {
 
     const editParameters = () => {
       const { coord, address, ...newParams } = params
-      return { ...newParams, storageId: seq || '' }
+      return { ...newParams, storageId: storageId || '' }
     }
 
     isEditMode ? mutateModify(editParameters()) : mutateSave(params)
@@ -221,7 +224,8 @@ const WarehouseEdit = () => {
     }
   }, [currentItem])
 
-  const onClickStep = (event: MouseEvent) => {
+  // 지도 위치 설정
+  const onMovedStep = (event: MouseEvent) => {
     if (event === undefined && address.value === '') {
       setAddress({
         value: '',
@@ -318,7 +322,7 @@ const WarehouseEdit = () => {
             />
           )}
           {step === STEP.위치선택 && (
-            <SelectCoordinate address={address} setAddress={setAddress} onClick={onClickStep} />
+            <SelectCoordinate address={address} setAddress={setAddress} onClick={onMovedStep} />
           )}
         </div>
         <p className='!mt-1.5 text-xs text-red-400'>{errors.address?.message}</p>

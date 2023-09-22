@@ -128,7 +128,8 @@ const WareHouseCarousel = ({
                   href={{
                     pathname: '/warehouse/detail/edit',
                     query: {
-                      seq: data.storageId,
+                      storage: data.storageId,
+                      count: swiper && swiper.realIndex,
                     },
                   }}>
                   <Image

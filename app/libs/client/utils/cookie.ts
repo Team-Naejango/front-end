@@ -21,6 +21,15 @@ export const removeCookie = (key: string) => {
   return cookies.remove(key)
 }
 
+export const removeAllCookies = () => {
+  const allCookies = cookies.getAll()
+  for (const cookieName in allCookies) {
+    if (Object.prototype.hasOwnProperty.call(allCookies, cookieName)) {
+      cookies.remove(cookieName)
+    }
+  }
+}
+
 export const removeAuthToken = (accessKey: string, refreshKey: string) => {
   removeCookie(accessKey)
   removeCookie(refreshKey)

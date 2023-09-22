@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -17,12 +17,16 @@ const Chats = () => {
   const [close, setClose] = useState<boolean>(false)
 
   // 채팅방 목록
-  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat())
+  const { data: { data: chats } = {}, refetch } = useQuery([CHAT.조회], () => chat())
   console.log('chats:', chats)
 
   const onClickBanner = () => {
     router.push('/events')
   }
+
+  useEffect(() => {
+    refetch()
+  }, [])
 
   return (
     <Layout hasHeader seoTitle={'채팅'}>

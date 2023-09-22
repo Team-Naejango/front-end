@@ -16,10 +16,12 @@ const DealCard = ({ onClick }: { onClick: () => void }) => {
 
   // 거래 조회
   const { data: { data: deals } = {} } = useQuery([DEAL.조회], () => deal())
-  const filteredDealList = deals?.result.filter(item => item.status === selectedTab) || []
+
+  // 거래 필터링
+  const filteredDealList = [...(deals?.result || [])].filter(item => item.status === selectedTab) || []
 
   // 탭 선택
-  const onSelectedTab = (tab: string[] | string) => {
+  const onSelectedTab = (tab: string | string[]) => {
     if (String(tab) === selectedTab) return
 
     setSelectedTab(currentTab => {

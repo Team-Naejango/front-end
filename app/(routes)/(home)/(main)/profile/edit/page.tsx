@@ -65,11 +65,13 @@ const EditProfile = () => {
   })
   const nickname = watch('nickname')
 
-  const { data: { data } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+  // 프로필 조회
+  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
     enabled: isEditMode,
   })
-  const _userInfo = data?.result
+  const _userInfo = mineInfo?.result
 
+  // 프로필 변경
   const { mutate: mutateUserInfoModify } = useMutation((params: Member) => modifyUserInfo({ ...params }), {
     onSuccess: () => {
       toast.success('프로필이 변경되었습니다.')
@@ -94,6 +96,7 @@ const EditProfile = () => {
   //   },
   // })
 
+  // S3 업로드
   const uploadS3 = async (file: File) => {
     const s3Client = new S3Client({
       region: REGION,
@@ -117,6 +120,7 @@ const EditProfile = () => {
     }
   }
 
+  // 이미지 제한
   let imgSizeConverted = ''
   const limitedFileSize = (file: File) => {
     const imgSize = file.size
@@ -139,6 +143,7 @@ const EditProfile = () => {
     return true
   }
 
+  // 업로드 예외처리
   const onUpload = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files![0]
     const fileExt = file?.name.split('.').pop()
@@ -187,20 +192,7 @@ const EditProfile = () => {
       phoneNumber: getValues('phoneNumber'),
     }
 
-    console.log('params:', params)
     mutateUserInfoModify(params)
-  }
-
-  const onValidUserName = (event: React.MouseEvent) => {
-    event.preventDefault()
-    if (nickname === '') return false
-
-    // query mutation api call
-    // mutateNickname(watch('nickname'))
-  }
-
-  const onSelectedGender = (gender: E_GENDER_TYPE) => {
-    setValue('gender', gender)
   }
 
   useEffect(() => {
@@ -215,6 +207,19 @@ const EditProfile = () => {
       setImagePreview(_userInfo.imgUrl)
     }
   }, [_userInfo])
+
+  // 중복 검사
+  const onValidUserName = (event: React.MouseEvent) => {
+    event.preventDefault()
+    if (nickname === '') return false
+
+    // query mutation api call
+    // mutateNickname(watch('nickname'))
+  }
+
+  const onSelectedGender = (gender: E_GENDER_TYPE) => {
+    setValue('gender', gender)
+  }
 
   return (
     <Layout canGoBack title={'프로필 편집'} seoTitle={'프로필'}>

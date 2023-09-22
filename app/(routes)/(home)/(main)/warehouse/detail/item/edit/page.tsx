@@ -27,6 +27,7 @@ import {
   modifyItem,
   storage as _storage,
   OmitStorageIdItemParam,
+  storageGroupChannel,
 } from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
 
@@ -58,9 +59,11 @@ const EditItem = () => {
   const SECRET_ACCESS_KEY = process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY
 
   const crud = searchParams.get('crud')
-  const storage = searchParams.get('storage')
-  const seq = searchParams.get('seq')
-  const isEditMode = (crud === CRUD.수정 && seq !== '' && storage !== '') || false
+  const storageId = searchParams.get('storage')
+  const itemId = searchParams.get('item')
+  const count = searchParams.get('count')
+
+  const isEditMode = (crud === CRUD.수정 && itemId !== '' && storageId !== '') || false
 
   // const storageIds = selectedStorage.map(value => value.id)
 
@@ -70,6 +73,7 @@ const EditItem = () => {
     watch,
     getValues,
     setValue,
+    setError,
     formState: { errors },
     reset,
   } = useForm<ItemProps>({
@@ -93,12 +97,21 @@ const EditItem = () => {
   //   return result.map(v => {
   //     return { ...storage, id: v.storageId }.id
   //   })
-  // }).find(value => value)
+  // }).find(v => v)
 
   // 아이템 상세조회
-  const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세, seq], () => itemInfo(seq), {
+  const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세, itemId], () => itemInfo(itemId), {
     enabled: isEditMode,
   })
+
+  // 창고 아이템 그룹 채널 조회
+  const { data: { data: groupChat } = {} } = useQuery(
+    [WAREHOUSE.그룹채널조회, itemId],
+    () => storageGroupChannel(itemId!),
+    {
+      enabled: !!itemId,
+    }
+  )
 
   // 그룹 채팅방 개설
   const { mutate: mutateOpenGroup } = useMutation(openGroupChat, {
@@ -124,7 +137,7 @@ const EditItem = () => {
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       toast.success('아이템이 등록되었습니다.')
-      router.push(`/warehouse/detail/edit?seq=${storage}`)
+      router.push(`/warehouse/detail/edit?seq=${storageId}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -139,14 +152,14 @@ const EditItem = () => {
   // })
 
   // 아이템 수정
-  const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemParam) => modifyItem(seq!, params), {
+  const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemParam) => modifyItem(itemId!, params), {
     onSuccess: () => {
       // mutateStorage({ itemId: edit, storageIdList: updatedStorageIds })
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])
       toast.success('아이템이 수정되었습니다.')
-      router.replace(`/warehouse/detail/edit?seq=${seq}`)
+      router.replace(`/warehouse/detail/edit?seq=${itemId}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -233,6 +246,7 @@ const EditItem = () => {
     if (!imagePreview) return toast.error('이미지를 등록해주세요.')
     if (selectedCategory.name === '전체') return toast.error('다른 카테고리를 선택해주세요.')
     if (selectedStorage.name?.length === 0) return toast.error('창고를 선택해주세요.')
+    if (hashTags.length === 0) return setError('hashTag', { message: '해시태그를 추가해주세요.' })
 
     if (imageFile && imageFile.length > 0) {
       const file = imageFile[0]
@@ -269,14 +283,18 @@ const EditItem = () => {
   // }
 
   useEffect(() => {
-    reset({ ..._itemInfo?.result })
+    reset({
+      ..._itemInfo?.result,
+      groupName: groupChat?.result?.defaultTitle ?? '',
+      limit: groupChat?.result?.channelLimit ?? 2,
+    })
     if (isEditMode) {
       query.invalidateQueries([ITEM.상세])
     }
-  }, [_itemInfo, isEditMode])
+  }, [_itemInfo, groupChat, isEditMode])
 
   useEffect(() => {
-    setSelectedStorage(STORAGES[Number(storage) - 1])
+    setSelectedStorage(STORAGES[Number(storageId) - 1])
   }, [])
 
   useEffect(() => {
@@ -284,13 +302,15 @@ const EditItem = () => {
       setValue('imgUrl', _itemInfo.result.imgUrl)
       setImagePreview(_itemInfo.result.imgUrl)
       setSelectedCategory({ name: _itemInfo.result.category })
+      setSelectedStorage({ label: STORAGES[Number(count)].label, name: String(count) })
       setSelectedType({
         label: DEAL_TYPES.find(v => v.name === _itemInfo?.result.itemType)!.label,
         name: _itemInfo?.result.itemType,
       })
-      setSelectedStorage({ label: STORAGES[Number(_itemInfo.result.id - 1)].label, name: String(_itemInfo.result.id) })
+      setHashTags(_itemInfo.result.hashTag)
+      setValue('hashTag', [])
     }
-  }, [_itemInfo])
+  }, [_itemInfo, groupChat])
 
   // 해시태그 추가
   const onAddHashTag = (hashTag: string[]) => {
@@ -381,7 +401,6 @@ const EditItem = () => {
             label='해시태그'
             placeholder='해시태그는 최대 3개까지 추가할 수 있습니다.'
             register={register('hashTag', {
-              required: '해시태그를 입력해주세요.',
               validate: {
                 checkLimit: hashTag => {
                   if (!hashTag) return
@@ -430,7 +449,9 @@ const EditItem = () => {
               type='text'
               label='그룹 제목'
               placeholder='그룹 제목'
-              register={register('groupName', { required: '그룹채팅 제목을 입력해주세요.' })}
+              register={register('groupName', {
+                required: '그룹채팅 제목을 입력해주세요.',
+              })}
             />
             <p className='!mt-1.5 text-xs text-red-400'>{errors.groupName?.message}</p>
             <InputField

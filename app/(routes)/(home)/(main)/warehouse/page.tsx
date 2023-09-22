@@ -28,7 +28,7 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 interface PathParam {
   crud: E_CRUD
-  seq: number | null
+  storage: number | null
 }
 
 const WareHouse = () => {
@@ -43,12 +43,11 @@ const WareHouse = () => {
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
   const { result } = _storageInfo || {}
   const currentItem = result && result[currentSlideIndex]
-  console.log('_storageInfo:', _storageInfo)
 
   const onCreate = () => {
     const params: PathParam = {
-      seq: (result?.length || 0) + 1,
       crud: CRUD.등록,
+      storage: (result?.length || 0) + 1,
     }
     push({
       pathname: `/warehouse/edit`,
@@ -117,8 +116,9 @@ const WareHouse = () => {
             href={{
               pathname: '/warehouse/edit',
               query: {
-                seq: currentSlideIndex + 1,
                 crud: CRUD.수정,
+                storage: currentItem?.storageId,
+                count: currentSlideIndex + 1,
               },
             }}
             prefetch={false}

@@ -153,6 +153,8 @@ export type ItemInfoResult = {
   imgUrl: string
   // 아이템 타입
   itemType: string
+  // 해시태그
+  hashTag: string[]
   // 카테고리
   category: string
   // 아이템 조회 수
@@ -165,6 +167,28 @@ export type ItemInfoResult = {
 export interface ItemInfo {
   message: string
   result: ItemInfoResult
+}
+
+export type ItemModifyResult = {
+  // 아이템 ID
+  id: number
+  // 아이템 이름
+  name: string
+  // 아이템 설명
+  description: string
+  // 이미지 URL
+  imgUrl: string
+  // 아이템 타입
+  itemType: string
+  // 카테고리
+  category: string
+}
+/**
+ * 아이템 수정
+ */
+export interface ItemModifyInfo {
+  message: string
+  result: ItemModifyResult
 }
 
 export type SearchCondition = {

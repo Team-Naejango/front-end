@@ -39,8 +39,10 @@ const Profile = () => {
 
   const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
 
-  const { data: { data: _userInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo())
+  // 프로필 조회
+  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo())
 
+  // 회원 탈퇴
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
@@ -55,6 +57,7 @@ const Profile = () => {
     },
   })
 
+  // 알림 구독 탐지
   const subscribeToNotifications = async () => {
     if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단) return
 
@@ -83,6 +86,7 @@ const Profile = () => {
     if (switchStatus && isNotificationSupported) subscribeToNotifications()
   }, [switchStatus])
 
+  // 토글 변환기
   const onSwitchConverter = () => {
     if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단)
       return toast.error('알림 권한을 변경하려면 브라우저 설정에서 변경해주세요.')
@@ -93,12 +97,14 @@ const Profile = () => {
     router.push(value)
   }
 
+  // 설정 모달
   const onClickUserSetting = () => {
     openModal({
       modal: { id: 'account', type: MODAL_TYPES.CONFIRM },
     })
   }
 
+  // 로그아웃 모달
   const logout = () => {
     openModal({
       modal: {
@@ -116,6 +122,7 @@ const Profile = () => {
     })
   }
 
+  // 탈퇴 모달
   const withdrawal = () => {
     openModal({
       modal: {
@@ -136,10 +143,10 @@ const Profile = () => {
       setting
       seoTitle={'프로필'}
       src={
-        _userInfo?.result.imgUrl === (undefined || '')
+        mineInfo?.result.imgUrl === (undefined || '')
           ? (face as any)
           : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
-              _userInfo?.result.imgUrl as string
+              mineInfo?.result.imgUrl as string
             )}
             `
       }>

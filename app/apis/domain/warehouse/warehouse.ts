@@ -4,6 +4,7 @@ import {
   ItemInfo,
   ItemList,
   ItemMatchInfo,
+  ItemModifyInfo,
   ItemSearchInfo,
   SaveItem,
   StorageGroupChat,
@@ -255,7 +256,7 @@ export async function saveItem(params: ItemParam): Promise<Response<{ data: Save
 export async function modifyItem(
   itemId: string,
   params: OmitStorageIdItemParam
-): Promise<Response<{ data: ItemInfo }>> {
+): Promise<Response<{ data: ItemModifyInfo }>> {
   const newParams = {
     ...params,
     itemId,
