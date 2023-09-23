@@ -22,6 +22,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
   useEffect(() => {
+    setIsMountedSplash(true)
+  }, [setIsMountedSplash])
+
+  useEffect(() => {
     const onBeforeUnload = () => {
       if (accessToken && !refreshToken) return resetToken()
     }
@@ -38,16 +42,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
           pathname === '/' ? router.replace('/login') : router.back()
         })
       }
-      window.addEventListener('popstate', onBack)
+      // window.addEventListener('popstate', onBack)
       return () => {
         window.removeEventListener('popstate', onBack)
       }
     }
   }, [])
-
-  useEffect(() => {
-    setIsMountedSplash(true)
-  }, [setIsMountedSplash])
 
   return (
     <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>

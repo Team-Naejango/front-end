@@ -19,11 +19,13 @@ import Button from '@/app/components/atom/Button'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 import { joinChat } from '@/app/apis/domain/chat/channel'
 import { joinGroupChat } from '@/app/apis/domain/chat/chat'
 import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
+import { userInfo } from '@/app/apis/domain/profile/profile'
 
 /* global kakao, maps */
 
@@ -54,16 +56,23 @@ const PreviewCard = ({
   setIsDragedMixture,
 }: PreviewCardProps) => {
   const query = useQueryClient()
-  const { openModal } = useModal()
+  const { openModal, closeModal } = useModal()
   const { push } = UseCustomRouter()
   const previewState = useRecoilValue(modalSelector('preview'))
   const chatState = useRecoilValue(modalSelector('chat'))
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
+  const [disabledPersonal, setDisabledPersonal] = useState<boolean>(false)
+  const [disabledGroup, setDisabledGroup] = useState<boolean>(false)
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
+    enabled: !isDragedMixture,
+  })
+
+  // 프로필 조회
+  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
     enabled: !isDragedMixture,
   })
 
@@ -146,14 +155,22 @@ const PreviewCard = ({
   }
 
   // 창고 아이템 선택 모달
-  const onClickShowModal = (value: string) => {
-    setSelectedTitle(value)
+  const onClickShowModal = (name: string, type: string, ownerId: number) => {
+    setSelectedTitle(name)
     openModal({
       modal: { id: 'preview', type: MODAL_TYPES.CONFIRM },
       callback: () => {
+        if (mineInfo?.result.userId === ownerId) return toast.error('자신의 창고 아이템입니다.')
+
+        if (type === (ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매)) {
+          setDisabledGroup(true)
+        } else if (type === ITEM_TYPE.공동구매) {
+          setDisabledPersonal(true)
+        }
         onSelectedChatModal()
       },
     })
+
     setMarkerItemsValue(
       dragedPreviews.map(data => ({
         name: data.name,
@@ -188,7 +205,14 @@ const PreviewCard = ({
       const { ownerId } = dragedPreviews.find(v => v.ownerId)!
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
-      if (!groupChat) return toast.error('등록된 그룹채팅이 없습니다.')
+      if (!groupChat) {
+        toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해 주세요.')
+        return closeModal('chat')
+      }
+      if (groupChat.result.participantsCount === groupChat.result.channelLimit) {
+        toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해 주세요.')
+        return closeModal('chat')
+      }
 
       mutateGroupJoin(String(groupChat?.result.channelId))
     }
@@ -240,7 +264,7 @@ const PreviewCard = ({
                         className={'w-full p-4'}
                         onClick={() => {
                           setSelectedItemId(item.itemId)
-                          onClickShowModal(item.name || selectedTitle)
+                          onClickShowModal(item.name || selectedTitle, item.itemType, item.ownerId)
                         }}>
                         <span
                           className={cls(
@@ -309,8 +333,20 @@ const PreviewCard = ({
       {chatState.modal.show ? (
         <CustomModal id={chatState.modal.id} type={MODAL_TYPES.ALERT}>
           <div className={'flex gap-4 py-2'}>
-            <Button small text={'개인 채팅'} className={'!py-2'} onClick={() => selectedChatType(CHAT_TYPE.개인)} />
-            <Button small text={'그룹 채팅'} className={'!py-2'} onClick={() => selectedChatType(CHAT_TYPE.그룹)} />
+            <Button
+              small
+              disabled={disabledPersonal}
+              text={'개인 채팅'}
+              className={'!py-2'}
+              onClick={() => selectedChatType(CHAT_TYPE.개인)}
+            />
+            <Button
+              small
+              disabled={disabledGroup}
+              text={'그룹 채팅'}
+              className={'!py-2'}
+              onClick={() => selectedChatType(CHAT_TYPE.그룹)}
+            />
           </div>
         </CustomModal>
       ) : null}

@@ -96,8 +96,8 @@ const WareHouseItem = () => {
             query: {
               crud: CRUD.등록,
               storage: storageId,
-              item: null,
               count: count!,
+              item: null,
             },
           }}>
           <svg

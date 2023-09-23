@@ -60,8 +60,8 @@ const EditItem = () => {
 
   const crud = searchParams.get('crud')
   const storageId = searchParams.get('storage')
-  const itemId = searchParams.get('item')
   const count = searchParams.get('count')
+  const itemId = searchParams.get('item')
 
   const isEditMode = (crud === CRUD.수정 && itemId !== '' && storageId !== '') || false
 

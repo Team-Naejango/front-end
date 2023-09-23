@@ -51,8 +51,8 @@ const ItemLIst = ({
               query: {
                 crud: CRUD.수정,
                 storage: params.storageId,
-                item: item.itemId,
                 count: params.count,
+                item: item.itemId,
               },
             }}
             className={cls('absolute inset-0 rounded-xl', 'ring-[#32D7A0] focus:z-10 focus:outline-none focus:ring-1')}
