@@ -157,10 +157,12 @@ const PreviewCard = ({
   // 창고 아이템 선택 모달
   const onClickShowModal = (name: string, type: string, ownerId: number) => {
     setSelectedTitle(name)
+
     openModal({
       modal: { id: 'preview', type: MODAL_TYPES.CONFIRM },
       callback: () => {
-        if (mineInfo?.result.userId === ownerId) return toast.error('자신의 창고 아이템입니다.')
+        if (mineInfo?.result.userId === ownerId)
+          return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
 
         if (type === (ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매)) {
           setDisabledGroup(true)
@@ -206,11 +208,11 @@ const PreviewCard = ({
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
-        toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해 주세요.')
+        toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
       if (groupChat.result.participantsCount === groupChat.result.channelLimit) {
-        toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해 주세요.')
+        toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
 

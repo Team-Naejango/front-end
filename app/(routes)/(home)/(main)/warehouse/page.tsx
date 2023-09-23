@@ -86,7 +86,7 @@ const WareHouse = () => {
           <h2 className={'mb-4 mt-16 text-center text-lg font-bold'}>창고 정보</h2>
           <div className={'h-auto w-full rounded-xl bg-[#f5f5f5] px-8 py-4 text-center'}>
             <div className='mx-auto my-4 grid grid-cols-1 grid-rows-[minmax(0,1fr)] items-center justify-center gap-x-3 gap-y-8'>
-              <div className={'flex w-full items-center gap-12 text-left'}>
+              <div className={'flex w-full items-start gap-12 text-left'}>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>이름</li>
                   {currentItem && <li className={'mt-1 text-[13px] font-medium'}>{result[currentSlideIndex].name}</li>}
@@ -98,10 +98,10 @@ const WareHouse = () => {
                   )}
                 </ul>
               </div>
-              <div className={'flex w-full items-center gap-12 text-left'}>
+              <div className={'flex w-full items-start gap-12 text-left'}>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>생성일</li>
-                  {/* {currentItem && <li className={'mt-1 text-[13px] font-medium'}>{storageList[currentSlideIndex].createAt}</li>} */}
+                  {currentItem && <li className={'mt-1 text-[13px] font-medium'}>{new Date().toLocaleDateString()}</li>}
                 </ul>
                 <ul className={'flex-1'}>
                   <li className={'text-xs'}>소개</li>
