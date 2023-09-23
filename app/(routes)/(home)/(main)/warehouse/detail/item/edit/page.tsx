@@ -9,6 +9,7 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
 import { BsPlusSquare } from 'react-icons/bs'
+import { AxiosError } from 'axios'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
@@ -186,7 +187,9 @@ const EditItem = () => {
       })
       return await s3Client.send(command)
     } catch (error: unknown) {
-      console.error('S3 업로드 에러:', error)
+      if (error instanceof AxiosError) {
+        return Promise.reject(error)
+      }
     }
   }
 

@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { AxiosError } from 'axios'
 
 import Loading from '@/app/loading'
 import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
@@ -17,7 +18,6 @@ const KakaoCallback = () => {
   // 토큰 발급
   const getToken = async () => {
     setDeadlineCookie(AUTH_TOKEN.접근, accessToken)
-    // setDeadlineCookie(AUTH_TOKEN.갱신, refreshToken)
   }
 
   let SIGN_STATUS = 'TEMPORAL'
@@ -26,7 +26,9 @@ const KakaoCallback = () => {
       try {
         loginStatus === SIGN_STATUS ? router.push('/sign') : router.push('/home')
       } catch (error: unknown) {
-        return Promise.reject(error)
+        if (error instanceof AxiosError) {
+          return Promise.reject(error)
+        }
       }
     })
   }, [])

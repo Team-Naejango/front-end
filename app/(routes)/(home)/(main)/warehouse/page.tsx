@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { AxiosError } from 'axios'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Loading from '@/app/loading'
@@ -66,10 +67,16 @@ const WareHouse = () => {
         content: '창고를 삭제 하시겠습니까?',
       },
       callback: async () => {
-        await deleteStorage(String(currentItem?.storageId))
-        await query.invalidateQueries([WAREHOUSE.조회])
-        toast.success('창고가 삭제되었습니다.')
-        router.push('/warehouse')
+        try {
+          await deleteStorage(String(currentItem?.storageId))
+          await query.invalidateQueries([WAREHOUSE.조회])
+          toast.success('창고가 삭제되었습니다.')
+          router.push('/warehouse')
+        } catch (error: unknown) {
+          if (error instanceof AxiosError) {
+            return Promise.reject(error)
+          }
+        }
       },
     })
   }
