@@ -5,6 +5,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
+import { AxiosError } from 'axios'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
@@ -16,15 +17,16 @@ import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
-import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { GroupChat } from '@/app/apis/types/domain/chat/chat'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
-import { joinChat } from '@/app/apis/domain/chat/channel'
+import { groupChatUserInfo, joinChat } from '@/app/apis/domain/chat/channel'
 import { joinGroupChat } from '@/app/apis/domain/chat/chat'
-import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
+import { itemInfo, storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 
 /* global kakao, maps */
@@ -81,7 +83,7 @@ const PreviewCard = ({
     [WAREHOUSE.그룹채널조회, selectedItemId],
     () => storageGroupChannel(String(selectedItemId)),
     {
-      enabled: !isDragedMixture && !!selectedItemId,
+      enabled: !!selectedItemId,
     }
   )
 
@@ -119,8 +121,22 @@ const PreviewCard = ({
         },
       })
     },
-    onError: (error: ApiError) => {
-      toast.error(error.message)
+    onError: (error: AxiosError) => {
+      if (error.response?.status === 409) {
+        toast.success('개인 채팅방에 입장하였습니다.')
+
+        const responseData = (error.response as { data?: { result?: { channelId?: number } } }).data
+        const channelId = responseData?.result?.channelId
+
+        push({
+          pathname: '/chats/edit',
+          query: {
+            id: channelId?.toString(),
+          },
+        })
+      } else {
+        toast.error(error.message)
+      }
     },
   })
 
@@ -138,7 +154,7 @@ const PreviewCard = ({
       // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.
       // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
     },
-    onError: (error: ApiError) => {
+    onError: (error: GroupChat) => {
       toast.error(error.message)
     },
   })
@@ -199,19 +215,36 @@ const PreviewCard = ({
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
   }
 
+  console.log('dragedPreviews:', dragedPreviews)
+
   // 채팅방 참여
   const selectedChatType = (type: E_CHAT_TYPE) => {
     if (!type) return
 
     if (type === CHAT_TYPE.개인) {
       const { ownerId } = dragedPreviews.find(v => v.ownerId)!
-      mutateJoin(String(ownerId))
+
+      // todo: 채널 ID 필요(이미 채팅이 만들어져있을 경우 예외처리)
+
+      try {
+        mutateJoin(String(ownerId))
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          toast.success('개인 채팅방 입장하였습니다.')
+          push({
+            pathname: '/chats/edit',
+            query: {
+              id: error.response!.data.result.channelId,
+            },
+          })
+        }
+      }
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
         toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
-      if (groupChat.result.participantsCount === groupChat.result.channelLimit) {
+      if (groupChat.result?.participantsCount === groupChat.result?.channelLimit) {
         toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }

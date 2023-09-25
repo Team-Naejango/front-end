@@ -1,0 +1,29 @@
+<svg width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="250" height="250" rx="125" fill="#32D7A0"/>
+<circle opacity="0.1" cx="125" cy="125" r="125" fill="white"/>
+<circle opacity="0.2" cx="126" cy="126" r="84" fill="white"/>
+<circle opacity="0.4" cx="179.5" cy="64.5" r="22.5" fill="white"/>
+<ellipse opacity="0.4" cx="81" cy="55.5" rx="8" ry="7.5" fill="white"/>
+<ellipse opacity="0.4" cx="19.5" cy="145" rx="7.5" ry="8" fill="white"/>
+<g filter="url(#filter0_d_623_401)">
+<circle cx="126" cy="126" r="37" fill="white"/>
+</g>
+<path d="M125.215 141.334C115.756 127.758 114 126.365 114 121.375C114 114.54 119.596 109 126.5 109C133.404 109 139 114.54 139 121.375C139 126.365 137.244 127.758 127.785 141.334C127.164 142.222 125.836 142.222 125.215 141.334ZM126.5 126.531C129.376 126.531 131.708 124.223 131.708 121.375C131.708 118.527 129.376 116.219 126.5 116.219C123.624 116.219 121.292 118.527 121.292 121.375C121.292 124.223 123.624 126.531 126.5 126.531Z" fill="#33CC99"/>
+<rect x="187.394" y="51.3252" width="21.0924" height="21.0924" transform="rotate(72 187.394 51.3252)" fill="url(#pattern0)" style="mix-blend-mode:overlay"/>
+<defs>
+<filter id="filter0_d_623_401" x="64" y="68" width="124" height="124" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="4"/>
+<feGaussianBlur stdDeviation="12.5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_623_401"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_623_401" result="shape"/>
+</filter>
+<pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
+<use xlink:href="#image0_623_401" transform="scale(0.0104167)"/>
+</pattern>
+<image id="image0_623_401" width="96" height="96" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAC/UlEQVR4nO2bT6iMURjGf7jKn0hKdpJIsaOslAUbStncJaWwZKmsLO/W8pa7URasRiyUnVKjlCxsmLsSsxALo8RoHn31TUli7r95z3nf96ln/5z3+eZ859eZD1KpVMqVdloHiK63wH7rEJEloA8csQ4SuYDGA+C0dZjIBTQeApesA0UuoPEIuGkdKnIBY98GZqzDRS6gcQfYbB0wcgGNu8Au65CRC2icrGBcQLJCAQUoWcG+ACUr2BegZAX7ApSsUEYBSlawL0DJCvYFKFnBvgDlvYJ9AUpWsC9AyQr2BShZwb4Atc57BeMC1LLCliX+MsNIU3I37xVsCxDQy/8g2RagZAX7ApSsYF+AkhXsC1Cygn0Bah2aFVSIO1FZQQW5G5EVVJh70VhBBbof6XsFFepBlO8VVLCHwGWcS4V75P17BVXiBa+soIrc8cgKqsxdb6ygCt3zxAqq1H3gKA6kij3wwAqq3MPaWUEOPKqZFeTICzWygpy5UxsryKG7NbGCnLpXCyvIsfs1sIKcewCcoWApgIcls4KCeFQqKyiYF0pjBQX0g5JYQUH9vBRWUGD3gANZALFZwfopVAH+askK1otXdFawXrgKY4UbWQBTGfYPYBF4CMwBV4DjwLYsgFUd9GfgBXAHuA7MAoeBDRQiOfEH4AkwD1wDTgH7qECqyN+B18D9dtu40B4ht1KxVMG2cbZ9mtfjUJbHvsV227jVvgSbbWM3wWRxQTILbLReeCma5vDfWWN/iZrW8J9F3F4m0TSGfxfYZL3QUrWWg//ZnmJSBgV8aY+PKYNfQA84lJO32YKelnLVV4tWc/jzeb63KWAIXF2DhyOEVjr8T8BJ60XUrJUM/w1w0HoBtWu5w38M7LAO70HLfdnOWAf3oqVeiFy0DuxNkw7/I3DCOqxHTTL8V8Be66Be9b/hPwK2W4f0rH/9SWnO6z1sSfrb8L8B562DRdGfw38PHLMOFUm/D/8lsMc6UDSNh3+vpM92Imn8sl1nHSSqzlkHoCL9AhZb2fMu361bAAAAAElFTkSuQmCC"/>
+</defs>
+</svg>

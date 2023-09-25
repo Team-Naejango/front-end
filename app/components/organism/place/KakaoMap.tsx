@@ -26,8 +26,6 @@ const KakaoMap = () => {
   const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
   const [isDragedMixture, setIsDragedMixture] = useState<boolean>(false)
 
-  console.log('info:', info)
-
   // 창고 아이템 조회
   const { data: { data: _itemInfo } = {} } = useQuery(
     [ITEM.조회, info],

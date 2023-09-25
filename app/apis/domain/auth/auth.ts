@@ -42,7 +42,7 @@ export async function sign(params: SignParam): Promise<Response<null>> {
 }
 
 /**
- * 비회원 로그인
+ * 게스트 로그인
  *
  */
 export async function nonUser(): Promise<Response<{ data: { accessToken: string } }>> {

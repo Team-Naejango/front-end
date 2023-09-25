@@ -84,7 +84,7 @@ export async function storageItem(params: StorageItemParam): Promise<Response<{ 
 }
 
 /**
- * 창고 아이템 그룹 채널 조회
+ * 창고 아이템 공동구매 채널 조회
  *
  * @param itemId // 공동 구매 아이템 ID
  * */
@@ -180,7 +180,7 @@ export interface ItemSearchParam {
 }
 
 // /**
-//  * 아이템 창고 수정
+//  * 다중 아이템 창고 수정
 //  */
 // export interface ModifyStorageParam {
 //   // 아이템 ID
@@ -265,7 +265,7 @@ export async function modifyItem(
 }
 
 // /**
-//  * 아이템 창고 수정
+//  * 다중 아이템 창고 수정
 //  *
 //  * @param params.itemId // 아이템 ID
 //  * @param params.storageIdList[] // 창고 ID 리스트

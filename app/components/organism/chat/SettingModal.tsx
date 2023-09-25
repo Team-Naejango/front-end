@@ -53,7 +53,7 @@ const SettingModal = ({ channelId, chatId, title }: { channelId: string; chatId:
 
   return (
     <div>
-      <h2 className={'text-center text-lg'}>설정</h2>
+      <h2 className={'text-center text-lg font-semibold'}>설정</h2>
       <button
         type='button'
         onClick={() => closeModal('setting')}

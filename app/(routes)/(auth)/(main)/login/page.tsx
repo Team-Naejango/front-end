@@ -15,6 +15,8 @@ import kakaoLogo from '@/app/assets/image/kakao.svg'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
+import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
+import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 interface FormProps {
   email: string
@@ -53,14 +55,15 @@ const Login = () => {
       await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
+      // setDeadlineCookie(AUTH_TOKEN.접근, response.data.result)
       router.replace('/home?isLoggedIn=true')
-      toast.success('비회원 로그인에 성공하였습니다.')
+      toast.success('게스트 로그인에 성공하였습니다.')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         router.replace('/home?isLoggedIn=true')
-        toast.success('비회원 로그인에 성공하였습니다.')
+        toast.success('게스트 로그인에 성공하였습니다.')
       } else {
-        toast.error('비회원 로그인에 실패하였습니다.')
+        toast.error('게스트 로그인에 실패하였습니다.')
       }
     }
   }
@@ -130,7 +133,7 @@ const Login = () => {
                   onClick={() => onNonUserLogin()}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
-                  비회원 로그인
+                  게스트 로그인
                 </button>
               </div>
             </div>

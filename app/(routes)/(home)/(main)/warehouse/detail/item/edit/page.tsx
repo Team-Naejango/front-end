@@ -48,9 +48,9 @@ const EditItem = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const query = useQueryClient()
-  const [selectedCategory, setSelectedCategory] = useState<{ label?: string; name: string }>(CATEGORIES[0])
-  const [selectedStorage, setSelectedStorage] = useState<{ label?: string; name: string }>(STORAGES[0])
-  const [selectedType, setSelectedType] = useState<{ label?: string; name: string }>(DEAL_TYPES[0])
+  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
+  const [selectedStorage, setSelectedStorage] = useState<{ label: string; name: string }>(STORAGES[0])
+  const [selectedType, setSelectedType] = useState<{ label: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
   const [hashTags, setHashTags] = useState<string[]>([])
@@ -117,8 +117,8 @@ const EditItem = () => {
   // 그룹 채팅방 개설
   const { mutate: mutateOpenGroup } = useMutation(openGroupChat, {
     onSuccess: () => {
-      query.invalidateQueries([CHAT.조회])
       toast.success('그룹 채팅방이 개설되었습니다.')
+      query.invalidateQueries([CHAT.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -135,17 +135,18 @@ const EditItem = () => {
           limit: getValues('limit')!,
         })
       }
+      toast.success('아이템이 등록되었습니다.')
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
-      toast.success('아이템이 등록되었습니다.')
-      router.push(`/warehouse/detail/edit?seq=${storageId}`)
+      router.push(`/warehouse/detail/edit?storage=${storageId}&count=${count}&match=true&item=${data.data.result.id}`)
+      router.refresh()
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
 
-  // 아이템 창고 수정
+  // 다중 아이템 창고 수정
   // const { mutate: mutateStorage } = useMutation(modifyStorageItem, {
   //   onError: (error: ApiError) => {
   //     toast.error(error.message)
@@ -156,11 +157,11 @@ const EditItem = () => {
   const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemParam) => modifyItem(itemId!, params), {
     onSuccess: () => {
       // mutateStorage({ itemId: edit, storageIdList: updatedStorageIds })
+      toast.success('아이템이 수정되었습니다.')
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       query.invalidateQueries([ITEM.상세])
-      toast.success('아이템이 수정되었습니다.')
-      router.replace(`/warehouse/detail/edit?seq=${itemId}`)
+      router.replace(`/warehouse/detail/edit?storage=${storageId}&count=${count}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -263,7 +264,7 @@ const EditItem = () => {
       itemType: selectedType.name,
       hashTag: hashTags,
       category: selectedCategory.name,
-      storageId: Number(selectedStorage.name),
+      storageId: Number(storageId),
     }
 
     const editParameters = () => {
@@ -297,14 +298,14 @@ const EditItem = () => {
   }, [_itemInfo, groupChat, isEditMode])
 
   useEffect(() => {
-    setSelectedStorage(STORAGES[Number(storageId) - 1])
+    setSelectedStorage(STORAGES[Number(count)])
   }, [])
 
   useEffect(() => {
     if (_itemInfo) {
       setValue('imgUrl', _itemInfo.result.imgUrl)
       setImagePreview(_itemInfo.result.imgUrl)
-      setSelectedCategory({ name: _itemInfo.result.category })
+      setSelectedCategory({ name: _itemInfo.result.categoryName })
       setSelectedStorage({ label: STORAGES[Number(count)].label, name: String(count) })
       setSelectedType({
         label: DEAL_TYPES.find(v => v.name === _itemInfo?.result.itemType)!.label,
@@ -443,7 +444,13 @@ const EditItem = () => {
             )
           })}
         </div>
-        <SelectBox essential title={'저장창고'} data={[]} selected={selectedStorage} setSelected={setSelectedStorage} />
+        <SelectBox
+          essential
+          title={'저장창고'}
+          data={[{ label: '', name: '' }]}
+          selected={selectedStorage}
+          setSelected={setSelectedStorage}
+        />
         <SelectBox essential title={'분류'} data={DEAL_TYPES} selected={selectedType} setSelected={setSelectedType} />
         {selectedType.label === '공동 구매' && (
           <>

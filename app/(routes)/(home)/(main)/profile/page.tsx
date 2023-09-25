@@ -179,13 +179,6 @@ const Profile = () => {
           </li>
           <li
             role={'presentation'}
-            onClick={() => onLink('/profile/review')}
-            className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>리뷰 내역</span>
-            <GrFormNext />
-          </li>
-          <li
-            role={'presentation'}
             onClick={() => onLink('/profile/deal')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
             <span className={'text-sm'}>거래 내역</span>

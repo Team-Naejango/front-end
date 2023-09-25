@@ -35,19 +35,19 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
-  useEffect(() => {
-    if (isMountedSplash) {
-      const onBack = () => {
-        window.addEventListener('popstate', () => {
-          pathname === '/' ? router.replace('/login') : router.back()
-        })
-      }
-      // window.addEventListener('popstate', onBack)
-      return () => {
-        window.removeEventListener('popstate', onBack)
-      }
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (isMountedSplash) {
+  //     const onBack = () => {
+  //       window.addEventListener('popstate', () => {
+  //         isLoading ? router.replace('/login') : router.back()
+  //       })
+  //     }
+  //     window.addEventListener('popstate', onBack)
+  //     return () => {
+  //       window.removeEventListener('popstate', onBack)
+  //     }
+  //   }
+  // }, [isLoading, isMountedSplash])
 
   return (
     <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
@@ -73,8 +73,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           )}
         </div>
       </div>
-
-      {/* toast */}
+      {/* toast */}`
       <CustomToast />
     </main>
   )

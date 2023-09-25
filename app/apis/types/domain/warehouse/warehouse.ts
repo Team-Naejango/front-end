@@ -144,7 +144,11 @@ export interface SaveItem {
 
 export type ItemInfoResult = {
   // 아이템 ID
-  id: number
+  itemId: number
+  // 창고 ID
+  storageId: number
+  // 카테고리 ID
+  categoryId: number
   // 아이템 이름
   name: string
   // 아이템 설명
@@ -155,8 +159,8 @@ export type ItemInfoResult = {
   itemType: string
   // 해시태그
   hashTag: string[]
-  // 카테고리
-  category: string
+  // 카테고리 이름
+  categoryName: string
   // 아이템 조회 수
   viewCount: number
 }
@@ -228,6 +232,8 @@ export interface ItemSearchInfo {
 export type ItemMatchResult = {
   // 아이템 ID
   itemId: number
+  // 창고 소유 회원 ID
+  ownerId: number
   // 카테고리
   category: string
   // 아이템 이름

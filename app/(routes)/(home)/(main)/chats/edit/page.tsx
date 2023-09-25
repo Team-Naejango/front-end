@@ -124,6 +124,10 @@ const ChatDetail: NextPage = () => {
     if (!data) return
 
     if (client.current && client.current?.connected) {
+      // client.current.publish({
+      //   destination: `${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`,
+      //   body: JSON.stringify(data.message),
+      // })
       client.current?.send(
         `${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`,
         {},
