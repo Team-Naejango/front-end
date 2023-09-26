@@ -268,7 +268,7 @@ const EditItem = () => {
     }
 
     const editParameters = () => {
-      const { storageId, hashTag, groupName, limit, ...newParams } = params
+      const { storageId, hashTag, itemType, groupName, limit, ...newParams } = params
       return { ...newParams }
     }
 
@@ -451,7 +451,14 @@ const EditItem = () => {
           selected={selectedStorage}
           setSelected={setSelectedStorage}
         />
-        <SelectBox essential title={'분류'} data={DEAL_TYPES} selected={selectedType} setSelected={setSelectedType} />
+        <SelectBox
+          essential
+          disabled={isEditMode}
+          title={'분류'}
+          data={DEAL_TYPES}
+          selected={selectedType}
+          setSelected={setSelectedType}
+        />
         {selectedType.label === '공동 구매' && (
           <>
             <InputField

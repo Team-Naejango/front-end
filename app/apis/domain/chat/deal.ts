@@ -44,7 +44,7 @@ export async function deal(): Promise<Response<{ data: Transaction }>> {
  * @param params
  */
 export async function saveDeal(params: DealParam): Promise<Response<{ data: Deal }>> {
-  return withAuth.post('/api/transaction', { params })
+  return withAuth.post('/api/transaction', params)
 }
 
 /**

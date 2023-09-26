@@ -53,7 +53,7 @@ const MenuBox = ({
 }: {
   channelId: string
   chatId: number | null
-  channelType: string | null
+  channelType: string | ''
   isOpen: boolean
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void
 }) => {
@@ -130,6 +130,7 @@ const MenuBox = ({
   // 송금 완료
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: () => {
+      // todo: 송금버튼 disabled 처리
       setIsSendPoint(true)
 
       // todo: 송금 완료 메세지 전달

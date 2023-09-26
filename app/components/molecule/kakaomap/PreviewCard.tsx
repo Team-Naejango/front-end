@@ -122,21 +122,7 @@ const PreviewCard = ({
       })
     },
     onError: (error: AxiosError) => {
-      if (error.response?.status === 409) {
-        toast.success('개인 채팅방에 입장하였습니다.')
-
-        const responseData = (error.response as { data?: { result?: { channelId?: number } } }).data
-        const channelId = responseData?.result?.channelId
-
-        push({
-          pathname: '/chats/edit',
-          query: {
-            id: channelId?.toString(),
-          },
-        })
-      } else {
-        toast.error(error.message)
-      }
+      toast.error(error.message)
     },
   })
 
@@ -215,8 +201,6 @@ const PreviewCard = ({
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
   }
 
-  console.log('dragedPreviews:', dragedPreviews)
-
   // 채팅방 참여
   const selectedChatType = (type: E_CHAT_TYPE) => {
     if (!type) return
@@ -225,20 +209,7 @@ const PreviewCard = ({
       const { ownerId } = dragedPreviews.find(v => v.ownerId)!
 
       // todo: 채널 ID 필요(이미 채팅이 만들어져있을 경우 예외처리)
-
-      try {
-        mutateJoin(String(ownerId))
-      } catch (error) {
-        if (error instanceof AxiosError) {
-          toast.success('개인 채팅방 입장하였습니다.')
-          push({
-            pathname: '/chats/edit',
-            query: {
-              id: error.response!.data.result.channelId,
-            },
-          })
-        }
-      }
+      mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
         toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')

@@ -101,38 +101,33 @@ const ChatDetail: NextPage = () => {
       return sockjs
     })
 
-    client.current!.connect(
+    client.current.connect(
       {
         Authorization: `Bearer ${accessToken}`,
       },
       () => {
-        client.current!.subscribe(
+        client.current?.subscribe(
           `${process.env.NEXT_PUBLIC_API_URL}/sub/channel/${channelId}`,
           message => {
             console.log('message:', message)
             const newMessage = JSON.parse(message.body)
             setChatMessageList(prevMessages => [...prevMessages, newMessage])
+            // setChatMessageList(newMessage)
           },
           { Authorization: `Bearer ${accessToken}` }
         )
       }
     )
+
+    client.current?.activate()
   }
 
   // 전송
   const onSend = (data: MessageForm) => {
     if (!data) return
 
-    if (client.current && client.current?.connected) {
-      // client.current.publish({
-      //   destination: `${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`,
-      //   body: JSON.stringify(data.message),
-      // })
-      client.current?.send(
-        `${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`,
-        {},
-        JSON.stringify(data.message)
-      )
+    if (client.current?.connected) {
+      client.current?.send(`${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`, {}, data.message)
       setChatMessageList(prevMessages => [...prevMessages, data])
       reset()
     } else {
@@ -195,7 +190,7 @@ const ChatDetail: NextPage = () => {
           <MenuBox
             channelId={channelId!}
             chatId={chatId?.result || null}
-            channelType={channelType || null}
+            channelType={channelType || ''}
             isOpen={isOpenBox}
             onClick={e => {
               e.preventDefault()

@@ -84,7 +84,7 @@ export async function storageItem(params: StorageItemParam): Promise<Response<{ 
 }
 
 /**
- * 창고 아이템 공동구매 채널 조회
+ * 창고 아이템 공동구매(그룹) 채널 조회
  *
  * @param itemId // 공동 구매 아이템 ID
  * */
@@ -153,7 +153,7 @@ export interface ItemParam {
 /**
  * 아이템 수정
  */
-export type OmitStorageIdItemParam = Omit<ItemParam, 'storageId' | 'hashTag'>
+export type OmitStorageIdItemParam = Omit<ItemParam, 'storageId' | 'hashTag' | 'itemType'>
 
 /**
  * 아이템 검색
