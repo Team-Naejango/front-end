@@ -32,6 +32,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { getChatId } from '@/app/apis/domain/chat/chat'
 import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import { accessTokenStore } from '@/app/store/atom'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -42,7 +43,12 @@ interface MessageForm {
   message: string
   reversed?: boolean
 }
-
+enum MessageType {
+  Normal, // 일반 메시지
+  Notification, // 알림 메시지
+  TradeRequest, // 거래 요청 메시지
+  ChannelClosed, // 채널 종료 메시지
+}
 const ChatDetail: NextPage = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -54,6 +60,7 @@ const ChatDetail: NextPage = () => {
   const [chatMessageList, setChatMessageList] = useState<MessageForm[]>([])
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const setting = useRecoilValue(modalSelector('setting'))
+  const accessTokenState = useRecoilValue<string>(accessTokenStore)
 
   const channelId = searchParams.get('id')
   const channelType = searchParams.get('type')
@@ -107,19 +114,17 @@ const ChatDetail: NextPage = () => {
       },
       () => {
         client.current?.subscribe(
-          `${process.env.NEXT_PUBLIC_API_URL}/sub/channel/${channelId}`,
+          `/sub/channel/${channelId}`,
           message => {
             console.log('message:', message)
+
             const newMessage = JSON.parse(message.body)
             setChatMessageList(prevMessages => [...prevMessages, newMessage])
-            // setChatMessageList(newMessage)
           },
           { Authorization: `Bearer ${accessToken}` }
         )
       }
     )
-
-    client.current?.activate()
   }
 
   // 전송

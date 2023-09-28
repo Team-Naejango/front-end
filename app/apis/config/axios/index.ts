@@ -1,10 +1,9 @@
 import { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestConfig } from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 import { ApiError } from 'next/dist/server/api-utils'
+import { toast } from 'react-hot-toast'
 
 import { TokenValid } from '@/app/libs/client/utils/token'
-import { getCookie, setDeadlineCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 
 export interface HeaderType extends AxiosResponseHeaders {
@@ -41,12 +40,12 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
   return response
 }
 
-const refreshAuthToken = (config: AxiosRequestConfig, token: Refresh | string) => {
-  config.headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  } as HeaderType
-}
+// const refreshAuthToken = (config: AxiosRequestConfig, token: Refresh | string) => {
+//   config.headers = {
+//     'Content-Type': 'application/json',
+//     Authorization: `Bearer ${token}`,
+//   } as HeaderType
+// }
 
 export const responseNormalizer = async (error: AxiosError) => {
   if (!error.config) return false
@@ -58,24 +57,20 @@ export const responseNormalizer = async (error: AxiosError) => {
     return false
   }
 
-  if ((data.status && data.status) === 401) {
+  if (data.status === 401) {
     const isHasToken = TokenValid()
 
     if (!isHasToken) {
       try {
-        refreshAuthToken({ ...error.config }, data.reissuedAccessToken!)
-        setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken!)
+        error.config.headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.reissuedAccessToken}`,
+        } as HeaderType
 
         return await withAuth.request(error.config)
       } catch (error: unknown) {
         return false
       }
-    }
-
-    const accessToken = getCookie(AUTH_TOKEN.접근)
-    if (accessToken === undefined) {
-      window.location.href = '/login'
-      return false
     }
 
     if (data.error === 'BAD_REQUEST') {
@@ -89,19 +84,15 @@ export const responseNormalizer = async (error: AxiosError) => {
 
     if (!isHasToken) {
       try {
-        refreshAuthToken({ ...error.config }, data.reissuedAccessToken!)
-        setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken!)
+        error.config.headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.body.reissuedAccessToken}`,
+        } as HeaderType
 
         return await withAuth.request(error.config)
       } catch (error: unknown) {
         return false
       }
-    }
-
-    const accessToken = getCookie(AUTH_TOKEN.접근)
-    if (accessToken === undefined) {
-      window.location.href = '/login'
-      return false
     }
 
     if (data.error === 'BAD_REQUEST') {
@@ -110,9 +101,10 @@ export const responseNormalizer = async (error: AxiosError) => {
     }
   }
 
-  if ((data.status && data.status) === 403) {
+  if (data.status === 403) {
     if (data.error === 'FORBIDDEN') {
       window.location.href = '/sign'
+      toast.error('회원가입을 진행해주세요.')
       return false
     }
 
@@ -120,8 +112,10 @@ export const responseNormalizer = async (error: AxiosError) => {
 
     if (!isHasToken) {
       try {
-        refreshAuthToken({ ...error.config }, data.reissuedAccessToken!)
-        setDeadlineCookie(AUTH_TOKEN.접근, data.reissuedAccessToken!)
+        error.config.headers = {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.reissuedAccessToken}`,
+        } as HeaderType
 
         return await withAuth.request(error.config)
       } catch (error: unknown) {

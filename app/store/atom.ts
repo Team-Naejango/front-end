@@ -13,10 +13,10 @@ interface LocationProps {
  * 액세스 토큰
  *
  * */
-export const kakaoAccessToken = atom<string>({
+export const accessTokenStore = atom<string>({
   key: `${COMMON_STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: undefined,
-  effects: [cookieEffect(AUTH_TOKEN.접근)],
+  // effects: [cookieEffect(AUTH_TOKEN.접근)],
 })
 
 /**

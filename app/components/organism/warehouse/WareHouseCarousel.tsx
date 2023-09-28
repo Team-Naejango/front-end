@@ -92,7 +92,7 @@ const WareHouseCarousel = ({
 
   return (
     <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
-      {datas?.result.length === 0 ? (
+      {Array.isArray(datas?.result) && datas?.result.length === 0 ? (
         <SwiperSlide className={'slider_fade'}>
           <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] bg-white shadow-sm hover:border-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
             <Image
@@ -120,6 +120,7 @@ const WareHouseCarousel = ({
           </div>
         </SwiperSlide>
       ) : (
+        datas?.result.length !== 0 &&
         datas?.result.map(data => {
           return (
             <SwiperSlide key={data.storageId} className={'slider_fade'}>

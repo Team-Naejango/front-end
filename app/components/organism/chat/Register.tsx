@@ -33,7 +33,6 @@ const Register = ({ chatId, participants }: { chatId: number | null; participant
     const { sellerNm, traderNm } = getTraderInfo()
 
     reset({
-      item: '2323',
       seller: sellerNm,
       dealer: traderNm,
     })
@@ -48,9 +47,6 @@ const Register = ({ chatId, participants }: { chatId: number | null; participant
     <div>
       <h2 className={'text-center'}>거래 등록</h2>
       <div className={'mt-4'}>
-        <div className={'mt-4'}>
-          <InputField disabled label={'아이템명'} type={'text'} register={register('item')} />
-        </div>
         <div className={'mt-4'}>
           <InputField disabled label={'판매자 이름'} type={'text'} register={register('seller')} />
         </div>

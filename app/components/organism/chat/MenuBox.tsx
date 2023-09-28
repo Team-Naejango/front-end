@@ -38,7 +38,6 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 })
 
 export interface FormFields {
-  item: string
   seller: string
   dealer: string
   amount: number

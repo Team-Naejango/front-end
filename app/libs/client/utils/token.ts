@@ -35,7 +35,7 @@ export const TokenValid = () => {
   }
 
   if (!refreshToken) {
-    // console.log('리프레시 토큰 만료')
+    console.log('리프레시 토큰 만료')
     return true
   }
 

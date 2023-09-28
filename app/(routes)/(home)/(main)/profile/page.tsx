@@ -8,7 +8,6 @@ import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
-import face from '@/app/assets/image/face.png'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import SwitchButton from '@/app/components/atom/SwitchButton'
@@ -45,11 +44,10 @@ const Profile = () => {
   // 회원 탈퇴
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
+      toast.success('회원 탈퇴가 완료되었습니다.')
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-      toast.success('회원이 탈퇴 되었습니다.')
     },
     onError: (error: ApiError) => {
-      console.log('error:', error)
       toast.error(error.message)
     },
     onSettled: () => {
@@ -86,15 +84,14 @@ const Profile = () => {
     if (switchStatus && isNotificationSupported) subscribeToNotifications()
   }, [switchStatus])
 
-  // 토글 변환기
+  // 알림 구독 변환기
   const onSwitchConverter = () => {
-    if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단)
-      return toast.error('알림 권한을 변경하려면 브라우저 설정에서 변경해주세요.')
-    setSwitchStatus(convert => !convert)
-  }
+    if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단) {
+      toast.error('알림 권한을 변경하려면 브라우저 설정에서 변경해주세요.')
+      return
+    }
 
-  const onLink = (value: string) => {
-    router.push(value)
+    setSwitchStatus(convert => !convert)
   }
 
   // 설정 모달
@@ -115,8 +112,8 @@ const Profile = () => {
       },
       callback: async () => {
         await _kill()
+        toast.success('로그아웃이 처리되었습니다.')
         removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-        toast.success('로그아웃이 되었습니다.')
         router.replace('/login')
       },
     })
@@ -137,14 +134,20 @@ const Profile = () => {
     })
   }
 
+  const onLink = (link: string) => {
+    router.push(link)
+  }
+
+  console.log('mineInfo:', mineInfo)
+
   return (
     <Layout
       hasHeader
       setting
       seoTitle={'프로필'}
       src={
-        mineInfo?.result.imgUrl === (undefined || '')
-          ? (face as any)
+        mineInfo?.result.imgUrl === ''
+          ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
           : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
               mineInfo?.result.imgUrl as string
             )}

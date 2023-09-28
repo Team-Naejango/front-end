@@ -11,7 +11,6 @@ import { toast } from 'react-hot-toast'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
-import face from '@/app/assets/image/face.png'
 
 import Button from '@/app/components/atom/Button'
 import InputField from '@/app/components/atom/InputField'
@@ -203,7 +202,7 @@ const EditProfile = () => {
   }, [_userInfo])
 
   useEffect(() => {
-    if (_userInfo && _userInfo) {
+    if (_userInfo) {
       setImagePreview(_userInfo.imgUrl)
     }
   }, [_userInfo])
@@ -211,10 +210,12 @@ const EditProfile = () => {
   // 중복 검사
   const onValidUserName = (event: React.MouseEvent) => {
     event.preventDefault()
-    if (nickname === '') return false
+    if (nickname === '') {
+      return false
+    }
 
     // query mutation api call
-    // mutateNickname(watch('nickname'))
+    // mutateNickname(nickname)
   }
 
   const onSelectedGender = (gender: E_GENDER_TYPE) => {
@@ -235,9 +236,9 @@ const EditProfile = () => {
                 alt='이미지 미리보기'
                 className={'h-24 w-24 rounded-full border border-[#ddd] object-cover'}
               />
-            ) : _userInfo?.imgUrl === (undefined || '') ? (
+            ) : _userInfo?.imgUrl === '' ? (
               <Image
-                src={face}
+                src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'}
                 width={'100'}
                 height={'100'}
                 quality={100}

@@ -81,6 +81,7 @@ const WarehouseEdit = () => {
   // 창고 등록
   const { mutate: mutateSave } = useMutation(saveStorage, {
     onSuccess: () => {
+      console.log('test')
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
       toast.success('창고가 등록되었습니다.')
@@ -88,6 +89,7 @@ const WarehouseEdit = () => {
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
+      console.log('error test')
     },
   })
 
@@ -203,7 +205,7 @@ const WarehouseEdit = () => {
 
     const editParameters = () => {
       const { coord, address, ...newParams } = params
-      return { ...newParams, storageId: storageId || '' }
+      return { ...newParams, storageId: storageId! }
     }
 
     isEditMode ? mutateModify(editParameters()) : mutateSave(params)
