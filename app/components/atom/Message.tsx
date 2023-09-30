@@ -4,16 +4,22 @@ import React from 'react'
 import Image from 'next/image'
 
 import { cls } from '@/app/libs/client/utils/util'
+import { ChatResponse } from '@/app/(routes)/(home)/(main)/chats/edit/page'
+import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
 
 interface MessageProps {
-  message: string
-  reverse: boolean
+  data: ChatResponse
+  isMe: boolean
   imgUrl: string | undefined
 }
 
-const Message = ({ message, imgUrl, reverse }: MessageProps) => {
-  return (
-    <div className={cls('flex items-end space-x-2', reverse ? 'flex-row-reverse !space-x-reverse' : '')}>
+const Message = ({ data, isMe, imgUrl }: MessageProps) => {
+  return data.messageType === MESSAGE_TYPE.구독 ? (
+    <div className={'text-center'}>
+      <p className={'text-xs'}>{data.content}</p>
+    </div>
+  ) : (
+    <div className={cls('flex items-end space-x-2', isMe ? 'flex-row-reverse !space-x-reverse' : '')}>
       {imgUrl === undefined ? (
         <Image
           src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'}
@@ -40,11 +46,11 @@ const Message = ({ message, imgUrl, reverse }: MessageProps) => {
       <div
         className={cls(
           'w-1/2 rounded-md border p-2 text-sm text-gray-700',
-          reverse ? 'border-[#33CC99] bg-[#33CC99] text-white' : 'border-gray-300'
+          isMe ? 'border-[#33CC99] bg-[#33CC99] text-white' : 'border-gray-300'
         )}>
-        <p>{message}</p>
+        <p>{data.content}</p>
       </div>
-      <span className={'text-[10px]'}>{`${new Date().getHours()}:${new Date().getMinutes()}`}</span>
+      <span className={'text-[10px]'}>{new Date(data.sentAt).toLocaleTimeString()}</span>
     </div>
   )
 }

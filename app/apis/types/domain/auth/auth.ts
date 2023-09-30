@@ -7,3 +7,11 @@ export interface AuthToken {
   // 리프래시 토큰
   refreshToken: string
 }
+
+/**
+ * 토큰 재발급
+ */
+export interface NewAccessToken {
+  message: string
+  result: string
+}

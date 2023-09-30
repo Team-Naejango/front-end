@@ -22,7 +22,7 @@ import { useModal } from '@/app/hooks/useModal'
 import MatchModal from '@/app/components/molecule/modal/MatchModal'
 import Button from '@/app/components/atom/Button'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
-import { ItemMatchResult } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ChannelInfo, ItemMatchResult, StorageGroupChat } from '@/app/apis/types/domain/warehouse/warehouse'
 
 import { storageGroupChannel, storageItem } from '@/app/apis/domain/warehouse/warehouse'
 import { joinChat } from '@/app/apis/domain/chat/channel'
@@ -274,7 +274,7 @@ const WareHouseItem = () => {
           <div className={'h-[310px]'} />
           <ItemMatchModal
             itemId={matchItemId!}
-            groupChatInfo={groupChat?.result!}
+            groupChatInfo={groupChat?.result as ChannelInfo}
             onSelect={item => setSelectedItem(item)}
           />
           <div className='mt-6 flex justify-center gap-4 text-center'>

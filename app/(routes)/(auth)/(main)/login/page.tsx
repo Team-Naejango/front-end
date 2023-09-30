@@ -9,15 +9,12 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
-import axios, { AxiosError, AxiosRequestConfig } from 'axios'
+import axios, { AxiosError } from 'axios'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
-import { setDeadlineCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
-import { HeaderType } from '@/app/apis/config/axios'
 
 interface FormProps {
   email: string
@@ -51,24 +48,18 @@ const Login = () => {
     }
   }, [isSplashMounted])
 
-  const refreshAuthToken = (config: AxiosRequestConfig, token: string) => {
-    config.headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    } as HeaderType
-  }
-
   const onNonUserLogin = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
 
-      refreshAuthToken({ ...response.config }, response.data.result)
       router.replace('/home?isLoggedIn=true')
       toast.success('게스트 로그인에 성공하였습니다.')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
+        console.log('error.status:', error.status)
+        console.log('error.response.status:', error.response?.status)
         router.replace('/home?isLoggedIn=true')
         toast.success('게스트 로그인에 성공하였습니다.')
       } else {

@@ -131,7 +131,9 @@ const WareHouse = () => {
               },
             }}
             prefetch={false}
-            className={`${result === undefined ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
+            className={`${
+              Array.isArray(result) && result.length === 0 ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''
+            }`}>
             <span className={'text-xs'}>
               <LuEdit2 fontSize={'21'} />
             </span>

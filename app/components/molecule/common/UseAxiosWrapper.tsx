@@ -1,20 +1,15 @@
 'use client'
 
 import React, { ReactNode, useEffect } from 'react'
-import { AxiosHeaders, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios'
-import { useSetRecoilState } from 'recoil'
-import { useRouter } from 'next/navigation'
-import { toast } from 'react-hot-toast'
+import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
+import { useRecoilState } from 'recoil'
 
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { TokenValid } from '@/app/libs/client/utils/token'
-import { useClearSession } from '@/app/hooks/useClearSession'
 import { accessTokenStore } from '@/app/store/atom'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
-  const router = useRouter()
-  const { resetToken } = useClearSession()
-  const setAccessTokenState = useSetRecoilState<string>(accessTokenStore)
+  const [newAccessToken, setNewAccessToken] = useRecoilState<string>(accessTokenStore)
 
   useEffect(() => {
     const requestInterceptor = withAuth.interceptors.request.use(
@@ -24,21 +19,19 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         }
 
         const isHasToken = await TokenValid()
+        const newAccessToken = String(config.headers.Authorization).split(' ')[1]
 
-        const accessToken = String(config.headers.Authorization).split(' ')[1]
+        setNewAccessToken(newAccessToken)
 
-        if (!isHasToken) {
-          setAccessTokenState(accessToken)
+        if (isHasToken) {
+          config.headers = {
+            Authorization: `Bearer ${newAccessToken}`,
+          } as AxiosRequestHeaders
         }
-        // else if (accessToken === undefined) {
-        //   resetToken()
-        //   toast.error('로그인 세션이 만료되었습니다. 다시 로그인해주세요.')
-        //   router.replace('/login')
-        // }
 
         return config
       },
-      undefined,
+      () => newAccessToken,
       { synchronous: true }
     )
 

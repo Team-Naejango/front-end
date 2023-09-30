@@ -20,12 +20,17 @@ const ItemMatch = ({
   onSelect: (item: ItemMatchResult) => void
 }) => {
   // 아이템 매칭
-  const { data: { data: items } = {} } = useQuery([ITEM.매칭], () =>
-    itemMatch({
-      rad: '1000',
-      size: '10',
-      itemId,
-    })
+  const { data: { data: items } = {} } = useQuery(
+    [ITEM.매칭],
+    () =>
+      itemMatch({
+        rad: '1000',
+        size: '10',
+        itemId,
+      }),
+    {
+      enabled: !!itemId,
+    }
   )
 
   return (
@@ -65,12 +70,12 @@ const ItemMatch = ({
                 <div className='relative flex h-16 w-full flex-col justify-center py-1 pl-4'>
                   <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm'>{item.name}</p>
                   <span className='mt-1 w-40 text-xs text-gray-500'>
-                    {groupChatInfo.participantsCount / groupChatInfo.channelLimit}
+                    {(groupChatInfo?.participantsCount || 0) / (groupChatInfo?.channelLimit || 0)}
                   </span>
                   <span className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10'>
                     <span
                       className={
-                        groupChatInfo.participantsCount === groupChatInfo.channelLimit
+                        groupChatInfo?.participantsCount === groupChatInfo?.channelLimit
                           ? 'text-red-500'
                           : 'text-green-400'
                       }>

@@ -20,11 +20,17 @@ const KakaoCallback = () => {
     setDeadlineCookie(AUTH_TOKEN.접근, accessToken)
   }
 
-  let SIGN_STATUS = 'TEMPORAL'
+  const LOGIN_STATUS = ['TEMPORAL', 'USER', 'already_logged_in']
   useEffect(() => {
     getToken().then(() => {
       try {
-        loginStatus === SIGN_STATUS ? router.push('/sign') : router.push('/home')
+        if (loginStatus === LOGIN_STATUS[0]) {
+          router.push('/sign')
+        } else if (loginStatus === LOGIN_STATUS[1]) {
+          router.push('/home')
+        } else if (loginStatus === LOGIN_STATUS[2]) {
+          router.push('/home')
+        }
       } catch (error: unknown) {
         if (error instanceof AxiosError) {
           return Promise.reject(error)

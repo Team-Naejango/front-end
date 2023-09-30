@@ -2,7 +2,7 @@
 
 import jwtDecode from 'jwt-decode'
 
-import { getCookie, removeAllCookies } from '@/app/libs/client/utils/cookie'
+import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 
 /**
@@ -10,8 +10,8 @@ import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
  *
  * */
 export const TokenValid = () => {
-  const refreshToken = getCookie(AUTH_TOKEN.갱신)
   const accessToken = getCookie(AUTH_TOKEN.접근)
+  const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
   if (!accessToken) {
     console.log('액세스 토큰 만료')
@@ -28,10 +28,7 @@ export const TokenValid = () => {
       return false
     }
   } catch (error) {
-    console.error('토큰 전달 못받았음')
-    removeAllCookies()
-    window.location.href = '/login'
-    return false
+    return true
   }
 
   if (!refreshToken) {

@@ -40,13 +40,6 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
   return response
 }
 
-// const refreshAuthToken = (config: AxiosRequestConfig, token: Refresh | string) => {
-//   config.headers = {
-//     'Content-Type': 'application/json',
-//     Authorization: `Bearer ${token}`,
-//   } as HeaderType
-// }
-
 export const responseNormalizer = async (error: AxiosError) => {
   if (!error.config) return false
 
@@ -58,25 +51,17 @@ export const responseNormalizer = async (error: AxiosError) => {
   }
 
   if (data.status === 401) {
-    const isHasToken = TokenValid()
+    error.config.headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${data.reissuedAccessToken}`,
+    } as HeaderType
 
-    if (!isHasToken) {
-      try {
-        error.config.headers = {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.reissuedAccessToken}`,
-        } as HeaderType
+    return withAuth.request(error.config)
 
-        return await withAuth.request(error.config)
-      } catch (error: unknown) {
-        return false
-      }
-    }
-
-    if (data.error === 'BAD_REQUEST') {
-      window.location.href = '/login'
-      return false
-    }
+    // if (data.error === 'BAD_REQUEST') {
+    //   window.location.href = '/login'
+    //   return false
+    // }
   }
 
   if (data.body.status === 401) {

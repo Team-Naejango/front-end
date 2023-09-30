@@ -12,13 +12,12 @@ import dynamic from 'next/dynamic'
 import { useRecoilValue } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
 import uuid from 'react-uuid'
+import { IFrame } from '@stomp/stompjs/src/i-frame'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Message from '@/app/components/atom/Message'
 import DropDown from '@/app/components/molecule/tab/DropDown'
 import InputField from '@/app/components/atom/InputField'
-import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
 import Loading from '@/app/loading'
@@ -28,11 +27,11 @@ import { useModal } from '@/app/hooks/useModal'
 import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { accessTokenStore } from '@/app/store/atom'
 
 import { getChatId } from '@/app/apis/domain/chat/chat'
 import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
-import { accessTokenStore } from '@/app/store/atom'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -40,15 +39,17 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 })
 
 interface MessageForm {
-  message: string
-  reversed?: boolean
+  content: string
 }
-enum MessageType {
-  Normal, // 일반 메시지
-  Notification, // 알림 메시지
-  TradeRequest, // 거래 요청 메시지
-  ChannelClosed, // 채널 종료 메시지
+
+export interface ChatResponse {
+  channelId: number
+  senderId: number
+  messageType: string
+  content: string
+  sentAt: string
 }
+
 const ChatDetail: NextPage = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -56,15 +57,16 @@ const ChatDetail: NextPage = () => {
   const { openModal } = useModal()
   const client = useRef<CompatClient>()
   const scrollRef = useRef<HTMLDivElement>(null)
-  const accessToken = getCookie(AUTH_TOKEN.접근)
-  const [chatMessageList, setChatMessageList] = useState<MessageForm[]>([])
+  const [chatMessageList, setChatMessageList] = useState<ChatResponse[]>([])
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const setting = useRecoilValue(modalSelector('setting'))
-  const accessTokenState = useRecoilValue<string>(accessTokenStore)
+  const accessToken = useRecoilValue<string>(accessTokenStore)
 
   const channelId = searchParams.get('id')
   const channelType = searchParams.get('type')
   const title = searchParams.get('title')
+
+  console.log('chatMessageList:', chatMessageList)
 
   const { register, handleSubmit, reset } = useForm<MessageForm>({ mode: 'onSubmit' })
 
@@ -83,7 +85,7 @@ const ChatDetail: NextPage = () => {
     enabled: !!channelId,
   })
 
-  const isMe = [...(membersInfo?.result || [])].some(v => v.participantId === mineInfo?.result.userId)
+  // 유저 이미지 필터링
   const userImage = [...(membersInfo?.result || [])]
     .filter(v => v.participantId === mineInfo?.result.userId)
     .find(v => v.imgUrl)?.imgUrl
@@ -108,6 +110,10 @@ const ChatDetail: NextPage = () => {
       return sockjs
     })
 
+    client.current.onStompError = () => {
+      toast.error('채팅방 연결이 불안정합니다. 잠시후 다시 이용해 주세요.')
+    }
+
     client.current.connect(
       {
         Authorization: `Bearer ${accessToken}`,
@@ -116,15 +122,19 @@ const ChatDetail: NextPage = () => {
         client.current?.subscribe(
           `/sub/channel/${channelId}`,
           message => {
-            console.log('message:', message)
-
             const newMessage = JSON.parse(message.body)
+
+            console.log('newMessage:', newMessage)
             setChatMessageList(prevMessages => [...prevMessages, newMessage])
           },
           { Authorization: `Bearer ${accessToken}` }
         )
       }
     )
+
+    client.current?.onWebSocketError(() => {
+      toast.error('채팅방 연결이 불안정합니다. 잠시후 다시 이용해 주세요.')
+    })
   }
 
   // 전송
@@ -132,8 +142,7 @@ const ChatDetail: NextPage = () => {
     if (!data) return
 
     if (client.current?.connected) {
-      client.current?.send(`${process.env.NEXT_PUBLIC_API_URL}/pub/channel/${channelId}`, {}, data.message)
-      setChatMessageList(prevMessages => [...prevMessages, data])
+      client.current?.send(`/pub/channel/${channelId}`, {}, data.content)
       reset()
     } else {
       console.log('전송 에러')
@@ -173,17 +182,19 @@ const ChatDetail: NextPage = () => {
   }
 
   // 드롭다운 라벨링
-  const labels = [{ label: '설정' }, { label: '나가기' }]
+  const dropDownLabels = [{ label: '설정' }, { label: '나가기' }]
 
   return (
     <Layout canGoBack title={title!}>
-      <DropDown labels={labels} onClick={onDropdownSelection} />
+      <DropDown labels={dropDownLabels} onClick={onDropdownSelection} />
       <div className='space-y-6 py-10 pb-16'>
         <span className={'block text-center text-xs'}>
           {chatMessageList.length === 0 ? new Date().toLocaleDateString() : ''}
         </span>
         {chatMessageList.map(data => {
-          return <Message key={uuid()} message={data.message} imgUrl={userImage} reverse={isMe} />
+          return (
+            <Message key={uuid()} data={data} isMe={data.senderId === mineInfo?.result.userId} imgUrl={userImage} />
+          )
         })}
         <div ref={scrollRef} />
         <form
@@ -208,7 +219,7 @@ const ChatDetail: NextPage = () => {
             onClick={() => onSelectedMenuBox(false)}>
             <InputField
               type={'text'}
-              register={register('message', {
+              register={register('content', {
                 required: true,
               })}
               className='mt-4 w-full !rounded-full border-gray-300 pr-12 !indent-2 shadow-sm focus:border-[#33CC99] focus:outline-none focus:ring-[#33CC99]'

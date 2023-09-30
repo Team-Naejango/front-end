@@ -1,5 +1,6 @@
 import { instance } from '@/app/apis/config/axios/instance/instance'
 import { Response } from '@/app/apis/types/response/response'
+import { NewAccessToken } from '@/app/apis/types/domain/auth/auth'
 
 export interface SignParam {
   // 생년월일
@@ -61,8 +62,8 @@ export async function logout(): Promise<Response<null>> {
  * 토큰 재발급
  *
  */
-export async function refresh(): Promise<Response<null>> {
-  return instance.post('/api/auth/refresh')
+export async function refresh(): Promise<Response<{ data: NewAccessToken }>> {
+  return instance.get('/api/auth/refresh')
 }
 
 // /**

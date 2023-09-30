@@ -93,3 +93,12 @@ export const GENDER_TYPE = {
 } as const
 
 export type E_GENDER_TYPE = (typeof GENDER_TYPE)[keyof typeof GENDER_TYPE]
+
+/**
+ * 메세지 타입
+ */
+export const MESSAGE_TYPE = {
+  구독: 'SUBSCRIBE_CHANNEL',
+} as const
+
+export type E_MESSAGE_TYPE = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE]

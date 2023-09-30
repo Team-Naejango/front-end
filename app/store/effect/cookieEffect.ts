@@ -1,24 +1,23 @@
-import { AtomEffect } from 'recoil'
-import { AxiosError } from 'axios'
+import { AtomEffect, useSetRecoilState } from 'recoil'
 
-import { setDeadlineCookie, getCookie, removeAuthToken } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+import { refresh } from '@/app/apis/domain/auth/auth'
+import { accessTokenStore } from '@/app/store/atom'
 
 export const cookieEffect: <T>(key: string) => AtomEffect<T> =
   key =>
   ({ onSet }): any => {
-    onSet(async newAccessToken => {
-      try {
-        const refreshToken = getCookie(AUTH_TOKEN.갱신)
+    const setAccessToken = useSetRecoilState(accessTokenStore)
 
-        if (refreshToken) {
-          setDeadlineCookie(AUTH_TOKEN.접근, <string>newAccessToken)
-        } else {
-          removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-        }
-      } catch (error: unknown) {
-        if (error instanceof AxiosError) {
-          return Promise.reject(error)
+    onSet(async newRefreshToken => {
+      if (newRefreshToken) {
+        try {
+          const response = await refresh()
+
+          if (response.data?.result) {
+            setAccessToken(response.data.result)
+          }
+        } catch (error) {
+          console.error('재발급 오류:', error)
         }
       }
     })
