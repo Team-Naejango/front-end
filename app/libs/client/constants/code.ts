@@ -99,6 +99,7 @@ export type E_GENDER_TYPE = (typeof GENDER_TYPE)[keyof typeof GENDER_TYPE]
  */
 export const MESSAGE_TYPE = {
   구독: 'SUBSCRIBE_CHANNEL',
+  오픈: 'OPEN',
 } as const
 
 export type E_MESSAGE_TYPE = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE]

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { NextPage } from 'next'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
@@ -12,7 +12,6 @@ import dynamic from 'next/dynamic'
 import { useRecoilValue } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
 import uuid from 'react-uuid'
-import { IFrame } from '@stomp/stompjs/src/i-frame'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Message from '@/app/components/atom/Message'
@@ -29,9 +28,10 @@ import MenuBox from '@/app/components/organism/chat/MenuBox'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { accessTokenStore } from '@/app/store/atom'
 
-import { getChatId } from '@/app/apis/domain/chat/chat'
+import { getChatId, recentMessage } from '@/app/apis/domain/chat/chat'
 import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import { cls } from '@/app/libs/client/utils/util'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -43,10 +43,15 @@ interface MessageForm {
 }
 
 export interface ChatResponse {
+  // 채널 ID
   channelId: number
+  // 보내는 사람 ID
   senderId: number
+  // 메세지 타입
   messageType: string
+  // 메세지 내용
   content: string
+  // 보내는 시간
   sentAt: string
 }
 
@@ -85,6 +90,20 @@ const ChatDetail: NextPage = () => {
     enabled: !!channelId,
   })
 
+  // 메세지 기록 조회
+  const { data: { data: recentMessages } = {}, refetch: refetchRecentMessage } = useQuery(
+    [CHAT.메세지조회],
+    () =>
+      recentMessage({
+        chatId: String(chatId?.result),
+        page: '0',
+        size: '20',
+      }),
+    {
+      enabled: !!channelId && !!chatId,
+    }
+  )
+
   // 유저 이미지 필터링
   const userImage = [...(membersInfo?.result || [])]
     .filter(v => v.participantId === mineInfo?.result.userId)
@@ -102,6 +121,18 @@ const ChatDetail: NextPage = () => {
       toast.error(error.message)
     },
   })
+
+  const getRecentMessage = useCallback(() => {
+    const newMessages = recentMessages?.result.map(message => ({
+      content: message.content,
+      sentAt: '',
+      senderId: message.senderId,
+      channelId: message.channelId,
+      messageType: message.messageType,
+    })) as ChatResponse[]
+
+    setChatMessageList(newMessages || [])
+  }, [recentMessages?.result])
 
   // 양방향 연결
   const onConnect = (channelId: string) => {
@@ -155,13 +186,18 @@ const ChatDetail: NextPage = () => {
     return () => {
       if (client.current) {
         client.current?.disconnect()
+        refetchRecentMessage()
       }
     }
   }, [])
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView()
-  }, [chatMessageList])
+  }, [chatMessageList, isOpenBox])
+
+  useEffect(() => {
+    getRecentMessage()
+  }, [getRecentMessage])
 
   // 드롭다운에서 각 탭별 실행 컨텍스트
   const onDropdownSelection = (label: string) => {
@@ -187,26 +223,32 @@ const ChatDetail: NextPage = () => {
   return (
     <Layout canGoBack title={title!}>
       <DropDown labels={dropDownLabels} onClick={onDropdownSelection} />
-      <div className='space-y-6 py-10 pb-16'>
-        <span className={'block text-center text-xs'}>
-          {chatMessageList.length === 0 ? new Date().toLocaleDateString() : ''}
-        </span>
-        {chatMessageList.map(data => {
-          return (
-            <Message key={uuid()} data={data} isMe={data.senderId === mineInfo?.result.userId} imgUrl={userImage} />
-          )
-        })}
+      <div>
+        <div
+          role={'presentation'}
+          className={cls('space-y-6 pt-10', isOpenBox ? 'pb-40' : 'pb-20')}
+          onClick={() => setIsOpenBox(false)}>
+          <span className={'block text-center text-xs'}>
+            {chatMessageList.length === 0 ? new Date().toLocaleDateString() : new Date().toLocaleDateString()}
+          </span>
+          {chatMessageList.map(data => {
+            return (
+              <Message key={uuid()} data={data} isMe={data.senderId === mineInfo?.result.userId} imgUrl={userImage} />
+            )
+          })}
+        </div>
         <div ref={scrollRef} />
         <form
           onSubmit={handleSubmit((formData, event) => {
             event?.preventDefault()
             onSend(formData)
           })}
-          className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white py-2 pb-5'>
+          className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white pb-5'>
           <MenuBox
-            channelId={channelId!}
+            channelId={channelId || null}
             chatId={chatId?.result || null}
             channelType={channelType || ''}
+            userInfo={mineInfo?.result || null}
             isOpen={isOpenBox}
             onClick={e => {
               e.preventDefault()
@@ -237,7 +279,12 @@ const ChatDetail: NextPage = () => {
 
       {setting.modal.show ? (
         <CustomModal id={setting.modal.id} type={MODAL_TYPES.ALERT}>
-          <SettingModal channelId={channelId!} chatId={chatId?.result as number | null} title={title!} />
+          <SettingModal
+            channelId={channelId!}
+            chatId={chatId?.result as number | null}
+            title={title!}
+            userInfo={mineInfo?.result || undefined}
+          />
         </CustomModal>
       ) : null}
     </Layout>

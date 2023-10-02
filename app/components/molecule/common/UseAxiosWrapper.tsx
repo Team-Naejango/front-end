@@ -2,14 +2,14 @@
 
 import React, { ReactNode, useEffect } from 'react'
 import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
-import { useRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
 
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { TokenValid } from '@/app/libs/client/utils/token'
 import { accessTokenStore } from '@/app/store/atom'
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
-  const [newAccessToken, setNewAccessToken] = useRecoilState<string>(accessTokenStore)
+  const setNewAccessToken = useSetRecoilState<string>(accessTokenStore)
 
   useEffect(() => {
     const requestInterceptor = withAuth.interceptors.request.use(
@@ -31,7 +31,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
 
         return config
       },
-      () => newAccessToken,
+      undefined,
       { synchronous: true }
     )
 

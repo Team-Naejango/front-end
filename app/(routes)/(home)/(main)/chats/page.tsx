@@ -51,15 +51,25 @@ const Chats = () => {
               className={cls('flex items-center space-x-3 py-3 hover:bg-[#eeeeee]', idx === 0 ? '!border-t-0' : '')}>
               <div className='h-12 w-12 rounded-full bg-slate-300' />
               <div className={'inline-block'}>
-                <p className='text-[15px] text-gray-700'>{chat.title}</p>
+                <p className='text-[15px] text-gray-700'>
+                  {chat.title}
+                  {/* todo: 참가 인원 데이터 추가 */}
+                  {chat.channelType === 'GROUP' ? <span className={'ml-1 text-sm'}>3</span> : null}
+                </p>
                 <p className='mt-0.5 w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-gray-500'>
                   {chat.lastMessage}
                 </p>
               </div>
               <div className={'flex w-16 flex-col items-end'}>
                 <span className={'ml-8 text-xs'}>{chat.lastChatAt}</span>
-                <span className={'mt-0.5 rounded-full bg-[#33CC99] px-[6px] py-[1px] text-center text-xs text-white'}>
-                  {chat.unreadCount}
+                <span
+                  className={cls(
+                    'mt-0.5',
+                    chat.unreadCount === 0
+                      ? 'text-xs'
+                      : 'rounded-full bg-[#33CC99] px-[6px] py-[1px] text-center text-xs text-white'
+                  )}>
+                  {chat.unreadCount === 0 ? '읽음' : chat.unreadCount}
                 </span>
               </div>
             </Link>

@@ -123,7 +123,7 @@ const Follow = () => {
                           className={'h-24 w-24 rounded border border-[#ddd] object-cover'}
                         />
                         <div className='absolute left-1/2 top-1/2 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-md bg-black bg-opacity-50 opacity-0 transition-opacity hover:opacity-100'>
-                          <div className={'flex h-full items-center justify-center'}>
+                          <div className={'flex h-full items-center justify-center text-center'}>
                             <span className={'text-sm text-white'}>{item.name}</span>
                           </div>
                         </div>

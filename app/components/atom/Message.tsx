@@ -14,12 +14,14 @@ interface MessageProps {
 }
 
 const Message = ({ data, isMe, imgUrl }: MessageProps) => {
-  return data.messageType === MESSAGE_TYPE.구독 ? (
+  return data.messageType === MESSAGE_TYPE.오픈 || data.messageType === MESSAGE_TYPE.구독 ? (
     <div className={'text-center'}>
       <p className={'text-xs'}>{data.content}</p>
     </div>
   ) : (
-    <div className={cls('flex items-end space-x-2', isMe ? 'flex-row-reverse !space-x-reverse' : '')}>
+    <div
+      role={'presentation'}
+      className={cls('flex items-end space-x-2', isMe ? 'flex-row-reverse !space-x-reverse' : '')}>
       {imgUrl === undefined ? (
         <Image
           src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'}

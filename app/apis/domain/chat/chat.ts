@@ -1,6 +1,6 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Response } from '@/app/apis/types/response/response'
-import { Chat, ChatId, ChatName, GroupChat } from '@/app/apis/types/domain/chat/chat'
+import { Chat, ChatId, ChatName, GroupChat, RecentMessage } from '@/app/apis/types/domain/chat/chat'
 
 /* ************************************ 챗 엔터티 ************************************ */
 
@@ -19,6 +19,19 @@ export async function chat(): Promise<Response<{ data: Chat }>> {
  */
 export async function getChatId(channelId: string): Promise<Response<{ data: ChatId }>> {
   return withAuth.get(`/api/chat/${channelId}`)
+}
+
+/**
+ * 특정 채팅방의 채팅 기록 조회
+ *
+ * @param chatId // 조회하고자 하는 챗 ID
+ */
+export async function recentMessage(params: {
+  chatId: string
+  page: string
+  size: string
+}): Promise<Response<{ data: RecentMessage }>> {
+  return withAuth.get(`/api/message/${params.chatId}/recent`, { params })
 }
 
 /**

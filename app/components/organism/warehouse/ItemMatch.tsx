@@ -1,7 +1,6 @@
 'use client'
 
-import React from 'react'
-import Image from 'next/image'
+import React, { useRef } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { cls } from '@/app/libs/client/utils/util'
@@ -19,6 +18,8 @@ const ItemMatch = ({
   groupChatInfo: ChannelInfo
   onSelect: (item: ItemMatchResult) => void
 }) => {
+  const focusRef = useRef<HTMLDivElement | null>(null)
+
   // 아이템 매칭
   const { data: { data: items } = {} } = useQuery(
     [ITEM.매칭],
@@ -50,32 +51,24 @@ const ItemMatch = ({
             return (
               <div
                 role={'presentation'}
+                ref={focusRef}
                 key={item.itemId}
-                className='flex h-16 cursor-auto items-center justify-start overflow-hidden rounded-lg border border-gray-300 bg-white'
+                className={cls(
+                  'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg bg-white outline-none ring-1 hover:ring-[#32D7A0]',
+                  focusRef.current ? 'ring-[#32D7A0]' : ''
+                )}
                 onClick={() => onSelect(item)}>
-                <div className='relative h-16 w-16 flex-shrink-0'>
-                  <div className='absolute left-0 top-0 flex h-full w-full items-center justify-center'>
-                    <Image
-                      src={'https://stackdiary.com/140x100.png'}
-                      width={'100'}
-                      height={'100'}
-                      alt={'아이템 이미지'}
-                      loading={'lazy'}
-                      className={
-                        'duration-50 absolute left-0 top-0 h-full w-full object-cover object-center transition'
-                      }
-                    />
-                  </div>
-                </div>
-                <div className='relative flex h-16 w-full flex-col justify-center py-1 pl-4'>
-                  <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm'>{item.name}</p>
-                  <span className='mt-1 w-40 text-xs text-gray-500'>
-                    {(groupChatInfo?.participantsCount || 0) / (groupChatInfo?.channelLimit || 0)}
+                <div className='relative flex h-16 w-full flex-col justify-center py-1'>
+                  <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-left indent-4 text-[13px]'>
+                    {item.name}
+                  </p>
+                  <span className={cls('w-40 text-xs text-gray-500', groupChatInfo ? 'mt-1' : '')}>
+                    {groupChatInfo && Number(groupChatInfo?.participantsCount) / Number(groupChatInfo?.channelLimit)}
                   </span>
                   <span className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10'>
                     <span
                       className={
-                        groupChatInfo?.participantsCount === groupChatInfo?.channelLimit
+                        groupChatInfo && groupChatInfo.participantsCount === groupChatInfo?.channelLimit
                           ? 'text-red-500'
                           : 'text-green-400'
                       }>
@@ -89,7 +82,7 @@ const ItemMatch = ({
                         <path fill='currentColor' fillRule='evenodd' clipRule='evenodd' />
                       </svg>
                     </span>
-                    입장
+                    입장가능
                   </span>
                 </div>
               </div>

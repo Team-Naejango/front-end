@@ -166,7 +166,9 @@ const PreviewCard = ({
         if (mineInfo?.result.userId === ownerId)
           return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
 
-        if (type === (ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매)) {
+        const isPersonal = type === ITEM_TYPE.개인구매 || type === ITEM_TYPE.개인판매
+
+        if (isPersonal) {
           setDisabledGroup(true)
         } else if (type === ITEM_TYPE.공동구매) {
           setDisabledPersonal(true)
@@ -275,9 +277,7 @@ const PreviewCard = ({
                         <span
                           className={cls(
                             'mr-1.5 rounded px-1 py-1 text-[10px] text-white',
-                            item.itemType === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매)
-                              ? 'bg-[#30BD81] !px-1.5'
-                              : 'bg-[#A3D139]'
+                            item.itemType === ITEM_TYPE.공동구매 ? 'bg-[#30BD81] !px-1.5' : 'bg-[#A3D139]'
                           )}>
                           {convertedItemTypeNm(item.itemType)}
                         </span>

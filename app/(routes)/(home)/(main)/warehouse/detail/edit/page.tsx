@@ -22,7 +22,7 @@ import { useModal } from '@/app/hooks/useModal'
 import MatchModal from '@/app/components/molecule/modal/MatchModal'
 import Button from '@/app/components/atom/Button'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
-import { ChannelInfo, ItemMatchResult, StorageGroupChat } from '@/app/apis/types/domain/warehouse/warehouse'
+import { ChannelInfo, ItemMatchResult } from '@/app/apis/types/domain/warehouse/warehouse'
 
 import { storageGroupChannel, storageItem } from '@/app/apis/domain/warehouse/warehouse'
 import { joinChat } from '@/app/apis/domain/chat/channel'
@@ -145,13 +145,6 @@ const WareHouseItem = () => {
 
     openModal({
       modal: { id: 'matchedItem', type: MODAL_TYPES.ALERT },
-      callback: () => {
-        if (selectedItem?.itemType === (ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매)) {
-          setDisabledGroup(true)
-        } else if (selectedItem?.itemType === ITEM_TYPE.공동구매) {
-          setDisabledPersonal(true)
-        }
-      },
     })
   }
 
@@ -168,6 +161,15 @@ const WareHouseItem = () => {
       toast.error('선택된 아이템이 없습니다.')
       closeModal('matchedItem')
       return false
+    }
+
+    const selectedItemType = selectedItem.itemType
+    const isPersonal = selectedItemType === ITEM_TYPE.개인구매 || selectedItemType === ITEM_TYPE.개인판매
+
+    if (isPersonal) {
+      setDisabledGroup(true)
+    } else if (selectedItemType === ITEM_TYPE.공동구매) {
+      setDisabledPersonal(true)
     }
 
     openModal({
@@ -192,16 +194,17 @@ const WareHouseItem = () => {
     if (type === CHAT_TYPE.개인) {
       mutateJoin(String(selectedItem!.ownerId))
     } else if (type === CHAT_TYPE.그룹) {
-      if (!groupChat) {
+      if (groupChat?.result === null) {
         toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
-      if (groupChat.result?.participantsCount === groupChat.result?.channelLimit) {
+      if (groupChat?.result?.participantsCount === groupChat?.result?.channelLimit) {
         toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
 
       mutateGroupJoin(String(groupChat?.result.channelId))
+      closeModal('chat')
     }
   }
 

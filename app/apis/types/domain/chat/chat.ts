@@ -34,6 +34,27 @@ export interface ChatId {
   result: number
 }
 
+export type MessageResult = {
+  // 채널 ID
+  channelId: number
+  // 보내는 사람 ID
+  senderId: number
+  // 메세지 ID
+  messageId: number
+  // 메세지 타입
+  messageType: string
+  // 메세지 내용
+  content: string
+}
+
+/**
+ * 채팅방 최근 메세지 정보
+ */
+export interface RecentMessage {
+  message: string
+  result: MessageResult[]
+}
+
 /**
  * 채팅방 이름 정보
  */

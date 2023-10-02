@@ -45,10 +45,10 @@ export const responseNormalizer = async (error: AxiosError) => {
 
   const data = error.response?.data as Refresh
 
-  if ((data.status && data.status) === 400) {
-    window.location.href = '/login'
-    return false
-  }
+  // if ((data.status && data.status) === 400) {
+  //   window.location.href = '/login'
+  //   return false
+  // }
 
   if (data.status === 401) {
     error.config.headers = {
@@ -64,7 +64,7 @@ export const responseNormalizer = async (error: AxiosError) => {
     // }
   }
 
-  if (data.body.status === 401) {
+  if ((data.body && data.body?.status) === 401) {
     const isHasToken = TokenValid()
 
     if (!isHasToken) {

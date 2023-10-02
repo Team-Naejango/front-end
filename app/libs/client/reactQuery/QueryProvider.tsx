@@ -13,7 +13,7 @@ export const defaultQueryClientOptions = {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     retryOnMount: true,
-    retry: 2,
+    retry: false,
   },
 }
 

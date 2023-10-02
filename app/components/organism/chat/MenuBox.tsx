@@ -18,6 +18,8 @@ import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicke
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import Register from '@/app/components/organism/chat/Register'
 import Loading from '@/app/loading'
+import { Member } from '@/app/apis/types/domain/profile/profile'
+import { cls } from '@/app/libs/client/utils/util'
 
 import {
   wire,
@@ -47,12 +49,14 @@ const MenuBox = ({
   channelId,
   chatId,
   channelType,
+  userInfo,
   isOpen,
   onClick,
 }: {
-  channelId: string
+  channelId: string | null
   chatId: number | null
   channelType: string | ''
+  userInfo: Member | null
   isOpen: boolean
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void
 }) => {
@@ -76,7 +80,7 @@ const MenuBox = ({
   })
 
   // 참여자 정보 조회
-  const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId), {
+  const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId!), {
     enabled: !!channelId,
   })
 
@@ -129,7 +133,6 @@ const MenuBox = ({
   // 송금 완료
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: () => {
-      // todo: 송금버튼 disabled 처리
       setIsSendPoint(true)
 
       // todo: 송금 완료 메세지 전달
@@ -157,12 +160,9 @@ const MenuBox = ({
       return value.participantId !== chatId
     })?.nickname
 
-    const transactionId = deals && deals.result.find(v => v.traderName === getTraderName)!.id
+    const transactionId = deals && deals.result.find(v => v.traderName === getTraderName)?.id
     setTransactionId(transactionId)
   }
-
-  // 판매자 유저 판별
-  const isSeller = membersInfo?.result.some(v => v.participantId === chatId)
 
   useEffect(() => {
     getTransactionId()
@@ -175,12 +175,16 @@ const MenuBox = ({
     })?.participantId
   }
 
+  // 판매자 유저 판별
+  const isSeller = getTraderId() !== userInfo?.userId
+
   // 현재 날짜 변환
   const formatIsoDate = () => {
-    let now = new Date()
-    return now.toISOString()
+    const instanceDate = new Date()
+    return instanceDate.toISOString()
   }
 
+  // 거래 등록
   const registerDeal = () => {
     // if (getTraderId() === undefined) return toast.error('구매자가 없습니다.')
     // if (!isSendPoint) return toast.error('구매자가 미송금 상태입니다.')
@@ -203,6 +207,7 @@ const MenuBox = ({
     })
   }
 
+  // 거래 수정
   const modifyDeal = () => {
     const params: ModifyParam = {
       date: formatIsoDate(),
@@ -213,18 +218,7 @@ const MenuBox = ({
     mutateModify(params)
   }
 
-  const deleteDeal = () => {
-    mutateDelete(String(transactionId))
-  }
-
-  const completeDeal = () => {
-    mutateComplete(String(transactionId))
-  }
-
-  const sendPoint = () => {
-    mutateWire(String(transactionId))
-  }
-
+  // 포인트 충전 모달
   const chargePoint = () => {
     openModal({
       modal: { id: 'amount', type: MODAL_TYPES.CONFIRM },
@@ -239,39 +233,54 @@ const MenuBox = ({
       {isOpen ? (
         <div className='flex flex-wrap text-center'>
           <button
-            // disabled={!isSeller}
-            className='w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
+            disabled={!isSeller}
+            className={cls(
+              'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
+              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+            )}
             onClick={registerDeal}>
             <span className='block text-sm text-white'>거래 등록</span>
           </button>
           <button
             disabled={!isSeller}
-            className='w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
+            className={cls(
+              'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
+              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+            )}
             onClick={modifyDeal}>
             <span className='block text-sm text-white'>거래 수정</span>
           </button>
           <button
             disabled={!isSeller}
-            className='w-1/3 cursor-pointer bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
-            onClick={deleteDeal}>
+            className={cls(
+              'w-1/3 cursor-pointer bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
+              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+            )}
+            onClick={() => mutateDelete(String(transactionId))}>
             <span className='block text-sm text-white'>거래 삭제</span>
           </button>
           <button
             disabled={!isSeller}
-            className='w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
-            onClick={completeDeal}>
+            className={cls(
+              'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
+              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+            )}
+            onClick={() => mutateComplete(String(transactionId))}>
             <span className='block text-sm text-white'>거래 완료</span>
-          </button>
-          <button
-            disabled={isSeller}
-            className='w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
-            onClick={sendPoint}>
-            <span className='block text-sm text-white'>송금 하기</span>
           </button>
           <button
             className='w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
             onClick={chargePoint}>
             <span className='block text-sm text-white'>금액 충전</span>
+          </button>
+          <button
+            disabled={isSeller && isSendPoint}
+            className={cls(
+              'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
+              isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+            )}
+            onClick={() => mutateWire(String(transactionId))}>
+            <span className='block text-sm text-white'>송금 하기</span>
           </button>
         </div>
       ) : (
