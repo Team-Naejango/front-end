@@ -277,7 +277,7 @@ const PreviewCard = ({
                         <span
                           className={cls(
                             'mr-1.5 rounded px-1 py-1 text-[10px] text-white',
-                            item.itemType === ITEM_TYPE.공동구매 ? 'bg-[#30BD81] !px-1.5' : 'bg-[#A3D139]'
+                            item.itemType === ITEM_TYPE.개인판매 ? 'bg-[#A3D139]' : 'bg-[#30BD81] !px-1.5'
                           )}>
                           {convertedItemTypeNm(item.itemType)}
                         </span>

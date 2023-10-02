@@ -63,7 +63,7 @@ const WishItemCard = ({ wish, hearts, onClick }: WishItemProps) => {
           <span
             className={cls(
               'whitespace-nowrap rounded px-0.5 py-0.5 text-[10px] text-white',
-              wish?.itemType === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+              wish.itemType === ITEM_TYPE.개인판매 ? 'bg-[#A3D139]' : 'bg-[#30BD81] !px-1.5'
             )}>
             {convertedItemTypeNm(wish?.itemType)}
           </span>

@@ -137,7 +137,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
           <span
             className={cls(
               'inline-block rounded px-0.5 py-0.5 text-[10px] text-white',
-              itemInfo?.itemType === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) ? 'bg-[#30BD81] !px-1' : 'bg-[#A3D139]'
+              itemInfo?.itemType === ITEM_TYPE.개인판매 ? 'bg-[#A3D139]' : 'bg-[#30BD81] !px-1'
             )}>
             {convertedItemTypeNm(itemInfo?.itemType!)}
           </span>
