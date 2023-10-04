@@ -45,6 +45,6 @@ module.exports = withPWA({
   ...nextConfig,
   pwa: {
     dest: 'public',
-    importScripts: ['/worker.ts'],
+    importScripts: ['/worker/index.ts'],
   },
 })
