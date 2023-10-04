@@ -7,8 +7,20 @@ import InputField from '@/app/components/atom/InputField'
 import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
 import { Participant } from '@/app/apis/types/domain/chat/chat'
+import { Member } from '@/app/apis/types/domain/profile/profile'
+import { TransactionResult } from '@/app/apis/types/domain/chat/deal'
 
-const Register = ({ chatId, participants }: { chatId: number | null; participants: Participant[] }) => {
+const Register = ({
+  edit = false,
+  userInfo,
+  participants,
+  transaction,
+}: {
+  edit?: boolean
+  userInfo: Member | null
+  participants: Participant[]
+  transaction?: TransactionResult
+}) => {
   const {
     register,
     setValue,
@@ -19,11 +31,11 @@ const Register = ({ chatId, participants }: { chatId: number | null; participant
   // 1:1 거래자 정보
   const getTraderInfo = () => {
     const sellerNm = participants.find(value => {
-      return value.participantId === chatId
+      return value.participantId === userInfo?.userId
     })?.nickname
 
     const traderNm = participants.find(value => {
-      return value.participantId !== chatId
+      return value.participantId !== userInfo?.userId
     })?.nickname
 
     return { sellerNm, traderNm }
@@ -35,6 +47,7 @@ const Register = ({ chatId, participants }: { chatId: number | null; participant
     reset({
       seller: sellerNm,
       dealer: traderNm,
+      amount: edit ? transaction?.amount : 0,
     })
   }, [])
 
@@ -45,7 +58,7 @@ const Register = ({ chatId, participants }: { chatId: number | null; participant
 
   return (
     <div>
-      <h2 className={'text-center'}>거래 등록</h2>
+      <h2 className={'text-center'}>거래 {edit ? '수정' : '등록'}</h2>
       <div className={'mt-4'}>
         <div className={'mt-4'}>
           <InputField disabled label={'판매자 이름'} type={'text'} register={register('seller')} />
@@ -59,7 +72,6 @@ const Register = ({ chatId, participants }: { chatId: number | null; participant
             type={'text'}
             register={register('amount', {
               required: '금액을 입력해주세요.',
-              value: 0,
               onChange: e => {
                 onInputChange('amount', e.target.value)
               },

@@ -1,6 +1,6 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Common, Response } from '@/app/apis/types/response/response'
-import { Deal, Transaction } from '@/app/apis/types/domain/chat/deal'
+import { Deal, IncompleteTransaction, SearchTransaction, Transaction } from '@/app/apis/types/domain/chat/deal'
 
 export interface DealParam {
   // 날짜
@@ -34,6 +34,24 @@ export async function deal(): Promise<Response<{ data: Transaction }>> {
 }
 
 /**
+ * 특정 거래 정보 조회
+ *
+ * @param transactionId // 거래 ID
+ */
+export async function searchDeal(transactionId: string): Promise<Response<{ data: SearchTransaction }>> {
+  return withAuth.get(`/api/transaction/${transactionId}`)
+}
+
+/**
+ * 상대 유저와 완료되지 않은 거래 조회(미완료 거래)
+ *
+ * @param traderId // 상대 유저 ID
+ */
+export async function incompleteDeal(traderId: string): Promise<Response<{ data: IncompleteTransaction }>> {
+  return withAuth.get(`/api/transaction/trader/${traderId}`)
+}
+
+/**
  * 거래 등록
  *
  * @param params.date // 거래 날짜 및 시간
@@ -57,7 +75,7 @@ export async function saveDeal(params: DealParam): Promise<Response<{ data: Deal
  * @param params
  */
 export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: ModifyResponse }>> {
-  return withAuth.patch(`/api/transaction/${params.transactionId}`, { params })
+  return withAuth.patch(`/api/transaction/${params.transactionId}`, params)
 }
 
 /**

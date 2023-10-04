@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import type { NextPage } from 'next'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
@@ -27,11 +27,11 @@ import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { accessTokenStore } from '@/app/store/atom'
+import { cls } from '@/app/libs/client/utils/util'
 
 import { getChatId, recentMessage } from '@/app/apis/domain/chat/chat'
 import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
-import { cls } from '@/app/libs/client/utils/util'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -64,13 +64,16 @@ const ChatDetail: NextPage = () => {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [chatMessageList, setChatMessageList] = useState<ChatResponse[]>([])
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
+  const [systemMessage, setSystemMessage] = useState<string | undefined>(undefined)
   const setting = useRecoilValue(modalSelector('setting'))
   const accessToken = useRecoilValue<string>(accessTokenStore)
 
-  const channelId = searchParams.get('id')
+  const channelId = searchParams.get('channel')
   const channelType = searchParams.get('type')
+  const itemId = searchParams.get('item')
   const title = searchParams.get('title')
 
+  console.log('itemId:', itemId)
   console.log('chatMessageList:', chatMessageList)
 
   const { register, handleSubmit, reset } = useForm<MessageForm>({ mode: 'onSubmit' })
@@ -199,7 +202,20 @@ const ChatDetail: NextPage = () => {
     getRecentMessage()
   }, [getRecentMessage])
 
-  // 드롭다운에서 각 탭별 실행 컨텍스트
+  // 시스템 메시지 전달
+  useEffect(() => {
+    if (systemMessage) {
+      if (client.current?.connected) {
+        client.current?.send(`/pub/channel/${channelId}`, {}, systemMessage)
+        reset()
+      } else {
+        console.log('전송 에러')
+      }
+      setSystemMessage(undefined)
+    }
+  }, [systemMessage])
+
+  // 드롭다운 리스트 선택
   const onDropdownSelection = (label: string) => {
     if (label === '설정') {
       openModal({
@@ -245,11 +261,13 @@ const ChatDetail: NextPage = () => {
           })}
           className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white pb-5'>
           <MenuBox
-            channelId={channelId || null}
             chatId={chatId?.result || null}
+            itemId={itemId || null}
+            channelId={channelId || null}
             channelType={channelType || ''}
             userInfo={mineInfo?.result || null}
             isOpen={isOpenBox}
+            setSystemMessage={setSystemMessage}
             onClick={e => {
               e.preventDefault()
               onSelectedMenuBox(true)

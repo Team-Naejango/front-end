@@ -5,10 +5,16 @@ export type ChatInfoList = {
   channelId: number
   // 채팅 ID
   chatId: number
+  // 아이템 ID
+  itemId: number
   // 채팅 타입(PRIVATE / GROUP)
   channelType: string
   // 제목
   title: string
+  // 채널 정원
+  channelLimit: number
+  // 현재 참여 인원
+  participantsCount: number
   // 마지막 대화 내용
   lastMessage: string
   // 안읽은 메세지 수
@@ -45,6 +51,8 @@ export type MessageResult = {
   messageType: string
   // 메세지 내용
   content: string
+  // 보내는 시간
+  sentAt: string
 }
 
 /**

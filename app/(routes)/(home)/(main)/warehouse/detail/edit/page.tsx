@@ -23,8 +23,11 @@ import MatchModal from '@/app/components/molecule/modal/MatchModal'
 import Button from '@/app/components/atom/Button'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
 import { ChannelInfo, ItemMatchResult } from '@/app/apis/types/domain/warehouse/warehouse'
+import { useSendNotification } from '@/app/hooks/useSendNotification'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { storageGroupChannel, storageItem } from '@/app/apis/domain/warehouse/warehouse'
+import { userInfo } from '@/app/apis/domain/profile/profile'
 import { joinChat } from '@/app/apis/domain/chat/channel'
 import { joinGroupChat } from '@/app/apis/domain/chat/chat'
 
@@ -89,10 +92,24 @@ const WareHouseItem = () => {
     }
   )
 
+  // 프로필 조회
+  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+    enabled: !selectedItem,
+  })
+
+  // 브라우저 알림 전송
+  const sendNotification = useSendNotification({
+    myId: mineInfo?.result.userId,
+    yourId: selectedItem?.ownerId,
+    myNickname: mineInfo?.result.nickname,
+    myImgUrl: selectedItem?.imgUrl,
+  })
+
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       toast.success('개인 채팅방 입장하였습니다.')
+      sendNotification!
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -110,6 +127,7 @@ const WareHouseItem = () => {
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
+      sendNotification!
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -180,6 +198,10 @@ const WareHouseItem = () => {
       },
     })
   }
+
+  useEffect(() => {
+    closeModal('chat')
+  }, [])
 
   useEffect(() => {
     if (isMatch) {

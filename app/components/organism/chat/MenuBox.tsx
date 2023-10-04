@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -29,7 +29,8 @@ import {
   saveDeal as registered,
   DealParam,
   ModifyParam,
-  deal,
+  searchDeal,
+  incompleteDeal,
 } from '@/app/apis/domain/chat/deal'
 import { account } from '@/app/apis/domain/warehouse/account'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
@@ -46,27 +47,34 @@ export interface FormFields {
 }
 
 const MenuBox = ({
-  channelId,
   chatId,
+  itemId,
+  channelId,
   channelType,
   userInfo,
   isOpen,
+  setSystemMessage,
   onClick,
 }: {
-  channelId: string | null
   chatId: number | null
+  itemId: string | null
+  channelId: string | null
   channelType: string | ''
   userInfo: Member | null
   isOpen: boolean
+  setSystemMessage: Dispatch<SetStateAction<string | undefined>>
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void
 }) => {
   const query = getQueryClient()
   const { openModal } = useModal()
-  const [transactionId, setTransactionId] = useState<number | undefined>(undefined)
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
   const [isSendPoint, setIsSendPoint] = useState<boolean>(false)
-  const amount = useRecoilValue(modalSelector('amount'))
+  const _amount = useRecoilValue(modalSelector('amount'))
   const _register = useRecoilValue(modalSelector('register'))
+  const _edit = useRecoilValue(modalSelector('edit'))
+  const _send = useRecoilValue(modalSelector('send'))
+  const _complete = useRecoilValue(modalSelector('complete'))
+  const _delete = useRecoilValue(modalSelector('delete'))
 
   const formMethods = useForm<FormFields>({
     mode: 'onSubmit',
@@ -74,23 +82,44 @@ const MenuBox = ({
   })
   const { getValues } = formMethods
 
-  // 거래 조회
-  const { data: { data: deals } = {} } = useQuery([DEAL.조회], () => deal(), {
-    enabled: !!channelId,
-  })
+  const amount = getValues('amount')
+  const omitCommaAmount = String(amount).replace(/,/g, '')
 
   // 참여자 정보 조회
   const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId!), {
     enabled: !!channelId,
   })
 
+  // 1:1 상대 거래자 ID
+  const getTraderId = [...(membersInfo?.result || [])].find(value => {
+    return value.participantId !== chatId
+  })?.participantId
+
+  // 미완료 거래 조회
+  const { data: { data: incompleteInfo } = {}, isSuccess: isSuccessIncompleteInfo } = useQuery(
+    [DEAL.미완료거래조회],
+    () => incompleteDeal(String(getTraderId)),
+    {
+      enabled: !!channelId && !!membersInfo,
+    }
+  )
+
+  // [판매자기준] 거래 ID 조회
+  const transactionId = [...(incompleteInfo?.result || [])].find(v => v.id)?.id
+
+  // 특정 거래 정보 조회
+  const { data: { data: searchInfo } = {} } = useQuery([DEAL.특정거래조회], () => searchDeal(String(transactionId)), {
+    enabled: !!channelId && isSuccessIncompleteInfo,
+  })
+  console.log('특정 거래 정보 조회:', searchInfo)
+
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(registered, {
     onSuccess: data => {
-      setTransactionId(data.data.result.id)
-
-      // todo: 거래 등록 메세지 전달
+      setSystemMessage(data.data.message)
       query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -99,9 +128,11 @@ const MenuBox = ({
 
   // 거래 수정
   const { mutate: mutateModify } = useMutation(modify, {
-    onSuccess: () => {
-      // todo: 거래 수정 메세지 전달
+    onSuccess: data => {
+      setSystemMessage(data.data.message)
       query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -110,9 +141,11 @@ const MenuBox = ({
 
   // 거래 삭제
   const { mutate: mutateDelete } = useMutation(deleted, {
-    onSuccess: () => {
-      // todo: 거래 삭제 메세지 전달
+    onSuccess: data => {
+      setSystemMessage(data.message)
       query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -121,9 +154,11 @@ const MenuBox = ({
 
   // 거래 완료
   const { mutate: mutateComplete } = useMutation(complete, {
-    onSuccess: () => {
-      // todo: 거래 완료 메세지 전달
+    onSuccess: data => {
+      setSystemMessage(data.message)
       query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -132,11 +167,11 @@ const MenuBox = ({
 
   // 송금 완료
   const { mutate: mutateWire } = useMutation(wire, {
-    onSuccess: () => {
+    onSuccess: data => {
       setIsSendPoint(true)
 
-      // todo: 송금 완료 메세지 전달
-      // query.invalidateQueries([CHAT.조회])
+      setSystemMessage(data.message)
+      query.invalidateQueries([CHAT.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -154,52 +189,33 @@ const MenuBox = ({
     },
   })
 
-  // [판매자기준] 거래 ID 조회
-  const getTransactionId = () => {
-    const getTraderName = membersInfo?.result.find(value => {
-      return value.participantId !== chatId
-    })?.nickname
-
-    const transactionId = deals && deals.result.find(v => v.traderName === getTraderName)?.id
-    setTransactionId(transactionId)
-  }
-
-  useEffect(() => {
-    getTransactionId()
-  }, [])
-
-  // 1:1 상대 거래자 ID
-  const getTraderId = () => {
-    return membersInfo?.result.find(value => {
-      return value.participantId !== chatId
-    })?.participantId
-  }
-
   // 판매자 유저 판별
-  const isSeller = getTraderId() !== userInfo?.userId
+  const isSeller = getTraderId !== userInfo?.userId
 
   // 현재 날짜 변환
   const formatIsoDate = () => {
     const instanceDate = new Date()
-    return instanceDate.toISOString()
+
+    const customIsoDate = instanceDate.toISOString().replace(/:\d+\.\d+Z$/, '')
+    return customIsoDate
   }
 
-  // 거래 등록
+  // 거래등록 모달
   const registerDeal = () => {
-    // if (getTraderId() === undefined) return toast.error('구매자가 없습니다.')
+    if (getTraderId === undefined) return toast.error('구매자가 없습니다.')
     // if (!isSendPoint) return toast.error('구매자가 미송금 상태입니다.')
 
     // todo: 어떤 아이템인지 ID 가져오기
     openModal({
       modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
       callback: () => {
-        if (getValues('amount') <= 0) return toast.error('최소 금액을 입력해주세요.')
+        if (amount <= 0) return toast.error('최소 금액을 입력해주세요.')
 
         const params: DealParam = {
           date: formatIsoDate(),
-          amount: getValues('amount'),
-          traderId: getTraderId()!,
-          itemId: 0,
+          amount: Number(omitCommaAmount),
+          traderId: getTraderId,
+          itemId: Number(itemId),
         }
 
         mutateRegister(params)
@@ -207,21 +223,56 @@ const MenuBox = ({
     })
   }
 
-  // 거래 수정
+  // 거래수정 모달
   const modifyDeal = () => {
-    const params: ModifyParam = {
-      date: formatIsoDate(),
-      amount: 0,
-      transactionId: String(transactionId),
-    }
+    openModal({
+      modal: { id: 'edit', type: MODAL_TYPES.CONFIRM },
+      callback: () => {
+        const params: ModifyParam = {
+          date: formatIsoDate(),
+          amount: Number(omitCommaAmount),
+          transactionId: String(searchInfo?.result.id),
+        }
 
-    mutateModify(params)
+        mutateModify(params)
+      },
+    })
+  }
+
+  // 송금하기 모달
+  const sendPoint = () => {
+    openModal({
+      modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },
+      callback: () => {
+        mutateWire(String(searchInfo?.result.id))
+      },
+    })
+  }
+
+  // 거래완료 모달
+  const completeDeal = () => {
+    openModal({
+      modal: { id: 'complete', type: MODAL_TYPES.DIALOG, title: '완료', content: '거래를 완료 하시겠습니까?' },
+      callback: () => {
+        mutateComplete(String(searchInfo?.result.id))
+      },
+    })
+  }
+
+  // 거래삭제 모달
+  const deleteDeal = () => {
+    openModal({
+      modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '삭제', content: '거래를 삭제 하시겠습니까?' },
+      callback: () => {
+        mutateDelete(String(searchInfo?.result.id))
+      },
+    })
   }
 
   // 포인트 충전 모달
   const chargePoint = () => {
     openModal({
-      modal: { id: 'amount', type: MODAL_TYPES.CONFIRM },
+      modal: { id: 'amount', type: MODAL_TYPES.DIALOG, title: '거래 수정' },
       callback: () => {
         mutateAccount(selectedPoint.value)
       },
@@ -256,20 +307,20 @@ const MenuBox = ({
               'w-1/3 cursor-pointer bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
               !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
             )}
-            onClick={() => mutateDelete(String(transactionId))}>
+            onClick={deleteDeal}>
             <span className='block text-sm text-white'>거래 삭제</span>
           </button>
           <button
             disabled={!isSeller}
             className={cls(
-              'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
+              'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
               !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
             )}
-            onClick={() => mutateComplete(String(transactionId))}>
+            onClick={completeDeal}>
             <span className='block text-sm text-white'>거래 완료</span>
           </button>
           <button
-            className='w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
+            className='w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
             onClick={chargePoint}>
             <span className='block text-sm text-white'>금액 충전</span>
           </button>
@@ -279,7 +330,7 @@ const MenuBox = ({
               'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
               isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
             )}
-            onClick={() => mutateWire(String(transactionId))}>
+            onClick={sendPoint}>
             <span className='block text-sm text-white'>송금 하기</span>
           </button>
         </div>
@@ -305,8 +356,8 @@ const MenuBox = ({
         </div>
       )}
 
-      {amount.modal.show ? (
-        <CustomModal id={amount.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'충전'}>
+      {_amount.modal.show ? (
+        <CustomModal id={_amount.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'충전'}>
           <RadioPicker data={POINTS} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
         </CustomModal>
       ) : null}
@@ -314,10 +365,29 @@ const MenuBox = ({
       {_register.modal.show ? (
         <FormProvider {...formMethods}>
           <CustomModal id={_register.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'등록'}>
-            <Register chatId={chatId} participants={membersInfo?.result || []} />
+            <Register userInfo={userInfo || null} participants={membersInfo?.result || []} />
           </CustomModal>
         </FormProvider>
       ) : null}
+
+      {_edit.modal.show ? (
+        <FormProvider {...formMethods}>
+          <CustomModal id={_edit.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'수정'}>
+            <Register
+              edit
+              userInfo={userInfo || null}
+              participants={membersInfo?.result || []}
+              transaction={searchInfo?.result}
+            />
+          </CustomModal>
+        </FormProvider>
+      ) : null}
+
+      {_send.modal.show ? <CustomModal id={_send.modal.id} type={MODAL_TYPES.DIALOG} /> : null}
+
+      {_complete.modal.show ? <CustomModal id={_complete.modal.id} type={MODAL_TYPES.DIALOG} /> : null}
+
+      {_delete.modal.show ? <CustomModal id={_delete.modal.id} type={MODAL_TYPES.DIALOG} /> : null}
     </>
   )
 }

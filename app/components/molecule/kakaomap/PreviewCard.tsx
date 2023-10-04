@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import uuid from 'react-uuid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -17,17 +17,18 @@ import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
-import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { GroupChat } from '@/app/apis/types/domain/chat/chat'
+import { useSendNotification } from '@/app/hooks/useSendNotification'
 
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
-import { groupChatUserInfo, joinChat } from '@/app/apis/domain/chat/channel'
-import { joinGroupChat } from '@/app/apis/domain/chat/chat'
-import { itemInfo, storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 import { userInfo } from '@/app/apis/domain/profile/profile'
+import { joinChat } from '@/app/apis/domain/chat/channel'
+import { joinGroupChat } from '@/app/apis/domain/chat/chat'
+import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps */
 
@@ -65,6 +66,7 @@ const PreviewCard = ({
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
+  const [yourProfileInfo, setYourProfileInfo] = useState<Item | null>(null)
   const [disabledPersonal, setDisabledPersonal] = useState<boolean>(false)
   const [disabledGroup, setDisabledGroup] = useState<boolean>(false)
 
@@ -109,10 +111,19 @@ const PreviewCard = ({
     },
   })
 
+  // 브라우저 알림 전송
+  const sendNotification = useSendNotification({
+    myId: mineInfo?.result.userId,
+    yourId: yourProfileInfo?.ownerId,
+    myNickname: mineInfo?.result.nickname,
+    myImgUrl: mineInfo?.result.imgUrl,
+  })
+
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       toast.success('개인 채팅방 입장하였습니다.')
+      sendNotification!
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -130,6 +141,7 @@ const PreviewCard = ({
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
+      sendNotification!
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -144,6 +156,10 @@ const PreviewCard = ({
       toast.error(error.message)
     },
   })
+
+  useEffect(() => {
+    closeModal('chat')
+  }, [])
 
   // 채팅방 선택 모달
   const onSelectedChatModal = () => {
@@ -208,9 +224,8 @@ const PreviewCard = ({
     if (!type) return
 
     if (type === CHAT_TYPE.개인) {
-      const { ownerId } = dragedPreviews.find(v => v.ownerId)!
+      const ownerId = dragedPreviews?.find(v => v.ownerId)?.ownerId
 
-      // todo: 채널 ID 필요(이미 채팅이 만들어져있을 경우 예외처리)
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
@@ -272,6 +287,7 @@ const PreviewCard = ({
                         className={'w-full p-4'}
                         onClick={() => {
                           setSelectedItemId(item.itemId)
+                          setYourProfileInfo({ ...item })
                           onClickShowModal(item.name || selectedTitle, item.itemType, item.ownerId)
                         }}>
                         <span

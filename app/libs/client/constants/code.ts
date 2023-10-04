@@ -78,8 +78,8 @@ export type E_ITEM_TYPE = (typeof ITEM_TYPE)[keyof typeof ITEM_TYPE]
  * 채팅 타입
  */
 export const CHAT_TYPE = {
-  개인: 'solo',
-  그룹: 'group',
+  개인: 'SOLO',
+  그룹: 'GROUP',
 } as const
 
 export type E_CHAT_TYPE = (typeof CHAT_TYPE)[keyof typeof CHAT_TYPE]
@@ -100,6 +100,20 @@ export type E_GENDER_TYPE = (typeof GENDER_TYPE)[keyof typeof GENDER_TYPE]
 export const MESSAGE_TYPE = {
   구독: 'SUBSCRIBE_CHANNEL',
   오픈: 'OPEN',
+  거래: 'TRADE',
+  입장: 'ENTER',
+  퇴장: 'EXIT',
+  종료: 'CLOSE',
 } as const
 
 export type E_MESSAGE_TYPE = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE]
+
+/**
+ * 거래 타입
+ */
+export const TRANSACTION_TYPE = {
+  거래약속: 'TRANSACTION_APPOINTMENT',
+  송금완료: 'REMITTANCE_COMPLETION',
+} as const
+
+export type E_TRANSACTION_TYPE = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE]

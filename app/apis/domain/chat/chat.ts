@@ -24,7 +24,11 @@ export async function getChatId(channelId: string): Promise<Response<{ data: Cha
 /**
  * 특정 채팅방의 채팅 기록 조회
  *
- * @param chatId // 조회하고자 하는 챗 ID
+ * @param params.chatId // 챗 ID
+ * @param params.page // 페이징
+ * @param params.size // 사이즈
+ *
+ * @param params
  */
 export async function recentMessage(params: {
   chatId: string

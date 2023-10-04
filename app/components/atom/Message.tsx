@@ -14,10 +14,26 @@ interface MessageProps {
 }
 
 const Message = ({ data, isMe, imgUrl }: MessageProps) => {
-  return data.messageType === MESSAGE_TYPE.오픈 || data.messageType === MESSAGE_TYPE.구독 ? (
-    <div className={'text-center'}>
-      <p className={'text-xs'}>{data.content}</p>
-    </div>
+  // 메세지 타입
+  const getStatus = (value: string) => {
+    return {
+      SUBSCRIBE_CHANNEL: MESSAGE_TYPE.구독,
+      OPEN: MESSAGE_TYPE.오픈,
+      TRADE: MESSAGE_TYPE.거래,
+      ENTER: MESSAGE_TYPE.입장,
+      EXIT: MESSAGE_TYPE.퇴장,
+      CLOSE: MESSAGE_TYPE.종료,
+    }[value]
+  }
+
+  const messageType = getStatus(data.messageType)
+
+  return messageType ? (
+    messageType === MESSAGE_TYPE.구독 ? null : (
+      <div className={'text-center'}>
+        <p className={'text-xs'}>{data.content}</p>
+      </div>
+    )
   ) : (
     <div
       role={'presentation'}

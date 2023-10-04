@@ -20,7 +20,7 @@ const Chats = () => {
   const { data: { data: chats } = {}, refetch } = useQuery([CHAT.조회], () => chat())
   console.log('chats:', chats)
 
-  const onClickBanner = () => {
+  const onMoveBanner = () => {
     router.push('/events')
   }
 
@@ -30,7 +30,7 @@ const Chats = () => {
 
   return (
     <Layout hasHeader seoTitle={'채팅'}>
-      {!close && <SmallBanner onClick={onClickBanner} onClose={() => setClose(true)} />}
+      {!close && <SmallBanner onClick={onMoveBanner} onClose={() => setClose(true)} />}
       <div className='mb-14 mt-4 divide-y-[1px]'>
         {chats?.result.length === 0 ? (
           <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
@@ -42,8 +42,9 @@ const Chats = () => {
               href={{
                 pathname: `/chats/edit`,
                 query: {
-                  id: chat.channelId,
+                  channel: chat.channelId,
                   type: chat.channelType,
+                  item: chat.itemId,
                   title: chat.title,
                 },
               }}
@@ -53,8 +54,9 @@ const Chats = () => {
               <div className={'inline-block'}>
                 <p className='text-[15px] text-gray-700'>
                   {chat.title}
-                  {/* todo: 참가 인원 데이터 추가 */}
-                  {chat.channelType === 'GROUP' ? <span className={'ml-1 text-sm'}>3</span> : null}
+                  {chat.channelType === 'GROUP' ? (
+                    <span className={'ml-1 text-sm'}>{chat.participantsCount}</span>
+                  ) : null}
                 </p>
                 <p className='mt-0.5 w-[200px] overflow-hidden overflow-ellipsis whitespace-nowrap text-xs text-gray-500'>
                   {chat.lastMessage}

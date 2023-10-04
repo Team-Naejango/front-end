@@ -40,15 +40,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // 알림 전달
   const notificationCallback = useCallback(() => {
-    return (
-      typeof navigator !== 'undefined' &&
-      navigator.serviceWorker.addEventListener('message', event => {
-        const message = event.data
-        if (message.type === 'showToast') {
-          toast.success(message.message)
-        }
-      })
-    )
+    return navigator.serviceWorker.addEventListener('message', event => {
+      const message = event.data
+      if (message.type === 'showToast') {
+        toast.success(message.message)
+      }
+    })
   }, [])
 
   useEffect(() => {

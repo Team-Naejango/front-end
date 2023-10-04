@@ -7,5 +7,5 @@ import { Categories } from '@/app/apis/types/domain/place/category'
  *
  */
 export async function category(): Promise<Response<{ data: Categories }>> {
-  return withAuth.get('/api/item/category')
+  return withAuth.get('/api/category')
 }
