@@ -20,10 +20,11 @@ const App: NextPage = () => {
     if (accessToken) {
       setIsLoggedIn(true)
       router.push('/home')
-    } else {
-      resetToken()
-      router.push('/')
     }
+    // else {
+    //   resetToken()
+    //   router.push('/')
+    // }
   }, [])
 
   return <>{isLoggedIn ? <Home /> : <Login />}</>

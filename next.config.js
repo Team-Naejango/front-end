@@ -38,6 +38,7 @@ const nextConfig = {
     skipWaiting: true,
     customWorkerDir: 'worker',
     runtimeCaching,
+    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
   },
 }
 
