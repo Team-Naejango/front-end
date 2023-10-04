@@ -20,9 +20,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
-  console.log('isLoading:', isLoading)
-  console.log('isMountedSplash:', isMountedSplash)
-
   useEffect(() => {
     setIsMountedSplash(true)
   }, [setIsMountedSplash])

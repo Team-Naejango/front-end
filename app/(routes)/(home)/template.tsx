@@ -25,14 +25,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
         try {
           if (permission === NOTIFICATION_PERMISSION.허용) {
             await subscribe({ contentType: 'text/event-stream;charset=UTF-8' })
-            notificationPermission !== NOTIFICATION_PERMISSION.허용 && toast.success('[알림] 알림이 구독되었습니다.')
+
+            if (notificationPermission !== NOTIFICATION_PERMISSION.허용) {
+              toast.success('[알림] 알림이 구독되었습니다.')
+            }
           } else {
-            toast.error('[알림] 알림이 권한이 필요합니다.')
+            toast.success('[알림] 알림을 거부하였습니다.')
           }
         } catch (error) {
           console.error('서비스워커 실패:', error)
-          // return Promise.reject(error)
-          // toast.error('[알림] 알림 동의에 오류가 발생했습니다.')
         }
       })
     }
