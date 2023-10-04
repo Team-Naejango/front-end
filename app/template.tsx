@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 
 import Splash from '@/app/components/molecule/common/Splash'
@@ -14,21 +14,30 @@ import { useClearSession } from '@/app/hooks/useClearSession'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const router = useRouter()
   const { resetToken } = useClearSession()
-  const [isLoading, setIsLoading] = useState<boolean>(pathname === '/' || false)
+  const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
   const [isMountedSplash, setIsMountedSplash] = useRecoilState<boolean>(splashState)
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
+
+  console.log('isLoading:', isLoading)
+  console.log('isMountedSplash:', isMountedSplash)
 
   useEffect(() => {
     setIsMountedSplash(true)
   }, [setIsMountedSplash])
 
   useEffect(() => {
+    if (isMountedSplash) {
+      setIsLoading(false)
+    }
+  }, [pathname])
+
+  useEffect(() => {
     const onBeforeUnload = () => {
       if (accessToken && !refreshToken) return resetToken()
     }
+
     window.addEventListener('beforeunload', onBeforeUnload)
     return () => {
       window.removeEventListener('beforeunload', onBeforeUnload)

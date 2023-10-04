@@ -12,7 +12,6 @@ import UseAxiosWrapper from '@/app/components/molecule/common/UseAxiosWrapper'
 
 const myFont = localFont({
   src: './assets/font/PretendardVariable.woff2',
-  preload: true,
 })
 
 export const metadata: Metadata = {

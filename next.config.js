@@ -32,13 +32,11 @@ const nextConfig = {
     return config
   },
   pwa: {
-    // disable: process.env.NODE_ENV === 'development',
     dest: 'public',
     register: true,
     skipWaiting: true,
     customWorkerDir: 'worker',
     runtimeCaching,
-    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
   },
 }
 
@@ -47,5 +45,6 @@ module.exports = withPWA({
   pwa: {
     dest: 'public',
     importScripts: ['/worker/index.ts'],
+    maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
   },
 })

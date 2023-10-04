@@ -56,6 +56,7 @@ const SplashScreen = ({ isMountedSplash, closeSplash }: SplashProps) => {
 
   useLayoutEffect(() => {
     const animation = animateSplash()
+
     return () => {
       animation.kill()
       isSetSplashVisible(true)
