@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import dynamic from 'next/dynamic'
 
 import Layout from '@/app/components/template/main/layout/Layout'
@@ -11,12 +11,16 @@ import Loading from '@/app/loading'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import GroupChatCard from '@/app/components/organism/home/GroupChatCard'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { MODAL_TYPES, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
+import { toast } from 'react-hot-toast'
+import { subscribe } from '@/app/apis/domain/profile/alarm'
+import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
+import { accessTokenStore } from '@/app/store/atom'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -30,6 +34,9 @@ const Home = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
+  const accessToken = useRecoilValue<string>(accessTokenStore)
+
+  console.log('accessToken:', accessToken)
 
   // 창고 조회
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
@@ -57,6 +64,77 @@ const Home = () => {
       },
     })
   }
+
+  const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
+
+  const onChatRequest = async () => {
+    if (Notification.permission === 'granted') {
+      const notification = new Notification('채팅 알림', {
+        body: '상대방이 개인 채팅 신청을 하였습니다.',
+      })
+
+      toast.success('테스트 문구입니다~')
+      return notification
+    }
+  }
+
+  // 서비스워커 시작
+  const serviceWorkerInit = async () => {
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') return
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(async () => {
+        try {
+          if (permission === NOTIFICATION_PERMISSION.허용) {
+            await subscribe({ contentType: 'text/event-stream;charset=UTF-8' })
+
+            if (notificationPermission !== NOTIFICATION_PERMISSION.허용) {
+              toast.success('[알림] 알림이 구독되었습니다.')
+            }
+          } else {
+            toast.success('[알림] 알림을 거부하였습니다.')
+          }
+        } catch (error) {
+          console.error('서비스워커 실패:', error)
+        }
+      })
+    }
+
+    const accessToken = localStorage.getItem('accessToken')
+
+    const EventSource = EventSourcePolyfill || NativeEventSource
+    const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    })
+
+    SSE.addEventListener('sse', event => {
+      console.log('SSE 이벤트 수신:', event)
+
+      onChatRequest()
+    })
+  }
+
+  // 알림 전달
+  const notificationCallback = useCallback(() => {
+    return navigator.serviceWorker.addEventListener('message', event => {
+      const message = event.data
+      if (message.type === 'showToast') {
+        toast.success(message.message)
+      }
+    })
+  }, [])
+
+  useEffect(() => {
+    serviceWorkerInit()
+  }, [])
+
+  useEffect(() => {
+    notificationCallback()
+  }, [notificationCallback])
 
   // 창고 아이템 리다이렉트
   useEffect(() => {

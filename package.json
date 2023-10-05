@@ -37,6 +37,7 @@
     "deep-equal": "^2.2.1",
     "eslint": "^8.2.0",
     "eslint-config-next": "13.4.4",
+    "event-source-polyfill": "^1.0.31",
     "gsap": "^3.12.1",
     "jwt-decode": "^3.1.2",
     "lottie-react": "^2.4.0",
@@ -62,6 +63,7 @@
   },
   "devDependencies": {
     "@tanstack/query-core": "^4.32.0",
+    "@types/event-source-polyfill": "^1.0.2",
     "@types/firebase": "^3.2.1",
     "@types/sockjs-client": "^1.5.1",
     "babel-plugin-inline-react-svg": "^2.0.2",
