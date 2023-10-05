@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { cls } from '@/app/libs/client/utils/util'
@@ -19,6 +19,7 @@ const ItemMatch = ({
   onSelect: (item: ItemMatchResult) => void
 }) => {
   const focusRef = useRef<HTMLDivElement | null>(null)
+  const [activeIndex, setActiveIndex] = useState<ItemMatchResult | null>(null) // 클릭된 아
 
   // 아이템 매칭
   const { data: { data: items } = {} } = useQuery(
@@ -33,6 +34,14 @@ const ItemMatch = ({
       enabled: !!itemId,
     }
   )
+
+  const handleItemClick = (item: ItemMatchResult) => {
+    console.log('item:', item)
+    onSelect(item)
+    setActiveIndex(item) // 클릭된 아이템의 인덱스를 설정
+  }
+
+  console.log('activeIndex:', activeIndex)
 
   return (
     <div
@@ -55,9 +64,9 @@ const ItemMatch = ({
                 key={item.itemId}
                 className={cls(
                   'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg bg-white outline-none ring-1 hover:ring-[#32D7A0]',
-                  focusRef.current ? 'ring-[#32D7A0]' : ''
+                  activeIndex?.itemId === item.itemId ? 'ring-[#32D7A0]' : ''
                 )}
-                onClick={() => onSelect(item)}>
+                onClick={() => handleItemClick(item)}>
                 <div className='relative flex h-16 w-full flex-col justify-center py-1'>
                   <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-left indent-4 text-[13px]'>
                     {item.name}

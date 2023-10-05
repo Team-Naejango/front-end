@@ -16,7 +16,7 @@ const Chats = () => {
   const router = useRouter()
   const [close, setClose] = useState<boolean>(false)
 
-  // 채팅방 목록
+  // 채팅방 목록 조회
   const { data: { data: chats } = {}, refetch } = useQuery([CHAT.조회], () => chat())
   console.log('chats:', chats)
 
@@ -43,9 +43,6 @@ const Chats = () => {
                 pathname: `/chats/edit`,
                 query: {
                   channel: chat.channelId,
-                  type: chat.channelType,
-                  item: chat.itemId,
-                  title: chat.title,
                 },
               }}
               key={chat.chatId}

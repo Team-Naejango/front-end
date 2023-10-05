@@ -22,7 +22,7 @@ export async function getChatId(channelId: string): Promise<Response<{ data: Cha
 }
 
 /**
- * 특정 채팅방의 채팅 기록 조회
+ * 특정 채팅방의 최근 메시지 기록 조회
  *
  * @param params.chatId // 챗 ID
  * @param params.page // 페이징
@@ -35,7 +35,7 @@ export async function recentMessage(params: {
   page: string
   size: string
 }): Promise<Response<{ data: RecentMessage }>> {
-  return withAuth.get(`/api/message/${params.chatId}/recent`, { params })
+  return withAuth.get(`/api/message/${params.chatId}`, { params })
 }
 
 /**

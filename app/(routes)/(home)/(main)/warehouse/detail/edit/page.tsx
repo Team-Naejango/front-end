@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Tab } from '@headlessui/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -98,23 +98,31 @@ const WareHouseItem = () => {
   })
 
   // 브라우저 알림 전송
-  const sendNotification = useSendNotification({
-    myId: mineInfo?.result.userId,
-    yourId: selectedItem?.ownerId,
-    myNickname: mineInfo?.result.nickname,
-    myImgUrl: selectedItem?.imgUrl,
-  })
+  const UseSendNotification = () => {
+    const sendNotification = useSendNotification({
+      myId: mineInfo?.result.userId,
+      yourId: selectedItem?.ownerId,
+      myNickname: mineInfo?.result.nickname,
+      myImgUrl: selectedItem?.imgUrl,
+    })
+
+    return sendNotification
+  }
+
+  const sendNotification = useCallback(() => {
+    UseSendNotification()
+  }, [UseSendNotification])
 
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       toast.success('개인 채팅방 입장하였습니다.')
-      sendNotification!
+      sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
-          id: data.data.result.channelId,
+          channel: data.data.result.channelId,
         },
       })
     },
@@ -127,12 +135,12 @@ const WareHouseItem = () => {
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      sendNotification!
+      sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
-          id: data.data.result.channelId,
+          channel: data.data.result.channelId,
         },
       })
       // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.

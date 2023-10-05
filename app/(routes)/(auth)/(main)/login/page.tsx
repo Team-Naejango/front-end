@@ -58,10 +58,12 @@ const Login = () => {
       toast.success('게스트 로그인에 성공하였습니다.')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        console.log('error.status:', error.status)
-        console.log('error.response.status:', error.response?.status)
-        router.replace('/home?isLoggedIn=true')
-        toast.success('게스트 로그인에 성공하였습니다.')
+        if (error.response?.status === 409) {
+          router.replace('/home?isLoggedIn=true')
+          toast.success('게스트 로그인에 성공하였습니다.')
+        } else {
+          toast.error('게스트 로그인에 실패하였습니다.')
+        }
       } else {
         toast.error('게스트 로그인에 실패하였습니다.')
       }

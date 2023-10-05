@@ -29,7 +29,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { accessTokenStore } from '@/app/store/atom'
 import { cls } from '@/app/libs/client/utils/util'
 
-import { getChatId, recentMessage } from '@/app/apis/domain/chat/chat'
+import { chat, getChatId, recentMessage } from '@/app/apis/domain/chat/chat'
 import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 
@@ -69,14 +69,18 @@ const ChatDetail: NextPage = () => {
   const accessToken = useRecoilValue<string>(accessTokenStore)
 
   const channelId = searchParams.get('channel')
-  const channelType = searchParams.get('type')
-  const itemId = searchParams.get('item')
-  const title = searchParams.get('title')
-
-  console.log('itemId:', itemId)
-  console.log('chatMessageList:', chatMessageList)
 
   const { register, handleSubmit, reset } = useForm<MessageForm>({ mode: 'onSubmit' })
+
+  // 채팅방 목록 조회
+  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat(), {
+    enabled: !!channelId,
+  })
+
+  // 입장한 채팅방 필터링
+  const enterChatInfo = [...(chats?.result || [])].filter(chat => chat.channelId === Number(channelId)).find(v => v)
+
+  console.log('enterChatInfo:', enterChatInfo)
 
   // 내 채팅방 ID 조회
   const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(channelId!), {
@@ -93,17 +97,17 @@ const ChatDetail: NextPage = () => {
     enabled: !!channelId,
   })
 
-  // 메세지 기록 조회
+  // 최근 메세지 기록 조회
   const { data: { data: recentMessages } = {}, refetch: refetchRecentMessage } = useQuery(
-    [CHAT.메세지조회],
+    [CHAT.메세지조회, enterChatInfo?.chatId],
     () =>
       recentMessage({
-        chatId: String(chatId?.result),
+        chatId: String(enterChatInfo?.chatId),
         page: '0',
         size: '20',
       }),
     {
-      enabled: !!channelId && !!chatId,
+      enabled: !!channelId && !!chatId && !!enterChatInfo,
     }
   )
 
@@ -125,16 +129,17 @@ const ChatDetail: NextPage = () => {
     },
   })
 
+  // 최근 메시지 기록 정보
   const getRecentMessage = useCallback(() => {
-    const newMessages = recentMessages?.result.map(message => ({
+    const newMessages = [...(recentMessages?.result || [])].map(message => ({
       content: message.content,
-      sentAt: '',
+      sentAt: message.sentAt,
       senderId: message.senderId,
       channelId: message.channelId,
       messageType: message.messageType,
     })) as ChatResponse[]
 
-    setChatMessageList(newMessages || [])
+    setChatMessageList(newMessages.reverse())
   }, [recentMessages?.result])
 
   // 양방향 연결
@@ -171,7 +176,7 @@ const ChatDetail: NextPage = () => {
     })
   }
 
-  // 전송
+  // 메세지 전송
   const onSend = (data: MessageForm) => {
     if (!data) return
 
@@ -183,6 +188,7 @@ const ChatDetail: NextPage = () => {
     }
   }
 
+  // 웹소켓 마운트/언마운트
   useEffect(() => {
     onConnect(channelId!)
 
@@ -194,10 +200,12 @@ const ChatDetail: NextPage = () => {
     }
   }, [])
 
+  // 화면 위치 고정
   useEffect(() => {
     scrollRef.current?.scrollIntoView()
   }, [chatMessageList, isOpenBox])
 
+  // 이전 메세지 기록 가져오기
   useEffect(() => {
     getRecentMessage()
   }, [getRecentMessage])
@@ -229,15 +237,11 @@ const ChatDetail: NextPage = () => {
     }
   }
 
-  const onSelectedMenuBox = (open: boolean) => {
-    setIsOpenBox(open)
-  }
-
   // 드롭다운 라벨링
   const dropDownLabels = [{ label: '설정' }, { label: '나가기' }]
 
   return (
-    <Layout canGoBack title={title!}>
+    <Layout canGoBack title={enterChatInfo?.title}>
       <DropDown labels={dropDownLabels} onClick={onDropdownSelection} />
       <div>
         <div
@@ -262,21 +266,20 @@ const ChatDetail: NextPage = () => {
           className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white pb-5'>
           <MenuBox
             chatId={chatId?.result || null}
-            itemId={itemId || null}
+            itemId={enterChatInfo?.itemId || undefined}
             channelId={channelId || null}
-            channelType={channelType || ''}
             userInfo={mineInfo?.result || null}
             isOpen={isOpenBox}
             setSystemMessage={setSystemMessage}
             onClick={e => {
               e.preventDefault()
-              onSelectedMenuBox(true)
+              setIsOpenBox(true)
             }}
           />
           <div
             role={'presentation'}
             className='relative mx-auto flex w-[90%] items-center'
-            onClick={() => onSelectedMenuBox(false)}>
+            onClick={() => setIsOpenBox(false)}>
             <InputField
               type={'text'}
               register={register('content', {
@@ -300,7 +303,7 @@ const ChatDetail: NextPage = () => {
           <SettingModal
             channelId={channelId!}
             chatId={chatId?.result as number | null}
-            title={title!}
+            title={String(enterChatInfo?.title)}
             userInfo={mineInfo?.result || undefined}
           />
         </CustomModal>

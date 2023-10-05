@@ -45,6 +45,7 @@ const WareHouse = () => {
   const { result } = _storageInfo || {}
   const currentItem = result && result[currentSlideIndex]
 
+  // 창고 생성
   const onCreate = () => {
     const params: PathParam = {
       crud: CRUD.등록,
@@ -56,6 +57,7 @@ const WareHouse = () => {
     })
   }
 
+  // 창고 삭제
   const onDelete = () => {
     if (result?.length === 0) return
 
@@ -81,11 +83,10 @@ const WareHouse = () => {
     })
   }
 
+  // 현재 슬라이드 인덱스
   const onSlideChange = (index: number) => {
     setCurrentSlideIndex(index)
   }
-
-  console.log('_storageInfo:', _storageInfo)
 
   return (
     <Layout hasHeader seoTitle={'창고공간'}>

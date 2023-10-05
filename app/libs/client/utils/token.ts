@@ -14,7 +14,7 @@ export const TokenValid = () => {
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
   if (!accessToken) {
-    console.log('액세스 토큰 만료')
+    // console.log('액세스 토큰 만료')
     return false
   }
 
@@ -24,7 +24,7 @@ export const TokenValid = () => {
     const currentTime = Date.now()
 
     if (currentTime > expTime) {
-      console.log('액세스 토큰 만료')
+      // console.log('액세스 토큰 만료')
       return false
     }
   } catch (error) {
@@ -32,7 +32,7 @@ export const TokenValid = () => {
   }
 
   if (!refreshToken) {
-    console.log('리프레시 토큰 만료')
+    // console.log('리프레시 토큰 만료')
     return true
   }
 

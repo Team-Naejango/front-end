@@ -9,8 +9,9 @@ interface Profile {
 
 export const useSendNotification = ({ myId, yourId, myNickname, myImgUrl }: Profile) => {
   const isMe = myId === yourId
+  const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
 
-  if (isMe && Notification.permission === 'granted') {
+  if (isMe && notificationPermission === 'granted') {
     const notification = new Notification('채팅 알림', {
       body: `${myNickname}님이 채팅방에 입장하였습니다.`,
       icon: `${

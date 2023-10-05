@@ -11,7 +11,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
 import { modalSelector } from '@/app/store/modal'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { MODAL_TYPES, TRANSACTION_TYPE } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import { POINTS } from '@/app/libs/client/constants/static'
 import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
@@ -24,9 +24,9 @@ import { cls } from '@/app/libs/client/utils/util'
 import {
   wire,
   complete,
-  deleteDeal as deleted,
+  deleteDeal as deleter,
   modifyDeal as modify,
-  saveDeal as registered,
+  saveDeal as register,
   DealParam,
   ModifyParam,
   searchDeal,
@@ -50,16 +50,14 @@ const MenuBox = ({
   chatId,
   itemId,
   channelId,
-  channelType,
   userInfo,
   isOpen,
   setSystemMessage,
   onClick,
 }: {
   chatId: number | null
-  itemId: string | null
+  itemId: number | undefined
   channelId: string | null
-  channelType: string | ''
   userInfo: Member | null
   isOpen: boolean
   setSystemMessage: Dispatch<SetStateAction<string | undefined>>
@@ -68,7 +66,6 @@ const MenuBox = ({
   const query = getQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
-  const [isSendPoint, setIsSendPoint] = useState<boolean>(false)
   const _amount = useRecoilValue(modalSelector('amount'))
   const _register = useRecoilValue(modalSelector('register'))
   const _edit = useRecoilValue(modalSelector('edit'))
@@ -90,10 +87,15 @@ const MenuBox = ({
     enabled: !!channelId,
   })
 
+  console.log('itemId:', itemId)
+
   // 1:1 상대 거래자 ID
   const getTraderId = [...(membersInfo?.result || [])].find(value => {
-    return value.participantId !== chatId
+    return value.participantId !== userInfo?.userId
   })?.participantId
+
+  // 판매자 유저 판별
+  const isSeller = getTraderId !== chatId
 
   // 미완료 거래 조회
   const { data: { data: incompleteInfo } = {}, isSuccess: isSuccessIncompleteInfo } = useQuery(
@@ -104,18 +106,19 @@ const MenuBox = ({
     }
   )
 
-  // [판매자기준] 거래 ID 조회
-  const transactionId = [...(incompleteInfo?.result || [])].find(v => v.id)?.id
+  // 미거래 정보 조회
+  const transaction = [...(incompleteInfo?.result || [])].find(v => v)
 
   // 특정 거래 정보 조회
-  const { data: { data: searchInfo } = {} } = useQuery([DEAL.특정거래조회], () => searchDeal(String(transactionId)), {
-    enabled: !!channelId && isSuccessIncompleteInfo,
+  const { data: { data: searchInfo } = {} } = useQuery([DEAL.특정거래조회], () => searchDeal(String(transaction?.id)), {
+    enabled: !!channelId && isSuccessIncompleteInfo && !!transaction?.id,
   })
   console.log('특정 거래 정보 조회:', searchInfo)
 
   // 거래 등록
-  const { mutate: mutateRegister } = useMutation(registered, {
+  const { mutate: mutateRegister } = useMutation(register, {
     onSuccess: data => {
+      // 거래 예약 등록 성공 문구 필터링
       setSystemMessage(data.data.message)
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
@@ -140,7 +143,7 @@ const MenuBox = ({
   })
 
   // 거래 삭제
-  const { mutate: mutateDelete } = useMutation(deleted, {
+  const { mutate: mutateDelete } = useMutation(deleter, {
     onSuccess: data => {
       setSystemMessage(data.message)
       query.invalidateQueries([DEAL.조회])
@@ -168,8 +171,6 @@ const MenuBox = ({
   // 송금 완료
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: data => {
-      setIsSendPoint(true)
-
       setSystemMessage(data.message)
       query.invalidateQueries([CHAT.조회])
     },
@@ -189,9 +190,6 @@ const MenuBox = ({
     },
   })
 
-  // 판매자 유저 판별
-  const isSeller = getTraderId !== userInfo?.userId
-
   // 현재 날짜 변환
   const formatIsoDate = () => {
     const instanceDate = new Date()
@@ -205,7 +203,6 @@ const MenuBox = ({
     if (getTraderId === undefined) return toast.error('구매자가 없습니다.')
     // if (!isSendPoint) return toast.error('구매자가 미송금 상태입니다.')
 
-    // todo: 어떤 아이템인지 ID 가져오기
     openModal({
       modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
       callback: () => {
@@ -215,7 +212,7 @@ const MenuBox = ({
           date: formatIsoDate(),
           amount: Number(omitCommaAmount),
           traderId: getTraderId,
-          itemId: Number(itemId),
+          itemId: 1,
         }
 
         mutateRegister(params)
@@ -325,7 +322,7 @@ const MenuBox = ({
             <span className='block text-sm text-white'>금액 충전</span>
           </button>
           <button
-            disabled={isSeller && isSendPoint}
+            disabled={isSeller && transaction?.status === TRANSACTION_TYPE.송금완료}
             className={cls(
               'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
               isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import uuid from 'react-uuid'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -112,23 +112,31 @@ const PreviewCard = ({
   })
 
   // 브라우저 알림 전송
-  const sendNotification = useSendNotification({
-    myId: mineInfo?.result.userId,
-    yourId: yourProfileInfo?.ownerId,
-    myNickname: mineInfo?.result.nickname,
-    myImgUrl: mineInfo?.result.imgUrl,
-  })
+  const UseSendNotification = () => {
+    const sendNotification = useSendNotification({
+      myId: mineInfo?.result.userId,
+      yourId: yourProfileInfo?.ownerId,
+      myNickname: mineInfo?.result.nickname,
+      myImgUrl: mineInfo?.result.imgUrl,
+    })
+
+    return sendNotification
+  }
+
+  const sendNotification = useCallback(() => {
+    UseSendNotification()
+  }, [UseSendNotification])
 
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       toast.success('개인 채팅방 입장하였습니다.')
-      sendNotification!
+      sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
-          id: data.data.result.channelId,
+          channel: data.data.result.channelId,
         },
       })
     },
@@ -141,12 +149,12 @@ const PreviewCard = ({
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      sendNotification!
+      sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
-          id: data.data.result.channelId,
+          channel: data.data.result.channelId,
         },
       })
       // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.
