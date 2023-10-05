@@ -22,7 +22,6 @@ const GroupChatCard = () => {
       rad: '1000',
     })
   )
-  console.log('groupChats:', groupChats)
 
   return (
     <div

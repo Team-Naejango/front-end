@@ -76,7 +76,6 @@ const KakaoMap = () => {
             activedItem={info?.name ?? ''}
             kakaoMap={kakaoMap}
             isDragedMixture={isDragedMixture}
-            info={info}
             setInfo={setInfo}
             setIsDragedMixture={setIsDragedMixture}
           />

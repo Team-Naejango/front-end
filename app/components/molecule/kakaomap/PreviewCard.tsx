@@ -43,7 +43,6 @@ interface PreviewCardProps {
   isDragedMixture: boolean
   activedItem: string
   kakaoMap: kakao.maps.Map | null
-  info: SearchCondition | Storages | null
   setInfo: Dispatch<SetStateAction<SearchCondition | Storages | null>>
   setIsDragedMixture: Dispatch<SetStateAction<boolean>>
 }
@@ -54,15 +53,14 @@ const PreviewCard = ({
   isDragedMixture,
   activedItem,
   kakaoMap,
-  info,
   setInfo,
   setIsDragedMixture,
 }: PreviewCardProps) => {
   const query = useQueryClient()
   const { openModal, closeModal } = useModal()
   const { push } = UseCustomRouter()
-  const previewState = useRecoilValue(modalSelector('preview'))
-  const chatState = useRecoilValue(modalSelector('chat'))
+  const _preview = useRecoilValue(modalSelector('preview'))
+  const _chat = useRecoilValue(modalSelector('chat'))
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
   const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
@@ -350,18 +348,19 @@ const PreviewCard = ({
         )
       </div>
 
-      {previewState.modal.show ? (
-        <CustomModal id={previewState.modal.id} btn btnTxt={'채팅신청'}>
+      {_preview.modal.show ? (
+        <CustomModal id={_preview.modal.id} btn btnTxt={'채팅신청'}>
           <CardSelectModal
             title={activedItem === '' ? selectedTitle : activedItem}
             dragedPreviews={dragedPreviews}
             isDragedMixture={isDragedMixture}
           />
+          {/* <Button small text={'개인 채팅'} className={'!py-2'} /> */}
         </CustomModal>
       ) : null}
 
-      {chatState.modal.show ? (
-        <CustomModal id={chatState.modal.id} type={MODAL_TYPES.ALERT}>
+      {_chat.modal.show ? (
+        <CustomModal id={_chat.modal.id} type={MODAL_TYPES.ALERT}>
           <div className={'flex gap-4 py-2'}>
             <Button
               small

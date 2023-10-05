@@ -37,6 +37,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
         }
       })
     }
+
+    const eventSource = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`)
+
+    eventSource.addEventListener('sse', event => {
+      console.log('event:', event)
+    })
   }
 
   // 알림 전달
