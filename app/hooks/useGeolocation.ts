@@ -29,7 +29,9 @@ const useGeolocation = () => {
     geocoder.coord2Address(currentPos.getLng(), currentPos.getLat(), (result, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const { address } = result[0]
-        localStorage.setItem(COMMON_STORE_KEY.주소, address.address_name)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(COMMON_STORE_KEY.주소, address.address_name)
+        }
       } else {
         console.error('도로명 주소를 가져오지 못했습니다.')
       }

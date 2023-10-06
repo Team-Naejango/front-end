@@ -60,7 +60,9 @@ export const responseNormalizer = async (error: AxiosError) => {
           Authorization: `Bearer ${data.reissuedAccessToken}`,
         } as HeaderType
 
-        localStorage.setItem('accessToken', <string>data.reissuedAccessToken)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', <string>data.reissuedAccessToken)
+        }
 
         return await withAuth.request(error.config)
       } catch (error: unknown) {
@@ -77,7 +79,9 @@ export const responseNormalizer = async (error: AxiosError) => {
           Authorization: `Bearer ${data.body.reissuedAccessToken}`,
         } as HeaderType
 
-        localStorage.setItem('accessToken', data.body.reissuedAccessToken)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', data.body.reissuedAccessToken)
+        }
 
         return await withAuth.request(error.config)
       } catch (error: unknown) {
@@ -100,7 +104,9 @@ export const responseNormalizer = async (error: AxiosError) => {
           Authorization: `Bearer ${data.reissuedAccessToken}`,
         } as HeaderType
 
-        localStorage.setItem('accessToken', <string>data.reissuedAccessToken)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('accessToken', <string>data.reissuedAccessToken)
+        }
 
         return await withAuth.request(error.config)
       } catch (error: unknown) {

@@ -1,13 +1,7 @@
 'use client'
 
-import React, { useCallback, useEffect } from 'react'
-import { toast } from 'react-hot-toast'
+import React, { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
-
-import { NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
-
-import { subscribe } from '@/app/apis/domain/profile/alarm'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()

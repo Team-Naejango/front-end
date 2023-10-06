@@ -9,7 +9,7 @@ import SockJS from 'sockjs-client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
 import uuid from 'react-uuid'
 
@@ -26,7 +26,7 @@ import { useModal } from '@/app/hooks/useModal'
 import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { accessTokenStore } from '@/app/store/atom'
+import { accessTokenStore, systemMessageState } from '@/app/store/atom'
 import { cls } from '@/app/libs/client/utils/util'
 
 import { chat, getChatId, recentMessage } from '@/app/apis/domain/chat/chat'
@@ -65,6 +65,7 @@ const ChatDetail: NextPage = () => {
   const [chatMessageList, setChatMessageList] = useState<ChatResponse[]>([])
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const [systemMessage, setSystemMessage] = useState<string | undefined>(undefined)
+  const [systemMessageStoreValue, setSystemMessageStoreValue] = useRecoilState<string | undefined>(systemMessageState)
   const setting = useRecoilValue(modalSelector('setting'))
   const accessToken = useRecoilValue<string>(accessTokenStore)
 
@@ -212,14 +213,15 @@ const ChatDetail: NextPage = () => {
 
   // 시스템 메시지 전달
   useEffect(() => {
-    if (systemMessage) {
+    if (systemMessage || systemMessageStoreValue) {
       if (client.current?.connected) {
-        client.current?.send(`/pub/channel/${channelId}`, {}, systemMessage)
+        client.current?.send(`/pub/channel/${channelId}`, {}, systemMessage || systemMessageStoreValue)
         reset()
       } else {
         console.log('전송 에러')
       }
       setSystemMessage(undefined)
+      setSystemMessageStoreValue(undefined)
     }
   }, [systemMessage])
 

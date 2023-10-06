@@ -145,7 +145,7 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
           <span className={'mt-2 block text-sm'}>{itemInfo?.name}</span>
         </div>
       </div>
-      <SelectBox data={markerItemsValue} selected={selectedType} setSelected={setSelectedType} />
+      <SelectBox data={markerItemsValue} select={selectedType} setSelect={setSelectedType} />
       <div className={'mt-4'}>
         <TextArea
           label={'상품 설명'}

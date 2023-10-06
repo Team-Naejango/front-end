@@ -19,7 +19,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import Register from '@/app/components/organism/chat/Register'
 import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
-import { cls } from '@/app/libs/client/utils/util'
+import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
 
 import {
   wire,
@@ -34,6 +34,7 @@ import {
 } from '@/app/apis/domain/chat/deal'
 import { account } from '@/app/apis/domain/warehouse/account'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
+import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -87,8 +88,6 @@ const MenuBox = ({
     enabled: !!channelId,
   })
 
-  console.log('itemId:', itemId)
-
   // 1:1 상대 거래자 ID
   const getTraderId = [...(membersInfo?.result || [])].find(value => {
     return value.participantId !== userInfo?.userId
@@ -118,8 +117,9 @@ const MenuBox = ({
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(register, {
     onSuccess: data => {
-      // 거래 예약 등록 성공 문구 필터링
-      setSystemMessage(data.data.message)
+      if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
+        setSystemMessage(data.data.message)
+      }
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
       query.invalidateQueries([DEAL.특정거래조회])
@@ -189,14 +189,6 @@ const MenuBox = ({
       toast.error(error.message)
     },
   })
-
-  // 현재 날짜 변환
-  const formatIsoDate = () => {
-    const instanceDate = new Date()
-
-    const customIsoDate = instanceDate.toISOString().replace(/:\d+\.\d+Z$/, '')
-    return customIsoDate
-  }
 
   // 거래등록 모달
   const registerDeal = () => {
@@ -281,13 +273,10 @@ const MenuBox = ({
       {isOpen ? (
         <div className='flex flex-wrap text-center'>
           <button
-            disabled={!isSeller}
-            className={cls(
-              'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
-            )}
+            disabled
+            className={cls('w-1/3 cursor-pointer border-r border-white bg-[#ddd] px-4 py-5')}
             onClick={registerDeal}>
-            <span className='block text-sm text-white'>거래 등록</span>
+            <span className='block text-sm text-white'>거래 신청</span>
           </button>
           <button
             disabled={!isSeller}

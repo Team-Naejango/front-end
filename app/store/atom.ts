@@ -3,6 +3,7 @@ import { atom } from 'recoil'
 import { cookieEffect } from '@/app/store/effect/cookieEffect'
 import { AUTH_TOKEN, COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 import { PLACE_STORE_KEY } from '@/app/libs/client/constants/store/places'
+import { TRANSACTION_STORE_KEY } from '@/app/libs/client/constants/store/transaction'
 
 interface LocationProps {
   latitude: number
@@ -63,4 +64,13 @@ export const markerItemsState = atom<{ name: string }[]>({
 export const activatedWareHouseTitleState = atom<string>({
   key: `${PLACE_STORE_KEY.창고이름조회}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: '',
+})
+
+/**
+ * 거래 시스템 메세지
+ *
+ * */
+export const systemMessageState = atom<string | undefined>({
+  key: `${TRANSACTION_STORE_KEY.시스템메세지}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: undefined,
 })

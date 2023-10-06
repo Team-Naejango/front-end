@@ -50,15 +50,21 @@ const Login = () => {
 
   const onNonUserLogin = async () => {
     try {
-      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
 
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('accessToken', response.data.result)
+      }
       router.replace('/home?isLoggedIn=true')
       toast.success('게스트 로그인에 성공하였습니다.')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 409) {
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('accessToken', error.response.data.reissuedAccessToken)
+          }
           router.replace('/home?isLoggedIn=true')
           toast.success('게스트 로그인에 성공하였습니다.')
         } else {

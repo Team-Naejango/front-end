@@ -380,8 +380,8 @@ const EditItem = () => {
           essential
           title={'카테고리'}
           data={CATEGORIES}
-          selected={selectedCategory}
-          setSelected={setSelectedCategory}
+          select={selectedCategory}
+          setSelect={setSelectedCategory}
         />
         <InputField
           essential
@@ -448,16 +448,16 @@ const EditItem = () => {
           essential
           title={'저장창고'}
           data={[{ label: '', name: '' }]}
-          selected={selectedStorage}
-          setSelected={setSelectedStorage}
+          select={selectedStorage}
+          setSelect={setSelectedStorage}
         />
         <SelectBox
           essential
           disabled={isEditMode}
           title={'분류'}
           data={DEAL_TYPES}
-          selected={selectedType}
-          setSelected={setSelectedType}
+          select={selectedType}
+          setSelect={setSelectedType}
         />
         {selectedType.label === '공동 구매' && (
           <>

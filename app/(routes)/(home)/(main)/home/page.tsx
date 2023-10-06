@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
+import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
+import { toast } from 'react-hot-toast'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Loading from '@/app/loading'
@@ -17,10 +19,7 @@ import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
-import { toast } from 'react-hot-toast'
 import { subscribe } from '@/app/apis/domain/profile/alarm'
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
-import { accessTokenStore } from '@/app/store/atom'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -29,20 +28,23 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 const Home = () => {
   const router = useRouter()
+  const useParams = useSearchParams()
   const { openModal, closeModal } = useModal()
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
+  const [notificationState, setNotificationState] = useState<boolean>(false)
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
-  const accessToken = useRecoilValue<string>(accessTokenStore)
 
-  console.log('accessToken:', accessToken)
+  const firstLogin = useParams.get('isLoggedIn')
+
+  const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
 
   // 창고 조회
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
 
   // 창고 & 아이템 선택 모달
-  const onSelectedStorageOrItem = () => {
+  const onSelectStorageOrItem = () => {
     openModal({
       modal: {
         id: 'fork',
@@ -53,7 +55,7 @@ const Home = () => {
   }
 
   // 아이템 창고 선택 모달
-  const selectedStorageModal = () => {
+  const onSelectStorageModal = () => {
     closeModal('fork')
 
     openModal({
@@ -65,44 +67,8 @@ const Home = () => {
     })
   }
 
-  const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
-
-  const onChatRequest = async () => {
-    if (Notification.permission === 'granted') {
-      const notification = new Notification('채팅 알림', {
-        body: '상대방이 개인 채팅 신청을 하였습니다.',
-      })
-
-      toast.success('테스트 문구입니다~')
-      return notification
-    }
-  }
-
-  // 서비스워커 시작
-  const serviceWorkerInit = async () => {
-    const permission = await Notification.requestPermission()
-    if (permission !== 'granted') return
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(async () => {
-        try {
-          if (permission === NOTIFICATION_PERMISSION.허용) {
-            await subscribe({ contentType: 'text/event-stream;charset=UTF-8' })
-
-            if (notificationPermission !== NOTIFICATION_PERMISSION.허용) {
-              toast.success('[알림] 알림이 구독되었습니다.')
-            }
-          } else {
-            toast.success('[알림] 알림을 거부하였습니다.')
-          }
-        } catch (error) {
-          console.error('서비스워커 실패:', error)
-        }
-      })
-    }
-
-    const accessToken = localStorage.getItem('accessToken')
-
+  // 알림 전달
+  const notificationCallback = useCallback(() => {
     const EventSource = EventSourcePolyfill || NativeEventSource
     const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
       headers: {
@@ -114,27 +80,42 @@ const Home = () => {
     SSE.addEventListener('sse', event => {
       console.log('SSE 이벤트 수신:', event)
 
-      onChatRequest()
-    })
-  }
+      if (Notification.permission === 'granted') {
+        const notification = new Notification('알림', {
+          body: '알림 구독을 수신했습니다.',
+        })
 
-  // 알림 전달
-  const notificationCallback = useCallback(() => {
-    return navigator.serviceWorker.addEventListener('message', event => {
-      const message = event.data
-      if (message.type === 'showToast') {
-        toast.success(message.message)
+        toast.success('알림 구독을 수신했습니다.')
+        return notification
       }
     })
+  }, [])
+
+  // 서비스 워커 시작
+  const serviceWorkerInit = useCallback(async () => {
+    const permission = await Notification.requestPermission()
+    if (permission !== 'granted') return
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(async () => {
+        try {
+          if (permission === NOTIFICATION_PERMISSION.허용) {
+            if (firstLogin === 'true' && notificationState) {
+              setNotificationState(true)
+              notificationCallback()
+              await subscribe({ contentType: 'text/event-stream;charset=UTF-8' })
+            }
+          }
+        } catch (error) {
+          console.error('서비스워커 실패:', error)
+        }
+      })
+    }
   }, [])
 
   useEffect(() => {
     serviceWorkerInit()
   }, [])
-
-  useEffect(() => {
-    notificationCallback()
-  }, [notificationCallback])
 
   // 창고 아이템 리다이렉트
   useEffect(() => {
@@ -144,7 +125,7 @@ const Home = () => {
   }, [selectedStorage])
 
   // 아이템 추가할 창고 선택
-  const onSelectedStorage = (storageId: number, idx: number) => {
+  const onSelectStorage = (storageId: number, idx: number) => {
     if (!storageId) return
 
     setSelectedStorage(storageId)
@@ -152,7 +133,7 @@ const Home = () => {
   }
 
   // 창고 생성 리다이렉트
-  const onSelectedAddStorage = () => {
+  const onSelectAddStorage = () => {
     router.push(`/warehouse/edit?crud=C&storage=${(_storageInfo?.result.length || 0) + 1}`)
   }
 
@@ -172,7 +153,7 @@ const Home = () => {
           className={
             'fixed bottom-24 right-5 flex aspect-square w-12 cursor-pointer items-center justify-center rounded-full border-0 border-transparent bg-[#33CC99] text-white shadow-sm transition-colors hover:bg-[#32D7A0]'
           }
-          onClick={onSelectedStorageOrItem}>
+          onClick={onSelectStorageOrItem}>
           <svg
             xmlns='http://www.w3.org/2000/svg'
             fill='none'
@@ -188,8 +169,8 @@ const Home = () => {
       {_fork.modal.show ? (
         <CustomModal id={_fork.modal.id} type={MODAL_TYPES.ALERT}>
           <div className={'flex gap-4 py-2'}>
-            <Button small text={'창고생성'} onClick={onSelectedAddStorage} />
-            <Button small text={'아이템생성'} onClick={selectedStorageModal} />
+            <Button small text={'창고생성'} onClick={onSelectAddStorage} />
+            <Button small text={'아이템생성'} onClick={onSelectStorageModal} />
           </div>
         </CustomModal>
       ) : null}
@@ -205,7 +186,7 @@ const Home = () => {
                     className={`ml-2 whitespace-nowrap rounded-md border border-gray-300 px-4 py-2.5 text-[13px] font-medium text-[#222] shadow-sm hover:border-transparent hover:bg-[#33CC99] hover:text-[#fff] focus:outline-none ${
                       selectedStorage === storage.storageId ? `border-transparent bg-[#33CC99] text-[#fff]` : ''
                     }`}
-                    onClick={() => onSelectedStorage(storage.storageId, idx)}>
+                    onClick={() => onSelectStorage(storage.storageId, idx)}>
                     {storage.name}
                   </button>
                 )

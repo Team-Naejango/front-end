@@ -44,7 +44,6 @@ const EventCarousel = () => {
               <Link href={'/events'}>
                 <Image
                   src={data.src}
-                  priority
                   quality={100}
                   placeholder='blur'
                   blurDataURL={data.blurUrl}

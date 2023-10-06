@@ -12,7 +12,7 @@ export const useSendNotification = ({ myId, yourId, myNickname, myImgUrl }: Prof
   const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
 
   if (isMe && notificationPermission === 'granted') {
-    const notification = new Notification('채팅 알림', {
+    const notification = new Notification('알림', {
       body: `${myNickname}님이 채팅방에 입장하였습니다.`,
       icon: `${
         myImgUrl === ''

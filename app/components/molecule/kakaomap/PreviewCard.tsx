@@ -6,29 +6,34 @@ import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
 import { AxiosError } from 'axios'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
 import { CHAT_TYPE, E_CHAT_TYPE, E_ITEM_TYPE, ITEM_TYPE, MODAL_TYPES } from '@/app/libs/client/constants/code'
 import CardSelectModal from '@/app/components/molecule/kakaomap/CardSelectModal'
 import { modalSelector } from '@/app/store/modal'
-import { cls } from '@/app/libs/client/utils/util'
-import { markerItemsState, activatedWareHouseTitleState } from '@/app/store/atom'
+import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
+import { markerItemsState, activatedWareHouseTitleState, systemMessageState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
+import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { GroupChat } from '@/app/apis/types/domain/chat/chat'
 import { useSendNotification } from '@/app/hooks/useSendNotification'
+import { FormFields } from '@/app/components/organism/chat/MenuBox'
+import Register from '@/app/components/organism/chat/Register'
 
+import { DealParam, saveDeal as register } from '@/app/apis/domain/chat/deal'
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 import { userInfo } from '@/app/apis/domain/profile/profile'
-import { joinChat } from '@/app/apis/domain/chat/channel'
-import { joinGroupChat } from '@/app/apis/domain/chat/chat'
+import { groupChatUserInfo, joinChat } from '@/app/apis/domain/chat/channel'
+import { chat, getChatId, joinGroupChat } from '@/app/apis/domain/chat/chat'
 import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
+import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 
 /* global kakao, maps */
 
@@ -59,14 +64,30 @@ const PreviewCard = ({
   const query = useQueryClient()
   const { openModal, closeModal } = useModal()
   const { push } = UseCustomRouter()
-  const _preview = useRecoilValue(modalSelector('preview'))
-  const _chat = useRecoilValue(modalSelector('chat'))
-  const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
-  const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
-  const [selectedItemId, setSelectedItemId] = useState<number | null>(null)
+
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [yourProfileInfo, setYourProfileInfo] = useState<Item | null>(null)
   const [disabledPersonal, setDisabledPersonal] = useState<boolean>(false)
   const [disabledGroup, setDisabledGroup] = useState<boolean>(false)
+  const [isSeller, setIsSeller] = useState<boolean>(true)
+  const [channelId, setChannelId] = useState<string | null>(null)
+  const [traderId, setTraderId] = useState<number | undefined>(undefined)
+
+  const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
+  const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
+  const setSystemMessage = useSetRecoilState<string | undefined>(systemMessageState)
+  const _preview = useRecoilValue(modalSelector('preview'))
+  const _chat = useRecoilValue(modalSelector('chat'))
+  const _register = useRecoilValue(modalSelector('register'))
+
+  const formMethods = useForm<FormFields>({
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
+  })
+  const { getValues } = formMethods
+
+  const amount = getValues('amount')
+  const omitCommaAmount = String(amount).replace(/,/g, '')
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
@@ -80,12 +101,61 @@ const PreviewCard = ({
 
   // 창고 아이템 그룹 채널 조회
   const { data: { data: groupChat } = {} } = useQuery(
-    [WAREHOUSE.그룹채널조회, selectedItemId],
-    () => storageGroupChannel(String(selectedItemId)),
+    [WAREHOUSE.그룹채널조회, selectedItem?.itemId],
+    () => storageGroupChannel(String(selectedItem?.itemId)),
     {
-      enabled: !!selectedItemId,
+      enabled: !!selectedItem?.itemId,
     }
   )
+
+  // 채팅방 목록 조회
+  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat(), {
+    enabled: !!selectedItem?.itemId,
+  })
+
+  // 참여자 정보 조회
+  const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId!), {
+    enabled: !!channelId,
+  })
+
+  // 개인 채팅 방장 여부
+  const personalManager = async () => {
+    const channelId = chats?.result.find(v => v.itemId === selectedItem?.itemId)?.channelId
+    setChannelId(String(channelId))
+
+    if (channelId) {
+      const membersInfo = await groupChatUserInfo(String(channelId))
+      const chatId = await getChatId(String(channelId))
+
+      const getTraderId = membersInfo.data.result.find(value => {
+        return value.participantId !== mineInfo?.result?.userId
+      })?.participantId
+      setTraderId(getTraderId)
+
+      const isSeller = getTraderId !== chatId.data.result
+      return setIsSeller(isSeller)
+    }
+
+    return setIsSeller(false)
+  }
+
+  // 그룹 채팅 방장 여부
+  const isGroupManager = groupChat?.result?.ownerId === mineInfo?.result?.userId
+
+  // 거래 등록
+  const { mutate: mutateRegister } = useMutation(register, {
+    onSuccess: data => {
+      if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
+        setSystemMessage(data.data.message)
+      }
+      query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
 
   // 팔로우 등록
   const { mutate: mutateFollow } = useMutation(saveFollow, {
@@ -178,25 +248,27 @@ const PreviewCard = ({
     })
   }
 
+  const onRegisterChat = (type: E_ITEM_TYPE, ownerId: number) => {
+    if (mineInfo?.result.userId === ownerId) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
+
+    const isPersonal = type === ITEM_TYPE.개인구매 || type === ITEM_TYPE.개인판매
+
+    if (isPersonal) {
+      setDisabledGroup(true)
+    } else if (type === ITEM_TYPE.공동구매) {
+      setDisabledPersonal(true)
+    }
+    onSelectedChatModal()
+  }
+
   // 창고 아이템 선택 모달
-  const onClickShowModal = (name: string, type: string, ownerId: number) => {
+  const onClickShowModal = (name: string) => {
     setSelectedTitle(name)
+
+    personalManager()
 
     openModal({
       modal: { id: 'preview', type: MODAL_TYPES.CONFIRM },
-      callback: () => {
-        if (mineInfo?.result.userId === ownerId)
-          return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
-
-        const isPersonal = type === ITEM_TYPE.개인구매 || type === ITEM_TYPE.개인판매
-
-        if (isPersonal) {
-          setDisabledGroup(true)
-        } else if (type === ITEM_TYPE.공동구매) {
-          setDisabledPersonal(true)
-        }
-        onSelectedChatModal()
-      },
     })
 
     setMarkerItemsValue(
@@ -204,6 +276,27 @@ const PreviewCard = ({
         name: data.name,
       }))
     )
+  }
+
+  // 거래등록 모달
+  const registerDeal = () => {
+    if (traderId === undefined) return toast.error('구매자가 없습니다.')
+
+    openModal({
+      modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
+      callback: () => {
+        if (amount <= 0) return toast.error('최소 금액을 입력해주세요.')
+
+        const params: DealParam = {
+          date: formatIsoDate(),
+          amount: Number(omitCommaAmount),
+          traderId,
+          itemId: selectedItem?.itemId!,
+        }
+
+        mutateRegister(params)
+      },
+    })
   }
 
   // 프리뷰 창고목록 클릭 시
@@ -292,9 +385,9 @@ const PreviewCard = ({
                         role='presentation'
                         className={'w-full p-4'}
                         onClick={() => {
-                          setSelectedItemId(item.itemId)
+                          setSelectedItem({ ...item })
                           setYourProfileInfo({ ...item })
-                          onClickShowModal(item.name || selectedTitle, item.itemType, item.ownerId)
+                          onClickShowModal(item.name || selectedTitle)
                         }}>
                         <span
                           className={cls(
@@ -349,14 +442,36 @@ const PreviewCard = ({
       </div>
 
       {_preview.modal.show ? (
-        <CustomModal id={_preview.modal.id} btn btnTxt={'채팅신청'}>
+        <CustomModal id={_preview.modal.id}>
           <CardSelectModal
             title={activedItem === '' ? selectedTitle : activedItem}
             dragedPreviews={dragedPreviews}
             isDragedMixture={isDragedMixture}
           />
-          {/* <Button small text={'개인 채팅'} className={'!py-2'} /> */}
+          <div className='mt-6 flex justify-center gap-4 text-center'>
+            <Button
+              disabled={!isSeller || !isGroupManager}
+              small
+              text={'거래신청'}
+              className={'flex-1'}
+              onClick={registerDeal}
+            />
+            <Button
+              text={'채팅신청'}
+              className={'flex-1'}
+              onClick={() => onRegisterChat(selectedItem?.itemType!, selectedItem?.ownerId!)}
+            />
+            <Button cancel text={'닫기'} className={'flex-1'} onClick={() => closeModal('preview')} />
+          </div>
         </CustomModal>
+      ) : null}
+
+      {_register.modal.show ? (
+        <FormProvider {...formMethods}>
+          <CustomModal id={_register.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'등록'}>
+            <Register userInfo={mineInfo?.result || null} participants={membersInfo?.result || []} />
+          </CustomModal>
+        </FormProvider>
       ) : null}
 
       {_chat.modal.show ? (

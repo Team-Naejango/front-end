@@ -2,6 +2,7 @@
 
 import React, { Fragment, Dispatch, SetStateAction } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
+
 import { cls } from '@/app/libs/client/utils/util'
 
 interface SelectBoxProps {
@@ -9,15 +10,15 @@ interface SelectBoxProps {
   essential?: boolean
   disabled?: boolean
   data: { label?: string; name: string }[]
-  selected: {
+  select: {
     label?: string
     name: string
   }
-  setSelected: Dispatch<SetStateAction<any>>
+  setSelect: Dispatch<SetStateAction<any>>
   placeholder?: string
 }
 
-const SelectBox = ({ title, data, selected, setSelected, essential, disabled, placeholder }: SelectBoxProps) => {
+const SelectBox = ({ title, data, select, setSelect, essential, disabled, placeholder }: SelectBoxProps) => {
   return (
     <div className='mt-1 w-full'>
       {title ? (
@@ -28,10 +29,10 @@ const SelectBox = ({ title, data, selected, setSelected, essential, disabled, pl
       ) : null}
       <Listbox
         disabled={disabled}
-        value={selected}
+        value={select}
         onChange={newValue => {
           if (newValue) {
-            setSelected(newValue)
+            setSelect(newValue)
           }
         }}>
         <div className='relative mt-1'>
@@ -41,7 +42,7 @@ const SelectBox = ({ title, data, selected, setSelected, essential, disabled, pl
               disabled ? 'bg-[#eee]' : 'bg-white'
             )}
             placeholder={placeholder}>
-            <span className='block truncate text-[13px]'>{selected.label ? selected.label : selected.name}</span>
+            <span className='block truncate text-[13px]'>{select.label ? select.label : select.name}</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-400'>
               <svg
                 aria-hidden
@@ -74,7 +75,7 @@ const SelectBox = ({ title, data, selected, setSelected, essential, disabled, pl
                       <span className={`block truncate text-[13px] ${selected ? 'font-medium' : 'font-normal'}`}>
                         {value.label ? value.label : value.name}
                       </span>
-                      {selected ? (
+                      {selected || select.name ? (
                         <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#33cc99]'>
                           <svg
                             aria-hidden

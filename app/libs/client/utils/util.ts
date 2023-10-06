@@ -9,3 +9,11 @@ export const cls = (...classnames: string[]) => {
 export const formatKoreanCurrency = (value: string | number) => {
   return Number(value).toLocaleString('ko-KR')
 }
+
+// 현재 날짜 변환
+export const formatIsoDate = () => {
+  const instanceDate = new Date()
+
+  const customIsoDate = instanceDate.toISOString().replace(/:\d+\.\d+Z$/, '')
+  return customIsoDate
+}
