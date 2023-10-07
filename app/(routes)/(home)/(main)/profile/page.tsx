@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -18,9 +18,13 @@ import { removeAuthToken } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import Loading from '@/app/loading'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
+import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
+import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
-import { logout as _kill } from '@/app/apis/domain/auth/auth'
+import { logout as kill } from '@/app/apis/domain/auth/auth'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -29,9 +33,12 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 const Profile = () => {
   const router = useRouter()
+  const query = useQueryClient()
   const { openModal } = useModal()
+
   const [switchStatus, setSwitchStatus] = useState<E_SWITCH_STATUS>(SWITCH_STATUS.오프)
   const [isNotificationSupported, setIsNotificationSupported] = useState<boolean>(false)
+
   const _account = useRecoilValue(modalSelector('account'))
   const _logout = useRecoilValue(modalSelector('logout'))
   const _withdrawal = useRecoilValue(modalSelector('withdrawal'))
@@ -46,18 +53,24 @@ const Profile = () => {
     onSuccess: () => {
       toast.success('회원 탈퇴가 완료되었습니다.')
       removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+      query.invalidateQueries([WAREHOUSE.조회, FOLLOW.조회, WISH.조회, CHAT.조회])
+      query.invalidateQueries([OAUTH.유저정보])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
     onSettled: () => {
-      router.push('/login')
+      router.replace('/login')
     },
   })
 
   // 알림 구독 탐지
   const subscribeToNotifications = async () => {
-    if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단) return
+    if (
+      notificationPermission === NOTIFICATION_PERMISSION.허용 ||
+      notificationPermission === NOTIFICATION_PERMISSION.차단
+    )
+      return
 
     await Notification.requestPermission(permission => {
       console.log('permission:', permission)
@@ -111,10 +124,17 @@ const Profile = () => {
         content: '로그아웃을 하시겠습니까?',
       },
       callback: async () => {
-        await _kill()
-        toast.success('로그아웃이 처리되었습니다.')
-        removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
-        router.replace('/login')
+        await kill()
+          .then(() => {
+            toast.success('로그아웃이 완료되었습니다.')
+            removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+          })
+          .catch(error => {
+            toast.error(error.message)
+          })
+          .finally(() => {
+            router.replace('/login')
+          })
       },
     })
   }
@@ -125,7 +145,7 @@ const Profile = () => {
       modal: {
         id: 'withdrawal',
         type: MODAL_TYPES.CONFIRM,
-        title: '탈퇴',
+        title: '회원 탈퇴',
         content: '회원을 탈퇴 하시겠습니까?',
       },
       callback: () => {
@@ -137,8 +157,6 @@ const Profile = () => {
   const onLink = (link: string) => {
     router.push(link)
   }
-
-  console.log('mineInfo:', mineInfo)
 
   return (
     <Layout
@@ -201,7 +219,6 @@ const Profile = () => {
         </ul>
       </div>
 
-      {/* 모달 영역 */}
       {_account.modal.show ? (
         <CustomModal id={_account.modal.id}>
           <ul className={'flex flex-col gap-4'}>

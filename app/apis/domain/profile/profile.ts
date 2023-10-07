@@ -1,5 +1,5 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response } from '@/app/apis/types/response/response'
+import { Common, Response } from '@/app/apis/types/response/response'
 import { AnotherMemberInfo, Member, MemberInfo } from '@/app/apis/types/domain/profile/profile'
 
 /**
@@ -37,6 +37,6 @@ export async function modifyUserInfo(params: Member): Promise<Response<{ user: M
  * 유저 삭제
  *
  */
-export async function deleteUser(): Promise<Response<null>> {
+export async function deleteUser(): Promise<Response<Common>> {
   return withAuth.delete('/api/user')
 }

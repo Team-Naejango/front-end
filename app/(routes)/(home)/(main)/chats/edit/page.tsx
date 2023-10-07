@@ -29,8 +29,8 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { accessTokenStore, systemMessageState } from '@/app/store/atom'
 import { cls } from '@/app/libs/client/utils/util'
 
-import { chat, getChatId, recentMessage } from '@/app/apis/domain/chat/chat'
-import { deleteChat, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
+import { chat, getChatId, recentMessage, closeChat } from '@/app/apis/domain/chat/chat'
+import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
@@ -62,9 +62,11 @@ const ChatDetail: NextPage = () => {
   const { openModal } = useModal()
   const client = useRef<CompatClient>()
   const scrollRef = useRef<HTMLDivElement>(null)
+
   const [chatMessageList, setChatMessageList] = useState<ChatResponse[]>([])
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
   const [systemMessage, setSystemMessage] = useState<string | undefined>(undefined)
+
   const [systemMessageStoreValue, setSystemMessageStoreValue] = useRecoilState<string | undefined>(systemMessageState)
   const setting = useRecoilValue(modalSelector('setting'))
   const accessToken = useRecoilValue<string>(accessTokenStore)
@@ -118,11 +120,12 @@ const ChatDetail: NextPage = () => {
     .find(v => v.imgUrl)?.imgUrl
 
   // 채팅방 종료
-  const { mutate: mutateDelete } = useMutation(deleteChat, {
+  const { mutate: mutateDelete } = useMutation(closeChat, {
     onSuccess: () => {
       toast.success('채팅방이 종료되었습니다.')
       query.invalidateQueries([CHAT.조회])
       query.invalidateQueries([CHAT.참여자조회])
+      query.invalidateQueries([CHAT.메세지조회])
       router.push('/chats')
     },
     onError: (error: ApiError) => {

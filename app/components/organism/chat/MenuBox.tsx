@@ -20,6 +20,7 @@ import Register from '@/app/components/organism/chat/Register'
 import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
+import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 
 import {
   wire,
@@ -34,7 +35,6 @@ import {
 } from '@/app/apis/domain/chat/deal'
 import { account } from '@/app/apis/domain/warehouse/account'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
-import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -67,6 +67,7 @@ const MenuBox = ({
   const query = getQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
+
   const _amount = useRecoilValue(modalSelector('amount'))
   const _register = useRecoilValue(modalSelector('register'))
   const _edit = useRecoilValue(modalSelector('edit'))
@@ -193,7 +194,6 @@ const MenuBox = ({
   // 거래등록 모달
   const registerDeal = () => {
     if (getTraderId === undefined) return toast.error('구매자가 없습니다.')
-    // if (!isSendPoint) return toast.error('구매자가 미송금 상태입니다.')
 
     openModal({
       modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
@@ -204,7 +204,7 @@ const MenuBox = ({
           date: formatIsoDate(),
           amount: Number(omitCommaAmount),
           traderId: getTraderId,
-          itemId: 1,
+          itemId: itemId!,
         }
 
         mutateRegister(params)
@@ -241,7 +241,7 @@ const MenuBox = ({
   // 거래완료 모달
   const completeDeal = () => {
     openModal({
-      modal: { id: 'complete', type: MODAL_TYPES.DIALOG, title: '완료', content: '거래를 완료 하시겠습니까?' },
+      modal: { id: 'complete', type: MODAL_TYPES.DIALOG, title: '거래 완료', content: '거래를 완료 하시겠습니까?' },
       callback: () => {
         mutateComplete(String(searchInfo?.result.id))
       },
@@ -250,8 +250,10 @@ const MenuBox = ({
 
   // 거래삭제 모달
   const deleteDeal = () => {
+    if (transaction?.status !== TRANSACTION_TYPE.거래약속) return toast.error('거래 예약 상태에서만 가능합니다.')
+
     openModal({
-      modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '삭제', content: '거래를 삭제 하시겠습니까?' },
+      modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '거래 삭제', content: '거래를 삭제 하시겠습니까?' },
       callback: () => {
         mutateDelete(String(searchInfo?.result.id))
       },

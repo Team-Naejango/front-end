@@ -1,5 +1,5 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response } from '@/app/apis/types/response/response'
+import { Common, Response } from '@/app/apis/types/response/response'
 import { Chat, ChatId, ChatName, GroupChat, RecentMessage } from '@/app/apis/types/domain/chat/chat'
 
 /* ************************************ 챗 엔터티 ************************************ */
@@ -57,4 +57,13 @@ export async function convertedName(params: { chatId: string; title: string }): 
  */
 export async function joinGroupChat(channelId: string): Promise<Response<{ data: GroupChat }>> {
   return withAuth.post(`/api/chat/group/${channelId}`)
+}
+
+/**
+ * 채팅방 종료
+ *
+ * @param channelId // 종료하고자 하는 채팅방 ID
+ */
+export async function closeChat(channelId: string): Promise<Response<Common>> {
+  return withAuth.delete(`/api/chat/${channelId}`)
 }

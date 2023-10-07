@@ -1,5 +1,5 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response } from '@/app/apis/types/response/response'
+import { Common, Response } from '@/app/apis/types/response/response'
 import { GroupChat, GroupChatUserInfo, NearbyGroupChat } from '@/app/apis/types/domain/chat/chat'
 
 /* ************************************ 채널 엔터티 ************************************ */
@@ -65,10 +65,10 @@ export async function joinChat(receiverId: string): Promise<Response<{ data: Gro
 }
 
 /**
- * 채팅방 종료
+ * 채널 종료
  *
- * @param channelId // 종료하고자 하는 채팅방 ID
+ * @param channelId // 종료하고자 하는 채널 ID
  */
-export async function deleteChat(channelId: string): Promise<Response<null>> {
+export async function closeChannel(channelId: string): Promise<Response<Common>> {
   return withAuth.delete(`/api/channel/${channelId}`)
 }

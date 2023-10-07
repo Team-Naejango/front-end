@@ -2,13 +2,12 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { LuEdit2 } from 'react-icons/lu'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
-import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { AxiosError } from 'axios'
+import { ApiError } from 'next/dist/server/api-utils'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Loading from '@/app/loading'
@@ -16,11 +15,12 @@ import WareHouseCarousel from '@/app/components/organism/warehouse/WareHouseCaro
 import FloatingButton from '@/app/components/atom/FloatingButton'
 import useCustomRouter from '@/app/hooks/useCustomRouter'
 import { CRUD, E_CRUD, MODAL_TYPES } from '@/app/libs/client/constants/code'
-import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
+import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 
-import { deleteStorage, storage } from '@/app/apis/domain/warehouse/warehouse'
+import { storage, deleteStorage } from '@/app/apis/domain/warehouse/warehouse'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -33,11 +33,12 @@ interface PathParam {
 }
 
 const WareHouse = () => {
-  const router = useRouter()
+  const query = useQueryClient()
   const { push } = useCustomRouter()
   const { openModal } = useModal()
-  const query = useQueryClient()
+
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
+
   const _delete = useRecoilValue(modalSelector('delete'))
 
   // 창고 조회
@@ -45,8 +46,21 @@ const WareHouse = () => {
   const { result } = _storageInfo || {}
   const currentItem = result && result[currentSlideIndex]
 
+  // 창고 삭제
+  const { mutate: mutateDeleteStorage } = useMutation(deleteStorage, {
+    onSuccess: () => {
+      toast.success('창고가 삭제되었습니다.')
+      query.invalidateQueries([WAREHOUSE.조회])
+      query.invalidateQueries([FOLLOW.조회])
+      query.invalidateQueries([ITEM.조회])
+    },
+    onError: (error: ApiError) => {
+      toast.error(error.message)
+    },
+  })
+
   // 창고 생성
-  const onCreate = () => {
+  const onCreateStorage = () => {
     const params: PathParam = {
       crud: CRUD.등록,
       storage: (result?.length || 0) + 1,
@@ -58,27 +72,18 @@ const WareHouse = () => {
   }
 
   // 창고 삭제
-  const onDelete = () => {
+  const onDeleteStorage = () => {
     if (result?.length === 0) return
 
     openModal({
       modal: {
         id: 'delete',
         type: MODAL_TYPES.CONFIRM,
-        title: '창고삭제',
+        title: '창고 삭제',
         content: '창고를 삭제 하시겠습니까?',
       },
-      callback: async () => {
-        try {
-          await deleteStorage(String(currentItem?.storageId))
-          await query.invalidateQueries([WAREHOUSE.조회])
-          toast.success('창고가 삭제되었습니다.')
-          router.push('/warehouse')
-        } catch (error: unknown) {
-          if (error instanceof AxiosError) {
-            return Promise.reject(error)
-          }
-        }
+      callback: () => {
+        mutateDeleteStorage(String(currentItem?.storageId))
       },
     })
   }
@@ -92,7 +97,11 @@ const WareHouse = () => {
     <Layout hasHeader seoTitle={'창고공간'}>
       <div className={'relative h-full w-full'}>
         <div className='flex flex-col justify-center'>
-          <WareHouseCarousel datas={_storageInfo || undefined} onClick={onCreate} onSlideChange={onSlideChange} />
+          <WareHouseCarousel
+            datas={_storageInfo || undefined}
+            onClick={onCreateStorage}
+            onSlideChange={onSlideChange}
+          />
           <h2 className={'mb-4 mt-12 text-center text-lg font-bold'}>창고 정보</h2>
           <div className={'h-auto w-full rounded-xl bg-[#f5f5f5] px-8 py-4 text-center'}>
             <div className='mx-auto my-4 grid grid-cols-1 grid-rows-[minmax(0,1fr)] items-center justify-center gap-x-3 gap-y-8'>
@@ -150,7 +159,7 @@ const WareHouse = () => {
           className={`absolute right-0 top-0 rounded border border-[#ccc] px-1.5 py-1 ${
             result?.length === 0 ? 'bg-[#ddd] hover:bg-[#ccc]' : 'cursor-pointer hover:border-[#32D7A0]'
           }`}
-          onClick={onDelete}>
+          onClick={onDeleteStorage}>
           <span className={'inline-block text-[13px]'}>창고삭제</span>
         </div>
       </div>

@@ -30,9 +30,11 @@ const Home = () => {
   const router = useRouter()
   const useParams = useSearchParams()
   const { openModal, closeModal } = useModal()
+
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
   const [notificationState, setNotificationState] = useState<boolean>(false)
+
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
 

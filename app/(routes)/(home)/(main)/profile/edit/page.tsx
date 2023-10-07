@@ -23,7 +23,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
-// import { nickNameValidity } from '@/app/apis/domain/auth/auth'
+import { nickNameValidity } from '@/app/apis/domain/auth/auth'
 
 interface EditProfileForm {
   birth: string
@@ -83,17 +83,17 @@ const EditProfile = () => {
     },
   })
 
-  // todo: API 필요
-  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-  //   onSuccess: () => {
-  //     setIsNicknameDisabled(true)
-  //     setSelectedNickname(getValues('nickname'))
-  //   },
-  //   onError: (error: ApiError) => {
-  //     console.log('error:', error)
-  //     toast.error(error.message)
-  //   },
-  // })
+  // todo: API 미완성
+  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+    onSuccess: () => {
+      setIsNicknameDisabled(true)
+      setSelectedNickname(getValues('nickname'))
+    },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
+  })
 
   // S3 업로드
   const uploadS3 = async (file: File) => {
@@ -148,8 +148,8 @@ const EditProfile = () => {
     const fileExt = file?.name.split('.').pop()
 
     if (!file) return
-    if (!['jpeg', 'png', 'jpg', 'JPG', 'PNG', 'JPEG'].includes(fileExt!)) {
-      toast.error('jpg, png, jpg 파일만 업로드가 가능합니다.')
+    if (!['jpeg', 'JPEG', 'png', 'PNG', 'jpg', 'JPG', 'svg', 'SVG'].includes(fileExt!)) {
+      toast.error('jpg, png, jpeg, svg 파일만 업로드가 가능합니다.')
       event.target.value = ''
       return
     }

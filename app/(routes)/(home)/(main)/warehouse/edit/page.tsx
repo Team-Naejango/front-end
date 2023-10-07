@@ -159,8 +159,8 @@ const WarehouseEdit = () => {
     const fileExt = file?.name.split('.').pop()
 
     if (!file) return
-    if (!['jpeg', 'png', 'jpg', 'JPG', 'PNG', 'JPEG'].includes(fileExt!)) {
-      toast.error('jpg, png, jpg 파일만 업로드가 가능합니다.')
+    if (!['jpeg', 'JPEG', 'png', 'PNG', 'jpg', 'JPG', 'svg', 'SVG'].includes(fileExt!)) {
+      toast.error('jpg, png, jpeg, svg 파일만 업로드가 가능합니다.')
       event.target.value = ''
       return
     }

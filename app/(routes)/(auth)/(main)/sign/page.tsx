@@ -19,7 +19,7 @@ import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
 
-import { sign, SignParam } from '@/app/apis/domain/auth/auth'
+import { sign, nickNameValidity, SignParam } from '@/app/apis/domain/auth/auth'
 
 const Sign = () => {
   const router = useRouter()
@@ -55,18 +55,18 @@ const Sign = () => {
     },
   })
 
-  // todo: API 필요
-  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-  //   onSuccess: () => {
-  //     console.log('닉네임 사용 가능')
-  //     setIsNicknameDisabled(true)
-  //     setSelectedNickname(getValues('nickname'))
-  //   },
-  //   onError: (error: ApiError) => {
-  //     console.log('error:', error)
-  //     toast.error(error.message)
-  //   },
-  // })
+  // todo: API 미완성
+  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+    onSuccess: () => {
+      console.log('닉네임 사용 가능')
+      setIsNicknameDisabled(true)
+      setSelectedNickname(getValues('nickname'))
+    },
+    onError: (error: ApiError) => {
+      console.log('error:', error)
+      toast.error(error.message)
+    },
+  })
 
   const onSubmit = () => {
     // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')

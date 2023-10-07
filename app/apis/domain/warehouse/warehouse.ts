@@ -1,5 +1,5 @@
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response } from '@/app/apis/types/response/response'
+import { Common, Response } from '@/app/apis/types/response/response'
 import {
   ItemInfo,
   ItemList,
@@ -123,8 +123,9 @@ export async function modifyStorage(params: ModifyParam): Promise<Response<null>
 /**
  * 창고 삭제
  *
+ * @param storageId // 창고 ID
  */
-export async function deleteStorage(storageId: string): Promise<Response<null>> {
+export async function deleteStorage(storageId: string): Promise<Response<Common>> {
   return withAuth.delete(`/api/storage/${storageId}`)
 }
 
@@ -262,6 +263,15 @@ export async function modifyItem(
     itemId,
   }
   return withAuth.patch(`/api/item/${itemId}`, newParams)
+}
+
+/**
+ * 아이템 삭제
+ *
+ * @param itemId // 아이템 ID
+ */
+export async function deleteItem(itemId: string): Promise<Response<Common>> {
+  return withAuth.delete(`/api/item/${itemId}`)
 }
 
 // /**

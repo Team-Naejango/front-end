@@ -1,4 +1,5 @@
 import { instance } from '@/app/apis/config/axios/instance/instance'
+import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
 import { Response } from '@/app/apis/types/response/response'
 import { NewAccessToken } from '@/app/apis/types/domain/auth/auth'
 
@@ -55,7 +56,7 @@ export async function nonUser(): Promise<Response<{ data: { accessToken: string 
  *
  */
 export async function logout(): Promise<Response<null>> {
-  return instance.get('/api/auth/logout')
+  return withAuth.get('/api/auth/logout')
 }
 
 /**
@@ -66,11 +67,11 @@ export async function refresh(): Promise<Response<{ data: NewAccessToken }>> {
   return instance.get('/api/auth/refresh')
 }
 
-// /**
-//  * 닉네임 중복확인
-//  *
-//  * @param username 닉네임
-//  */
-// export async function nickNameValidity(username: string): Promise<Response<boolean>> {
-//   return instance.get(`/api/user/check/${username}`)
-// }
+/**
+ * 닉네임 중복확인
+ *
+ * @param username 닉네임
+ */
+export async function nickNameValidity(username: string): Promise<Response<boolean>> {
+  return instance.get(`/api/user/check/${username}`)
+}
