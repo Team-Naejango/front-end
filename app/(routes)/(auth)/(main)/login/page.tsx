@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
@@ -14,7 +14,7 @@ import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import { splashState } from '@/app/store/atom'
+import { accessTokenStore, splashState } from '@/app/store/atom'
 
 interface FormProps {
   email: string
@@ -25,6 +25,7 @@ const Login = () => {
   const router = useRouter()
   const [mounted, setMounted] = useState<boolean>(false)
   const isSplashMounted = useRecoilValue<boolean>(splashState)
+  const setNewAccessToken = useSetRecoilState<string>(accessTokenStore)
 
   const {
     register,
@@ -48,9 +49,11 @@ const Login = () => {
   // 게스트 로그인
   const onNonUserLogin = async () => {
     try {
-      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
+
+      setNewAccessToken(response.data.result)
 
       // if (typeof window !== 'undefined') {
       //   localStorage.setItem('accessToken', response.data.result)
@@ -63,6 +66,7 @@ const Login = () => {
           // if (typeof window !== 'undefined') {
           //   localStorage.setItem('accessToken', error.response.data.reissuedAccessToken)
           // }
+          setNewAccessToken(error.response.data.reissuedAccessToken)
           router.replace('/home?isLoggedIn=true')
           toast.success('게스트 로그인에 성공하였습니다.')
         } else {

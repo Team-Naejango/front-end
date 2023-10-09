@@ -17,6 +17,7 @@ import { MODAL_TYPES, NOTIFICATION_PERMISSION } from '@/app/libs/client/constant
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
+import { accessTokenStore } from '@/app/store/atom'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
 import { subscribe } from '@/app/apis/domain/profile/alarm'
@@ -35,12 +36,11 @@ const Home = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
   const [notificationState, setNotificationState] = useState<boolean>(false)
 
+  const accessToken = useRecoilValue<string>(accessTokenStore)
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
 
   const firstLogin = useParams.get('isLoggedIn')
-
-  const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
 
   // 창고 조회
   const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
