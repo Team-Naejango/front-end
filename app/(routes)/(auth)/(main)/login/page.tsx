@@ -9,12 +9,14 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
-import axios, { AxiosError } from 'axios'
+import { AxiosError } from 'axios'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { accessTokenStore, splashState } from '@/app/store/atom'
+
+import { nonUser } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -49,26 +51,17 @@ const Login = () => {
   // 게스트 로그인
   const onNonUserLogin = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
-        withCredentials: true,
-      })
+      const response = await nonUser()
 
-      setNewAccessToken(response.data.result)
-
-      // if (typeof window !== 'undefined') {
-      //   localStorage.setItem('accessToken', response.data.result)
-      // }
-      router.replace('/home?isLoggedIn=true')
       toast.success('게스트 로그인에 성공하였습니다.')
+      setNewAccessToken(response.data.result)
+      router.replace('/home?isLoggedIn=true')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 409) {
-          // if (typeof window !== 'undefined') {
-          //   localStorage.setItem('accessToken', error.response.data.reissuedAccessToken)
-          // }
+          toast.success('게스트 로그인에 성공하였습니다.')
           setNewAccessToken(error.response.data.reissuedAccessToken)
           router.replace('/home?isLoggedIn=true')
-          toast.success('게스트 로그인에 성공하였습니다.')
         } else {
           toast.error('게스트 로그인에 실패하였습니다.')
         }

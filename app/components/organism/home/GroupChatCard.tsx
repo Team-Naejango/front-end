@@ -19,7 +19,7 @@ const GroupChatCard = () => {
     nearbyGroupChat({
       lon: String(userArea.longitude),
       lat: String(userArea.latitude),
-      rad: '1000',
+      rad: '1500',
     })
   )
 

@@ -14,7 +14,7 @@ import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
 import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
-import { OmitDistanceSearch, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
+import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { useCategories } from '@/app/hooks/useCategories'
@@ -85,7 +85,7 @@ const PlaceMarker = ({
       nearbyStorage({
         lon: String(userArea.longitude),
         lat: String(userArea.latitude),
-        rad: '1000',
+        rad: '1500',
         page: '0',
         size: '20',
       }),
@@ -143,7 +143,7 @@ const PlaceMarker = ({
       const searchParams: ItemSearchParam = {
         lon: String(userArea.longitude),
         lat: String(userArea.latitude),
-        rad: '1000',
+        rad: '1500',
         page: '0',
         size: '20',
         keyword,

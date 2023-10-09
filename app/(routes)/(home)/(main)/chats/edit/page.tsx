@@ -46,6 +46,8 @@ export interface ChatResponse {
   channelId: number
   // 보내는 사람 ID
   senderId: number
+  // 메세지 ID
+  messageId: number
   // 메세지 타입
   messageType: string
   // 메세지 내용
@@ -131,13 +133,7 @@ const ChatDetail: NextPage = () => {
 
   // 최근 메시지 기록 정보
   const getRecentMessage = useCallback(() => {
-    const newMessages = [...(recentMessages?.result || [])].map(message => ({
-      content: message.content,
-      sentAt: message.sentAt,
-      senderId: message.senderId,
-      channelId: message.channelId,
-      messageType: message.messageType,
-    })) as ChatResponse[]
+    const newMessages = recentMessages?.result.map(message => ({ ...message })) || []
 
     setChatMessageList(newMessages.reverse())
   }, [recentMessages?.result])
@@ -216,7 +212,7 @@ const ChatDetail: NextPage = () => {
         client.current?.send(`/pub/channel/${channelId}`, {}, systemMessage || systemMessageStoreValue)
         reset()
       } else {
-        console.log('전송 에러')
+        console.log('시스템 전송 에러')
       }
       setSystemMessage(undefined)
       setSystemMessageStoreValue(undefined)

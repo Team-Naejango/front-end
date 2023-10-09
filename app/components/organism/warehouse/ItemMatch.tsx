@@ -26,7 +26,7 @@ const ItemMatch = ({
     [ITEM.매칭],
     () =>
       itemMatch({
-        rad: '1000',
+        rad: '1500',
         size: '10',
         itemId,
       }),

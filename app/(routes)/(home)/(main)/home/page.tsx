@@ -145,8 +145,8 @@ const Home = () => {
       <div className='relative flex items-center justify-center'>
         <div className={'w-full pb-6'}>
           <EventCarousel />
-          <div className={'mt-[19rem] text-center'}>
-            <p className={'text-sm font-medium'}>내 주변에서 물물교환을 하고 싶다면?</p>
+          <div className={'mt-[19.5rem] text-center'}>
+            <p className={'text-sm font-medium'}>주변에 어떤 아이템이 있을까?</p>
             <Button small text={'탐색하기'} className={'!mt-4'} onClick={() => router.push('/places')} />
           </div>
           <GroupChatCard />

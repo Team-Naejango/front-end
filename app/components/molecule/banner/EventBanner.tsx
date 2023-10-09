@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { HOMEIMAGES } from '@/app/libs/client/constants/static'
 import { cls } from '@/app/libs/client/utils/util'
 
-const Banner = () => {
+const EventBanner = () => {
   return (
     <div className={'flex h-[100%] flex-col items-center justify-center space-y-6'}>
       {HOMEIMAGES.map(value => {
@@ -39,4 +39,4 @@ const Banner = () => {
   )
 }
 
-export default Banner
+export default EventBanner

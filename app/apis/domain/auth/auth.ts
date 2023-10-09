@@ -1,6 +1,6 @@
 import { instance } from '@/app/apis/config/axios/instance/instance'
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { Response } from '@/app/apis/types/response/response'
+import { Common, Response } from '@/app/apis/types/response/response'
 import { NewAccessToken } from '@/app/apis/types/domain/auth/auth'
 
 export interface SignParam {
@@ -47,7 +47,7 @@ export async function sign(params: SignParam): Promise<Response<null>> {
  * 게스트 로그인
  *
  */
-export async function nonUser(): Promise<Response<{ data: { accessToken: string } }>> {
+export async function nonUser(): Promise<Response<{ data: Common }>> {
   return instance.get('/api/auth/guest')
 }
 
