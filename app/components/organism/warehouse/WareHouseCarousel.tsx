@@ -48,20 +48,20 @@ const WareHouseCarousel = ({
     }
   }
 
-  const prevSlideBlocked = () => {
+  const onBlockPrevSlide = () => {
     if (swiper) {
       const { realIndex } = swiper
       swiper.allowSlidePrev = realIndex !== 0
     }
   }
 
-  const onNextHandler = () => {
+  const onNextSwiper = () => {
     if (swiper) {
       swiper.slideNext()
     }
   }
 
-  const onPrevHandler = () => {
+  const onPrevSwiper = () => {
     if (swiper) {
       swiper.slidePrev()
     }
@@ -70,7 +70,7 @@ const WareHouseCarousel = ({
   const swiperParams: SwiperProps = {
     modules: [Navigation, A11y],
     slidesPerView: 1,
-    loop: true,
+    loop: false,
     navigation: {
       // prevEl: '.swiper-button-prev',
       // nextEl: '.swiper-button-next',
@@ -79,7 +79,7 @@ const WareHouseCarousel = ({
     onSwiper: setSwiper,
     onSlideChange: onSlideControls,
     onTouchStart: () => {
-      prevSlideBlocked()
+      onBlockPrevSlide()
     },
     onTouchEnd: () => {
       updatePrevDisabledState()
@@ -153,7 +153,7 @@ const WareHouseCarousel = ({
                   viewBox='0 0 24 24'
                   xmlns='http://www.w3.org/2000/svg'
                   className={cls('h-6 w-6 hover:text-[#33CC99]', totalSlides === 1 ? 'text-[#ccc]' : 'text-[#222]')}
-                  onClick={onPrevHandler}>
+                  onClick={onPrevSwiper}>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
                 </svg>
               </div>
@@ -167,7 +167,7 @@ const WareHouseCarousel = ({
                     viewBox='0 0 24 24'
                     xmlns='http://www.w3.org/2000/svg'
                     className='h-6 w-6 text-[#222] hover:text-[#33CC99]'
-                    onClick={onNextHandler}>
+                    onClick={onNextSwiper}>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
                   </svg>
                 )}

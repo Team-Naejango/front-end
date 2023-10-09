@@ -132,8 +132,14 @@ const WareHouse = () => {
             </div>
           </div>
           <FloatingButton
-            href={`/warehouse/edit?crud=${CRUD.수정}&storage=${currentItem?.storageId}&count=${currentSlideIndex + 1}`}
-            prefetch={false}
+            href={{
+              pathname: '/warehouse/edit',
+              query: {
+                crud: CRUD.수정,
+                storage: currentItem?.storageId,
+                count: currentSlideIndex + 1,
+              },
+            }}
             className={`${
               Array.isArray(result) && result.length === 0 ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''
             }`}>

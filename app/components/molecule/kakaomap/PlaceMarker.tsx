@@ -79,6 +79,7 @@ const PlaceMarker = ({
     watch,
     handleSubmit,
     setValue,
+    setError,
     control,
     reset,
     formState: { errors },
@@ -333,6 +334,7 @@ const PlaceMarker = ({
 
               isDragedMixture && setIsDragedMixture(false)
               setValue('search', '')
+              setError('search', { message: '' })
             } catch (error: unknown) {
               if (error instanceof AxiosError) {
                 return Promise.reject(error)
