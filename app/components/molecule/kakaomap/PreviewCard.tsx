@@ -7,6 +7,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
 import { AxiosError } from 'axios'
 import { FormProvider, useForm } from 'react-hook-form'
+import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
@@ -22,18 +23,18 @@ import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { GroupChat } from '@/app/apis/types/domain/chat/chat'
-import { useSendNotification } from '@/app/hooks/useSendNotification'
+import { ChatInfoList, GroupChat } from '@/app/apis/types/domain/chat/chat'
 import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import Register from '@/app/components/organism/chat/Register'
+import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
+import SelectChatList from '@/app/components/organism/place/SelectChatList'
 
-import { DealParam, saveDeal as register } from '@/app/apis/domain/chat/deal'
+import { DealParam, incompleteDeal, saveDeal as register } from '@/app/apis/domain/chat/deal'
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 import { groupChatUserInfo, joinChat } from '@/app/apis/domain/chat/channel'
 import { chat, getChatId, joinGroupChat } from '@/app/apis/domain/chat/chat'
-import { storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
-import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
+import { storage, storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps */
 
@@ -66,28 +67,32 @@ const PreviewCard = ({
   const { push } = UseCustomRouter()
 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
-  const [yourProfileInfo, setYourProfileInfo] = useState<Item | null>(null)
+  const [selectedChat, setSelectedChat] = useState<ChatInfoList | null>(null)
   const [disabledPersonal, setDisabledPersonal] = useState<boolean>(false)
   const [disabledGroup, setDisabledGroup] = useState<boolean>(false)
   const [isSeller, setIsSeller] = useState<boolean>(true)
-  const [channelId, setChannelId] = useState<string | null>(null)
   const [traderId, setTraderId] = useState<number | undefined>(undefined)
 
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
   const setMarkerItemsValue = useSetRecoilState<{ name: string }[]>(markerItemsState)
   const setSystemMessage = useSetRecoilState<string | undefined>(systemMessageState)
   const _preview = useRecoilValue(modalSelector('preview'))
-  const _chat = useRecoilValue(modalSelector('chat'))
+  const _selectChat = useRecoilValue(modalSelector('selectChat'))
+  const _channel = useRecoilValue(modalSelector('channel'))
   const _register = useRecoilValue(modalSelector('register'))
+
+  const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
 
   const formMethods = useForm<FormFields>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
   })
-  const { getValues } = formMethods
+  const { watch } = formMethods
 
-  const amount = getValues('amount')
-  const omitCommaAmount = String(amount).replace(/,/g, '')
+  // 창고 조회
+  const { data: { data: storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage(), {
+    enabled: !isDragedMixture,
+  })
 
   // 팔로우 조회
   const { data: { data: follows } = {} } = useQuery([FOLLOW.조회], () => follow(), {
@@ -99,6 +104,9 @@ const PreviewCard = ({
     enabled: !isDragedMixture,
   })
 
+  const itemSellType = selectedItem?.itemType === ITEM_TYPE.개인판매
+  const itemSellOwner = selectedItem?.ownerId === mineInfo?.result.userId
+
   // 창고 아이템 그룹 채널 조회
   const { data: { data: groupChat } = {} } = useQuery(
     [WAREHOUSE.그룹채널조회, selectedItem?.itemId],
@@ -108,39 +116,14 @@ const PreviewCard = ({
     }
   )
 
-  // 채팅방 목록 조회
-  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat(), {
-    enabled: !!selectedItem?.itemId,
-  })
-
-  // 참여자 정보 조회
-  const { data: { data: membersInfo } = {} } = useQuery([CHAT.참여자조회], () => groupChatUserInfo(channelId!), {
-    enabled: !!channelId,
-  })
-
-  // 개인 채팅 방장 여부
-  const personalManager = async () => {
-    const channelId = chats?.result.find(v => v.itemId === selectedItem?.itemId)?.channelId
-    setChannelId(String(channelId))
-
-    if (channelId) {
-      const membersInfo = await groupChatUserInfo(String(channelId))
-      const chatId = await getChatId(String(channelId))
-
-      const getTraderId = membersInfo.data.result.find(value => {
-        return value.participantId !== mineInfo?.result?.userId
-      })?.participantId
-      setTraderId(getTraderId)
-
-      const isSeller = getTraderId !== chatId.data.result
-      return setIsSeller(isSeller)
+  // 미완료 거래 조회
+  const { data: { data: incompleteInfo } = {} } = useQuery(
+    [DEAL.미완료거래조회, traderId],
+    () => incompleteDeal(String(traderId)),
+    {
+      enabled: !!traderId,
     }
-
-    return setIsSeller(false)
-  }
-
-  // 그룹 채팅 방장 여부
-  const isGroupManager = groupChat?.result?.ownerId === mineInfo?.result?.userId
+  )
 
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(register, {
@@ -148,9 +131,16 @@ const PreviewCard = ({
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
+      toast.success('거래가 등록되었습니다.')
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
       query.invalidateQueries([DEAL.특정거래조회])
+      push({
+        pathname: '/chats/edit',
+        query: {
+          channel: selectedChat?.channelId,
+        },
+      })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -181,14 +171,35 @@ const PreviewCard = ({
 
   // 브라우저 알림 전송
   const UseSendNotification = () => {
-    const sendNotification = useSendNotification({
-      myId: mineInfo?.result.userId,
-      yourId: yourProfileInfo?.ownerId,
-      myNickname: mineInfo?.result.nickname,
-      myImgUrl: mineInfo?.result.imgUrl,
+    const EventSource = EventSourcePolyfill || NativeEventSource
+    const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
     })
 
-    return sendNotification
+    SSE.addEventListener('sse', event => {
+      console.log('SSE 이벤트 수신:', event)
+
+      if (Notification.permission === 'granted') {
+        const notification = new Notification('알림', {
+          body: '알림 구독을 수신했습니다.',
+        })
+
+        toast.success('알림 구독을 수신했습니다.')
+        return notification
+      }
+    })
+
+    // const sendNotification = useSendNotification({
+    //   myId: mineInfo?.result.userId,
+    //   yourId: yourProfileInfo?.ownerId,
+    //   myNickname: mineInfo?.result.nickname,
+    //   myImgUrl: mineInfo?.result.imgUrl,
+    // })
+    //
+    // return sendNotification
   }
 
   const sendNotification = useCallback(() => {
@@ -225,8 +236,6 @@ const PreviewCard = ({
           channel: data.data.result.channelId,
         },
       })
-      // 이미 참여중인 채널인 경우 이미 채널에 참여중이라는 메세지와 함께 채팅방 edit 를 응답합니다.
-      // 참여중이지 않은 채팅인 경우 채팅방의 정원을 확인하고 가득차 있지 않으면, 채팅방(Chat) 을 새로 생성하고 채널에 참여 합니다.
     },
     onError: (error: GroupChat) => {
       toast.error(error.message)
@@ -237,29 +246,34 @@ const PreviewCard = ({
     closeModal('chat')
   }, [])
 
-  // 채팅방 선택 모달
-  const onSelectedChatModal = () => {
-    openModal({
-      modal: {
-        id: 'chat',
-        type: MODAL_TYPES.ALERT,
-        title: '채팅방 선택',
-      },
-    })
+  // 프리뷰 창고목록 클릭 시
+  const onClickPreview = (marker: SearchCondition | Storages) => {
+    if (!marker) return
+
+    setInfo(marker)
+    const place = new window.kakao.maps.LatLng(Number(marker.coord.latitude), Number(marker.coord.longitude))
+    kakaoMap && kakaoMap.panTo(place)
+    setIsDragedMixture(true)
+    setSelectedTitle(marker.name)
   }
 
-  const onRegisterChat = (type: E_ITEM_TYPE, ownerId: number) => {
-    if (mineInfo?.result.userId === ownerId) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
+  // 개인 채팅 방장 여부
+  const personalManager = useCallback(async () => {
+    if (selectedChat?.channelId) {
+      const membersInfo = await groupChatUserInfo(String(selectedChat?.channelId))
+      const chatId = await getChatId(String(selectedChat?.channelId))
 
-    const isPersonal = type === ITEM_TYPE.개인구매 || type === ITEM_TYPE.개인판매
+      const getTraderId = membersInfo.data.result?.find(value => {
+        return value.participantId !== mineInfo?.result?.userId
+      })?.participantId
+      setTraderId(getTraderId)
 
-    if (isPersonal) {
-      setDisabledGroup(true)
-    } else if (type === ITEM_TYPE.공동구매) {
-      setDisabledPersonal(true)
+      const isSeller = getTraderId !== chatId.data.result
+
+      return setIsSeller(isSeller)
     }
-    onSelectedChatModal()
-  }
+    return setIsSeller(false)
+  }, [mineInfo?.result?.userId, selectedChat?.channelId])
 
   // 창고 아이템 선택 모달
   const onClickShowModal = (name: string) => {
@@ -278,41 +292,90 @@ const PreviewCard = ({
     )
   }
 
-  // 거래등록 모달
-  const registerDeal = () => {
-    if (traderId === undefined) return toast.error('구매자가 없습니다.')
-
+  // 채팅방 선택 모달
+  const onSelectChatModal = () => {
     openModal({
-      modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
-      callback: () => {
-        if (amount <= 0) return toast.error('최소 금액을 입력해주세요.')
-
-        const params: DealParam = {
-          date: formatIsoDate(),
-          amount: Number(omitCommaAmount),
-          traderId,
-          itemId: selectedItem?.itemId!,
-        }
-
-        mutateRegister(params)
+      modal: {
+        id: 'selectChat',
+        type: MODAL_TYPES.ALERT,
+        title: '채팅방 선택',
       },
     })
   }
 
-  // 프리뷰 창고목록 클릭 시
-  const onClickPreview = (marker: SearchCondition | Storages) => {
-    if (!marker) return
+  // 거래등록 모달
+  const registerDeal = useCallback(() => {
+    openModal({
+      modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
+      callback: () => {
+        if (watch('amount') <= 0) return toast.error('최소 금액을 입력해주세요.')
 
-    setInfo(marker)
-    const place = new window.kakao.maps.LatLng(Number(marker.coord.latitude), Number(marker.coord.longitude))
-    kakaoMap && kakaoMap.panTo(place)
-    setIsDragedMixture(true)
-    setSelectedTitle(marker.name)
+        const omitCommaAmount = String(watch('amount')).replace(/,/g, '')
+
+        if (incompleteInfo?.result && incompleteInfo.result.length > 0) {
+          toast.error('이미 진행중인 거래가 존재합니다.')
+          closeModal('selectChat')
+        } else {
+          const params: DealParam = {
+            date: formatIsoDate(),
+            amount: Number(omitCommaAmount),
+            traderId: traderId!,
+            itemId: selectedItem?.itemId!,
+          }
+
+          mutateRegister(params)
+        }
+      },
+    })
+  }, [traderId])
+
+  useEffect(() => {
+    personalManager()
+  }, [personalManager])
+
+  useEffect(() => {
+    if (traderId) {
+      registerDeal()
+    }
+  }, [registerDeal, traderId])
+
+  // 채팅방 선택 시
+  const onSelectChat = (chat: ChatInfoList) => {
+    if (!chat) return
+
+    setSelectedChat(chat)
+    registerDeal()
+  }
+
+  // 개인/그룹 채널 선택 모달
+  const onSelectChannelModal = () => {
+    openModal({
+      modal: {
+        id: 'channel',
+        type: MODAL_TYPES.ALERT,
+        title: '채널 선택',
+      },
+    })
+  }
+
+  const onRegisterChat = (type: E_ITEM_TYPE, ownerId: number) => {
+    if (mineInfo?.result.userId === ownerId) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
+
+    const isPersonal = type === ITEM_TYPE.개인구매 || type === ITEM_TYPE.개인판매
+
+    if (isPersonal) {
+      setDisabledGroup(true)
+    } else if (type === ITEM_TYPE.공동구매) {
+      setDisabledPersonal(true)
+    }
+    onSelectChannelModal()
   }
 
   // 팔로우 구독/취소
   const onClickFollow = (storageId: number) => {
     if (!storageId) return
+    const isMyStorage = storageInfo?.result.some(v => v.storageId === storageId)
+    if (isMyStorage) return toast.error('회원님의 창고입니다. 다른 창고를 선택해주세요.')
 
     const isSubscribe = follows && follows.result.some(v => v.id === storageId)
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
@@ -324,6 +387,9 @@ const PreviewCard = ({
 
     if (type === CHAT_TYPE.개인) {
       const ownerId = dragedPreviews?.find(v => v.ownerId)?.ownerId
+
+      if (mineInfo?.result.userId === ownerId)
+        return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
 
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
@@ -386,7 +452,6 @@ const PreviewCard = ({
                         className={'w-full p-4'}
                         onClick={() => {
                           setSelectedItem({ ...item })
-                          setYourProfileInfo({ ...item })
                           onClickShowModal(item.name || selectedTitle)
                         }}>
                         <span
@@ -450,11 +515,11 @@ const PreviewCard = ({
           />
           <div className='mt-6 flex justify-center gap-4 text-center'>
             <Button
-              disabled={!isSeller || !isGroupManager}
+              disabled={!(itemSellType && itemSellOwner)}
               small
               text={'거래신청'}
               className={'flex-1'}
-              onClick={registerDeal}
+              onClick={onSelectChatModal}
             />
             <Button
               text={'채팅신청'}
@@ -466,16 +531,22 @@ const PreviewCard = ({
         </CustomModal>
       ) : null}
 
+      {_selectChat.modal.show ? (
+        <CustomModal id={_selectChat.modal.id} type={MODAL_TYPES.DIALOG}>
+          <SelectChatList selectItem={selectedItem} selectedChat={selectedChat} onSelectChat={onSelectChat} />
+        </CustomModal>
+      ) : null}
+
       {_register.modal.show ? (
         <FormProvider {...formMethods}>
           <CustomModal id={_register.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'등록'}>
-            <Register userInfo={mineInfo?.result || null} participants={membersInfo?.result || []} />
+            <Register userInfo={mineInfo?.result || null} selectedChat={selectedChat} />
           </CustomModal>
         </FormProvider>
       ) : null}
 
-      {_chat.modal.show ? (
-        <CustomModal id={_chat.modal.id} type={MODAL_TYPES.ALERT}>
+      {_channel.modal.show ? (
+        <CustomModal id={_channel.modal.id} type={MODAL_TYPES.ALERT}>
           <div className={'flex gap-4 py-2'}>
             <Button
               small

@@ -2,23 +2,27 @@
 
 import React, { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { useQuery } from '@tanstack/react-query'
 
 import InputField from '@/app/components/atom/InputField'
 import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
-import { Participant } from '@/app/apis/types/domain/chat/chat'
+import { ChatInfoList } from '@/app/apis/types/domain/chat/chat'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { TransactionResult } from '@/app/apis/types/domain/chat/deal'
+import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
+
+import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 
 const Register = ({
   edit = false,
   userInfo,
-  participants,
   transaction,
+  selectedChat,
 }: {
   edit?: boolean
   userInfo: Member | null
-  participants: Participant[]
+  selectedChat?: ChatInfoList | null
   transaction?: TransactionResult
 }) => {
   const {
@@ -28,13 +32,22 @@ const Register = ({
     reset,
   } = useFormContext<FormFields>()
 
+  // 참여자 정보 조회
+  const { data: { data: membersInfo } = {} } = useQuery(
+    [CHAT.참여자조회],
+    () => groupChatUserInfo(String(selectedChat?.channelId)),
+    {
+      enabled: !!selectedChat?.channelId,
+    }
+  )
+
   // 1:1 거래자 정보
   const getTraderInfo = () => {
-    const sellerNm = participants.find(value => {
+    const sellerNm = membersInfo?.result.find(value => {
       return value.participantId === userInfo?.userId
     })?.nickname
 
-    const traderNm = participants.find(value => {
+    const traderNm = membersInfo?.result.find(value => {
       return value.participantId !== userInfo?.userId
     })?.nickname
 
@@ -49,7 +62,7 @@ const Register = ({
       dealer: traderNm,
       amount: edit ? transaction?.amount : 0,
     })
-  }, [])
+  }, [selectedChat, membersInfo?.result, transaction])
 
   // 콤마 컨버터
   const onInputChange = (name: any, value: string) => {

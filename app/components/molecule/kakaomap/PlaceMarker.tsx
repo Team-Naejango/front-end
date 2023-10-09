@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import { AxiosError } from 'axios'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
@@ -22,11 +23,13 @@ import {
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 import { itemSearch, ItemSearchParam } from '@/app/apis/domain/warehouse/warehouse'
 import { ITEM_TYPE } from '@/app/libs/client/constants/code'
+import { useCategories } from '@/app/hooks/useCategories'
 
 import { nearbyStorage } from '@/app/apis/domain/place/place'
 
 /* global kakao, maps, services */
 import Status = kakao.maps.services.Status
+
 // import PlacesSearchResult = kakao.maps.services.PlacesSearchResult
 // import Pagination = kakao.maps.Pagination
 // import PlacesSearchOptions = kakao.maps.services.PlacesSearchOptions
@@ -66,12 +69,20 @@ const PlaceMarker = ({
   setInfo,
 }: EventProps) => {
   const { getUserAddress } = useGeolocation()
+  const { findCategoryList } = useCategories()
   const userArea = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
   const setSelectedTitle = useSetRecoilState<string>(activatedWareHouseTitleState)
 
   // let isUseBounds = true
 
-  const { watch, handleSubmit, control, reset } = useForm<FormProps>({
+  const {
+    watch,
+    handleSubmit,
+    setValue,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormProps>({
     mode: 'onTouched',
   })
   const search = watch('search')
@@ -155,8 +166,8 @@ const PlaceMarker = ({
         rad: '1000',
         page: '0',
         size: '20',
-        keyword: String(keyword),
-        category: String(category),
+        keyword,
+        categoryId: findCategoryList(category).categoryId!,
         itemType: ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매 || ITEM_TYPE.공동구매,
         status: true,
       }
@@ -177,6 +188,7 @@ const PlaceMarker = ({
             name: item.name,
             imgUrl: item.imgUrl,
             itemType: item.itemType,
+            categoryId: item.categoryId,
             categoryName: item.categoryName,
             description: item.description,
           }
@@ -247,6 +259,16 @@ const PlaceMarker = ({
               control={control}
               name='search'
               defaultValue=''
+              rules={{
+                maxLength: 10,
+                validate: {
+                  limitLength: data => {
+                    if (data.length < 2) {
+                      return '최소 2글자 이상 입력해주세요.'
+                    }
+                  },
+                },
+              }}
               render={({ field }) => (
                 <SearchInput
                   type='text'
@@ -254,11 +276,15 @@ const PlaceMarker = ({
                   placeholder='아이템명을 입력해주세요.'
                   onKeyDown={onKeyDownSearch}
                   {...field}
+                  maxLength={10}
                 />
               )}
             />
             <Button text={'검색'} type={'submit'} small className={'!mt-0 ml-2 h-[42px] !text-[13px]'} />
           </div>
+          {errors.search?.message ? (
+            <p className='-mt-4 mb-1 text-[12px] text-red-400'>{errors.search?.message}</p>
+          ) : null}
         </form>
       ) : (
         <Skeleton className={'mt-4'} width={330} height={42} baseColor={'rgba(240, 240, 240, 0.5)'} />
@@ -305,14 +331,15 @@ const PlaceMarker = ({
                 },
               })
 
-              // setIsDragedMixture(true)
               isDragedMixture && setIsDragedMixture(false)
-            } catch (error) {
-              console.log('error:', error)
+              setValue('search', '')
+            } catch (error: unknown) {
+              if (error instanceof AxiosError) {
+                return Promise.reject(error)
+              }
             }
           }}>
           {markers?.map(marker => {
-            // console.log('marker:', marker)
             return (
               <div key={uuid()}>
                 <MapMarker

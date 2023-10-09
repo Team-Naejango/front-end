@@ -83,7 +83,7 @@ export async function modifyDeal(params: ModifyParam): Promise<Response<{ data: 
  *
  * @param transactionId // 거래 ID
  */
-export async function deleteDeal(transactionId: string): Promise<Response<Common>> {
+export async function deleteDeal(transactionId: string): Promise<Response<{ data: Common }>> {
   return withAuth.delete(`/api/transaction/${transactionId}`)
 }
 
@@ -92,7 +92,7 @@ export async function deleteDeal(transactionId: string): Promise<Response<Common
  *
  * @param transactionId // 거래 ID
  */
-export async function complete(transactionId: string): Promise<Response<Common>> {
+export async function complete(transactionId: string): Promise<Response<{ data: Common }>> {
   return withAuth.patch(`/api/transaction/${transactionId}/complete`)
 }
 
@@ -101,6 +101,6 @@ export async function complete(transactionId: string): Promise<Response<Common>>
  *
  * @param transactionId // 거래 ID
  */
-export async function wire(transactionId: string): Promise<Response<Common>> {
+export async function wire(transactionId: string): Promise<Response<{ data: Common }>> {
   return withAuth.patch(`/api/transaction/${transactionId}/remit`)
 }

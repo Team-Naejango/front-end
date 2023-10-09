@@ -22,30 +22,31 @@ const FindEmail = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormProps>()
+  } = useForm<FormProps>({ mode: 'onSubmit', reValidateMode: 'onChange' })
 
-  const onValid = () => {
+  // 전송
+  const onSubmit = () => {
     toast.error('현재 카카오 로그인만 허용했습니다.')
     reset()
   }
 
-  const onClickLogin = (event: React.MouseEvent) => {
+  // 로그인/비밀번호 찾기 리다이렉트
+  const onClickRedirect = (event: React.MouseEvent, url: string) => {
     event.stopPropagation()
     event.preventDefault()
-    router.push('/login')
-  }
 
-  const onClickFindPassword = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    event.preventDefault()
-    router.push('/findPassword')
+    if (url === 'login') {
+      router.push(`/${url}`)
+    } else if (url === 'findPassword') {
+      router.push(`/${url}`)
+    }
   }
 
   return (
     <>
       <BackHeader canGoBack title={'아이디 찾기'} seoTitle={'아이디 찾기'} />
       <div className='mt-20 px-4'>
-        <form onSubmit={handleSubmit(onValid)} className='mt-8 flex flex-col space-y-3'>
+        <form onSubmit={handleSubmit(onSubmit)} className='mt-8 flex flex-col space-y-3'>
           <InputField
             register={register('email', {
               required: '휴대폰 번호를 입력해주세요.',
@@ -62,8 +63,8 @@ const FindEmail = () => {
           )}
           {isFindEmail ? (
             <>
-              <Button onClick={onClickLogin} text='로그인' />
-              <Button onClick={onClickFindPassword} text='비밀번호 찾기' />
+              <Button onClick={(e: React.MouseEvent) => onClickRedirect(e, 'login')} text='로그인' />
+              <Button onClick={(e: React.MouseEvent) => onClickRedirect(e, 'findPassword')} text='비밀번호 찾기' />
             </>
           ) : (
             <Button text='이메일 찾기' />

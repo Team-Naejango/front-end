@@ -19,6 +19,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         }
 
         const isHasToken = await TokenValid()
+
         const newAccessToken = String(config.headers.Authorization).split(' ')[1]
 
         setNewAccessToken(newAccessToken)

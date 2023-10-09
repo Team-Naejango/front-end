@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast'
 import { CompatClient, Stomp } from '@stomp/stompjs'
 import SockJS from 'sockjs-client'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import dynamic from 'next/dynamic'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -18,7 +18,6 @@ import Message from '@/app/components/atom/Message'
 import DropDown from '@/app/components/molecule/tab/DropDown'
 import InputField from '@/app/components/atom/InputField'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
-import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
 import Loading from '@/app/loading'
 import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
@@ -30,7 +29,7 @@ import { accessTokenStore, systemMessageState } from '@/app/store/atom'
 import { cls } from '@/app/libs/client/utils/util'
 
 import { chat, getChatId, recentMessage, closeChat } from '@/app/apis/domain/chat/chat'
-import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
+import { closeChannel, groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
@@ -58,7 +57,7 @@ export interface ChatResponse {
 const ChatDetail: NextPage = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const query = getQueryClient()
+  const query = useQueryClient()
   const { openModal } = useModal()
   const client = useRef<CompatClient>()
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -82,8 +81,6 @@ const ChatDetail: NextPage = () => {
 
   // 입장한 채팅방 필터링
   const enterChatInfo = [...(chats?.result || [])].filter(chat => chat.channelId === Number(channelId)).find(v => v)
-
-  console.log('enterChatInfo:', enterChatInfo)
 
   // 내 채팅방 ID 조회
   const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(channelId!), {
@@ -114,14 +111,13 @@ const ChatDetail: NextPage = () => {
     }
   )
 
-  // 유저 이미지 필터링
-  const userImage = [...(membersInfo?.result || [])]
-    .filter(v => v.participantId === mineInfo?.result.userId)
-    .find(v => v.imgUrl)?.imgUrl
-
   // 채팅방 종료
   const { mutate: mutateDelete } = useMutation(closeChat, {
-    onSuccess: () => {
+    onSuccess: async () => {
+      setSystemMessage(`${mineInfo?.result.nickname}님이 채팅방을 나가셨습니다.`)
+      if (Array.isArray(membersInfo?.result) && membersInfo?.result.length === 1) {
+        await closeChannel(String(channelId))
+      }
       toast.success('채팅방이 종료되었습니다.')
       query.invalidateQueries([CHAT.조회])
       query.invalidateQueries([CHAT.참여자조회])
@@ -167,7 +163,6 @@ const ChatDetail: NextPage = () => {
           message => {
             const newMessage = JSON.parse(message.body)
 
-            console.log('newMessage:', newMessage)
             setChatMessageList(prevMessages => [...prevMessages, newMessage])
           },
           { Authorization: `Bearer ${accessToken}` }
@@ -192,7 +187,7 @@ const ChatDetail: NextPage = () => {
     }
   }
 
-  // 웹소켓 마운트/언마운트
+  // 웹소켓 마운트
   useEffect(() => {
     onConnect(channelId!)
 
@@ -258,7 +253,12 @@ const ChatDetail: NextPage = () => {
           </span>
           {chatMessageList.map(data => {
             return (
-              <Message key={uuid()} data={data} isMe={data.senderId === mineInfo?.result.userId} imgUrl={userImage} />
+              <Message
+                key={uuid()}
+                data={data}
+                membersInfo={membersInfo}
+                isMe={data.senderId === mineInfo?.result.userId}
+              />
             )
           })}
         </div>
@@ -270,8 +270,6 @@ const ChatDetail: NextPage = () => {
           })}
           className='fixed bottom-0 left-1/2 z-[10000] w-full -translate-x-1/2 bg-white pb-5'>
           <MenuBox
-            chatId={chatId?.result || null}
-            itemId={enterChatInfo?.itemId || undefined}
             channelId={channelId || null}
             userInfo={mineInfo?.result || null}
             isOpen={isOpenBox}

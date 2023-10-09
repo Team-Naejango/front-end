@@ -23,7 +23,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
-import { nickNameValidity } from '@/app/apis/domain/auth/auth'
+// import { nickNameValidity } from '@/app/apis/domain/auth/auth'
 
 interface EditProfileForm {
   birth: string
@@ -40,8 +40,8 @@ const EditProfile = () => {
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
   const [imageFile, setImageFile] = useState<FileList | null>(null)
-  const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
-  const [selectedNickname, setSelectedNickname] = useState<string>('')
+  // const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
+  // const [selectedNickname, setSelectedNickname] = useState<string>('')
 
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
   const ACCESS_KEY_ID = process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID
@@ -84,16 +84,16 @@ const EditProfile = () => {
   })
 
   // todo: API 미완성
-  const { mutate: mutateNickname } = useMutation(nickNameValidity, {
-    onSuccess: () => {
-      setIsNicknameDisabled(true)
-      setSelectedNickname(getValues('nickname'))
-    },
-    onError: (error: ApiError) => {
-      console.log('error:', error)
-      toast.error(error.message)
-    },
-  })
+  // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
+  //   onSuccess: () => {
+  //     setIsNicknameDisabled(true)
+  //     setSelectedNickname(getValues('nickname'))
+  //   },
+  //   onError: (error: ApiError) => {
+  //     console.log('error:', error)
+  //     toast.error(error.message)
+  //   },
+  // })
 
   // S3 업로드
   const uploadS3 = async (file: File) => {
@@ -169,6 +169,7 @@ const EditProfile = () => {
     reader.readAsDataURL(file)
   }
 
+  // 전송
   const onSubmit = async () => {
     if (!_userInfo) return
 

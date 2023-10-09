@@ -75,7 +75,7 @@ const SelectBox = ({ title, data, select, setSelect, essential, disabled, placeh
                       <span className={`block truncate text-[13px] ${selected ? 'font-medium' : 'font-normal'}`}>
                         {value.label ? value.label : value.name}
                       </span>
-                      {selected || select.name ? (
+                      {selected ? (
                         <span className='absolute inset-y-0 left-0 flex items-center pl-3 text-[#33cc99]'>
                           <svg
                             aria-hidden

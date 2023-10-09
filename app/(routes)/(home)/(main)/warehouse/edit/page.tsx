@@ -180,6 +180,7 @@ const WarehouseEdit = () => {
     reader.readAsDataURL(file)
   }
 
+  // 전송
   const onSubmit = async (data: WarehouseProps) => {
     // if (!data) return
 

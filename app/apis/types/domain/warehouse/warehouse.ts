@@ -66,6 +66,8 @@ export type Item = {
   itemId: number
   // 아이템 소유 회원 ID
   ownerId: number
+  // 카테고리 ID
+  categoryId: number
   // 아이템 카테고리
   category: string
   // 아이템 타입(INDIVIDUAL_BUY / INDIVIDUAL_SELL / GROUP_BUY)
@@ -130,6 +132,8 @@ export type SaveItemResult = {
   itemType: string
   // 해시태그
   hashTag: string[]
+  // 카테고리 ID
+  categoryId: number
   // 카테고리
   category: string
 }
@@ -149,6 +153,8 @@ export type ItemInfoResult = {
   storageId: number
   // 카테고리 ID
   categoryId: number
+  // 카테고리 이름
+  categoryName: string
   // 아이템 이름
   name: string
   // 아이템 설명
@@ -159,8 +165,6 @@ export type ItemInfoResult = {
   itemType: string
   // 해시태그
   hashTag: string[]
-  // 카테고리 이름
-  categoryName: string
   // 아이템 조회 수
   viewCount: number
 }
@@ -217,6 +221,8 @@ export type SearchCondition = {
   imgUrl: string
   // 아이템 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
   itemType: string
+  // 카테고리 ID
+  categoryId: number
   // 카테고리 이름
   categoryName: string
 }
@@ -234,6 +240,8 @@ export type ItemMatchResult = {
   itemId: number
   // 창고 소유 회원 ID
   ownerId: number
+  // 카테고리 ID
+  categoryId: number
   // 카테고리
   category: string
   // 아이템 이름

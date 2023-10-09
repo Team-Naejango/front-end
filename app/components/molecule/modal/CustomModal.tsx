@@ -100,7 +100,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = 'í™
                       </Dialog.Title>
                     )}
                     {modal.content && (
-                      <div className='p-3'>
+                      <div className='pb-1 pt-3'>
                         <div className='overflow-auto p-3 text-sm'>{modal.content}</div>
                       </div>
                     )}

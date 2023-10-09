@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import Image from 'next/image'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
@@ -8,7 +8,6 @@ import { toast } from 'react-hot-toast'
 import InputField from '@/app/components/atom/InputField'
 import { cls } from '@/app/libs/client/utils/util'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
-import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
 import { useModal } from '@/app/hooks/useModal'
 import Button from '@/app/components/atom/Button'
 import { Member } from '@/app/apis/types/domain/profile/profile'
@@ -31,7 +30,7 @@ const SettingModal = ({
   title: string
   userInfo: Member | undefined
 }) => {
-  const query = getQueryClient()
+  const query = useQueryClient()
   const { closeModal } = useModal()
 
   const {

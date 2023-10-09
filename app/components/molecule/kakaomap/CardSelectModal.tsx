@@ -13,8 +13,10 @@ import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
 import { cls } from '@/app/libs/client/utils/util'
 import { E_ITEM_TYPE, ITEM_TYPE } from '@/app/libs/client/constants/code'
+import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { wish, saveWish, unWish } from '@/app/apis/domain/profile/wish'
+import { userInfo } from '@/app/apis/domain/profile/profile'
 
 interface CardSelectProps {
   title: string
@@ -41,6 +43,11 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   } = useForm<CardProps>({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
+  })
+
+  // 프로필 조회
+  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+    enabled: !isDragedMixture,
   })
 
   // 관심 조회
@@ -73,11 +80,16 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   }, [])
 
   useEffect(() => {
-    if (isDragedMixture) setSelectedType({ name: selectedTitle })
+    if (isDragedMixture) {
+      setSelectedType({ name: selectedTitle })
+    }
   }, [isDragedMixture, title, selectedTitle])
 
+  // 관심 구독/취소
   const onClickWish = (itemId: number) => {
     if (!itemId) return
+    const isMyStorageItem = mineInfo?.result.userId === itemInfo?.ownerId
+    if (isMyStorageItem) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
 
     const isSubscribe = wishs && wishs.result.some(v => v.id === itemId)
     isSubscribe ? mutateUnWish(String(itemId)) : mutateWish(String(itemId))

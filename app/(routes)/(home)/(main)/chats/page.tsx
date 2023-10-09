@@ -18,7 +18,6 @@ const Chats = () => {
 
   // 채팅방 목록 조회
   const { data: { data: chats } = {}, refetch } = useQuery([CHAT.조회], () => chat())
-  console.log('chats:', chats)
 
   const onMoveBanner = () => {
     router.push('/events')

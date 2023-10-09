@@ -21,6 +21,7 @@ import { CRUD, ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CATEGORIES, DEAL_TYPES, STORAGES } from '@/app/libs/client/constants/static'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
+import { useCategories } from '@/app/hooks/useCategories'
 
 import {
   itemInfo,
@@ -40,7 +41,7 @@ interface ItemProps {
   imgUrl: string
   itemType: string
   hashTag: string[]
-  category: string
+  categoryId: number
   storageId: number
 }
 
@@ -48,6 +49,7 @@ const EditItem = () => {
   const searchParams = useSearchParams()
   const router = useRouter()
   const query = useQueryClient()
+  const { findCategoryList } = useCategories()
   const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
   const [selectedStorage, setSelectedStorage] = useState<{ label: string; name: string }>(STORAGES[0])
   const [selectedType, setSelectedType] = useState<{ label: string; name: string }>(DEAL_TYPES[0])
@@ -244,6 +246,7 @@ const EditItem = () => {
     reader.readAsDataURL(file)
   }
 
+  // 전송
   const onSubmit = async (data: ItemProps) => {
     // if (!_itemInfo) return
 
@@ -263,7 +266,7 @@ const EditItem = () => {
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.result.imgUrl,
       itemType: selectedType.name,
       hashTag: hashTags,
-      category: selectedCategory.name,
+      categoryId: findCategoryList(selectedCategory.name).categoryId!,
       storageId: Number(storageId),
     }
 
@@ -324,6 +327,7 @@ const EditItem = () => {
     if (hashTags.length <= 2) {
       setHashTags(prevHashTag => [...prevHashTag, String(hashTag)])
       setValue('hashTag', [])
+      setError('hashTag', { message: '' })
     } else {
       toast.error('해시태그는 최대 3개까지 가능합니다.')
     }

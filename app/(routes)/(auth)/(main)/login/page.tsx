@@ -33,10 +33,7 @@ const Login = () => {
     formState: { errors },
   } = useForm<FormProps>()
 
-  const onKakaoLogin = () => {
-    router.push('/oauth/kakaoLogin')
-  }
-
+  // 전송
   const onSubmit = () => {
     toast.error('현재 카카오 로그인만 허용했습니다.')
     reset()
@@ -48,23 +45,24 @@ const Login = () => {
     }
   }, [isSplashMounted])
 
+  // 게스트 로그인
   const onNonUserLogin = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
 
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', response.data.result)
-      }
+      // if (typeof window !== 'undefined') {
+      //   localStorage.setItem('accessToken', response.data.result)
+      // }
       router.replace('/home?isLoggedIn=true')
       toast.success('게스트 로그인에 성공하였습니다.')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         if (error.response?.status === 409) {
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('accessToken', error.response.data.reissuedAccessToken)
-          }
+          // if (typeof window !== 'undefined') {
+          //   localStorage.setItem('accessToken', error.response.data.reissuedAccessToken)
+          // }
           router.replace('/home?isLoggedIn=true')
           toast.success('게스트 로그인에 성공하였습니다.')
         } else {
@@ -132,7 +130,7 @@ const Login = () => {
               </div>
               <div className='mt-2 grid grid-cols-1 gap-3'>
                 <button
-                  onClick={onKakaoLogin}
+                  onClick={() => router.push('/oauth/kakaoLogin')}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <Image src={kakaoLogo} alt='카카오 로고' width={24} height={24} className='mr-2.5' />
                   카카오 로그인

@@ -67,10 +67,9 @@ export interface RecentMessage {
  * 채팅방 이름 정보
  */
 export interface ChatName {
-  // 제목이 변경된 채팅방 ID
-  chatId: number
+  message: string
   // 변경된 제목
-  changedTitle: string
+  result: string
 }
 
 /* ************************************ 채널 ************************************ */

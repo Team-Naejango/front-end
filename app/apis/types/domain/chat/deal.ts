@@ -9,6 +9,8 @@ export type TransactionResult = {
   date: string
   // 거래 상태(구매/판매)
   status: string
+  // 거래자 ID
+  traderId: number
   // 거래자 이름
   traderName: string
   // 아이템 이름

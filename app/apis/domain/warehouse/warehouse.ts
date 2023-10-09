@@ -145,9 +145,9 @@ export interface ItemParam {
   hashTag: string[]
   // 타입
   itemType: string
-  // 카테고리
-  category: string
-  // 창고 리스트
+  // 카테고리 ID
+  categoryId: number
+  // 창고 ID
   storageId: number
 }
 
@@ -170,8 +170,8 @@ export interface ItemSearchParam {
   page: string
   // 조회수
   size: string
-  // 카테고리 이름
-  category: string
+  // 카테고리 ID
+  categoryId: number
   // 검색 키워드(2~10자)
   keyword: string
   // 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)

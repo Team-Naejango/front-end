@@ -31,6 +31,7 @@ const PointCharge = () => {
     },
   })
 
+  // 전송
   const onSubmit = async () => {
     if (!selectedPoint.value) return
 

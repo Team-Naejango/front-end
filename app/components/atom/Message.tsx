@@ -6,14 +6,23 @@ import Image from 'next/image'
 import { cls } from '@/app/libs/client/utils/util'
 import { ChatResponse } from '@/app/(routes)/(home)/(main)/chats/edit/page'
 import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
+import { GroupChatUserInfo } from '@/app/apis/types/domain/chat/chat'
 
 interface MessageProps {
   data: ChatResponse
   isMe: boolean
-  imgUrl: string | undefined
+  membersInfo: GroupChatUserInfo | undefined
 }
 
-const Message = ({ data, isMe, imgUrl }: MessageProps) => {
+const Message = ({ data, isMe, membersInfo }: MessageProps) => {
+  // 유저 이미지 필터링
+  const userImage = membersInfo?.result.find(v => v.participantId === data.senderId)?.imgUrl
+
+  // 거래 메세지
+  const isTradeMessage = (message: string) => {
+    return message === '거래 정보 수정 성공' || message === '거래 삭제 성공' || message === '거래 완료 요청 성공'
+  }
+
   // 메세지 타입
   const getStatus = (value: string) => {
     return {
@@ -28,7 +37,7 @@ const Message = ({ data, isMe, imgUrl }: MessageProps) => {
 
   const messageType = getStatus(data.messageType)
 
-  return messageType ? (
+  return messageType || isTradeMessage(data.content) ? (
     messageType === MESSAGE_TYPE.구독 ? null : (
       <div className={'text-center'}>
         <p className={'text-xs'}>{data.content}</p>
@@ -38,7 +47,7 @@ const Message = ({ data, isMe, imgUrl }: MessageProps) => {
     <div
       role={'presentation'}
       className={cls('flex items-end space-x-2', isMe ? 'flex-row-reverse !space-x-reverse' : '')}>
-      {imgUrl === undefined ? (
+      {userImage === '' ? (
         <Image
           src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'}
           priority
@@ -51,7 +60,7 @@ const Message = ({ data, isMe, imgUrl }: MessageProps) => {
       ) : (
         <Image
           src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
-            imgUrl as string
+            userImage as string
           )}`}
           priority
           width={'100'}

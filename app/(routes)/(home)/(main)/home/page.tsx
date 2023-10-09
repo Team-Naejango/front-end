@@ -127,11 +127,11 @@ const Home = () => {
   }, [selectedStorage])
 
   // 아이템 추가할 창고 선택
-  const onSelectStorage = (storageId: number, idx: number) => {
+  const onSelectStorage = (storageId: number, index: number) => {
     if (!storageId) return
 
     setSelectedStorage(storageId)
-    setCurrentSlideIndex(idx)
+    setCurrentSlideIndex(index)
   }
 
   // 창고 생성 리다이렉트

@@ -19,7 +19,7 @@ const ItemMatch = ({
   onSelect: (item: ItemMatchResult) => void
 }) => {
   const focusRef = useRef<HTMLDivElement | null>(null)
-  const [activeIndex, setActiveIndex] = useState<ItemMatchResult | null>(null) // 클릭된 아
+  const [activeIndex, setActiveIndex] = useState<ItemMatchResult | null>(null)
 
   // 아이템 매칭
   const { data: { data: items } = {} } = useQuery(

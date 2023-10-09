@@ -20,12 +20,14 @@ const FindPassword = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormProps>()
+  } = useForm<FormProps>({ mode: 'onSubmit', reValidateMode: 'onChange' })
 
+  // 이메일 검증
   const onValidEmail = () => {
     setIsEmailValid(true)
   }
 
+  // 로그인 검증
   const onValidVerify = () => {
     toast.error('현재 카카오 로그인만 허용했습니다.')
   }
