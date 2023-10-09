@@ -285,10 +285,12 @@ const MenuBox = ({
             <span className='block text-sm text-white'>금액 충전</span>
           </button>
           <button
-            disabled={isSeller || sellerTransaction?.status === TRANSACTION_TYPE.송금완료}
+            disabled={isSeller || sellerTransaction?.status === TRANSACTION_TYPE.송금완료 || !searchInfo?.result}
             className={cls(
               'w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              isSeller || sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              isSeller || sellerTransaction?.status === TRANSACTION_TYPE.송금완료 || !searchInfo?.result
+                ? 'bg-[#ddd] hover:bg-[#ddd]'
+                : ''
             )}
             onClick={sendPoint}>
             <span className='block text-sm text-white'>송금 하기</span>

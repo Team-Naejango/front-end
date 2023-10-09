@@ -14,7 +14,7 @@ import { chat } from '@/app/apis/domain/chat/chat'
 
 const Chats = () => {
   const router = useRouter()
-  const [close, setClose] = useState<boolean>(false)
+  const [closeBanner, setCloseBanner] = useState<boolean>(false)
 
   // 채팅방 목록 조회
   const { data: { data: chats } = {}, refetch } = useQuery([CHAT.조회], () => chat())
@@ -29,8 +29,8 @@ const Chats = () => {
 
   return (
     <Layout hasHeader seoTitle={'채팅'}>
-      {!close && <SmallBanner onClick={onMoveBanner} onClose={() => setClose(true)} />}
-      <div className='mb-14 mt-4 divide-y-[1px]'>
+      {!closeBanner && <SmallBanner onClick={onMoveBanner} onClose={() => setCloseBanner(true)} />}
+      <div className={cls('mb-14 divide-y-[1px]', closeBanner ? '' : 'mt-4')}>
         {chats?.result.length === 0 ? (
           <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
             <p className={'text-[15px]'}>채팅 목록이 없습니다.</p>

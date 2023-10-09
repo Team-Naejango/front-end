@@ -36,7 +36,6 @@ const Deal = () => {
 
       {_deal.modal.show ? (
         <CustomModal id={_deal.modal.id} type={MODAL_TYPES.ALERT} btn>
-          {/* todo: 작업 보류 */}
           {/* <DetailDealPopup /> */}
         </CustomModal>
       ) : null}

@@ -18,6 +18,7 @@ import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import { accessTokenStore } from '@/app/store/atom'
+import SelectStorage from '@/app/components/organism/home/SelectStorage'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
 import { subscribe } from '@/app/apis/domain/profile/alarm'
@@ -43,31 +44,7 @@ const Home = () => {
   const firstLogin = useParams.get('isLoggedIn')
 
   // 창고 조회
-  const { data: { data: _storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
-
-  // 창고 & 아이템 선택 모달
-  const onSelectStorageOrItem = () => {
-    openModal({
-      modal: {
-        id: 'fork',
-        type: MODAL_TYPES.ALERT,
-        title: '선택',
-      },
-    })
-  }
-
-  // 아이템 창고 선택 모달
-  const onSelectStorageModal = () => {
-    closeModal('fork')
-
-    openModal({
-      modal: {
-        id: 'item',
-        type: MODAL_TYPES.ALERT,
-        title: '창고 선택',
-      },
-    })
-  }
+  const { data: { data: storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
 
   // 알림 전달
   const notificationCallback = useCallback(() => {
@@ -126,6 +103,17 @@ const Home = () => {
     router.push(`/warehouse/detail/item/edit?crud=C&storage=${selectedStorage}&count=${currentSlideIndex}&item=`)
   }, [selectedStorage])
 
+  // 창고 & 아이템 선택 모달
+  const onSelectStorageOrItem = () => {
+    openModal({
+      modal: {
+        id: 'fork',
+        type: MODAL_TYPES.ALERT,
+        title: '선택',
+      },
+    })
+  }
+
   // 아이템 추가할 창고 선택
   const onSelectStorage = (storageId: number, index: number) => {
     if (!storageId) return
@@ -134,9 +122,22 @@ const Home = () => {
     setCurrentSlideIndex(index)
   }
 
+  // 아이템 창고 선택 모달
+  const onSelectStorageModal = () => {
+    closeModal('fork')
+
+    openModal({
+      modal: {
+        id: 'item',
+        type: MODAL_TYPES.ALERT,
+        title: '창고 선택',
+      },
+    })
+  }
+
   // 창고 생성 리다이렉트
   const onSelectAddStorage = () => {
-    router.push(`/warehouse/edit?crud=C&storage=${(_storageInfo?.result.length || 0) + 1}`)
+    router.push(`/warehouse/edit?crud=C&storage=${(storageInfo?.result.length || 0) + 1}`)
   }
 
   return (
@@ -144,7 +145,7 @@ const Home = () => {
       <div className='relative flex items-center justify-center'>
         <div className={'w-full pb-6'}>
           <EventCarousel />
-          <div className={'mt-80 text-center'}>
+          <div className={'mt-[19rem] text-center'}>
             <p className={'text-sm font-medium'}>내 주변에서 물물교환을 하고 싶다면?</p>
             <Button small text={'탐색하기'} className={'!mt-4'} onClick={() => router.push('/places')} />
           </div>
@@ -179,24 +180,7 @@ const Home = () => {
 
       {_item.modal.show ? (
         <CustomModal id={_item.modal.id} type={MODAL_TYPES.DIALOG}>
-          <div className={'flex h-full flex-wrap items-center justify-center gap-4 py-2'}>
-            {_storageInfo?.result ? (
-              _storageInfo?.result.map((storage, idx) => {
-                return (
-                  <button
-                    key={storage.storageId}
-                    className={`ml-2 whitespace-nowrap rounded-md border border-gray-300 px-4 py-2.5 text-[13px] font-medium text-[#222] shadow-sm hover:border-transparent hover:bg-[#33CC99] hover:text-[#fff] focus:outline-none ${
-                      selectedStorage === storage.storageId ? `border-transparent bg-[#33CC99] text-[#fff]` : ''
-                    }`}
-                    onClick={() => onSelectStorage(storage.storageId, idx)}>
-                    {storage.name}
-                  </button>
-                )
-              })
-            ) : (
-              <span className={'text-sm'}>창고를 생성해주세요.</span>
-            )}
-          </div>
+          <SelectStorage storageInfo={storageInfo} selectStorage={selectedStorage} onSelectStorage={onSelectStorage} />
         </CustomModal>
       ) : null}
     </Layout>

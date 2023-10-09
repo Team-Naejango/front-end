@@ -14,26 +14,16 @@ import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
 import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
-import {
-  OmitDistanceSearch,
-  SearchCondition,
-  SearchResult,
-  Storages,
-} from '@/app/apis/types/domain/warehouse/warehouse'
+import { OmitDistanceSearch, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
-import { itemSearch, ItemSearchParam } from '@/app/apis/domain/warehouse/warehouse'
 import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { useCategories } from '@/app/hooks/useCategories'
 
 import { nearbyStorage } from '@/app/apis/domain/place/place'
+import { itemSearch, ItemSearchParam } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps, services */
 import Status = kakao.maps.services.Status
-
-// import PlacesSearchResult = kakao.maps.services.PlacesSearchResult
-// import Pagination = kakao.maps.Pagination
-// import PlacesSearchOptions = kakao.maps.services.PlacesSearchOptions
-// import PlacesSearchResultItem = kakao.maps.services.PlacesSearchResultItem
 
 interface EventProps {
   kakaoMap: kakao.maps.Map | null
@@ -121,18 +111,7 @@ const PlaceMarker = ({
         getUserAddress()
 
         const newMarkers = storages?.result.map(storage => {
-          const markers: OmitDistanceSearch = {
-            storageId: storage.storageId,
-            ownerId: storage.ownerId,
-            name: storage.name,
-            imgUrl: storage.imgUrl,
-            address: storage.address,
-            coord: {
-              longitude: storage.coord.longitude,
-              latitude: storage.coord.latitude,
-            },
-            description: storage.description,
-          }
+          const markers = { ...storage }
 
           bounds.extend(new window.kakao.maps.LatLng(storage.coord.latitude!, storage.coord.longitude!))
           return markers
@@ -177,22 +156,7 @@ const PlaceMarker = ({
         const { data: items } = await itemSearch(searchParams)
 
         const newMarkers = items?.result.map(item => {
-          const markers: SearchCondition = {
-            id: item.id,
-            storageId: item.storageId,
-            storageName: item.storageName,
-            distance: item.distance,
-            coord: {
-              longitude: item.coord.longitude,
-              latitude: item.coord.latitude,
-            },
-            name: item.name,
-            imgUrl: item.imgUrl,
-            itemType: item.itemType,
-            categoryId: item.categoryId,
-            categoryName: item.categoryName,
-            description: item.description,
-          }
+          const markers = { ...item }
 
           bounds.extend(new window.kakao.maps.LatLng(item.coord.latitude, item.coord.longitude))
           return markers
@@ -202,21 +166,9 @@ const PlaceMarker = ({
       } catch (error) {
         console.log('아이템 검색 오류:', error)
       }
-
-      // if (type) {
-      //   // isUseBounds = false
-      //   // places.keywordSearch(type, kakaoMapCallback, { ...options, ...{ query: type } })
-      // } else if (query) {
-      //   // isUseBounds = false
-      //   // places.keywordSearch(query, kakaoMapCallback, { ...options, ...{ query } })
-      // }
     },
     [kakaoMap]
   )
-
-  // useEffect(() => {
-  //   onSearchKeywordOrCategories(search, selectedCategory)
-  // }, [selectedCategory, kakaoMap, updateMarkers, onSearchKeywordOrCategories, watch])
 
   useEffect(() => {
     if (!kakaoMap) return
@@ -234,10 +186,6 @@ const PlaceMarker = ({
   const onSubmitSearch = () => {
     onSearchKeywordOrCategories(search, selectedCategory)
     isDragedMixture && setIsDragedMixture(false)
-  }
-
-  const onKeyDownSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') onSearchKeywordOrCategories(event.currentTarget.value, selectedCategory)
   }
 
   // 마커 클릭 시
@@ -275,7 +223,6 @@ const PlaceMarker = ({
                   type='text'
                   className='!m-0'
                   placeholder='아이템명을 입력해주세요.'
-                  onKeyDown={onKeyDownSearch}
                   {...field}
                   maxLength={10}
                 />
@@ -302,9 +249,6 @@ const PlaceMarker = ({
             borderRadius: '8px',
           }}
           onCreate={setKakaoMap}
-          // onBoundsChanged={async () => {
-          //   await refetch()
-          // }}
           onDragEnd={async map => {
             try {
               const storage = await refetch()

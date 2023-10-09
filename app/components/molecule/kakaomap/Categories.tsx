@@ -11,8 +11,7 @@ const Categories = ({
   selectedCategory: { name: string }
   setSelectedCategory: Dispatch<SetStateAction<{ name: string }>>
 }) => {
-  const onClickSelectCategory = (category: string) => {
-    console.log('category:', category)
+  const onSelectCategory = (category: string) => {
     setSelectedCategory({ name: category })
   }
 
@@ -27,7 +26,7 @@ const Categories = ({
               className={`cursor-pointer rounded border border-[#e5e7eb] px-2.5 py-1.5 text-xs hover:underline hover:underline-offset-2 ${
                 category.name === selectedCategory.name ? '!border-[#32D7A0]' : ''
               }`}
-              onClick={() => onClickSelectCategory(category.name)}>
+              onClick={() => onSelectCategory(category.name)}>
               {category.name}
             </li>
           )
