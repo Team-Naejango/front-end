@@ -16,6 +16,7 @@ const ReviewCard = () => {
         date: '2023-07-15T17:35',
         amount: 1000,
         status: '구매',
+        traderId: 1,
         traderName: '거래자 이름1',
         itemName: '아이템 이름1',
         itemId: 1,
