@@ -9,14 +9,12 @@ import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
 import { PiUserCircleMinus } from 'react-icons/pi'
-import { AxiosError } from 'axios'
+import axios, { AxiosError } from 'axios'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { accessTokenStore, splashState } from '@/app/store/atom'
-
-import { nonUser } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -51,7 +49,9 @@ const Login = () => {
   // 게스트 로그인
   const onNonUserLogin = async () => {
     try {
-      const response = await nonUser()
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+        withCredentials: true,
+      })
 
       toast.success('게스트 로그인에 성공하였습니다.')
       setNewAccessToken(response.data.result)

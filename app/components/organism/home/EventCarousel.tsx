@@ -7,32 +7,32 @@ import SwiperCore, { A11y, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react'
 import { Swiper as SwiperClass } from 'swiper/types'
 
+import 'swiper/css'
+
 import { HOMEIMAGES } from '@/app/libs/client/constants/static'
 import { cls } from '@/app/libs/client/utils/util'
 
-import 'swiper/css'
-
 const EventCarousel = () => {
+  SwiperCore.use([A11y, Autoplay])
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [activeIndex, setActiveIndex] = useState<number>(0)
 
   const totalSlides = HOMEIMAGES.filter(value => value.ing).length
 
-  SwiperCore.use([A11y, Autoplay])
-
-  const onSlideIndexChanged = () => {
+  const onSlideIndexChange = () => {
     if (swiper) {
       setActiveIndex(swiper.realIndex)
     }
   }
 
+  // 슬라이드 파라미터
   const swiperParams: SwiperProps = {
     modules: [A11y, Autoplay],
     slidesPerView: 1,
     autoplay: { delay: 3000, disableOnInteraction: false },
     loop: true,
     onSwiper: setSwiper,
-    onSlideChange: onSlideIndexChanged,
+    onSlideChange: onSlideIndexChange,
   }
 
   return (

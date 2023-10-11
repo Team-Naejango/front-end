@@ -1,21 +1,11 @@
 'use client'
 
-import { StaticImageData } from 'next/image'
-import { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
-
 import event1 from '@/app/assets/image/event_trip_02.png'
 import event2 from '@/app/assets/image/event_trip_03.png'
 import event3 from '@/app/assets/image/event_basket.png'
 import event4 from '@/app/assets/image/event_trip_04.png'
-import boxImg from '@/app/assets/image/box.png'
 
-// 파이어베이스 키
-// const FIREBASE_API_KEY = 'AIzaSyAxyOdpGIONpW9y2xwnskMxvHotpystoK0'
-// const FIREBASE_AUTH_DOMAIN = 'naejango-9f387.firebaseapp.com'
-// const FIREBASE_PROJECT_ID = 'naejango-9f387'
-// const FIREBASE_STORAGE_BUCKET = 'naejango-9f387.appspot.com'
-// const FIREBASE_MESSAGING_SENDER_ID = '544393338037'
-// const FIREBASE_APP_ID = '1:544393338037:web:0da3309952fdf3547172fc'
+import { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
 
 // 포인트 충전
 const POINTS: DataTypes[] = [
@@ -39,15 +29,6 @@ const POINTS: DataTypes[] = [
     label: '0원',
     value: 10000,
   },
-]
-
-// 카테고리 타입
-const CATEGORIES: { name: string }[] = [
-  { name: '전체' },
-  { name: '의류' },
-  { name: '가구' },
-  { name: '생필품' },
-  { name: '디지털기기' },
 ]
 
 // 창고 목록
@@ -100,29 +81,4 @@ const HOMEIMAGES = [
   },
 ]
 
-interface WareHouseProps {
-  id: number
-  src: StaticImageData
-  title: string
-}
-
-// 창고 정보
-const WAREHOUSEIMAGES: WareHouseProps[] = [
-  {
-    id: 1,
-    src: boxImg,
-    title: '창고1',
-  },
-  {
-    id: 2,
-    src: boxImg,
-    title: '창고2',
-  },
-  {
-    id: 3,
-    src: boxImg,
-    title: '창고3',
-  },
-]
-
-export { POINTS, CATEGORIES, STORAGES, DEAL_TYPES, HOMEIMAGES, WAREHOUSEIMAGES }
+export { POINTS, STORAGES, DEAL_TYPES, HOMEIMAGES }

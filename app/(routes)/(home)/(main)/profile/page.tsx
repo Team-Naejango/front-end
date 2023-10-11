@@ -172,7 +172,7 @@ const Profile = () => {
             )}
             `
       }>
-      <div className={'float-right w-16 rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0]'}>
+      <div className={'float-right w-16 rounded border border-[#ccc] px-1.5 py-1 text-center hover:border-[#32D7A0]'}>
         <Link href={'/profile/point'}>
           <span className={'inline-block text-[13px]'}>{`잔고 : ${mineInfo?.result.balance || 0}`}</span>
         </Link>

@@ -9,7 +9,6 @@ import useGeolocation from '@/app/hooks/useGeolocation'
 import PlaceMarker from '@/app/components/molecule/kakaomap/PlaceMarker'
 import Categories from '@/app/components/molecule/kakaomap/Categories'
 import PreviewCard from '@/app/components/molecule/kakaomap/PreviewCard'
-import { CATEGORIES } from '@/app/libs/client/constants/static'
 import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
@@ -22,7 +21,7 @@ const KakaoMap = () => {
   const [kakaoMap, setKakaoMap] = useState<kakao.maps.Map | null>(null)
   const [markers, setMarkers] = useState<SearchCondition[] | Storages[] | []>([])
   const [info, setInfo] = useState<SearchCondition | Storages | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(() => CATEGORIES[0])
+  const [selectedCategory, setSelectedCategory] = useState<{ name: string } | undefined>(undefined)
   const [isUpdatePreview, setIsUpdatePreview] = useState<boolean>(true)
   const [isDragedMixture, setIsDragedMixture] = useState<boolean>(false)
 
@@ -44,11 +43,7 @@ const KakaoMap = () => {
   return (
     <>
       {myLocation.isLoaded ? (
-        <Categories
-          categoriesData={CATEGORIES}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-        />
+        <Categories selectedCategory={selectedCategory || { name: '' }} setSelectedCategory={setSelectedCategory} />
       ) : (
         <Skeleton className={'mt-2'} width={330} height={30} baseColor={'rgba(240, 240, 240, 0.5)'} />
       )}
@@ -60,7 +55,7 @@ const KakaoMap = () => {
         setMyLocation={setMyLocation}
         markers={markers}
         setMarkers={setMarkers}
-        selectedCategory={selectedCategory.name}
+        selectedCategory={selectedCategory?.name || ''}
         setIsUpdatePreview={setIsUpdatePreview}
         isDragedMixture={isDragedMixture}
         setIsDragedMixture={setIsDragedMixture}

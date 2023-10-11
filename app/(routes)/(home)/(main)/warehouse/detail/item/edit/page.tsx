@@ -19,9 +19,11 @@ import SelectBox from '@/app/components/atom/SelectBox'
 import InputFile from '@/app/components/atom/InputFile'
 import { CRUD, ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { CATEGORIES, DEAL_TYPES, STORAGES } from '@/app/libs/client/constants/static'
+import { DEAL_TYPES, STORAGES } from '@/app/libs/client/constants/static'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { useCategories } from '@/app/hooks/useCategories'
+import CategorySelectBox from '@/app/components/molecule/tab/CategorySelectBox'
+import { CATEGORY } from '@/app/libs/client/reactQuery/queryKey/common'
 
 import {
   itemInfo,
@@ -32,6 +34,7 @@ import {
   storageGroupChannel,
 } from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
+import { category } from '@/app/apis/domain/common/category'
 
 interface ItemProps {
   name: string
@@ -50,7 +53,7 @@ const EditItem = () => {
   const router = useRouter()
   const query = useQueryClient()
   const { findCategoryList } = useCategories()
-  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>(CATEGORIES[0])
+  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>({ name: '전체' })
   const [selectedStorage, setSelectedStorage] = useState<{ label: string; name: string }>(STORAGES[0])
   const [selectedType, setSelectedType] = useState<{ label: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
@@ -101,6 +104,9 @@ const EditItem = () => {
   //     return { ...storage, id: v.storageId }.id
   //   })
   // }).find(v => v)
+
+  // 카테고리 리스트
+  const { data: { data: categories } = {} } = useQuery([CATEGORY.조회], category)
 
   // 아이템 상세조회
   const { data: { data: _itemInfo } = {} } = useQuery([ITEM.상세, itemId], () => itemInfo(itemId), {
@@ -380,10 +386,10 @@ const EditItem = () => {
             />
           )}
         </div>
-        <SelectBox
+        <CategorySelectBox
           essential
           title={'카테고리'}
-          data={CATEGORIES}
+          data={categories?.result}
           select={selectedCategory}
           setSelect={setSelectedCategory}
         />

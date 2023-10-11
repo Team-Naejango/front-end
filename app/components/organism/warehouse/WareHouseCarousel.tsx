@@ -13,6 +13,7 @@ import 'swiper/css/navigation'
 
 import { cls } from '@/app/libs/client/utils/util'
 import { StorageInfo } from '@/app/apis/types/domain/warehouse/warehouse'
+import { E_SLIDE_TYPE, SLIDE_TYPE } from '@/app/libs/client/constants/code'
 
 const WareHouseCarousel = ({
   datas,
@@ -29,7 +30,7 @@ const WareHouseCarousel = ({
   const totalSlides = datas?.result.length || 0
   const findLastIdx = swiper && swiper.realIndex === totalSlides - 1
 
-  const updatePrevDisabledState = useCallback(() => {
+  const updatePrevButtonState = useCallback(() => {
     if (swiper && swiper.realIndex === 0) {
       document.querySelector('.swiper-button-prev')?.classList.add('swiper-button-disabled')
     } else {
@@ -37,10 +38,11 @@ const WareHouseCarousel = ({
     }
   }, [swiper, findLastIdx])
 
+  // 슬라이드 조건
   const onSlideControls = () => {
     if (swiper) {
       onSlideChange(swiper.realIndex)
-      updatePrevDisabledState()
+      updatePrevButtonState()
 
       const { realIndex, slides } = swiper
       swiper.allowSlidePrev = realIndex !== 0
@@ -48,25 +50,26 @@ const WareHouseCarousel = ({
     }
   }
 
-  const onBlockPrevSlide = () => {
+  // 이전 화살표 막음
+  const blockPrevSlide = () => {
     if (swiper) {
       const { realIndex } = swiper
       swiper.allowSlidePrev = realIndex !== 0
     }
   }
 
-  const onNextSwiper = () => {
-    if (swiper) {
+  // 슬라이드 타입
+  const onSlideSwiper = (slide: E_SLIDE_TYPE) => {
+    if (!swiper) return
+
+    if (slide) {
+      swiper.slidePrev()
+    } else {
       swiper.slideNext()
     }
   }
 
-  const onPrevSwiper = () => {
-    if (swiper) {
-      swiper.slidePrev()
-    }
-  }
-
+  // 슬라이드 파라미터
   const swiperParams: SwiperProps = {
     modules: [Navigation, A11y],
     slidesPerView: 1,
@@ -79,16 +82,16 @@ const WareHouseCarousel = ({
     onSwiper: setSwiper,
     onSlideChange: onSlideControls,
     onTouchStart: () => {
-      onBlockPrevSlide()
+      blockPrevSlide()
     },
     onTouchEnd: () => {
-      updatePrevDisabledState()
+      updatePrevButtonState()
     },
   }
 
   useEffect(() => {
-    updatePrevDisabledState()
-  }, [updatePrevDisabledState])
+    updatePrevButtonState()
+  }, [updatePrevButtonState])
 
   return (
     <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
@@ -153,7 +156,7 @@ const WareHouseCarousel = ({
                   viewBox='0 0 24 24'
                   xmlns='http://www.w3.org/2000/svg'
                   className={cls('h-6 w-6 hover:text-[#33CC99]', totalSlides === 1 ? 'text-[#ccc]' : 'text-[#222]')}
-                  onClick={onPrevSwiper}>
+                  onClick={() => onSlideSwiper(SLIDE_TYPE.이전)}>
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M15 19l-7-7 7-7' />
                 </svg>
               </div>
@@ -167,7 +170,7 @@ const WareHouseCarousel = ({
                     viewBox='0 0 24 24'
                     xmlns='http://www.w3.org/2000/svg'
                     className='h-6 w-6 text-[#222] hover:text-[#33CC99]'
-                    onClick={onNextSwiper}>
+                    onClick={() => onSlideSwiper(SLIDE_TYPE.다음)}>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M9 5l7 7-7 7' />
                   </svg>
                 )}

@@ -42,6 +42,16 @@ export const MODAL_TYPES = {
 export type E_MODAL_TYPES = (typeof MODAL_TYPES)[keyof typeof MODAL_TYPES]
 
 /**
+ * 슬라이드 타입
+ */
+export const SLIDE_TYPE = {
+  이전: 'PREV',
+  다음: 'NEXT',
+} as const
+
+export type E_SLIDE_TYPE = (typeof SLIDE_TYPE)[keyof typeof SLIDE_TYPE]
+
+/**
  * 스위치
  */
 export const SWITCH_STATUS = {
