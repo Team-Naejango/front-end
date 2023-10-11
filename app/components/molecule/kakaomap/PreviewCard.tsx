@@ -19,6 +19,7 @@ import { markerItemsState, activatedWareHouseTitleState, systemMessageState } fr
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
+// import { useSendNotification } from '@/app/hooks/useSendNotification'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
@@ -28,6 +29,7 @@ import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import Register from '@/app/components/organism/chat/Register'
 import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 import SelectChatList from '@/app/components/organism/place/SelectChatList'
+import { useSendNotification } from '@/app/hooks/useSendNotification'
 
 import { DealParam, incompleteDeal, saveDeal as register } from '@/app/apis/domain/chat/deal'
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
@@ -65,9 +67,11 @@ const PreviewCard = ({
   const query = useQueryClient()
   const { openModal, closeModal } = useModal()
   const { push } = UseCustomRouter()
+  const sendNotification = useSendNotification()
 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [selectedChat, setSelectedChat] = useState<ChatInfoList | null>(null)
+  // const [yourProfileInfo, setYourProfileInfo] = useState<Item | null>(null)
   const [disabledPersonal, setDisabledPersonal] = useState<boolean>(false)
   const [disabledGroup, setDisabledGroup] = useState<boolean>(false)
   const [isSeller, setIsSeller] = useState<boolean>(true)
@@ -81,7 +85,7 @@ const PreviewCard = ({
   const _channel = useRecoilValue(modalSelector('channel'))
   const _register = useRecoilValue(modalSelector('register'))
 
-  const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
+  // const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
 
   const formMethods = useForm<FormFields>({
     mode: 'onSubmit',
@@ -170,41 +174,37 @@ const PreviewCard = ({
   })
 
   // 브라우저 알림 전송
-  const UseSendNotification = () => {
-    const EventSource = EventSourcePolyfill || NativeEventSource
-    const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      withCredentials: true,
-    })
-
-    SSE.addEventListener('sse', event => {
-      console.log('SSE 이벤트 수신:', event)
-
-      if (Notification.permission === 'granted') {
-        const notification = new Notification('알림', {
-          body: '알림 구독을 수신했습니다.',
-        })
-
-        toast.success('알림 구독을 수신했습니다.')
-        return notification
-      }
-    })
-
-    // const sendNotification = useSendNotification({
-    //   myId: mineInfo?.result.userId,
-    //   yourId: yourProfileInfo?.ownerId,
-    //   myNickname: mineInfo?.result.nickname,
-    //   myImgUrl: mineInfo?.result.imgUrl,
-    // })
-    //
-    // return sendNotification
-  }
-
-  const sendNotification = useCallback(() => {
-    UseSendNotification()
-  }, [UseSendNotification])
+  // const UseSendNotification = () => {
+  //   const EventSource = EventSourcePolyfill || NativeEventSource
+  //   const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
+  //     headers: {
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //     withCredentials: true,
+  //   })
+  //
+  //   SSE.addEventListener('sse', event => {
+  //     console.log('SSE 이벤트 수신:', event)
+  //
+  //     if (Notification.permission === 'granted') {
+  //       const notification = new Notification('알림', {
+  //         body: '알림 구독을 수신했습니다.',
+  //       })
+  //
+  //       toast.success('알림 구독을 수신했습니다.')
+  //       return notification
+  //     }
+  //   })
+  //
+  //   // const sendNotification = useSendNotification({
+  //   //   myId: mineInfo?.result.userId,
+  //   //   yourId: yourProfileInfo?.ownerId,
+  //   //   myNickname: mineInfo?.result.nickname,
+  //   //   myImgUrl: mineInfo?.result.imgUrl,
+  //   // })
+  //   //
+  //   // return sendNotification
+  // }
 
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
@@ -452,6 +452,7 @@ const PreviewCard = ({
                         className={'w-full p-4'}
                         onClick={() => {
                           setSelectedItem({ ...item })
+                          // setYourProfileInfo({ ...item })
                           onClickShowModal(item.name || selectedTitle)
                         }}>
                         <span

@@ -245,6 +245,10 @@ const MenuBox = ({
     })
   }
 
+  console.log('sellerTransaction?.status', sellerTransaction?.status === TRANSACTION_TYPE.송금완료)
+  console.log('searchInfo?.result:', !searchInfo?.result)
+  console.log('isSeller', isSeller)
+
   return (
     <>
       {isOpen ? (

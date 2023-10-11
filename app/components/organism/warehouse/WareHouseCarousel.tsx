@@ -92,16 +92,16 @@ const WareHouseCarousel = ({
 
   return (
     <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>
-      {Array.isArray(datas?.result) && datas?.result.length === 0 ? (
+      {datas?.result === undefined || datas?.result.length === 0 ? (
         <SwiperSlide className={'slider_fade'}>
           <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] bg-white shadow-sm hover:border-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
             <Image
               priority
-              src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/box.png'}
+              src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/storage.png'}
               alt={'창고 이미지'}
               width={144}
               height={144}
-              style={{ objectFit: 'cover', margin: '0 auto' }}
+              style={{ objectFit: 'cover', margin: '0 auto', height: '100%', padding: '4px', paddingBottom: '6px' }}
               quality={100}
             />
           </div>

@@ -62,8 +62,6 @@ const Login = () => {
           toast.success('게스트 로그인에 성공하였습니다.')
           setNewAccessToken(error.response.data.reissuedAccessToken)
           router.replace('/home?isLoggedIn=true')
-        } else {
-          toast.error('게스트 로그인에 실패하였습니다.')
         }
       } else {
         toast.error('게스트 로그인에 실패하였습니다.')

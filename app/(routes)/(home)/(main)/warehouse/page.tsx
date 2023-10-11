@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import Link from 'next/link'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { LuEdit2 } from 'react-icons/lu'
 import { toast } from 'react-hot-toast'
@@ -147,11 +146,6 @@ const WareHouse = () => {
               <LuEdit2 fontSize={'21'} />
             </span>
           </FloatingButton>
-        </div>
-        <div className={'absolute right-16 top-0 mx-1 rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0]'}>
-          <Link href={'/warehouse/point'}>
-            <span className={'inline-block text-[13px]'}>포인트 충전</span>
-          </Link>
         </div>
         <div
           role={'presentation'}

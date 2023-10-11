@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import SwitchButton from '@/app/components/atom/SwitchButton'
@@ -171,7 +172,12 @@ const Profile = () => {
             )}
             `
       }>
-      <div className='mt-4 px-4'>
+      <div className={'float-right w-16 rounded border border-[#ccc] px-1.5 py-1 hover:border-[#32D7A0]'}>
+        <Link href={'/profile/point'}>
+          <span className={'inline-block text-[13px]'}>{`잔고 : ${mineInfo?.result.balance || 0}`}</span>
+        </Link>
+      </div>
+      <div className='clear-both mt-12 px-4'>
         <ul className={'flex flex-col gap-3.5'}>
           <li
             role={'presentation'}
@@ -183,6 +189,13 @@ const Profile = () => {
           <li className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
             <span className={'text-sm'}>알림 설정</span>
             <SwitchButton value={switchStatus} changeHandler={onSwitchConverter} />
+          </li>
+          <li
+            role={'presentation'}
+            onClick={() => onLink('/profile/point')}
+            className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
+            <span className={'text-sm'}>포인트 충전</span>
+            <GrFormNext />
           </li>
           <li
             role={'presentation'}
