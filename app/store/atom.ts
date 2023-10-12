@@ -1,7 +1,6 @@
 import { atom } from 'recoil'
 
-import { cookieEffect } from '@/app/store/effect/cookieEffect'
-import { AUTH_TOKEN, COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
+import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 import { PLACE_STORE_KEY } from '@/app/libs/client/constants/store/places'
 import { TRANSACTION_STORE_KEY } from '@/app/libs/client/constants/store/transaction'
 
@@ -9,16 +8,6 @@ interface LocationProps {
   latitude: number
   longitude: number
 }
-
-/**
- * 액세스 토큰
- *
- * */
-export const accessTokenStore = atom<string>({
-  key: `${COMMON_STORE_KEY.접근}/${new Date().getUTCMilliseconds() * Math.random()}`,
-  default: undefined,
-  // effects: [cookieEffect(AUTH_TOKEN.갱신)],
-})
 
 /**
  * 스플래쉬

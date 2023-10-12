@@ -1,15 +1,16 @@
 import { AtomEffect, useSetRecoilState } from 'recoil'
 
-import { refresh } from '@/app/apis/domain/auth/auth'
-import { accessTokenStore } from '@/app/store/atom'
+import { accessTokenState } from '@/app/store/auth'
 
-export const cookieEffect: <T>(key: string) => AtomEffect<T> =
+import { refresh } from '@/app/apis/domain/auth/auth'
+
+export const tokenEffect: <T>(key: string) => AtomEffect<T> =
   key =>
   ({ onSet }): any => {
-    const setAccessToken = useSetRecoilState(accessTokenStore)
+    const setAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
 
-    onSet(async newRefreshToken => {
-      if (newRefreshToken) {
+    onSet(async accessToken => {
+      if (!accessToken) {
         try {
           const response = await refresh()
 

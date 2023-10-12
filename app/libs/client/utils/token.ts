@@ -9,7 +9,7 @@ import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
  * 토큰 검증
  *
  * */
-export const TokenValid = () => {
+export const isTokenValid = async () => {
   const accessToken = getCookie(AUTH_TOKEN.접근)
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 

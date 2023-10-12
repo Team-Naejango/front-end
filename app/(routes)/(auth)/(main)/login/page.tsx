@@ -14,7 +14,8 @@ import kakaoLogo from '@/app/assets/image/kakao.svg'
 
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
-import { accessTokenStore, splashState } from '@/app/store/atom'
+import { splashState } from '@/app/store/atom'
+import { accessTokenState } from '@/app/store/auth'
 
 interface FormProps {
   email: string
@@ -25,7 +26,7 @@ const Login = () => {
   const router = useRouter()
   const [mounted, setMounted] = useState<boolean>(false)
   const isSplashMounted = useRecoilValue<boolean>(splashState)
-  const setNewAccessToken = useSetRecoilState<string>(accessTokenStore)
+  const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
 
   const {
     register,
@@ -47,14 +48,14 @@ const Login = () => {
   }, [isSplashMounted])
 
   // 게스트 로그인
-  const onNonUserLogin = async () => {
+  const onLoginNonUser = async () => {
     try {
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
+      const guest = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/guest`, {
         withCredentials: true,
       })
 
       toast.success('게스트 로그인에 성공하였습니다.')
-      setNewAccessToken(response.data.result)
+      setNewAccessToken(guest.data.result)
       router.replace('/home?isLoggedIn=true')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
@@ -131,7 +132,7 @@ const Login = () => {
                   카카오 로그인
                 </button>
                 <button
-                  onClick={() => onNonUserLogin()}
+                  onClick={onLoginNonUser}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
                   게스트 로그인

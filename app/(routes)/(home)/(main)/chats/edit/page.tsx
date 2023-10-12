@@ -25,7 +25,8 @@ import { useModal } from '@/app/hooks/useModal'
 import SettingModal from '@/app/components/organism/chat/SettingModal'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { accessTokenStore, systemMessageState } from '@/app/store/atom'
+import { systemMessageState } from '@/app/store/atom'
+import { accessTokenState } from '@/app/store/auth'
 import { cls } from '@/app/libs/client/utils/util'
 
 import { chat, getChatId, recentMessage, closeChat } from '@/app/apis/domain/chat/chat'
@@ -70,7 +71,7 @@ const ChatDetail: NextPage = () => {
 
   const [systemMessageStoreValue, setSystemMessageStoreValue] = useRecoilState<string | undefined>(systemMessageState)
   const setting = useRecoilValue(modalSelector('setting'))
-  const accessToken = useRecoilValue<string>(accessTokenStore)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
   const channelId = searchParams.get('channel')
 

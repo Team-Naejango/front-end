@@ -13,6 +13,6 @@ export const CHAT = {
   조회: 'readDeal',
   참여자조회: 'readUserinfoInGroupChat',
   ID조회: 'readChatID',
-  근처그룹조회: 'nearbyGroupChat',
+  근처그룹조회: 'readNearbyGroupChat',
   메세지조회: 'readRecentMessage',
 } as const

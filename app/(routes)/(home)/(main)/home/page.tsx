@@ -17,7 +17,7 @@ import { MODAL_TYPES, NOTIFICATION_PERMISSION } from '@/app/libs/client/constant
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
-import { accessTokenStore } from '@/app/store/atom'
+import { accessTokenState } from '@/app/store/auth'
 import SelectStorage from '@/app/components/organism/home/SelectStorage'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
@@ -37,7 +37,7 @@ const Home = () => {
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
   const [notificationState, setNotificationState] = useState<boolean>(false)
 
-  const accessToken = useRecoilValue<string>(accessTokenStore)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
 

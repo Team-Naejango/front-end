@@ -2,14 +2,25 @@
 
 import React, { ReactNode, useEffect } from 'react'
 import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
-import { useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { TokenValid } from '@/app/libs/client/utils/token'
-import { accessTokenStore } from '@/app/store/atom'
+import { isTokenValid } from '@/app/libs/client/utils/token'
+import { accessTokenSelector, accessTokenState } from '@/app/store/auth'
+import { useClearSession } from '@/app/hooks/useClearSession'
+
+import { refresh } from '@/app/apis/domain/auth/auth'
+
+const authExceptPaths = ['login', 'sign', 'findEmail', 'findPassword', 'oauth/kakaoLogin', 'oauth/kakaoCallback']
 
 const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
-  const setNewAccessToken = useSetRecoilState<string>(accessTokenStore)
+  const router = useRouter()
+  const { resetToken } = useClearSession()
+
+  const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   useEffect(() => {
     const requestInterceptor = withAuth.interceptors.request.use(
@@ -18,20 +29,36 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           config.headers = {} as AxiosHeaders
         }
 
-        const isHasToken = await TokenValid()
+        const isAuthNeeded = config.url && !authExceptPaths.includes(config.url)
+        if (!isAuthNeeded) {
+          return config
+        }
 
-        const newAccessToken = String(config.headers.Authorization).split(' ')[1]
+        const hasToken = await isTokenValid()
 
-        setNewAccessToken(newAccessToken)
+        if (!hasToken) {
+          if (accessToken) {
+            config.headers = {
+              Authorization: `Bearer ${accessToken}`,
+            } as AxiosRequestHeaders
+          } else {
+            const response = await refresh()
 
-        if (isHasToken) {
-          config.headers = {
-            Authorization: `Bearer ${newAccessToken}`,
-          } as AxiosRequestHeaders
+            setNewAccessToken(response.data.result)
+
+            config.headers = {
+              Authorization: `Bearer ${response.data.result}`,
+            } as AxiosRequestHeaders
+          }
+        } else {
+          resetToken()
+          toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.')
+          router.replace('login')
         }
 
         return config
       },
+
       undefined,
       { synchronous: true }
     )
@@ -39,9 +66,9 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     return () => {
       withAuth.interceptors.request.eject(requestInterceptor)
     }
-  }, [])
+  }, [accessToken])
 
-  return <>{children}</>
+  return <React.Suspense>{children}</React.Suspense>
 }
 
 export default UseAxiosWrapper
