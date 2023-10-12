@@ -12,10 +12,10 @@ interface SelectBoxProps {
   disabled?: boolean
   data: CategoryResult[] | undefined
   select: {
-    label?: string
-    name: string
+    categoryId: number
+    categoryName: string
   }
-  setSelect: Dispatch<SetStateAction<any>>
+  setSelect: Dispatch<SetStateAction<CategoryResult>>
   placeholder?: string
 }
 
@@ -43,7 +43,7 @@ const CategorySelectBox = ({ title, data, select, setSelect, essential, disabled
               disabled ? 'bg-[#eee]' : 'bg-white'
             )}
             placeholder={placeholder}>
-            <span className='block truncate text-[13px]'>{select.label ? select.label : select.name}</span>
+            <span className='block truncate text-[13px]'>{select.categoryName}</span>
             <span className='pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-400'>
               <svg
                 aria-hidden

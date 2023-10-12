@@ -35,6 +35,7 @@ import {
 } from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
 import { category } from '@/app/apis/domain/common/category'
+import { CategoryResult } from '@/app/apis/types/domain/common/category'
 
 interface ItemProps {
   name: string
@@ -53,7 +54,7 @@ const EditItem = () => {
   const router = useRouter()
   const query = useQueryClient()
   const { findCategoryList } = useCategories()
-  const [selectedCategory, setSelectedCategory] = useState<{ name: string }>({ name: '전체' })
+  const [selectedCategory, setSelectedCategory] = useState<CategoryResult>({ categoryId: 0, categoryName: '전체' })
   const [selectedStorage, setSelectedStorage] = useState<{ label: string; name: string }>(STORAGES[0])
   const [selectedType, setSelectedType] = useState<{ label: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
@@ -257,7 +258,7 @@ const EditItem = () => {
     // if (!_itemInfo) return
 
     if (!imagePreview) return toast.error('이미지를 등록해주세요.')
-    if (selectedCategory.name === '전체') return toast.error('다른 카테고리를 선택해주세요.')
+    if (selectedCategory.categoryName === '전체') return toast.error('다른 카테고리를 선택해주세요.')
     if (selectedStorage.name?.length === 0) return toast.error('창고를 선택해주세요.')
     if (hashTags.length === 0) return setError('hashTag', { message: '해시태그를 추가해주세요.' })
 
@@ -272,7 +273,7 @@ const EditItem = () => {
       imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.result.imgUrl,
       itemType: selectedType.name,
       hashTag: hashTags,
-      categoryId: findCategoryList(selectedCategory.name).categoryId!,
+      categoryId: findCategoryList(selectedCategory.categoryName).categoryId!,
       storageId: Number(storageId),
     }
 
@@ -314,7 +315,7 @@ const EditItem = () => {
     if (_itemInfo) {
       setValue('imgUrl', _itemInfo.result.imgUrl)
       setImagePreview(_itemInfo.result.imgUrl)
-      setSelectedCategory({ name: _itemInfo.result.categoryName })
+      setSelectedCategory({ categoryId: _itemInfo?.result.itemId, categoryName: _itemInfo.result.categoryName })
       setSelectedStorage({ label: STORAGES[Number(count)].label, name: String(count) })
       setSelectedType({
         label: DEAL_TYPES.find(v => v.name === _itemInfo?.result.itemType)!.label,

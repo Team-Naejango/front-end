@@ -19,6 +19,7 @@ const EventCarousel = () => {
 
   const totalSlides = HOMEIMAGES.filter(value => value.ing).length
 
+  // 활성화된 슬라이드 인덱스 감지
   const onSlideIndexChange = () => {
     if (swiper) {
       setActiveIndex(swiper.realIndex)
