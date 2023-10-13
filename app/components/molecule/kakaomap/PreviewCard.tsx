@@ -135,6 +135,7 @@ const PreviewCard = ({
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
+      sendNotification()
       toast.success('거래가 등록되었습니다.')
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
