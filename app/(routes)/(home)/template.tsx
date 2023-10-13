@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
@@ -17,7 +17,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
   // 알림 구독
-  const showNotification = async () => {
+  const showNotification = useCallback(async () => {
     const EventSource = EventSourcePolyfill || NativeEventSource
     const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
       headers: {
@@ -27,15 +27,16 @@ export default function Template({ children }: { children: React.ReactNode }) {
     })
 
     SSE.onopen = () => {
-      SSE.addEventListener('sse', event => {
-        console.log('SSE:', event)
+      SSE.addEventListener('sse', (event: any) => {
+        console.log('템플릿 SSE JSON:', JSON.parse(event.data))
+        console.log('템플릿 SSE:', event)
 
         if (Notification.permission === 'granted') {
           const notification = new Notification('알림', {
-            body: '앱 알림을 구독하였습니다.',
+            body: '템플릿 앱 알림을 구독하였습니다.',
           })
 
-          toast.success('앱 알림을 구독하였습니다.')
+          toast.success('템플릿 앱 알림을 구독하였습니다.')
           return notification
         }
       })
@@ -44,11 +45,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
     SSE.onerror = () => {
       SSE.close()
     }
-  }
+  }, [Notification.permission])
 
   useEffect(() => {
     showNotification()
-  }, [])
+  }, [showNotification])
 
   useEffect(() => {
     if (isLoggedIn) {

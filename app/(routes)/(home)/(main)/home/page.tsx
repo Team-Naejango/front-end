@@ -57,15 +57,16 @@ const Home = () => {
       })
 
       SSE.onopen = () => {
-        SSE.addEventListener('sse', event => {
-          console.log('SSE:', event)
+        SSE.addEventListener('sse', (event: any) => {
+          console.log('홈 SSE JSON:', JSON.parse(event.data))
+          console.log('홈 SSE:', event)
 
           if (Notification.permission === 'granted') {
             const notification = new Notification('알림', {
-              body: '앱 알림을 구독하였습니다.',
+              body: '홈 앱 알림을 구독하였습니다.',
             })
 
-            toast.success('앱 알림을 구독하였습니다.')
+            toast.success('홈 앱 알림을 구독하였습니다.')
             return notification
           }
         })

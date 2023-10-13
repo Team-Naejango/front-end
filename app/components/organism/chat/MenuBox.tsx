@@ -19,6 +19,7 @@ import Register from '@/app/components/organism/chat/Register'
 import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
+import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
 import {
   wire,
@@ -126,6 +127,7 @@ const MenuBox = ({
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
       query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -139,6 +141,7 @@ const MenuBox = ({
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
       query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -152,6 +155,7 @@ const MenuBox = ({
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
       query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
