@@ -57,8 +57,7 @@ const Home = () => {
       })
 
       SSE.onopen = () => {
-        SSE.addEventListener('sse', (event: any) => {
-          console.log('홈 SSE JSON:', JSON.parse(event.data))
+        SSE.addEventListener('sse', event => {
           console.log('홈 SSE:', event)
 
           if (Notification.permission === 'granted') {

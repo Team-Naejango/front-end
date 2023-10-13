@@ -27,8 +27,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     })
 
     SSE.onopen = () => {
-      SSE.addEventListener('sse', (event: any) => {
-        console.log('템플릿 SSE JSON:', JSON.parse(event.data))
+      SSE.addEventListener('sse', event => {
         console.log('템플릿 SSE:', event)
 
         if (Notification.permission === 'granted') {
