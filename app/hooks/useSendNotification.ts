@@ -48,10 +48,10 @@ export const useSendNotification = () => {
 
       if (Notification.permission === 'granted') {
         const notification = new Notification('알림', {
-          body: '알림 구독을 수신했습니다.',
+          body: 'test',
         })
 
-        toast.success('알림 구독을 수신했습니다.')
+        toast.success('test.')
         return notification
       }
     })

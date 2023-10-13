@@ -74,6 +74,16 @@ export const NOTIFICATION_PERMISSION = {
 export type E_NOTIFICATION_PERMISSION = (typeof NOTIFICATION_PERMISSION)[keyof typeof NOTIFICATION_PERMISSION]
 
 /**
+ * 알림 타입
+ */
+export const NOTIFICATION_TYPE = {
+  거래: 'TRANSACTION',
+  채팅: 'CHATTING',
+} as const
+
+export type E_NOTIFICATION_TYPE = (typeof NOTIFICATION_TYPE)[keyof typeof NOTIFICATION_TYPE]
+
+/**
  * 아이템 타입
  */
 export const ITEM_TYPE = {
@@ -122,8 +132,9 @@ export type E_MESSAGE_TYPE = (typeof MESSAGE_TYPE)[keyof typeof MESSAGE_TYPE]
  * 거래 타입
  */
 export const TRANSACTION_TYPE = {
-  거래약속: 'TRANSACTION_APPOINTMENT',
+  거래예약: 'TRANSACTION_APPOINTMENT',
   송금완료: 'REMITTANCE_COMPLETION',
+  거래완료: 'TRANSACTION_COMPLETION',
 } as const
 
 export type E_TRANSACTION_TYPE = (typeof TRANSACTION_TYPE)[keyof typeof TRANSACTION_TYPE]

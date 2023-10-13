@@ -44,7 +44,7 @@ const RadioPicker = ({ data, selectedRadio, setSelectedRadio }: RadioPickerProps
                       <div className='flex items-center'>
                         <div>
                           <RadioGroup.Label as='p' className={`text-[13px] font-normal text-[#222]`}>
-                            {value.value.toLocaleString()} 포인트
+                            {value.value.toLocaleString()} 잔고
                           </RadioGroup.Label>
                           <RadioGroup.Description
                             as='span'

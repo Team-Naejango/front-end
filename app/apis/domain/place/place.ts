@@ -8,11 +8,11 @@ export interface NearbyStorageParam {
   // 위도
   lat: string
   // 반경
-  rad: string
+  rad?: string
   // 페이징
-  page: string
+  page?: string
   // 조회수
-  size: string
+  size?: string
 }
 
 /**

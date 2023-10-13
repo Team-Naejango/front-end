@@ -6,20 +6,23 @@ import { Tab } from '@headlessui/react'
 import RoundedTab from '@/app/components/molecule/tab/RoundedTab'
 import ItemList from '@/app/components/organism/profile/review/ItemList'
 import { ITEM_TYPE } from '@/app/libs/client/constants/code'
+import { Transaction } from '@/app/apis/types/domain/chat/deal'
 
 const ReviewCard = () => {
   const [selectedTab, setSelectedTab] = useState<string | string[]>(ITEM_TYPE.개인구매)
-  const [reviews] = useState({
+  const [reviews] = useState<Transaction>({
+    message: '',
     result: [
       {
         id: 1,
         date: '2023-07-15T17:35',
         amount: 1000,
         status: '구매',
+        progress: '거래 완료',
         traderId: 1,
         traderName: '거래자 이름1',
-        itemName: '아이템 이름1',
         itemId: 1,
+        itemName: '아이템 이름1',
       },
     ],
   }) // 더미 데이터

@@ -194,7 +194,7 @@ const Profile = () => {
             role={'presentation'}
             onClick={() => onLink('/profile/point')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>포인트 충전</span>
+            <span className={'text-sm'}>잔고 충전</span>
             <GrFormNext />
           </li>
           <li

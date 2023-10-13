@@ -107,7 +107,7 @@ const ChatDetail: NextPage = () => {
       recentMessage({
         chatId: String(enterChatInfo?.chatId),
         page: '0',
-        size: '20',
+        size: '25',
       }),
     {
       enabled: !!channelId && !!chatId && !!enterChatInfo,

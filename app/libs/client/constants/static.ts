@@ -7,27 +7,27 @@ import event4 from '@/app/assets/image/event_trip_04.png'
 
 import { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
 
-// 포인트 충전
+// 잔고 충전
 const POINTS: DataTypes[] = [
   {
     label: '10,000원',
-    value: 50,
+    value: 10000,
   },
   {
-    label: '14,000원',
-    value: 70,
+    label: '30,000원',
+    value: 30000,
+  },
+  {
+    label: '50,000원',
+    value: 50000,
   },
   {
     label: '100,000원',
-    value: 100,
+    value: 100000,
   },
   {
-    label: '999,999,999원',
-    value: 999,
-  },
-  {
-    label: '0원',
-    value: 10000,
+    label: '300,000원',
+    value: 300000,
   },
 ]
 

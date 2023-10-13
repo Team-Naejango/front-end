@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode, useEffect } from 'react'
-import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
+import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
@@ -63,8 +63,44 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
       { synchronous: true }
     )
 
+    const responseInterceptor = withAuth.interceptors.response.use(
+      async (config: AxiosResponse) => {
+        if (!config.headers) {
+          config.headers = {} as AxiosHeaders
+        }
+
+        console.log('config:', config)
+
+        const hasToken = await isTokenValid()
+
+        if (!hasToken) {
+          if (accessToken) {
+            if (config.data.error === 401) {
+              const response = await refresh()
+
+              setNewAccessToken(response.data.result)
+
+              config.headers = {
+                Authorization: `Bearer ${response.data.result}`,
+              } as AxiosRequestHeaders
+            }
+          }
+        } else {
+          resetToken()
+          toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.')
+          router.replace('login')
+        }
+
+        return config
+      },
+
+      undefined,
+      { synchronous: true }
+    )
+
     return () => {
       withAuth.interceptors.request.eject(requestInterceptor)
+      withAuth.interceptors.request.eject(responseInterceptor)
     }
   }, [accessToken])
 

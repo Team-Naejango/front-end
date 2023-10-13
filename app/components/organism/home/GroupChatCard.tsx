@@ -14,7 +14,7 @@ import { nearbyGroupChat } from '@/app/apis/domain/chat/channel'
 const GroupChatCard = () => {
   const userArea = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
 
-  // 근처 그룹채팅 조회
+  // 근처 그룹 채팅 조회
   const { data: { data: groupChats } = {} } = useQuery([CHAT.근처그룹조회], () =>
     nearbyGroupChat({
       lon: String(userArea.longitude),

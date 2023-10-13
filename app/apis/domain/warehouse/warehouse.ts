@@ -10,6 +10,7 @@ import {
   StorageGroupChat,
   StorageInfo,
 } from '@/app/apis/types/domain/warehouse/warehouse'
+import { E_ITEM_TYPE } from '@/app/libs/client/constants/code'
 
 /* ************************************ 창고 엔터티 ************************************ */
 
@@ -58,9 +59,9 @@ export interface StorageItemParam {
   // 아이템 상태 (true=거래중, false=거래완료)
   status: boolean
   // 요청 페이지
-  page: string
+  page?: string
   // 페이지 당 결과 수
-  size: string
+  size?: string
 }
 
 /**
@@ -165,19 +166,19 @@ export interface ItemSearchParam {
   // 위도
   lat: string
   // 반경
-  rad: string
+  rad?: string
   // 페이징
-  page: string
+  page?: string
   // 조회수
-  size: string
+  size?: string
   // 카테고리 ID
-  categoryId: number
+  categoryId?: number
   // 검색 키워드(2~10자)
-  keyword: string
-  // 타입 (INDIVIDUAL_BUY/ INDIVIDUAL_SELL/ GROUP_BUY)
-  itemType: string
+  keyword?: string
+  // 아이템 타입
+  itemType?: E_ITEM_TYPE
   // 상태 (거래중:true/거래완료:false)
-  status: boolean
+  status?: boolean
 }
 
 // /**
@@ -209,8 +210,8 @@ export async function itemInfo(itemId: string | null): Promise<Response<{ data: 
  * @param params
  */
 export async function itemMatch(params: {
-  rad: string
-  size: string
+  rad?: string
+  size?: string
   itemId: string
 }): Promise<Response<{ data: ItemMatchInfo }>> {
   return withAuth.get('/api/item/match', { params })

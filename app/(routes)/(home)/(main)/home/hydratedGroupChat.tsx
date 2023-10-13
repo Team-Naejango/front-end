@@ -9,7 +9,7 @@ import { locationState } from '@/app/store/atom'
 
 import { nearbyGroupChat } from '@/app/apis/domain/chat/channel'
 
-export default async function HydratedPosts() {
+export default async function HydratedGroupChat() {
   const userArea = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
 
   const queryClient = getQueryClient()

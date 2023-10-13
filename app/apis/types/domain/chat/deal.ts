@@ -7,8 +7,10 @@ export type TransactionResult = {
   amount: number
   // 거래 날짜 및 시간
   date: string
-  // 거래 상태(구매/판매)
-  status: string
+  // 거래 아이템 상태
+  status: '구매' | '판매'
+  // 거래 상태
+  progress: '거래 예약' | '송금 완료' | '거래 완료'
   // 거래자 ID
   traderId: number
   // 거래자 이름

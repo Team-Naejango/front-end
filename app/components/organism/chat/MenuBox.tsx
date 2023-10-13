@@ -101,8 +101,8 @@ const MenuBox = ({
     enabled: !!channelId && !!getTraderId,
   })
 
-  // [구매자입장] 미거래 정보 ID
-  const transactionId = deals?.result.find(v => v.traderId === getTraderId)?.id
+  // [구매자입장] 미거래 정보
+  const traderTransaction = deals?.result.find(v => v.traderId === getTraderId)
 
   // [판매자입장] 미거래 정보
   const sellerTransaction = incompleteInfo?.result.find(v => v)
@@ -169,11 +169,11 @@ const MenuBox = ({
     },
   })
 
-  // 포인트 충전
+  // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
       query.invalidateQueries([OAUTH.유저정보])
-      toast.success('포인트 충전이 완료되었습니다.')
+      toast.success('잔고 충전이 완료되었습니다.')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -200,15 +200,15 @@ const MenuBox = ({
 
   // 송금하기 모달
   const sendPoint = useCallback(() => {
-    // if (transaction?.status !== TRANSACTION_TYPE.거래약속) return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (traderTransaction?.progress !== '거래 예약') return toast.error('거래 예약 상태에서만 가능합니다.')
 
     openModal({
       modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },
       callback: () => {
-        mutateWire(String(transactionId))
+        mutateWire(String(traderTransaction?.id))
       },
     })
-  }, [transactionId])
+  }, [traderTransaction?.id])
 
   // 거래완료 모달
   const completeDeal = () => {
@@ -225,7 +225,7 @@ const MenuBox = ({
 
   // 거래삭제 모달
   const deleteDeal = () => {
-    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래약속) return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래예약) return toast.error('거래 예약 상태에서만 가능합니다.')
 
     openModal({
       modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '거래 삭제', content: '거래를 삭제 하시겠습니까?' },
@@ -235,7 +235,7 @@ const MenuBox = ({
     })
   }
 
-  // 포인트 충전 모달
+  // 잔고 충전 모달
   const chargePoint = () => {
     openModal({
       modal: { id: 'amount', type: MODAL_TYPES.DIALOG, title: '거래 수정' },
@@ -289,10 +289,16 @@ const MenuBox = ({
             <span className='block text-sm text-white'>금액 충전</span>
           </button>
           <button
-            disabled={isSeller || sellerTransaction?.status === TRANSACTION_TYPE.송금완료 || !searchInfo?.result}
+            disabled={
+              isSeller ||
+              sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ||
+              traderTransaction?.progress !== '거래 예약'
+            }
             className={cls(
               'w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              isSeller || sellerTransaction?.status === TRANSACTION_TYPE.송금완료 || !searchInfo?.result
+              isSeller ||
+                sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ||
+                traderTransaction?.progress !== '거래 예약'
                 ? 'bg-[#ddd] hover:bg-[#ddd]'
                 : ''
             )}

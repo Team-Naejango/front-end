@@ -19,11 +19,11 @@ const PointCharge = () => {
   const router = useRouter()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
 
-  // 포인트 충전
+  // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
       query.invalidateQueries([OAUTH.유저정보])
-      toast.success('포인트 충전이 완료되었습니다.')
+      toast.success('잔고 충전이 완료되었습니다.')
       router.push('/warehouse')
     },
     onError: (error: ApiError) => {
@@ -39,7 +39,7 @@ const PointCharge = () => {
   }
 
   return (
-    <Layout canGoBack title={'포인트 충전'} seoTitle={'포인트 충전'}>
+    <Layout canGoBack title={'잔고 충전'} seoTitle={'잔고 충전'}>
       <div className='mt-10 px-2'>
         <RadioPicker data={POINTS} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
         <div className={'fixed bottom-[95px] left-1/2 w-[90%] -translate-x-1/2 transform'}>

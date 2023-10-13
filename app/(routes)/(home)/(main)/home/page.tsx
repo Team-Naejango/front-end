@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
@@ -21,7 +21,6 @@ import { accessTokenState } from '@/app/store/auth'
 import SelectStorage from '@/app/components/organism/home/SelectStorage'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
-import { subscribe } from '@/app/apis/domain/profile/alarm'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -35,7 +34,7 @@ const Home = () => {
 
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
-  const [notificationState, setNotificationState] = useState<boolean>(false)
+  const [notificationState, setNotificationState] = useState<boolean>(true)
 
   const accessToken = useRecoilValue<string | undefined>(accessTokenState)
   const _fork = useRecoilValue(modalSelector('fork'))
@@ -46,32 +45,40 @@ const Home = () => {
   // 창고 조회
   const { data: { data: storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
 
-  // 알림 전달
-  const notificationCallback = useCallback(() => {
-    const EventSource = EventSourcePolyfill || NativeEventSource
-    const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      withCredentials: true,
-    })
+  // 알림 구독
+  const subscribe = async () => {
+    if (firstLogin === 'true' && notificationState) {
+      const EventSource = EventSourcePolyfill || NativeEventSource
+      const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      })
 
-    SSE.addEventListener('sse', event => {
-      console.log('SSE 이벤트 수신:', event)
+      SSE.onopen = () => {
+        SSE.addEventListener('sse', event => {
+          console.log('SSE:', event)
 
-      if (Notification.permission === 'granted') {
-        const notification = new Notification('알림', {
-          body: '알림 구독을 수신했습니다.',
+          if (Notification.permission === 'granted') {
+            const notification = new Notification('알림', {
+              body: '앱 알림을 구독하였습니다.',
+            })
+
+            toast.success('앱 알림을 구독하였습니다.')
+            return notification
+          }
         })
-
-        toast.success('알림 구독을 수신했습니다.')
-        return notification
       }
-    })
-  }, [])
 
-  // 서비스 워커 시작
-  const serviceWorkerInit = useCallback(async () => {
+      SSE.onerror = () => {
+        SSE.close()
+      }
+    }
+  }
+
+  // 서비스 워커 등록
+  const serviceWorkerInit = async () => {
     const permission = await Notification.requestPermission()
     if (permission !== 'granted') return
 
@@ -80,9 +87,8 @@ const Home = () => {
         try {
           if (permission === NOTIFICATION_PERMISSION.허용) {
             if (firstLogin === 'true' && notificationState) {
-              setNotificationState(true)
-              notificationCallback()
-              await subscribe({ contentType: 'text/event-stream;charset=UTF-8' })
+              setNotificationState(false)
+              await subscribe()
             }
           }
         } catch (error) {
@@ -90,10 +96,12 @@ const Home = () => {
         }
       })
     }
-  }, [])
+  }
 
   useEffect(() => {
-    serviceWorkerInit()
+    if (firstLogin === 'true' && notificationState) {
+      serviceWorkerInit()
+    }
   }, [])
 
   // 창고 아이템 리다이렉트

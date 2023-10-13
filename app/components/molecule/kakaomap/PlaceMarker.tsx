@@ -148,8 +148,6 @@ const PlaceMarker = ({
         size: '20',
         keyword,
         categoryId: findCategoryList(category).categoryId!,
-        itemType: ITEM_TYPE.개인구매 || ITEM_TYPE.개인판매 || ITEM_TYPE.공동구매,
-        status: true,
       }
 
       try {

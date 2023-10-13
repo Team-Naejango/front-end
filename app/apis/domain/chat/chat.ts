@@ -7,8 +7,10 @@ import { Chat, ChatId, ChatName, GroupChat, RecentMessage } from '@/app/apis/typ
 /**
  * 채팅방 목록 조회
  *
+ * @param page // 조회 페이지
+ * @param size //조회 수
  */
-export async function chat(): Promise<Response<{ data: Chat }>> {
+export async function chat(page?: string, size?: string): Promise<Response<{ data: Chat }>> {
   return withAuth.get('/api/chat')
 }
 
@@ -32,8 +34,8 @@ export async function getChatId(channelId: string): Promise<Response<{ data: Cha
  */
 export async function recentMessage(params: {
   chatId: string
-  page: string
-  size: string
+  page?: string
+  size?: string
 }): Promise<Response<{ data: RecentMessage }>> {
   return withAuth.get(`/api/message/${params.chatId}`, { params })
 }

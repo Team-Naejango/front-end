@@ -19,11 +19,11 @@ export interface NearbyParam {
   // 조회 위도
   lat: string
   // 조회 반경
-  rad: string
+  rad?: string
 }
 
 /**
- * 근처 그룹 채팅방 조회
+ * 근처 그룹 채팅 조회
  *
  * @param params.lon // 조회 경도
  * @param params.lat // 조회 위도
