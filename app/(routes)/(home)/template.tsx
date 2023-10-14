@@ -29,7 +29,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
       /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
       SSE.onopen = () => {
-        SSE.addEventListener('sse', event => {
+        SSE.addEventListener('sse', (event: Event) => {
           console.log('홈 SSE:', event)
 
           const isJson = (str: any) => {
@@ -40,8 +40,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
               return false
             }
           }
-          if (isJson(event?.data as string)) {
-            const obj = JSON.parse(event?.data as string)
+          if (isJson(event?.data)) {
+            const obj = JSON.parse(event?.data)
             console.log('obj:', obj)
 
             if (Notification.permission === 'granted') {

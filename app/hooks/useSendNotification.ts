@@ -1,4 +1,4 @@
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
+import { Event, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 
@@ -17,7 +17,7 @@ export const useSendNotification = () => {
     })
 
     /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
-    SSE.addEventListener('sse', event => {
+    SSE.addEventListener('sse', (event: Event) => {
       console.log('홈 SSE:', event)
 
       const isJson = (str: any) => {
@@ -28,8 +28,8 @@ export const useSendNotification = () => {
           return false
         }
       }
-      if (isJson(event?.data as string)) {
-        const obj = JSON.parse(event.data as string)
+      if (isJson(event?.data)) {
+        const obj = JSON.parse(event?.data)
         console.log('obj:', obj)
 
         if (Notification.permission === 'granted') {
