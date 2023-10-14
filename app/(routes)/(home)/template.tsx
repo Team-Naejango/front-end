@@ -41,7 +41,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
             }
           }
           if (isJson(event?.data)) {
-            const obj = JSON.parse(event.data)
+            const obj = JSON.parse(event?.data)
             console.log('obj:', obj)
 
             if (Notification.permission === 'granted') {
