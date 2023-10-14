@@ -66,7 +66,7 @@ const Message = ({ data, isMe, membersInfo }: MessageProps) => {
       <div className={'text-center'}>
         <p className={'text-xs'}>{data.content}</p>
         <div className={'mx-auto mt-3 w-48 space-y-3 rounded-lg border p-4'}>
-          <h2 className={'pb-1 text-[15px]'}>
+          <h2 className={'pb-1 text-[15px] font-medium'}>
             {messageType === MESSAGE_TYPE.거래
               ? '거래 예약'
               : data.content === '거래 완료 요청 성공'

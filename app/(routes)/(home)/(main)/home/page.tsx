@@ -106,7 +106,7 @@ const Home = () => {
           if (permission === NOTIFICATION_PERMISSION.허용) {
             if (firstLogin === 'true' && notificationState) {
               setNotificationState(false)
-              // await subscribe()
+              await subscribe()
             }
           }
         } catch (error) {
@@ -117,9 +117,9 @@ const Home = () => {
   }
 
   useEffect(() => {
-    // if (firstLogin === 'true' && notificationState) {
-    serviceWorkerInit()
-    // }
+    if (firstLogin === 'true' && notificationState) {
+      serviceWorkerInit()
+    }
   }, [])
 
   // 창고 아이템 리다이렉트
