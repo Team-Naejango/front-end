@@ -27,6 +27,14 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
   loading: () => <Loading />,
 })
 
+interface MessageEvent {
+  data: any
+  lastEventId: string
+  target: any
+  type: string
+  error?: { message: string; stack: string }
+}
+
 const Home = () => {
   const router = useRouter()
   const useParams = useSearchParams()
@@ -58,7 +66,7 @@ const Home = () => {
 
       /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
       // SSE.onopen = () => {
-      SSE.addEventListener('sse', (event: Event) => {
+      SSE.addEventListener('sse', (event: MessageEvent) => {
         console.log('홈 SSE:', event)
 
         const isJson = (str: any) => {
