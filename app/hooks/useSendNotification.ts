@@ -20,27 +20,27 @@ export const useSendNotification = () => {
     SSE.addEventListener('sse', (event: Event) => {
       console.log('홈 SSE:', event)
 
-      const isJson = (str: any) => {
-        try {
-          const json = JSON.parse(str)
-          return json && typeof json === 'object'
-        } catch (e) {
-          return false
-        }
-      }
-      if (isJson(event?.data)) {
-        const obj = JSON.parse(event?.data)
-        console.log('obj:', obj)
+      // const isJson = (str: any) => {
+      //   try {
+      //     const json = JSON.parse(str)
+      //     return json && typeof json === 'object'
+      //   } catch (e) {
+      //     return false
+      //   }
+      // }
+      // if (isJson(event?.data)) {
+      //   const obj = JSON.parse(event?.data)
+      //   console.log('obj:', obj)
 
-        if (Notification.permission === 'granted') {
-          const notification = new Notification('알림', {
-            body: 'test',
-          })
+      if (Notification.permission === 'granted') {
+        const notification = new Notification('알림', {
+          body: 'test',
+        })
 
-          toast.success('test')
-          return notification
-        }
+        toast.success('test')
+        return notification
       }
+      // }
     })
   }
 

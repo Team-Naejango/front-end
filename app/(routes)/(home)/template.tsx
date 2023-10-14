@@ -32,27 +32,27 @@ export default function Template({ children }: { children: React.ReactNode }) {
         SSE.addEventListener('sse', (event: Event) => {
           console.log('홈 SSE:', event)
 
-          const isJson = (str: any) => {
-            try {
-              const json = JSON.parse(str)
-              return json && typeof json === 'object'
-            } catch (e) {
-              return false
-            }
-          }
-          if (isJson(event?.data)) {
-            const obj = JSON.parse(event?.data)
-            console.log('obj:', obj)
+          // const isJson = (str: any) => {
+          //   try {
+          //     const json = JSON.parse(str)
+          //     return json && typeof json === 'object'
+          //   } catch (e) {
+          //     return false
+          //   }
+          // }
+          // if (isJson(event?.data)) {
+          //   const obj = JSON.parse(event?.data)
+          //   console.log('obj:', obj)
 
-            if (Notification.permission === 'granted') {
-              const notification = new Notification('알림', {
-                body: '템플릿 앱 알림을 구독하였습니다.',
-              })
+          if (Notification.permission === 'granted') {
+            const notification = new Notification('알림', {
+              body: '템플릿 앱 알림을 구독하였습니다.',
+            })
 
-              toast.success('템플릿 앱 알림을 구독하였습니다.')
-              return notification
-            }
+            toast.success('템플릿 앱 알림을 구독하였습니다.')
+            return notification
           }
+          // }
         })
       }
 
