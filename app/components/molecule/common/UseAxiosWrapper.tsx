@@ -104,7 +104,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
       },
 
       undefined,
-      { synchronous: true }
+      { synchronous: false }
     )
 
     return () => {
