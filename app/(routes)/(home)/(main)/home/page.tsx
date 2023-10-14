@@ -46,51 +46,51 @@ const Home = () => {
   const { data: { data: storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
 
   // 알림 구독
-  const subscribe = async () => {
-    if (firstLogin === 'true' && notificationState) {
-      const EventSource = EventSourcePolyfill || NativeEventSource
-      const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      })
-
-      /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
-      // SSE.onopen = () => {
-      SSE.addEventListener('sse', (event: Event) => {
-        console.log('홈 SSE:', event)
-
-        // const isJson = (str: any) => {
-        //   try {
-        //     const json = JSON.parse(str)
-        //     return json && typeof json === 'object'
-        //   } catch (e) {
-        //     return false
-        //   }
-        // }
-        // if (isJson(event?.data)) {
-        //   const obj = JSON.parse(event?.data)
-        //   console.log('obj:', obj)
-
-        if (Notification.permission === 'granted') {
-          const notification = new Notification('알림', {
-            body: '홈 앱 알림을 구독하였습니다.',
-          })
-
-          toast.success('홈 앱 알림을 구독하였습니다.')
-          return notification
-        }
-        // }
-      })
-      // }
-
-      /* EVENTSOURCE ONERROR ------------------------------------------------------ */
-      SSE.onerror = () => {
-        SSE.close()
-      }
-    }
-  }
+  // const subscribe = async () => {
+  //   if (firstLogin === 'true' && notificationState) {
+  //     const EventSource = EventSourcePolyfill || NativeEventSource
+  //     const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       withCredentials: true,
+  //     })
+  //
+  //     /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
+  //     // SSE.onopen = () => {
+  //     SSE.addEventListener('sse', (event: Event) => {
+  //       console.log('홈 SSE:', event)
+  //
+  //       // const isJson = (str: any) => {
+  //       //   try {
+  //       //     const json = JSON.parse(str)
+  //       //     return json && typeof json === 'object'
+  //       //   } catch (e) {
+  //       //     return false
+  //       //   }
+  //       // }
+  //       // if (isJson(event?.data)) {
+  //       //   const obj = JSON.parse(event?.data)
+  //       //   console.log('obj:', obj)
+  //
+  //       if (Notification.permission === 'granted') {
+  //         const notification = new Notification('알림', {
+  //           body: '홈 앱 알림을 구독하였습니다.',
+  //         })
+  //
+  //         toast.success('홈 앱 알림을 구독하였습니다.')
+  //         return notification
+  //       }
+  //       // }
+  //     })
+  //     // }
+  //
+  //     /* EVENTSOURCE ONERROR ------------------------------------------------------ */
+  //     SSE.onerror = () => {
+  //       SSE.close()
+  //     }
+  //   }
+  // }
 
   // 서비스 워커 등록
   const serviceWorkerInit = async () => {
@@ -103,7 +103,7 @@ const Home = () => {
           if (permission === NOTIFICATION_PERMISSION.허용) {
             if (firstLogin === 'true' && notificationState) {
               setNotificationState(false)
-              await subscribe()
+              // await subscribe()
             }
           }
         } catch (error) {
@@ -114,9 +114,9 @@ const Home = () => {
   }
 
   useEffect(() => {
-    if (firstLogin === 'true' && notificationState) {
-      serviceWorkerInit()
-    }
+    // if (firstLogin === 'true' && notificationState) {
+    serviceWorkerInit()
+    // }
   }, [])
 
   // 창고 아이템 리다이렉트
