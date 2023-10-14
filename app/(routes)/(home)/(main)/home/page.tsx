@@ -69,8 +69,8 @@ const Home = () => {
             return false
           }
         }
-        if (isJson(event?.data)) {
-          const obj = JSON.parse(event?.data)
+        if (isJson(event?.data as string)) {
+          const obj = JSON.parse(event?.data as string)
           console.log('obj:', obj)
 
           if (Notification.permission === 'granted') {

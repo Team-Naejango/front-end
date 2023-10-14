@@ -20,8 +20,16 @@ export const useSendNotification = () => {
     SSE.addEventListener('sse', (event: Event) => {
       console.log('홈 SSE:', event)
 
-      if (event.data) {
-        const obj = JSON.parse(event.data)
+      const isJson = (str: any) => {
+        try {
+          const json = JSON.parse(str)
+          return json && typeof json === 'object'
+        } catch (e) {
+          return false
+        }
+      }
+      if (isJson(event?.data as string)) {
+        const obj = JSON.parse(event.data as string)
         console.log('obj:', obj)
 
         if (Notification.permission === 'granted') {
