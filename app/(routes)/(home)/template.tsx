@@ -1,76 +1,79 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 import { Event, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
 
 import { accessTokenState } from '@/app/store/auth'
+import { NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const searchParams = useSearchParams()
-
-  const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
+  const [notificationState, setNotificationState] = useState<boolean>(true)
 
   const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
+  const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
+
   // 알림 구독
-  useEffect(() => {
-    const showNotification = async () => {
-      const EventSource = EventSourcePolyfill || NativeEventSource
-      const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      })
+  const subscribe = async () => {
+    const EventSource = EventSourcePolyfill || NativeEventSource
+    const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    })
 
-      /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
-      SSE.onopen = () => {
-        SSE.addEventListener('sse', (event: Event) => {
-          console.log('홈 SSE:', event)
-
-          // const isJson = (str: any) => {
-          //   try {
-          //     const json = JSON.parse(str)
-          //     return json && typeof json === 'object'
-          //   } catch (e) {
-          //     return false
-          //   }
-          // }
-          // if (isJson(event?.data)) {
-          //   const obj = JSON.parse(event?.data)
-          //   console.log('obj:', obj)
-
-          if (Notification.permission === 'granted') {
-            const notification = new Notification('알림', {
-              body: '템플릿 앱 알림을 구독하였습니다.',
-            })
-
-            toast.success('템플릿 앱 알림을 구독하였습니다.')
-            return notification
-          }
-          // }
+    /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
+    SSE.onopen = () => {
+      if (Notification.permission === 'granted') {
+        const notification = new Notification('알림', {
+          body: '앱 알림을 구독하였습니다.',
         })
+
+        toast.success('앱 알림을 구독하였습니다.')
+        return notification
       }
-
-      await showNotification()
-
-      /* EVENTSOURCE ONERROR ------------------------------------------------------ */
-      SSE.onerror = () => {
-        SSE.addEventListener('error', () => {
-          // if (!event.error?.message.includes('No activity')) SSE.close()
-          SSE.close()
-        })
-      }
-
-      // return () => {
-      //   SSE.close()
-      // }
     }
-  }, [])
+
+    SSE.addEventListener('sse', event => {
+      const eventData = JSON.parse(JSON.stringify(event.data))
+      console.log('템플릿 SSE:', eventData)
+    })
+
+    return () => {
+      SSE.close()
+    }
+  }
+
+  useEffect(() => {
+    // 서비스 워커 등록
+    const serviceWorkerInit = async () => {
+      const permission = await Notification.requestPermission()
+      if (permission !== 'granted') return
+
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(async () => {
+          try {
+            if (permission === NOTIFICATION_PERMISSION.허용 && notificationState) {
+              setNotificationState(false)
+              await subscribe()
+            }
+          } catch (error) {
+            console.error('서비스워커 실패:', error)
+          }
+        })
+      }
+    }
+
+    if (isLoggedIn && notificationState) {
+      serviceWorkerInit()
+    }
+  }, [EventSourcePolyfill, NativeEventSource])
 
   useEffect(() => {
     if (isLoggedIn) {

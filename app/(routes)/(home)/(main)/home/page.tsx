@@ -1,23 +1,20 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
-import { Event, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
-import { toast } from 'react-hot-toast'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Loading from '@/app/loading'
 import EventCarousel from '@/app/components/organism/home/EventCarousel'
 import Button from '@/app/components/atom/Button'
 import GroupChatCard from '@/app/components/organism/home/GroupChatCard'
-import { MODAL_TYPES, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
+import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
-import { accessTokenState } from '@/app/store/auth'
 import SelectStorage from '@/app/components/organism/home/SelectStorage'
 
 import { storage } from '@/app/apis/domain/warehouse/warehouse'
@@ -29,98 +26,16 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 
 const Home = () => {
   const router = useRouter()
-  const useParams = useSearchParams()
   const { openModal, closeModal } = useModal()
 
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
-  const [notificationState, setNotificationState] = useState<boolean>(true)
 
-  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
 
-  const firstLogin = useParams.get('isLoggedIn')
-
   // 창고 조회
   const { data: { data: storageInfo } = {} } = useQuery([WAREHOUSE.조회], () => storage())
-
-  // 알림 구독
-  const subscribe = async () => {
-    if (firstLogin === 'true' && notificationState) {
-      const EventSource = EventSourcePolyfill || NativeEventSource
-      const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      })
-
-      /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
-      // SSE.onopen = () => {
-      SSE.addEventListener('sse', (event: Event) => {
-        console.log('홈 SSE:', event)
-
-        // const isJson = (str: any) => {
-        //   try {
-        //     const json = JSON.parse(str)
-        //     return json && typeof json === 'object'
-        //   } catch (e) {
-        //     return false
-        //   }
-        // }
-        // if (isJson(event?.data)) {
-        //   const obj = JSON.parse(event?.data)
-        //   console.log('obj:', obj)
-
-        if (Notification.permission === 'granted') {
-          const notification = new Notification('알림', {
-            body: '홈 앱 알림을 구독하였습니다.',
-          })
-
-          toast.success('홈 앱 알림을 구독하였습니다.')
-          return notification
-        }
-        // }
-      })
-      // }
-
-      /* EVENTSOURCE ONERROR ------------------------------------------------------ */
-      SSE.onerror = () => {
-        SSE.addEventListener('error', () => {
-          // if (!event.error?.message.includes('No activity')) SSE.close()
-          SSE.close()
-        })
-      }
-    }
-  }
-
-  // 서비스 워커 등록
-  const serviceWorkerInit = async () => {
-    const permission = await Notification.requestPermission()
-    if (permission !== 'granted') return
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').then(async () => {
-        try {
-          if (permission === NOTIFICATION_PERMISSION.허용) {
-            if (firstLogin === 'true' && notificationState) {
-              setNotificationState(false)
-              await subscribe()
-            }
-          }
-        } catch (error) {
-          console.error('서비스워커 실패:', error)
-        }
-      })
-    }
-  }
-
-  useEffect(() => {
-    if (firstLogin === 'true' && notificationState) {
-      serviceWorkerInit()
-    }
-  }, [])
 
   // 창고 아이템 리다이렉트
   useEffect(() => {

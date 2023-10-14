@@ -129,7 +129,7 @@ const PreviewCard = ({
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
-      sendNotification()
+      // sendNotification()
       toast.success('거래가 등록되었습니다.')
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
@@ -172,7 +172,7 @@ const PreviewCard = ({
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       toast.success('개인 채팅방 입장하였습니다.')
-      sendNotification()
+      // sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -190,7 +190,7 @@ const PreviewCard = ({
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      sendNotification()
+      // sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
