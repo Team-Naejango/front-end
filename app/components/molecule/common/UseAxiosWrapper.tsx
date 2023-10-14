@@ -29,23 +29,23 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           config.headers = {} as AxiosHeaders
         }
 
-        const isAuthNeeded = config.url && !authExceptPaths.includes(config.url)
-        if (!isAuthNeeded) {
-          return config
-        }
+        // const isAuthNeeded = config.url && !authExceptPaths.includes(config.url)
+        // if (!isAuthNeeded) {
+        //   return config
+        // }
 
         const hasToken = await isTokenValid()
 
         if (!hasToken) {
-          if (config.data?.data.error === 401) {
-            const response = await refresh()
-
-            setNewAccessToken(response.data.result)
-
-            config.headers = {
-              Authorization: `Bearer ${response.data.result}`,
-            } as AxiosRequestHeaders
-          }
+          // if (config.data?.data.error === 401) {
+          //   const response = await refresh()
+          //
+          //   setNewAccessToken(response.data.result)
+          //
+          //   config.headers = {
+          //     Authorization: `Bearer ${response.data.result}`,
+          //   } as AxiosRequestHeaders
+          // }
 
           if (accessToken) {
             config.headers = {
@@ -73,43 +73,43 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
       { synchronous: true }
     )
 
-    const responseInterceptor = withAuth.interceptors.response.use(
-      async (config: AxiosResponse) => {
-        if (!config.headers) {
-          config.headers = {} as AxiosHeaders
-        }
-
-        console.log('config:', config)
-
-        const hasToken = await isTokenValid()
-        console.log('hasToken:', hasToken)
-
-        if (!hasToken) {
-          if (config.data.error === 401) {
-            const response = await refresh()
-
-            setNewAccessToken(response.data.result)
-
-            config.headers = {
-              Authorization: `Bearer ${response.data.result}`,
-            } as AxiosRequestHeaders
-          }
-        } else {
-          resetToken()
-          toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.')
-          router.replace('login')
-        }
-
-        return config
-      },
-
-      undefined,
-      { synchronous: true }
-    )
+    // const responseInterceptor = withAuth.interceptors.response.use(
+    //   async (config: AxiosResponse) => {
+    //     if (!config.headers) {
+    //       config.headers = {} as AxiosHeaders
+    //     }
+    //
+    //     console.log('config:', config)
+    //
+    //     const hasToken = await isTokenValid()
+    //     console.log('hasToken:', hasToken)
+    //
+    //     if (!hasToken) {
+    //       if (config.data.error === 401) {
+    //         const response = await refresh()
+    //
+    //         setNewAccessToken(response.data.result)
+    //
+    //         config.headers = {
+    //           Authorization: `Bearer ${response.data.result}`,
+    //         } as AxiosRequestHeaders
+    //       }
+    //     } else {
+    //       resetToken()
+    //       toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.')
+    //       router.replace('login')
+    //     }
+    //
+    //     return config
+    //   },
+    //
+    //   undefined,
+    //   { synchronous: true }
+    // )
 
     return () => {
       withAuth.interceptors.request.eject(requestInterceptor)
-      withAuth.interceptors.request.eject(responseInterceptor)
+      // withAuth.interceptors.request.eject(responseInterceptor)
     }
   }, [accessToken])
 
