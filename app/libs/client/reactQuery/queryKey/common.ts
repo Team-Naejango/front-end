@@ -6,6 +6,6 @@ export const CATEGORY = {
 } as const
 
 // 알림
-export const NOTICE = {
+export const ALARM = {
   조회: 'readNotification',
 } as const

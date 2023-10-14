@@ -36,7 +36,7 @@ const Chats = () => {
             <p className={'text-[15px]'}>채팅 목록이 없습니다.</p>
           </div>
         ) : (
-          chats?.result.map((chat, idx) => (
+          chats?.result.map((chat, index) => (
             <Link
               href={{
                 pathname: `/chats/edit`,
@@ -45,7 +45,7 @@ const Chats = () => {
                 },
               }}
               key={chat.chatId}
-              className={cls('flex items-center space-x-3 py-3 hover:bg-[#eeeeee]', idx === 0 ? '!border-t-0' : '')}>
+              className={cls('flex items-center space-x-3 py-3 hover:bg-[#eeeeee]', index === 0 ? '!border-t-0' : '')}>
               <div className='h-12 w-12 rounded-full bg-slate-300' />
               <div className={'inline-block'}>
                 <p className='text-[15px] text-gray-700'>

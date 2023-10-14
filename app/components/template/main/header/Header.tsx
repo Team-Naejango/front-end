@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { FiSettings } from 'react-icons/fi'
 import mapIcon from '@/app/assets/image/map.svg'
-import noticeIcon from '@/app/assets/image/notice.svg'
+import alarmIcon from '@/app/assets/image/alarm.svg'
 
 import { cls } from '@/app/libs/client/utils/util'
 import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
@@ -28,9 +28,9 @@ const Header = ({
 
   const address = typeof localStorage === 'undefined' ? undefined : localStorage.getItem(COMMON_STORE_KEY.주소)
 
-  const onClickNotice = () => {
+  const onMoveAlarm = () => {
     if (setting) return
-    router.push('/notice')
+    router.push('/alarms')
   }
 
   return (
@@ -50,7 +50,7 @@ const Header = ({
             </div>
             <div
               role='presentation'
-              onClick={onClickNotice}
+              onClick={onMoveAlarm}
               className={cls(
                 'relative flex h-12 w-12 items-center justify-center bg-[#f5f5f5] hover:bg-[#f0f0f0]',
                 setting ? 'rounded-full' : 'cursor-pointer rounded-md'
@@ -71,7 +71,7 @@ const Header = ({
                   )}
                 />
               ) : (
-                <Image src={noticeIcon} alt={'알림 아이콘'} width={24} />
+                <Image src={alarmIcon} alt={'알림 아이콘'} width={24} />
               )}
             </div>
           </div>
