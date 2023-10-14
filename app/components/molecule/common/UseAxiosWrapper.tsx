@@ -37,6 +37,16 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         const hasToken = await isTokenValid()
 
         if (!hasToken) {
+          if (config.data?.data.error === 401) {
+            const response = await refresh()
+
+            setNewAccessToken(response.data.result)
+
+            config.headers = {
+              Authorization: `Bearer ${response.data.result}`,
+            } as AxiosRequestHeaders
+          }
+
           if (accessToken) {
             config.headers = {
               Authorization: `Bearer ${accessToken}`,
@@ -72,18 +82,17 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         console.log('config:', config)
 
         const hasToken = await isTokenValid()
+        console.log('hasToken:', hasToken)
 
         if (!hasToken) {
-          if (accessToken) {
-            if (config.data.error === 401) {
-              const response = await refresh()
+          if (config.data.error === 401) {
+            const response = await refresh()
 
-              setNewAccessToken(response.data.result)
+            setNewAccessToken(response.data.result)
 
-              config.headers = {
-                Authorization: `Bearer ${response.data.result}`,
-              } as AxiosRequestHeaders
-            }
+            config.headers = {
+              Authorization: `Bearer ${response.data.result}`,
+            } as AxiosRequestHeaders
           }
         } else {
           resetToken()

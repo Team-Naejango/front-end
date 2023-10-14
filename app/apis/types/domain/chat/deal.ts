@@ -10,7 +10,7 @@ export type TransactionResult = {
   // 거래 아이템 상태
   status: '구매' | '판매'
   // 거래 상태
-  progress: '거래 예약' | '송금 완료' | '거래 완료'
+  progress: '거래 약속' | '송금 완료' | '거래 완료'
   // 거래자 ID
   traderId: number
   // 거래자 이름

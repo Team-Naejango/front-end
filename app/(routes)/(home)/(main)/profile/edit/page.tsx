@@ -21,6 +21,7 @@ import InputFile from '@/app/components/atom/InputFile'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
+import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 
 import { modifyUserInfo, userInfo } from '@/app/apis/domain/profile/profile'
 // import { nickNameValidity } from '@/app/apis/domain/auth/auth'
@@ -75,6 +76,8 @@ const EditProfile = () => {
     onSuccess: () => {
       toast.success('프로필이 변경되었습니다.')
       query.invalidateQueries([OAUTH.유저정보])
+      query.invalidateQueries([CHAT.참여자조회])
+      query.invalidateQueries([DEAL.특정거래조회])
       router.push('/profile')
     },
     onError: (error: ApiError) => {

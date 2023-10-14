@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
+import { Event, EventSource, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
 
 import Layout from '@/app/components/template/main/layout/Layout'
@@ -56,9 +56,22 @@ const Home = () => {
         withCredentials: true,
       })
 
-      SSE.onopen = () => {
-        SSE.addEventListener('sse', event => {
-          console.log('홈 SSE:', event)
+      /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
+      // SSE.onopen = () => {
+      SSE.addEventListener('sse', (event: Event) => {
+        console.log('홈 SSE:', event)
+
+        const isJson = (str: any) => {
+          try {
+            const json = JSON.parse(str)
+            return json && typeof json === 'object'
+          } catch (e) {
+            return false
+          }
+        }
+        if (isJson(event.data)) {
+          const obj = JSON.parse(event.data)
+          console.log('obj:', obj)
 
           if (Notification.permission === 'granted') {
             const notification = new Notification('알림', {
@@ -68,11 +81,15 @@ const Home = () => {
             toast.success('홈 앱 알림을 구독하였습니다.')
             return notification
           }
-        })
-      }
+        }
+      })
+      // }
 
+      /* EVENTSOURCE ONERROR ------------------------------------------------------ */
       SSE.onerror = () => {
-        SSE.close()
+        SSE.addEventListener('error', event => {
+          if (!event.error?.message.includes('No activity')) SSE.close()
+        })
       }
     }
   }

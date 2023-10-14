@@ -78,8 +78,12 @@ const Follow = () => {
   return (
     <Layout canGoBack title='팔로우'>
       <div className={'mt-6'}>
-        {follows && follows.result.length !== 0 ? (
-          follows.result.map(follow => {
+        {follows?.result?.length === 0 ? (
+          <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
+            <p className={'text-[15px]'}>팔로우 목록이 없습니다.</p>
+          </div>
+        ) : (
+          follows?.result.map(follow => {
             return (
               <div key={follow.id} className='border-b py-6'>
                 <div className='mb-3 flex cursor-pointer items-center space-x-3 px-2 pb-3'>
@@ -137,10 +141,6 @@ const Follow = () => {
               </div>
             )
           })
-        ) : (
-          <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
-            <p className={'text-[15px]'}>팔로우 목록이 없습니다.</p>
-          </div>
         )}
       </div>
 

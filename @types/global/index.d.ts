@@ -3,6 +3,7 @@ declare global {
     kakao: any
     daum: any
   }
+
   // eslint-disable-next-line no-undef
   const self: ServiceWorkerGlobalScope
 }

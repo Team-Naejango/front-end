@@ -7,7 +7,6 @@ import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
 import { AxiosError } from 'axios'
 import { FormProvider, useForm } from 'react-hook-form'
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
@@ -19,7 +18,6 @@ import { markerItemsState, activatedWareHouseTitleState, systemMessageState } fr
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import Button from '@/app/components/atom/Button'
-// import { useSendNotification } from '@/app/hooks/useSendNotification'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
@@ -35,7 +33,7 @@ import { DealParam, incompleteDeal, saveDeal as register } from '@/app/apis/doma
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 import { groupChatUserInfo, joinChat } from '@/app/apis/domain/chat/channel'
-import { chat, getChatId, joinGroupChat } from '@/app/apis/domain/chat/chat'
+import { chat, joinGroupChat } from '@/app/apis/domain/chat/chat'
 import { storage, storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps */
@@ -71,10 +69,8 @@ const PreviewCard = ({
 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [selectedChat, setSelectedChat] = useState<ChatInfoList | null>(null)
-  // const [yourProfileInfo, setYourProfileInfo] = useState<Item | null>(null)
   const [disabledPersonal, setDisabledPersonal] = useState<boolean>(false)
   const [disabledGroup, setDisabledGroup] = useState<boolean>(false)
-  const [isSeller, setIsSeller] = useState<boolean>(true)
   const [traderId, setTraderId] = useState<number | undefined>(undefined)
 
   const [selectedTitle, setSelectedTitle] = useRecoilState<string>(activatedWareHouseTitleState)
@@ -84,8 +80,6 @@ const PreviewCard = ({
   const _selectChat = useRecoilValue(modalSelector('selectChat'))
   const _channel = useRecoilValue(modalSelector('channel'))
   const _register = useRecoilValue(modalSelector('register'))
-
-  // const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
 
   const formMethods = useForm<FormFields>({
     mode: 'onSubmit',
@@ -174,39 +168,6 @@ const PreviewCard = ({
     },
   })
 
-  // 브라우저 알림 전송
-  // const UseSendNotification = () => {
-  //   const EventSource = EventSourcePolyfill || NativeEventSource
-  //   const SSE = new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-  //     headers: {
-  //       Authorization: `Bearer ${accessToken}`,
-  //     },
-  //     withCredentials: true,
-  //   })
-  //
-  //   SSE.addEventListener('sse', event => {
-  //     console.log('SSE 이벤트 수신:', event)
-  //
-  //     if (Notification.permission === 'granted') {
-  //       const notification = new Notification('알림', {
-  //         body: '알림 구독을 수신했습니다.',
-  //       })
-  //
-  //       toast.success('알림 구독을 수신했습니다.')
-  //       return notification
-  //     }
-  //   })
-  //
-  //   // const sendNotification = useSendNotification({
-  //   //   myId: mineInfo?.result.userId,
-  //   //   yourId: yourProfileInfo?.ownerId,
-  //   //   myNickname: mineInfo?.result.nickname,
-  //   //   myImgUrl: mineInfo?.result.imgUrl,
-  //   // })
-  //   //
-  //   // return sendNotification
-  // }
-
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
@@ -262,18 +223,12 @@ const PreviewCard = ({
   const personalManager = useCallback(async () => {
     if (selectedChat?.channelId) {
       const membersInfo = await groupChatUserInfo(String(selectedChat?.channelId))
-      const chatId = await getChatId(String(selectedChat?.channelId))
 
       const getTraderId = membersInfo.data.result?.find(value => {
         return value.participantId !== mineInfo?.result?.userId
       })?.participantId
       setTraderId(getTraderId)
-
-      const isSeller = getTraderId !== chatId.data.result
-
-      return setIsSeller(isSeller)
     }
-    return setIsSeller(false)
   }, [mineInfo?.result?.userId, selectedChat?.channelId])
 
   // 창고 아이템 선택 모달
@@ -453,7 +408,6 @@ const PreviewCard = ({
                         className={'w-full p-4'}
                         onClick={() => {
                           setSelectedItem({ ...item })
-                          // setYourProfileInfo({ ...item })
                           onClickShowModal(item.name || selectedTitle)
                         }}>
                         <span

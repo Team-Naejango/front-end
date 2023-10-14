@@ -38,7 +38,7 @@ const Wish = () => {
     <Layout canGoBack title='관심상품'>
       <div className={'py-8'}>
         <div className='grid grid-cols-2 grid-rows-[minmax(0,1fr)] items-center justify-center'>
-          {wishs?.result.length === 0 ? (
+          {wishs?.result?.length === 0 ? (
             <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
               <p className={'text-[15px]'}>관심상품 목록이 없습니다.</p>
             </div>

@@ -63,3 +63,12 @@ export const systemMessageState = atom<string | undefined>({
   key: `${TRANSACTION_STORE_KEY.시스템메세지}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: undefined,
 })
+
+/**
+ * 거래 금액
+ *
+ * */
+export const transactionAmountState = atom<number | null>({
+  key: `${TRANSACTION_STORE_KEY.거래금액}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: null,
+})

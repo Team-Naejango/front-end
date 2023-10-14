@@ -2,11 +2,13 @@
 
 import React from 'react'
 import Image from 'next/image'
+import { useRecoilValue } from 'recoil'
 
-import { cls } from '@/app/libs/client/utils/util'
+import { cls, formatKoreanCurrency } from '@/app/libs/client/utils/util'
 import { ChatResponse } from '@/app/(routes)/(home)/(main)/chats/edit/page'
 import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
 import { GroupChatUserInfo } from '@/app/apis/types/domain/chat/chat'
+import { transactionAmountState } from '@/app/store/atom'
 
 interface MessageProps {
   data: ChatResponse
@@ -15,12 +17,19 @@ interface MessageProps {
 }
 
 const Message = ({ data, isMe, membersInfo }: MessageProps) => {
+  const transactionAmount = useRecoilValue(transactionAmountState)
+
   // 유저 이미지 필터링
   const userImage = membersInfo?.result.find(v => v.participantId === data.senderId)?.imgUrl
 
   // 거래 메세지
   const isTradeMessage = (message: string) => {
-    return message === '거래 정보 수정 성공' || message === '거래 삭제 성공' || message === '거래 완료 요청 성공'
+    return (
+      message === '거래 정보 수정 성공' ||
+      message === '송금 요청 성공' ||
+      message === '거래 완료 요청 성공' ||
+      message === '거래 삭제 성공'
+    )
   }
 
   // 메세지 타입
@@ -37,8 +46,50 @@ const Message = ({ data, isMe, membersInfo }: MessageProps) => {
 
   const messageType = getStatus(data.messageType)
 
+  // 등록된 거래 유저 닉네임
+  const getNickname = (membersInfo: GroupChatUserInfo | undefined, participantId: number, convert: boolean) => {
+    const participant = membersInfo?.result.find(v => {
+      if (convert) {
+        return v.participantId !== participantId
+      }
+      return v.participantId === participantId
+    })
+    return participant?.nickname
+  }
+
+  const sellerName = getNickname(membersInfo, data.senderId, false)
+  const traderName = getNickname(membersInfo, data.senderId, true)
+
   return messageType || isTradeMessage(data.content) ? (
-    messageType === MESSAGE_TYPE.구독 ? null : (
+    messageType === MESSAGE_TYPE.구독 ? null : messageType === MESSAGE_TYPE.거래 ||
+      data.content === '거래 완료 요청 성공' ? (
+      <div className={'text-center'}>
+        <p className={'text-xs'}>{data.content}</p>
+        <div className={'mx-auto mt-3 w-48 space-y-3 rounded-lg border p-4'}>
+          <h2 className={'pb-1 text-[15px]'}>
+            {messageType === MESSAGE_TYPE.거래
+              ? '거래 예약'
+              : data.content === '거래 완료 요청 성공'
+              ? '거래 내역'
+              : null}
+          </h2>
+          <div className={'space-y-2 whitespace-pre-wrap'}>
+            <p className={'text-[13px]'}>
+              <span className={'block text-[12px] text-red-600'}>판매자</span>
+              {`${sellerName}`}
+            </p>
+            <p className={'text-[13px]'}>
+              <span className={'block text-[12px] text-green-600'}>구매자</span>
+              {`${traderName}`}
+            </p>
+            <p className={'text-[13px]'}>
+              <span className={'block text-[12px]'}>거래 잔고</span>
+              {`${formatKoreanCurrency(transactionAmount!)}`}
+            </p>
+          </div>
+        </div>
+      </div>
+    ) : (
       <div className={'text-center'}>
         <p className={'text-xs'}>{data.content}</p>
       </div>

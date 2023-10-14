@@ -1,11 +1,11 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useCallback, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import dynamic from 'next/dynamic'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
@@ -20,6 +20,7 @@ import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
+import { transactionAmountState } from '@/app/store/atom'
 
 import {
   wire,
@@ -61,6 +62,7 @@ const MenuBox = ({
   const query = useQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
+  const setTransactionAmount = useSetRecoilState(transactionAmountState)
 
   const _amount = useRecoilValue(modalSelector('amount'))
   const _edit = useRecoilValue(modalSelector('edit'))
@@ -184,8 +186,26 @@ const MenuBox = ({
     },
   })
 
+  useEffect(() => {
+    setTransactionAmount(sellerTransaction?.amount! || Math.abs(traderTransaction?.amount!))
+  }, [searchInfo?.result.amount])
+
+  // 거래 상태
+  const getTransactionStatus = (value: string | undefined) => {
+    if (value) {
+      return {
+        TRANSACTION_APPOINTMENT: '거래예약',
+        REMITTANCE_COMPLETION: '송금완료',
+        TRANSACTION_COMPLETION: '거래완료',
+      }[value]
+    }
+  }
+
   // 거래수정 모달
   const modifyDeal = () => {
+    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래예약)
+      return toast.error(`${getTransactionStatus(sellerTransaction?.status)} 상태이므로 거래 수정이 불가능합니다.`)
+
     openModal({
       modal: { id: 'edit', type: MODAL_TYPES.CONFIRM },
       callback: () => {
@@ -204,7 +224,9 @@ const MenuBox = ({
 
   // 송금하기 모달
   const sendPoint = useCallback(() => {
-    if (traderTransaction?.progress !== '거래 예약') return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
+      return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
 
     openModal({
       modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },
@@ -229,7 +251,8 @@ const MenuBox = ({
 
   // 거래삭제 모달
   const deleteDeal = () => {
-    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래예약) return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래예약)
+      return toast.error('거래 예약 상태에서만 삭제가 가능합니다.')
 
     openModal({
       modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '거래 삭제', content: '거래를 삭제 하시겠습니까?' },
@@ -249,10 +272,6 @@ const MenuBox = ({
     })
   }
 
-  console.log('sellerTransaction?.status', sellerTransaction?.status === TRANSACTION_TYPE.송금완료)
-  console.log('searchInfo?.result:', !searchInfo?.result)
-  console.log('isSeller', isSeller)
-
   return (
     <>
       {isOpen ? (
@@ -261,28 +280,28 @@ const MenuBox = ({
             <span className='block text-sm text-white'>거래 신청</span>
           </button>
           <button
-            disabled={!isSeller}
+            disabled={!isSeller || searchInfo?.result.progress === '거래 완료'}
             className={cls(
               'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              !isSeller || searchInfo?.result.progress === '거래 완료' ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
             )}
             onClick={modifyDeal}>
             <span className='block text-sm text-white'>거래 수정</span>
           </button>
           <button
-            disabled={!isSeller}
+            disabled={!isSeller || searchInfo?.result.progress === '거래 완료'}
             className={cls(
               'w-1/3 cursor-pointer bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              !isSeller || searchInfo?.result.progress === '거래 완료' ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
             )}
             onClick={deleteDeal}>
             <span className='block text-sm text-white'>거래 삭제</span>
           </button>
           <button
-            disabled={!isSeller}
+            disabled={!isSeller || searchInfo?.result.progress === '거래 완료'}
             className={cls(
               'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              !isSeller || searchInfo?.result.progress === '거래 완료' ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
             )}
             onClick={completeDeal}>
             <span className='block text-sm text-white'>거래 완료</span>
@@ -290,19 +309,19 @@ const MenuBox = ({
           <button
             className='w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'
             onClick={chargePoint}>
-            <span className='block text-sm text-white'>금액 충전</span>
+            <span className='block text-sm text-white'>잔고 충전</span>
           </button>
           <button
             disabled={
               isSeller ||
               sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ||
-              traderTransaction?.progress !== '거래 예약'
+              traderTransaction?.progress !== '거래 약속'
             }
             className={cls(
               'w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
               isSeller ||
                 sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ||
-                traderTransaction?.progress !== '거래 예약'
+                traderTransaction?.progress !== '거래 약속'
                 ? 'bg-[#ddd] hover:bg-[#ddd]'
                 : ''
             )}

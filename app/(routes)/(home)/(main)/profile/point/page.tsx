@@ -24,7 +24,7 @@ const PointCharge = () => {
     onSuccess: () => {
       query.invalidateQueries([OAUTH.유저정보])
       toast.success('잔고 충전이 완료되었습니다.')
-      router.push('/warehouse')
+      router.push('/profile')
     },
     onError: (error: ApiError) => {
       toast.error(error.message)

@@ -1,38 +1,11 @@
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
+import { Event, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
+import { useRecoilValue } from 'recoil'
 
-// interface Profile {
-//   myId: number | undefined
-//   yourId: number | undefined
-//   myNickname: string | undefined
-//   myImgUrl: string | undefined
-// }
-
-// export const useSendNotification = ({ myId, yourId, myNickname, myImgUrl }: Profile) => {
-//   const isMe = myId === yourId
-//   const notificationPermission = typeof Notification === 'undefined' ? undefined : Notification.permission
-//
-//   if (isMe && notificationPermission === 'granted') {
-//     const notification = new Notification('알림', {
-//       body: `${myNickname}님이 채팅방에 입장하였습니다.`,
-//       icon: `${
-//         myImgUrl === ''
-//           ? 'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/face2%402x.png'
-//           : `https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/profile/${encodeURIComponent(
-//               myImgUrl as string
-//             )}`
-//       }`,
-//     })
-//
-//     toast.success(`${myNickname}님이 채팅방에 입장하였습니다.`)
-//     return notification
-//   }
-//
-//   return null
-// }
+import { accessTokenState } from '@/app/store/auth'
 
 export const useSendNotification = () => {
-  const accessToken = typeof localStorage === 'undefined' ? undefined : localStorage.getItem('accessToken')
+  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
   const generator = () => {
     const EventSource = EventSourcePolyfill || NativeEventSource
@@ -43,28 +16,25 @@ export const useSendNotification = () => {
       withCredentials: true,
     })
 
-    SSE.addEventListener('sse', event => {
-      console.log('SSE 이벤트 수신:', event)
+    /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
+    SSE.addEventListener('sse', (event: Event) => {
+      console.log('홈 SSE:', event)
 
-      if (Notification.permission === 'granted') {
-        const notification = new Notification('알림', {
-          body: 'test',
-        })
+      if (event.data) {
+        const obj = JSON.parse(event.data)
+        console.log('obj:', obj)
 
-        toast.success('test.')
-        return notification
+        if (Notification.permission === 'granted') {
+          const notification = new Notification('알림', {
+            body: 'test',
+          })
+
+          toast.success('test')
+          return notification
+        }
       }
     })
   }
 
   return generator
-
-  // const sendNotification = useSendNotification({
-  //   myId: mineInfo?.result.userId,
-  //   yourId: yourProfileInfo?.ownerId,
-  //   myNickname: mineInfo?.result.nickname,
-  //   myImgUrl: mineInfo?.result.imgUrl,
-  // })
-  //
-  // return sendNotification
 }
