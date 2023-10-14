@@ -40,7 +40,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               return false
             }
           }
-          if (isJson(event.data)) {
+          if (isJson(event?.data)) {
             const obj = JSON.parse(event.data)
             console.log('obj:', obj)
 

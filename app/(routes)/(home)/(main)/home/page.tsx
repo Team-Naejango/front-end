@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
-import { Event, EventSource, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
+import { Event, EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
 
 import Layout from '@/app/components/template/main/layout/Layout'
@@ -69,7 +69,7 @@ const Home = () => {
             return false
           }
         }
-        if (isJson(event.data)) {
+        if (isJson(event?.data)) {
           const obj = JSON.parse(event.data)
           console.log('obj:', obj)
 
