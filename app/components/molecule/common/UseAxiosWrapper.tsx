@@ -113,7 +113,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     }
   }, [accessToken])
 
-  return <React.Suspense>{children}</React.Suspense>
+  return <>{children}</>
 }
 
 export default UseAxiosWrapper
