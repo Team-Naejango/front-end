@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -20,7 +20,7 @@ import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { transactionAmountState } from '@/app/store/atom'
+import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
 
 import {
   wire,
@@ -62,7 +62,8 @@ const MenuBox = ({
   const query = useQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
-  const setTransactionAmount = useSetRecoilState(transactionAmountState)
+  const setTransactionSellerAmount = useSetRecoilState(transactionSellerAmountState)
+  const setTransactionTraderAmount = useSetRecoilState(transactionTraderAmountState)
 
   const _amount = useRecoilValue(modalSelector('amount'))
   const _edit = useRecoilValue(modalSelector('edit'))
@@ -187,7 +188,10 @@ const MenuBox = ({
   })
 
   useEffect(() => {
-    setTransactionAmount(sellerTransaction?.amount! || Math.abs(traderTransaction?.amount!))
+    if (searchInfo) {
+      setTransactionSellerAmount(sellerTransaction?.amount!)
+      setTransactionTraderAmount(Math.abs(traderTransaction?.amount!))
+    }
   }, [searchInfo?.result.amount])
 
   // 거래 상태

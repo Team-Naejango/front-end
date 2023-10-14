@@ -6,7 +6,7 @@ export const cls = (...classnames: string[]) => {
 }
 
 // 숫자 콤마 변환기
-export const formatKoreanCurrency = (value: string | number) => {
+export const formatKoreanCurrency = (value: string | number | null) => {
   return Number(value).toLocaleString('ko-KR')
 }
 

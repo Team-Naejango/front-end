@@ -1,7 +1,7 @@
 'use client'
 
 import React, { ReactNode, useEffect } from 'react'
-import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
@@ -23,6 +23,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
   const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   useEffect(() => {
+    // 요청 예외처리
     const requestInterceptor = withAuth.interceptors.request.use(
       async (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
         if (!config.headers) {
@@ -37,16 +38,6 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         const hasToken = await isTokenValid()
 
         if (!hasToken) {
-          if (config.data?.data.error === 401) {
-            const response = await refresh()
-
-            setNewAccessToken(response.data.result)
-
-            config.headers = {
-              Authorization: `Bearer ${response.data.result}`,
-            } as AxiosRequestHeaders
-          }
-
           if (accessToken) {
             config.headers = {
               Authorization: `Bearer ${accessToken}`,
@@ -55,7 +46,6 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
             const response = await refresh()
 
             setNewAccessToken(response.data.result)
-
             config.headers = {
               Authorization: `Bearer ${response.data.result}`,
             } as AxiosRequestHeaders
@@ -73,43 +63,30 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
       { synchronous: true }
     )
 
-    // const responseInterceptor = withAuth.interceptors.response.use(
-    //   async (config: AxiosResponse) => {
-    //     if (!config.headers) {
-    //       config.headers = {} as AxiosHeaders
-    //     }
-    //
-    //     console.log('config:', config)
-    //
-    //     const hasToken = await isTokenValid()
-    //     console.log('hasToken:', hasToken)
-    //
-    //     if (!hasToken) {
-    //       if (config.data.error === 401) {
-    //         const response = await refresh()
-    //
-    //         setNewAccessToken(response.data.result)
-    //
-    //         config.headers = {
-    //           Authorization: `Bearer ${response.data.result}`,
-    //         } as AxiosRequestHeaders
-    //       }
-    //     } else {
-    //       resetToken()
-    //       toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.')
-    //       router.replace('login')
-    //     }
-    //
-    //     return config
-    //   },
-    //
-    //   undefined,
-    //   { synchronous: false }
-    // )
+    // 응답 예외처리
+    const responseInterceptor = withAuth.interceptors.response.use(
+      response => response,
+      error => {
+        if (!error.headers) {
+          error.headers = {} as AxiosHeaders
+        }
+
+        if (error.response.data.status === 401) {
+          setNewAccessToken(error.response.data.reissuedAccessToken)
+          error.headers = {
+            Authorization: `Bearer ${error.response.data.reissuedAccessToken}`,
+          } as AxiosRequestHeaders
+
+          return withAuth.request(error.config)
+        }
+
+        return Promise.reject(error)
+      }
+    )
 
     return () => {
       withAuth.interceptors.request.eject(requestInterceptor)
-      // withAuth.interceptors.request.eject(responseInterceptor)
+      withAuth.interceptors.request.eject(responseInterceptor)
     }
   }, [accessToken])
 

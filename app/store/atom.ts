@@ -65,10 +65,19 @@ export const systemMessageState = atom<string | undefined>({
 })
 
 /**
- * 거래 금액
+ * 거래 잔고(판매자)
  *
  * */
-export const transactionAmountState = atom<number | null>({
-  key: `${TRANSACTION_STORE_KEY.거래금액}/${new Date().getUTCMilliseconds() * Math.random()}`,
+export const transactionSellerAmountState = atom<number | null>({
+  key: `${TRANSACTION_STORE_KEY.판매자거래잔고}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: null,
+})
+
+/**
+ * 거래 잔고(구매자)
+ *
+ * */
+export const transactionTraderAmountState = atom<number | null>({
+  key: `${TRANSACTION_STORE_KEY.구매자거래잔고}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: null,
 })
