@@ -4,14 +4,6 @@ import { useRecoilValue } from 'recoil'
 
 import { accessTokenState } from '@/app/store/auth'
 
-interface MessageEvent {
-  data: any
-  lastEventId: string
-  target: any
-  type: string
-  error?: { message: string; stack: string }
-}
-
 export const useSendNotification = () => {
   const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
@@ -25,7 +17,7 @@ export const useSendNotification = () => {
     })
 
     /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
-    SSE.addEventListener('sse', (event: MessageEvent) => {
+    SSE.addEventListener('sse', event => {
       console.log('홈 SSE:', event)
 
       const isJson = (str: any) => {

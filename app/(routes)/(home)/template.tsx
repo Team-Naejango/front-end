@@ -8,14 +8,6 @@ import { toast } from 'react-hot-toast'
 
 import { accessTokenState } from '@/app/store/auth'
 
-interface MessageEvent {
-  data: any
-  lastEventId: string
-  target: any
-  type: string
-  error?: { message: string; stack: string }
-}
-
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -37,7 +29,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
       /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
       SSE.onopen = () => {
-        SSE.addEventListener('sse', (event: MessageEvent) => {
+        SSE.addEventListener('sse', event => {
           console.log('홈 SSE:', event)
 
           const isJson = (str: any) => {
