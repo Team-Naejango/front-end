@@ -27,8 +27,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }[value]
   }
 
-  // 알림 구독
+  // 브라우저 알림 기능
   const subscribe = useCallback(async () => {
+    // 알림 구독
     const EventSource = EventSourcePolyfill || NativeEventSource
     const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
       headers: {
@@ -37,23 +38,27 @@ export default function Template({ children }: { children: React.ReactNode }) {
       withCredentials: true,
     })
 
-    /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
+    // 첫 알림 푸시
     SSE.onopen = () => {
-      console.log('test')
-      if (Notification.permission === 'granted' && isLoggedIn && notificationState) {
-        console.log('isLoggedIn:', isLoggedIn)
-        console.log('notificationState:', notificationState)
-        console.log('test222')
-        const notification = new Notification('알림', {
-          body: '앱 알림을 구독하였습니다.',
-        })
+      if (Notification.permission === 'granted') {
+        if (isLoggedIn && notificationState) {
+          console.log('isLoggedIn:', isLoggedIn)
+          console.log('notificationState:', notificationState)
+          const notification = new Notification('알림', {
+            body: '앱 알림을 구독하였습니다.',
+          })
 
-        toast.success('앱 알림을 구독하였습니다.')
-        setNotificationState(false)
-        return notification
+          toast.success('앱 알림을 구독하였습니다.')
+          return notification
+        }
       }
     }
 
+    SSE.onerror = () => {
+      SSE.close()
+    }
+
+    // SSE 감지 후 브라우저 알림 노출
     SSE.addEventListener('sse', (event: any) => {
       const eventData = JSON.parse(event.data)
       if (eventData.includes('EventStream Created.')) return
@@ -77,33 +82,33 @@ export default function Template({ children }: { children: React.ReactNode }) {
     return () => {
       SSE.close()
     }
-  }, [isLoggedIn, notificationState])
-
-  useEffect(() => {
-    // 서비스 워커 등록
-    const serviceWorkerInit = async () => {
-      const permission = await Notification.requestPermission()
-      if (permission !== 'granted') return
-
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(async () => {
-          try {
-            if (permission === NOTIFICATION_PERMISSION.허용 && notificationState) {
-              setNotificationState(false)
-              await subscribe()
-            }
-          } catch (error) {
-            console.error('서비스워커 실패:', error)
-          }
-        })
-      }
-    }
-
-    if (isLoggedIn && notificationState) {
-      serviceWorkerInit()
-    }
   }, [EventSourcePolyfill, NativeEventSource])
 
+  // 서비스 워커 등록
+  useEffect(() => {
+    if (isLoggedIn && notificationState) {
+      const serviceWorkerInit = async () => {
+        const permission = await Notification.requestPermission()
+        if (permission !== 'granted') return
+
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js').then(async () => {
+            try {
+              if (permission === NOTIFICATION_PERMISSION.허용 && notificationState) {
+                setNotificationState(false)
+                await subscribe()
+              }
+            } catch (error) {
+              console.error('서비스워커 실패:', error)
+            }
+          })
+        }
+      }
+      serviceWorkerInit()
+    }
+  }, [])
+
+  // 뒤로가기 막음
   useEffect(() => {
     if (isLoggedIn) {
       const onLimitBack = () => {
