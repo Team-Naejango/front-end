@@ -9,7 +9,7 @@ import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { Transaction } from '@/app/apis/types/domain/chat/deal'
 
 const ReviewCard = () => {
-  const [selectedTab, setSelectedTab] = useState<string | string[]>(ITEM_TYPE.개인구매)
+  const [selectedTab, setSelectedTab] = useState<string | string[]>([ITEM_TYPE.개인구매, ITEM_TYPE.공동구매])
   const [reviews] = useState<Transaction>({
     message: '',
     result: [
@@ -29,20 +29,22 @@ const ReviewCard = () => {
 
   // 탭 선택
   const onSelectedTab = (tab: string | string[]) => {
-    if (String(tab) === selectedTab) return
+    const PERSONAL_OR_GROUP = ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매
 
-    setSelectedTab(currentTab => {
-      if (currentTab === ITEM_TYPE.개인구매 || currentTab === ITEM_TYPE.공동구매) {
+    if (tab.includes(PERSONAL_OR_GROUP) === selectedTab.includes(PERSONAL_OR_GROUP)) return
+
+    setSelectedTab(() => {
+      if (selectedTab.includes(PERSONAL_OR_GROUP)) {
         return ITEM_TYPE.개인판매
       }
-      return ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매
+      return [ITEM_TYPE.개인구매, ITEM_TYPE.공동구매]
     })
   }
 
   return (
     <RoundedTab setSelectedTab={onSelectedTab}>
       <Tab.Panel>
-        {selectedTab === (ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) &&
+        {selectedTab.includes(ITEM_TYPE.개인구매 || ITEM_TYPE.공동구매) &&
           (reviews.result.length === 0 ? (
             <div className='flex h-[450px] items-center justify-center'>
               <p className='text-sm'>등록가능한 리뷰내역이 없습니다.</p>
@@ -52,7 +54,7 @@ const ReviewCard = () => {
           ))}
       </Tab.Panel>
       <Tab.Panel>
-        {selectedTab === ITEM_TYPE.개인판매 &&
+        {selectedTab.includes(ITEM_TYPE.개인판매) &&
           (reviews.result.length === 0 ? (
             <div className='flex h-[450px] items-center justify-center'>
               <p className='text-sm'>등록가능한 리뷰내역이 없습니다.</p>

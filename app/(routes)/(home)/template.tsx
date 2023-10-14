@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
@@ -28,7 +28,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }
 
   // 알림 구독
-  const subscribe = async () => {
+  const subscribe = useCallback(async () => {
     const EventSource = EventSourcePolyfill || NativeEventSource
     const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
       headers: {
@@ -39,19 +39,23 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
     /* EVENTSOURCE ONMESSAGE ---------------------------------------------------- */
     SSE.onopen = () => {
-      if (Notification.permission === 'granted') {
+      console.log('test')
+      if (Notification.permission === 'granted' && isLoggedIn && notificationState) {
+        console.log('isLoggedIn:', isLoggedIn)
+        console.log('notificationState:', notificationState)
+        console.log('test222')
         const notification = new Notification('알림', {
           body: '앱 알림을 구독하였습니다.',
         })
 
         toast.success('앱 알림을 구독하였습니다.')
+        setNotificationState(false)
         return notification
       }
     }
 
     SSE.addEventListener('sse', (event: any) => {
       const eventData = JSON.parse(event.data)
-      console.log('템플릿 SSE:', eventData)
       if (eventData.includes('EventStream Created.')) return
 
       if (eventData) {
@@ -73,7 +77,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     return () => {
       SSE.close()
     }
-  }
+  }, [isLoggedIn, notificationState])
 
   useEffect(() => {
     // 서비스 워커 등록
