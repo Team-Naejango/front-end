@@ -2,6 +2,7 @@
 
 import React, { Dispatch, SetStateAction, SVGProps } from 'react'
 import { RadioGroup } from '@headlessui/react'
+import { useFormContext } from 'react-hook-form'
 
 export type DataTypes = {
   label: string
@@ -14,6 +15,10 @@ interface RadioPickerProps {
   setSelectedRadio: Dispatch<SetStateAction<DataTypes>>
 }
 
+interface ChildrenProp {
+  childAmount: number
+}
+
 function CheckIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox='0 0 24 24' fill='none' {...props}>
@@ -24,6 +29,8 @@ function CheckIcon(props: SVGProps<SVGSVGElement>) {
 }
 
 const RadioPicker = ({ data, selectedRadio, setSelectedRadio }: RadioPickerProps) => {
+  const { register } = useFormContext<ChildrenProp>()
+
   return (
     <div className='w-full pb-8 pt-4'>
       <div className='mx-auto w-full max-w-md'>
@@ -59,6 +66,9 @@ const RadioPicker = ({ data, selectedRadio, setSelectedRadio }: RadioPickerProps
                           value={value.value}
                           checked={checked}
                           readOnly
+                          {...register('childAmount', {
+                            value: value.value,
+                          })}
                           className={`${
                             checked ? 'text-[#32D7A0] ring-1 ring-white ring-offset-1 ring-offset-[#32D7A0]' : ''
                           } border-2 border-[#32D7A0] text-[#32D7A0]`}

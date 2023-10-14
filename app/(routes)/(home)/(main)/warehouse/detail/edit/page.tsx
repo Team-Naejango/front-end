@@ -323,7 +323,7 @@ const WareHouseItem = () => {
 
       {_chat.modal.show ? (
         <CustomModal id={_chat.modal.id} type={MODAL_TYPES.ALERT}>
-          <div className={'flex gap-4 py-2'}>
+          <div className={'flex gap-2 py-2'}>
             <Button
               small
               disabled={disabledPersonal}

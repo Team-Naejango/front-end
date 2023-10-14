@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -44,6 +44,7 @@ export interface FormFields {
   seller: string
   dealer: string
   amount: number
+  childAmount: number
 }
 
 const MenuBox = ({
@@ -106,7 +107,7 @@ const MenuBox = ({
   })
 
   // [구매자입장] 미거래 정보
-  const traderTransaction = deals?.result.find(v => v.traderId === getTraderId)
+  const traderTransaction = deals?.result.find(v => v.traderId === getTraderId && v.progress !== '거래 완료')
 
   // [판매자입장] 미거래 정보
   const sellerTransaction = incompleteInfo?.result.find(v => v)
@@ -187,12 +188,14 @@ const MenuBox = ({
     },
   })
 
+  // 거래 잔고 탐지
   useEffect(() => {
     if (searchInfo) {
-      setTransactionSellerAmount(sellerTransaction?.amount!)
-      setTransactionTraderAmount(Math.abs(traderTransaction?.amount!))
+      setTransactionSellerAmount(sellerTransaction?.amount || 0)
+    } else {
+      setTransactionTraderAmount(traderTransaction ? Math.abs(traderTransaction.amount) : 0)
     }
-  }, [searchInfo?.result.amount])
+  }, [searchInfo])
 
   // 거래 상태
   const getTransactionStatus = (value: string | undefined) => {
@@ -229,6 +232,7 @@ const MenuBox = ({
   // 송금하기 모달
   const sendPoint = useCallback(() => {
     if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (isSeller) return toast.error('구매자만 송금이 가능합니다.')
     if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
       return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
 
@@ -271,7 +275,7 @@ const MenuBox = ({
     openModal({
       modal: { id: 'amount', type: MODAL_TYPES.DIALOG, title: '거래 수정' },
       callback: () => {
-        mutateAccount(selectedPoint.value)
+        mutateAccount(watch('childAmount'))
       },
     })
   }
@@ -316,19 +320,7 @@ const MenuBox = ({
             <span className='block text-sm text-white'>잔고 충전</span>
           </button>
           <button
-            disabled={
-              isSeller ||
-              sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ||
-              traderTransaction?.progress !== '거래 약속'
-            }
-            className={cls(
-              'w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              isSeller ||
-                sellerTransaction?.status === TRANSACTION_TYPE.송금완료 ||
-                traderTransaction?.progress !== '거래 약속'
-                ? 'bg-[#ddd] hover:bg-[#ddd]'
-                : ''
-            )}
+            className={'w-1/3 cursor-pointer border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]'}
             onClick={sendPoint}>
             <span className='block text-sm text-white'>송금 하기</span>
           </button>
@@ -356,9 +348,11 @@ const MenuBox = ({
       )}
 
       {_amount.modal.show ? (
-        <CustomModal id={_amount.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'충전'}>
-          <RadioPicker data={POINTS} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
-        </CustomModal>
+        <FormProvider {...formMethods}>
+          <CustomModal id={_amount.modal.id} type={MODAL_TYPES.CONFIRM} btn btnTxt={'충전'}>
+            <RadioPicker data={POINTS} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
+          </CustomModal>
+        </FormProvider>
       ) : null}
 
       {_edit.modal.show ? (

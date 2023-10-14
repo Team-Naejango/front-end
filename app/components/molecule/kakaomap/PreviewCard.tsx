@@ -503,7 +503,7 @@ const PreviewCard = ({
 
       {_channel.modal.show ? (
         <CustomModal id={_channel.modal.id} type={MODAL_TYPES.ALERT}>
-          <div className={'flex gap-4 py-2'}>
+          <div className={'flex gap-2 py-2'}>
             <Button
               small
               disabled={disabledPersonal}

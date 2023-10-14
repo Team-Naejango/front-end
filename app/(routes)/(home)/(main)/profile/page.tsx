@@ -23,6 +23,7 @@ import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
+import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
 
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
 import { logout as kill } from '@/app/apis/domain/auth/auth'
@@ -174,9 +175,9 @@ const Profile = () => {
       }>
       <div className={'float-right w-auto rounded border border-[#ccc] px-1.5 py-1 text-center hover:border-[#32D7A0]'}>
         <Link href={'/profile/point'}>
-          <span className={'inline-block whitespace-nowrap text-[13px]'}>{`잔고 : ${
+          <span className={'inline-block whitespace-nowrap text-[13px]'}>{`잔고 : ${formatKoreanCurrency(
             mineInfo?.result.balance || 0
-          }`}</span>
+          )}`}</span>
         </Link>
       </div>
       <div className='clear-both mt-12 px-4'>

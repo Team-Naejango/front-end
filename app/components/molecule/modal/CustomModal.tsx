@@ -128,7 +128,7 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
                         ) : (
                           <>
                             {children}
-                            <div className={'flex gap-4'}>
+                            <div className={'flex gap-2'}>
                               <Button
                                 small
                                 text={'확인'}

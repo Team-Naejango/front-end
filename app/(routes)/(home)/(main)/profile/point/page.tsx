@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { ApiError } from 'next/dist/server/api-utils'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Button from '@/app/components/atom/Button'
@@ -14,10 +15,18 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 
 import { account } from '@/app/apis/domain/warehouse/account'
 
+interface Charge {
+  childAmount: number
+}
+
 const PointCharge = () => {
   const query = useQueryClient()
   const router = useRouter()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
+
+  const formMethods = useForm<Charge>({
+    mode: 'onSubmit',
+  })
 
   // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
@@ -41,7 +50,9 @@ const PointCharge = () => {
   return (
     <Layout canGoBack title={'잔고 충전'} seoTitle={'잔고 충전'}>
       <div className='mt-10 px-2'>
-        <RadioPicker data={POINTS} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
+        <FormProvider {...formMethods}>
+          <RadioPicker data={POINTS} selectedRadio={selectedPoint} setSelectedRadio={setSelectedPoint} />
+        </FormProvider>
         <div className={'fixed bottom-[95px] left-1/2 w-[90%] -translate-x-1/2 transform'}>
           <Button type={'submit'} text={'충전하기'} onClick={onSubmit} />
         </div>
