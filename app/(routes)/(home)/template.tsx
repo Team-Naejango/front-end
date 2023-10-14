@@ -61,7 +61,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
       /* EVENTSOURCE ONERROR ------------------------------------------------------ */
       SSE.onerror = () => {
         SSE.addEventListener('error', event => {
-          if (!event.error?.message.includes('No activity')) SSE.close()
+          // if (!event.error?.message.includes('No activity')) SSE.close()
+          SSE.close()
         })
       }
 
