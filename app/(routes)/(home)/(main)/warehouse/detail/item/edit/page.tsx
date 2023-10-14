@@ -10,6 +10,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
 import { BsPlusSquare } from 'react-icons/bs'
 import { AxiosError } from 'axios'
+import uuid from 'react-uuid'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import InputField from '@/app/components/atom/InputField'
@@ -24,18 +25,17 @@ import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { useCategories } from '@/app/hooks/useCategories'
 import CategorySelectBox from '@/app/components/molecule/tab/CategorySelectBox'
 import { CATEGORY } from '@/app/libs/client/reactQuery/queryKey/common'
+import { CategoryResult } from '@/app/apis/types/domain/common/category'
 
 import {
   itemInfo,
   saveItem,
   modifyItem,
-  storage as _storage,
   OmitStorageIdItemParam,
   storageGroupChannel,
 } from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
 import { category } from '@/app/apis/domain/common/category'
-import { CategoryResult } from '@/app/apis/types/domain/common/category'
 
 interface ItemProps {
   name: string
@@ -59,6 +59,7 @@ const EditItem = () => {
   const [selectedType, setSelectedType] = useState<{ label: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
+  const [uuidState] = useState<string>(uuid())
   const [hashTags, setHashTags] = useState<string[]>([])
 
   const REGION = process.env.NEXT_PUBLIC_AWS_REGION
@@ -190,7 +191,7 @@ const EditItem = () => {
     try {
       const command = new PutObjectCommand({
         Bucket: 'naejango-s3-image',
-        Key: `upload/item/${file.name}`,
+        Key: `upload/item/${uuidState}_${file.name}`,
         ContentType: file.type,
         Body: file,
         ACL: 'public-read',
@@ -270,7 +271,7 @@ const EditItem = () => {
     const params: ItemProps = {
       name: data.name,
       description: data.description,
-      imgUrl: (imageFile! && imageFile[0].name) ?? _itemInfo?.result.imgUrl,
+      imgUrl: `${uuidState}_${imageFile![0].name}` ?? _itemInfo?.result.imgUrl,
       itemType: selectedType.name,
       hashTag: hashTags,
       categoryId: findCategoryList(selectedCategory.categoryName).categoryId!,

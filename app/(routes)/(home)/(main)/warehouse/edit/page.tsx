@@ -10,6 +10,7 @@ import { GrFormNext } from 'react-icons/gr'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
 import mapIcon from '@/app/assets/image/map.svg'
+import uuid from 'react-uuid'
 
 import BackHeader from '@/app/components/template/main/header/BackHeader'
 import InputField from '@/app/components/atom/InputField'
@@ -39,6 +40,7 @@ const WarehouseEdit = () => {
   const router = useRouter()
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
+  const [uuidState] = useState<string>(uuid())
   const [step, setStep] = useState<E_STEP>(STEP.위치정보)
   const [address, setAddress] = useState<AddressType>({
     value: '',
@@ -119,7 +121,7 @@ const WarehouseEdit = () => {
     try {
       const command = new PutObjectCommand({
         Bucket: 'naejango-s3-image',
-        Key: `upload/warehouse/${file.name}`,
+        Key: `upload/warehouse/${uuidState}_${file.name}`,
         ContentType: file.type,
         Body: file,
         ACL: 'public-read',
@@ -197,7 +199,7 @@ const WarehouseEdit = () => {
     const params: StorageParam = {
       name: data.name,
       description: data.description,
-      imgUrl: (imageFile && imageFile[0].name) ?? data.imgUrl,
+      imgUrl: `${uuidState}_${imageFile![0].name}` ?? data.imgUrl,
       address: address.value,
       coord: {
         longitude: address.coords.longitude || (currentItem && currentItem.coord.longitude)!,

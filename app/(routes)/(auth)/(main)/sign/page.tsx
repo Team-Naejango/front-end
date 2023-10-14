@@ -102,7 +102,6 @@ const Sign = () => {
     event.preventDefault()
     if (nickname === '') return false
 
-    // query mutation api call
     // mutateNickname(watch('nickname'))
   }
 

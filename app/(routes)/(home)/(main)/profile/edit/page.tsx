@@ -11,6 +11,7 @@ import { toast } from 'react-hot-toast'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
 import { BsPhone } from 'react-icons/bs'
+import uuid from 'react-uuid'
 
 import Button from '@/app/components/atom/Button'
 import InputField from '@/app/components/atom/InputField'
@@ -41,6 +42,7 @@ const EditProfile = () => {
   const router = useRouter()
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
   const [imageFile, setImageFile] = useState<FileList | null>(null)
+  const [uuidState] = useState<string>(uuid())
   // const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
   // const [selectedNickname, setSelectedNickname] = useState<string>('')
 
@@ -111,7 +113,7 @@ const EditProfile = () => {
     try {
       const command = new PutObjectCommand({
         Bucket: 'naejango-s3-image',
-        Key: `upload/profile/${file.name}`,
+        Key: `upload/profile/${uuidState}_${file.name}`,
         ContentType: file.type,
         Body: file,
         ACL: 'public-read',
@@ -189,7 +191,7 @@ const EditProfile = () => {
     const params: Member = {
       nickname: getValues('nickname'),
       gender: getValues('gender'),
-      imgUrl: (imageFile! && imageFile[0].name) ?? _userInfo.imgUrl,
+      imgUrl: `${uuidState}_${imageFile![0].name}` ?? _userInfo.imgUrl,
       birth: getValues('birth'),
       intro: getValues('intro') ?? '',
       phoneNumber: getValues('phoneNumber'),
@@ -214,11 +216,8 @@ const EditProfile = () => {
   // 중복 검사
   const onValidUserName = (event: React.MouseEvent) => {
     event.preventDefault()
-    if (nickname === '') {
-      return false
-    }
+    if (nickname === '') return false
 
-    // query mutation api call
     // mutateNickname(nickname)
   }
 
