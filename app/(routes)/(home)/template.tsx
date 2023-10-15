@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRecoilValue } from 'recoil'
 import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill'
@@ -13,7 +13,6 @@ import { SSEType } from '@/app/apis/types/domain/common/alarm'
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [notificationState, setNotificationState] = useState<boolean>(true)
 
   const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
@@ -27,6 +26,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }[value]
   }
 
+  // 알림 노출
   const showNotification = (title: string, content?: string) => {
     if (Notification.permission === 'granted') {
       const notification = new Notification(title, {
@@ -38,15 +38,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }
 
-  // 브라우저 알림 기능
+  // 브라우저 알림 구독
   const subscribe = useCallback(async () => {
-    // 알림 구독
     const EventSource = EventSourcePolyfill || NativeEventSource
     const SSE = await new EventSource(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      heartbeatTimeout: 1200000,
+      heartbeatTimeout: 1000 * 60 * 30, // 30분
       withCredentials: true,
     })
 
@@ -64,7 +63,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
     // SSE 감지 후 브라우저 알림 노출
     SSE.addEventListener('sse', (event: any) => {
       const eventData = JSON.parse(event.data)
-      if (eventData.includes('EventStream Created.')) return false
 
       if (eventData) {
         const alarmInfo: SSEType = {
@@ -85,26 +83,23 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // 서비스 워커 등록
   useEffect(() => {
-    if (isLoggedIn && notificationState) {
-      const serviceWorkerInit = async () => {
-        const permission = await Notification.requestPermission()
-        if (permission !== 'granted') return
+    const serviceWorkerInit = async () => {
+      const permission = await Notification.requestPermission()
+      if (permission !== 'granted') return
 
-        if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('/sw.js').then(async () => {
-            try {
-              if (permission === NOTIFICATION_PERMISSION.허용 && notificationState) {
-                setNotificationState(false)
-                await subscribe()
-              }
-            } catch (error) {
-              console.error('서비스워커 실패:', error)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').then(async () => {
+          try {
+            if (permission === NOTIFICATION_PERMISSION.허용) {
+              await subscribe()
             }
-          })
-        }
+          } catch (error) {
+            console.error('서비스워커 실패:', error)
+          }
+        })
       }
-      serviceWorkerInit()
     }
+    serviceWorkerInit()
   }, [])
 
   // 뒤로가기 막음
