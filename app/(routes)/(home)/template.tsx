@@ -82,23 +82,25 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // 서비스 워커 등록
   useEffect(() => {
-    const serviceWorkerInit = async () => {
-      const permission = await Notification.requestPermission()
-      if (permission !== 'granted') return
+    if (isLoggedIn) {
+      const serviceWorkerInit = async () => {
+        const permission = await Notification.requestPermission()
+        if (permission !== 'granted') return
 
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').then(async () => {
-          try {
-            if (permission === NOTIFICATION_PERMISSION.허용) {
-              await subscribe()
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.register('/sw.js').then(async () => {
+            try {
+              if (permission === NOTIFICATION_PERMISSION.허용) {
+                await subscribe()
+              }
+            } catch (error) {
+              console.error('서비스워커 실패:', error)
             }
-          } catch (error) {
-            console.error('서비스워커 실패:', error)
-          }
-        })
+          })
+        }
       }
+      serviceWorkerInit()
     }
-    serviceWorkerInit()
   }, [])
 
   // 뒤로가기 막음
