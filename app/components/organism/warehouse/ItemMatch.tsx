@@ -44,7 +44,7 @@ const ItemMatch = ({
     <div
       className={cls(
         'fixed left-1/2 top-8 w-10/12 -translate-x-1/2 overflow-y-auto rounded-xl border border-[#ececec]',
-        !items?.result || (items?.result.length || 0) <= 2 ? 'h-auto' : 'h-[300px]'
+        !items?.result || items?.result?.length >= 2 ? 'h-auto' : 'h-[300px]'
       )}>
       <div className='h-inherit mx-auto flex flex-col gap-4 bg-[#F3F4F6] p-4'>
         <p className={'text-center text-sm'}>매칭 아이템</p>
@@ -60,7 +60,7 @@ const ItemMatch = ({
                 ref={focusRef}
                 key={item.itemId}
                 className={cls(
-                  'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg bg-white outline-none ring-1 hover:ring-[#32D7A0]',
+                  'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg bg-white outline-none ring-1 ring-[#ddd] hover:ring-[#32D7A0]',
                   activeIndex?.itemId === item.itemId ? 'ring-[#32D7A0]' : ''
                 )}
                 onClick={() => onSelectItem(item)}>
@@ -68,9 +68,6 @@ const ItemMatch = ({
                   <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-left indent-4 text-[13px]'>
                     {item.name}
                   </p>
-                  <span className={cls('w-40 text-xs text-gray-500', groupChatInfo ? 'mt-1' : '')}>
-                    {groupChatInfo && Number(groupChatInfo?.participantsCount) / Number(groupChatInfo?.channelLimit)}
-                  </span>
                   <span className='absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10'>
                     <span
                       className={
