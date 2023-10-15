@@ -27,12 +27,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }
 
   // 알림 노출
-  const showNotification = (title: string, content: string) => {
+  const showNotification = (title: string, content?: string) => {
     if (Notification.permission === 'granted') {
       const notification = new Notification(title, {
         body: content,
       })
-      toast.success(content)
       return notification
     }
   }
@@ -52,6 +51,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     SSE.onopen = () => {
       if (Notification.permission === 'granted') {
         showNotification('알림', '앱 알림을 구독하였습니다.')
+        toast.success('앱 알림을 구독하였습니다.')
       }
     }
 
@@ -70,6 +70,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
         if (Notification.permission === 'granted') {
           showNotification(getAlarmStatus(alarmInfo.notificationType), alarmInfo.content)
+          toast.success(`${alarmInfo.content}이 도착했습니다.`)
         }
       }
     })
