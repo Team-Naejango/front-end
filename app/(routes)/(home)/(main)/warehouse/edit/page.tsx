@@ -63,8 +63,9 @@ const WarehouseEdit = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    getValues,
     setValue,
+    formState: { errors },
     reset,
   } = useForm<WarehouseProps>({
     mode: 'onSubmit',
@@ -199,7 +200,7 @@ const WarehouseEdit = () => {
     const params: StorageParam = {
       name: data.name,
       description: data.description,
-      imgUrl: `${uuidState}_${imageFile![0].name}` ?? data.imgUrl,
+      imgUrl: imageFile && imageFile[0].name ? `${uuidState}_${imageFile[0].name}` : data.imgUrl,
       address: address.value,
       coord: {
         longitude: address.coords.longitude || (currentItem && currentItem.coord.longitude)!,

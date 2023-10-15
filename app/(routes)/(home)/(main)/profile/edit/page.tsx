@@ -191,7 +191,7 @@ const EditProfile = () => {
     const params: Member = {
       nickname: getValues('nickname'),
       gender: getValues('gender'),
-      imgUrl: `${uuidState}_${imageFile![0].name}` ?? _userInfo.imgUrl,
+      imgUrl: imageFile && imageFile[0].name ? `${uuidState}_${imageFile[0].name}` : _userInfo.imgUrl,
       birth: getValues('birth'),
       intro: getValues('intro') ?? '',
       phoneNumber: getValues('phoneNumber'),

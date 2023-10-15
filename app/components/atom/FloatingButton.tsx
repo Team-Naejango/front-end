@@ -15,7 +15,7 @@ const FloatingButton = ({ children, href, prefetch, onClick, className }: Floati
     <Link
       href={href}
       prefetch={prefetch}
-      className={`fixed bottom-24 right-5 flex aspect-square w-12 cursor-pointer items-center justify-center rounded-full border-0 border-transparent bg-[#33CC99] text-white shadow-sm transition-colors hover:bg-[#32D7A0] ${className}`}
+      className={`fixed bottom-24 right-5 z-[9999] flex aspect-square w-12 cursor-pointer items-center justify-center rounded-full border-0 border-transparent bg-[#33CC99] text-white shadow-sm transition-colors hover:bg-[#32D7A0] ${className}`}
       onClick={onClick}>
       {children}
     </Link>

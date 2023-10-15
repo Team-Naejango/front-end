@@ -27,9 +27,13 @@ const GroupChatCard = () => {
     <div
       className={cls(
         'mb-24 mt-12 overflow-y-auto rounded-xl border border-[#ececec]',
-        !groupChats?.result || groupChats?.result?.length >= 2 ? 'h-auto' : 'h-[300px]'
+        !groupChats?.result || groupChats?.result?.length <= 2 ? 'h-auto' : 'h-[300px]'
       )}>
-      <div className='h-inherit mx-auto flex flex-col gap-4 bg-[#F3F4F6] p-4'>
+      <div
+        className={cls(
+          'mx-auto flex flex-col gap-4 bg-[#F3F4F6] p-4',
+          !groupChats?.result || groupChats?.result?.length <= 2 ? 'h-inherit' : 'h-auto'
+        )}>
         <p className={'text-left text-sm'}>근처 그룹 채팅방</p>
         {!groupChats?.result || groupChats?.result.length === 0 ? (
           <div className={'flex h-[100px] items-center justify-center rounded border bg-white'}>

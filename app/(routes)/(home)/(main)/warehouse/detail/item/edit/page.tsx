@@ -271,7 +271,7 @@ const EditItem = () => {
     const params: ItemProps = {
       name: data.name,
       description: data.description,
-      imgUrl: `${uuidState}_${imageFile![0].name}` ?? _itemInfo?.result.imgUrl,
+      imgUrl: imageFile && imageFile[0].name ? `${uuidState}_${imageFile[0].name}` : _itemInfo?.result.imgUrl ?? '',
       itemType: selectedType.name,
       hashTag: hashTags,
       categoryId: findCategoryList(selectedCategory.categoryName).categoryId!,
