@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 
 import { cls, formatKoreanCurrency } from '@/app/libs/client/utils/util'
-import { ChatResponse } from '@/app/(routes)/(home)/(main)/chats/edit/page'
+import { ChatResponse } from '@/app/(routes)/(withAuth)/(domain)/chats/edit/page'
 import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
 import { GroupChatUserInfo } from '@/app/apis/types/domain/chat/chat'
 import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'

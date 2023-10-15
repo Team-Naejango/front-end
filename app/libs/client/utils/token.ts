@@ -1,16 +1,18 @@
 'use client'
 
+import { useRecoilValue } from 'recoil'
 import jwtDecode from 'jwt-decode'
 
 import { getCookie } from '@/app/libs/client/utils/cookie'
 import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
+import { accessTokenState } from '@/app/store/auth'
 
 /**
  * 토큰 검증
  *
  * */
-export const isTokenValid = async () => {
-  const accessToken = getCookie(AUTH_TOKEN.접근)
+export const IsTokenValid = () => {
+  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
   const refreshToken = getCookie(AUTH_TOKEN.갱신)
 
   if (!accessToken) {

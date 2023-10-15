@@ -11,7 +11,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
 import { CHAT_TYPE, E_CHAT_TYPE, E_ITEM_TYPE, ITEM_TYPE, MODAL_TYPES } from '@/app/libs/client/constants/code'
-import CardSelectModal from '@/app/components/molecule/kakaomap/CardSelectModal'
+import SelectCard from '@/app/components/molecule/kakaomap/SelectCard'
 import { modalSelector } from '@/app/store/modal'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState, systemMessageState } from '@/app/store/atom'
@@ -27,7 +27,6 @@ import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import Register from '@/app/components/organism/chat/Register'
 import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 import SelectChatList from '@/app/components/organism/place/SelectChatList'
-import { useSendNotification } from '@/app/hooks/useSendNotification'
 
 import { DealParam, incompleteDeal, saveDeal as register } from '@/app/apis/domain/chat/deal'
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
@@ -65,7 +64,6 @@ const PreviewCard = ({
   const query = useQueryClient()
   const { openModal, closeModal } = useModal()
   const { push } = UseCustomRouter()
-  const sendNotification = useSendNotification()
 
   const [selectedItem, setSelectedItem] = useState<Item | null>(null)
   const [selectedChat, setSelectedChat] = useState<ChatInfoList | null>(null)
@@ -129,7 +127,6 @@ const PreviewCard = ({
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
-      // sendNotification()
       toast.success('거래가 등록되었습니다.')
       query.invalidateQueries([DEAL.조회])
       query.invalidateQueries([DEAL.미완료거래조회])
@@ -172,7 +169,6 @@ const PreviewCard = ({
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
       toast.success('개인 채팅방 입장하였습니다.')
-      // sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -190,7 +186,6 @@ const PreviewCard = ({
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
     onSuccess: data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      // sendNotification()
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
@@ -314,6 +309,7 @@ const PreviewCard = ({
     })
   }
 
+  // 채팅 신청
   const onRegisterChat = (type: E_ITEM_TYPE, ownerId: number) => {
     if (mineInfo?.result.userId === ownerId) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
 
@@ -464,7 +460,7 @@ const PreviewCard = ({
 
       {_preview.modal.show ? (
         <CustomModal id={_preview.modal.id}>
-          <CardSelectModal
+          <SelectCard
             title={activedItem === '' ? selectedTitle : activedItem}
             dragedPreviews={dragedPreviews}
             isDragedMixture={isDragedMixture}

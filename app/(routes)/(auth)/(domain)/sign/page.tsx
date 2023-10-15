@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
+import { useRecoilValue } from 'recoil'
 import { ApiError } from 'next/dist/server/api-utils'
 import { BiUserPin } from 'react-icons/bi'
 import { FiActivity } from 'react-icons/fi'
@@ -14,16 +15,15 @@ import { BsPhone } from 'react-icons/bs'
 import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import GenderButton from '@/app/components/atom/GenderButton'
-import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { E_GENDER_TYPE, GENDER_TYPE } from '@/app/libs/client/constants/code'
+import { accessTokenState } from '@/app/store/auth'
 
 import { sign, SignParam } from '@/app/apis/domain/auth/auth'
 
 const Sign = () => {
   const router = useRouter()
-  const accessToken = getCookie(AUTH_TOKEN.접근)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
   const [gender, setGender] = useState<string>('')
   // const [isNicknameDisabled, setIsNicknameDisabled] = useState<boolean>(false)
   // const [selectedNickname, setSelectedNickname] = useState<string>('')
@@ -73,7 +73,7 @@ const Sign = () => {
     // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')
     // if (isNicknameDisabled && selectedNickname !== nickname) return toast.error('닉네임 중복검사가 필요합니다.)
 
-    if (accessToken === undefined) return toast.error('카카오 로그인이 필요합니다.')
+    if (!accessToken) return toast.error('카카오 로그인이 필요합니다.')
 
     const params: Member = {
       birth: getValues('birth'),

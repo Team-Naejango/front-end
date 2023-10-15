@@ -22,11 +22,13 @@ const CustomModal = ({ id, type = MODAL_TYPES.CONFIRM, btn = false, btnTxt = '�
   const modalState = useRecoilValue(modalSelector(id))
   const { modal, callback } = modalState
 
+  // 모달 취소
   const onCloseModal = (id: string) => {
     const hasModalId = modalState.modal.id === id
     if (hasModalId) return closeModal(id)
   }
 
+  // 모달 후속처리
   const modalCallback = () => {
     if (callback) {
       callback()

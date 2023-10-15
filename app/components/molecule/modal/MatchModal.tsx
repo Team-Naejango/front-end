@@ -13,6 +13,7 @@ const MatchModal = ({ id, onMatch }: { id: string; onMatch: () => void }) => {
   const { closeModal } = useModal()
   const modalState = useRecoilValue(modalSelector(id))
 
+  // 모달 취소
   const onCloseModal = (id: string) => {
     const hasModalId = modalState.modal.id === id
     if (hasModalId) return closeModal(id)

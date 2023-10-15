@@ -5,55 +5,24 @@ import { usePathname } from 'next/navigation'
 import { useRecoilState } from 'recoil'
 
 import Splash from '@/app/components/molecule/common/Splash'
-import { splashState } from '@/app/store/atom'
 import { cls } from '@/app/libs/client/utils/util'
 import CustomToast from '@/app/components/molecule/modal/CustomToast'
-import { getCookie } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
-import { useClearSession } from '@/app/hooks/useClearSession'
+import { splashState } from '@/app/store/atom'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { resetToken } = useClearSession()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
-  const [isMountedSplash, setIsMountedSplash] = useRecoilState<boolean>(splashState)
-  const accessToken = getCookie(AUTH_TOKEN.접근)
-  const refreshToken = getCookie(AUTH_TOKEN.갱신)
+  const [isMountSplash, setIsMountSplash] = useRecoilState<boolean>(splashState)
 
   useEffect(() => {
-    setIsMountedSplash(true)
-  }, [setIsMountedSplash])
+    setIsMountSplash(true)
+  }, [setIsMountSplash])
 
   useEffect(() => {
-    if (isMountedSplash) {
+    if (isMountSplash) {
       setIsLoading(false)
     }
   }, [pathname])
-
-  useEffect(() => {
-    const onBeforeUnload = () => {
-      if (accessToken && !refreshToken) return resetToken()
-    }
-
-    window.addEventListener('beforeunload', onBeforeUnload)
-    return () => {
-      window.removeEventListener('beforeunload', onBeforeUnload)
-    }
-  }, [])
-
-  // useEffect(() => {
-  //   if (isMountedSplash) {
-  //     const onBack = () => {
-  //       window.addEventListener('popstate', () => {
-  //         isLoading ? router.replace('/login') : router.back()
-  //       })
-  //     }
-  //     window.addEventListener('popstate', onBack)
-  //     return () => {
-  //       window.removeEventListener('popstate', onBack)
-  //     }
-  //   }
-  // }, [isLoading, isMountedSplash])
 
   return (
     <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
@@ -67,12 +36,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
             'h-inherit w-inherit relative mx-auto max-w-xl rounded-[30px] p-4',
             isLoading ? 'overflow-auto' : ''
           )}>
-          {isLoading && isMountedSplash ? (
+          {isLoading && isMountSplash ? (
             <Splash
               closeSplash={() => {
                 setIsLoading(false)
               }}
-              isMountedSplash={isMountedSplash}
+              isMountedSplash={isMountSplash}
             />
           ) : (
             children

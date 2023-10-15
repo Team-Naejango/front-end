@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 
 import { withAuth } from '@/app/apis/config/axios/instance/withAuth'
-import { isTokenValid } from '@/app/libs/client/utils/token'
+import { IsTokenValid } from '@/app/libs/client/utils/token'
 import { accessTokenSelector, accessTokenState } from '@/app/store/auth'
 import { useClearSession } from '@/app/hooks/useClearSession'
 
@@ -35,7 +35,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           return config
         }
 
-        const hasToken = await isTokenValid()
+        const hasToken = IsTokenValid()
 
         if (!hasToken) {
           if (accessToken) {

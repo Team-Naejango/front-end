@@ -32,7 +32,7 @@ import {
   incompleteDeal,
   deal,
 } from '@/app/apis/domain/chat/deal'
-import { account } from '@/app/apis/domain/warehouse/account'
+import { account } from '@/app/apis/domain/profile/account'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {

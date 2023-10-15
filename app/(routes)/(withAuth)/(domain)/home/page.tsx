@@ -4,7 +4,7 @@ import React from 'react'
 import { dehydrate, Hydrate } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 
-import Home from '@/app/(routes)/(home)/(main)/home/home'
+import Home from '@/app/(routes)/(withAuth)/(domain)/home/home'
 import getQueryClient from '@/app/libs/client/reactQuery/getQueryClient'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { locationState } from '@/app/store/atom'

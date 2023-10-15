@@ -28,7 +28,7 @@ interface CardProps {
   description: string
 }
 
-const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectProps) => {
+const SelectCard = ({ title, dragedPreviews, isDragedMixture }: CardSelectProps) => {
   const query = useQueryClient()
   const [selectedType, setSelectedType] = useState<{ label?: string; name: string }>({ name: '아이템 목록' })
   const markerItemsValue = useRecoilValue<{ name: string }[]>(markerItemsState)
@@ -172,4 +172,4 @@ const CardSelectModal = ({ title, dragedPreviews, isDragedMixture }: CardSelectP
   )
 }
 
-export default CardSelectModal
+export default SelectCard

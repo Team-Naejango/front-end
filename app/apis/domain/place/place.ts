@@ -18,6 +18,11 @@ export interface NearbyStorageParam {
 /**
  * 근처 창고 조회
  *
+ * @param params.lon // 경도
+ * @param params.lat // 위도
+ * @param params.rad // 반경
+ * @param params.page // 페이징
+ * @param params.size // 조회수
  */
 export async function nearbyStorage(params: NearbyStorageParam): Promise<Response<{ data: Storage }>> {
   return withAuth.get('/api/storage/nearby', { params })
