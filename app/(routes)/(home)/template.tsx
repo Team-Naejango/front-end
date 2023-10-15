@@ -27,6 +27,17 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }[value]
   }
 
+  const showNotification = (title: string, content?: string) => {
+    if (Notification.permission === 'granted') {
+      const notification = new Notification(title, {
+        body: content,
+      })
+
+      toast.success('앱 알림을 구독하였습니다.')
+      return notification
+    }
+  }
+
   // 브라우저 알림 기능
   const subscribe = useCallback(async () => {
     // 알림 구독
@@ -35,22 +46,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
+      heartbeatTimeout: 1200000,
       withCredentials: true,
     })
 
     // 첫 알림 푸시
     SSE.onopen = () => {
       if (Notification.permission === 'granted') {
-        if (isLoggedIn && notificationState) {
-          console.log('isLoggedIn:', isLoggedIn)
-          console.log('notificationState:', notificationState)
-          const notification = new Notification('알림', {
-            body: '앱 알림을 구독하였습니다.',
-          })
-
-          toast.success('앱 알림을 구독하였습니다.')
-          return notification
-        }
+        showNotification('알림', '앱 알림을 구독하였습니다.')
       }
     }
 
@@ -61,7 +64,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     // SSE 감지 후 브라우저 알림 노출
     SSE.addEventListener('sse', (event: any) => {
       const eventData = JSON.parse(event.data)
-      if (eventData.includes('EventStream Created.')) return
+      if (eventData.includes('EventStream Created.')) return false
 
       if (eventData) {
         const alarmInfo: SSEType = {
@@ -69,12 +72,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
         }
 
         if (Notification.permission === 'granted') {
-          const notification = new Notification(getAlarmStatus(alarmInfo.notificationType), {
-            body: alarmInfo.content,
-          })
-
+          showNotification(getAlarmStatus(alarmInfo.notificationType), alarmInfo.content)
           toast.success(`${alarmInfo.content}이 도착했습니다.`)
-          return notification
         }
       }
     })

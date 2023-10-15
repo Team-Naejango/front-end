@@ -67,7 +67,7 @@ const Alarms = () => {
   return (
     <Layout canGoBack title='알림'>
       <div className='alarm-wrapper h-inherit mt-12'>
-        <div className='divide-y-[1px]'>
+        <div className='space-y-3'>
           {alarms?.result?.length === 0 ? (
             <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
               <p className={'text-[15px]'}>알림 목록이 없습니다.</p>
