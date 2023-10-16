@@ -1,8 +1,0 @@
-{
-  "gcmKey": "AAAAfsBfHLU:APA91bEQzzV9ziedh8mqJhXKxwYcCAXAyWUFtCyAQtpc6GGOeIUDKgY4re-mfGU3E8pLabg2HndLvr0MNxgXMSz3CGH-VAcr-RgVn5krQk9VGwZNeX5urPaQrRMak60fJIYnvp_nzxHc",
-  "subject": "mailto:https://naejango.site/",
-  "vapid": {
-    "public": "BG5ChKDaZEdyXKWvbgvqU4rZEmbs0_RtY0cv8aJ5njd6Ks2-DgmMYHg63WPiSg0PrtTR8_9bAVwu78GhHL9GclM",
-    "private": "633trb2tRSZVNlsnT_aga4w9UHe7f1qRVrUt8oUI-gQ"
-  }
-}

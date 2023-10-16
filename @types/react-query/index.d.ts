@@ -1,3 +1,5 @@
+/* @type declare react-query */
+
 declare type Listener = () => void
 export declare class Subscribable<TListener extends Function = Listener> {
   protected listeners: Set<{

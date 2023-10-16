@@ -1,3 +1,5 @@
+/* @type declare swiper */
+
 declare module 'swiper/css' {
   const css: any
   export default css
