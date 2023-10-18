@@ -130,11 +130,10 @@ const MenuBox = ({
   const { mutate: mutateModify } = useMutation(modify, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries({
-        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
+      return query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
       })
-      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -145,7 +144,7 @@ const MenuBox = ({
   const { mutate: mutateDelete } = useMutation(deleter, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries({
+      return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
       })
@@ -159,8 +158,10 @@ const MenuBox = ({
   const { mutate: mutateComplete } = useMutation(complete, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.refetchQueries({ queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회], type: 'all' })
-      query.invalidateQueries([ITEM.조회])
+      return query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
+        type: 'all',
+      })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -171,7 +172,7 @@ const MenuBox = ({
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
+      return query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -181,9 +182,8 @@ const MenuBox = ({
   // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
-      query.refetchQueries({ queryKey: [OAUTH.유저정보], type: 'all' })
-      // query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
       toast.success('잔고 충전이 완료되었습니다.')
+      return query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -235,10 +235,6 @@ const MenuBox = ({
 
   // 송금하기 모달
   const sendPoint = useCallback(async () => {
-    // await query.refetchQueries({
-    //   queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, OAUTH.유저정보],
-    //   type: 'all',
-    // })
     await refetchDeals()
     await refetchUserInfo()
 

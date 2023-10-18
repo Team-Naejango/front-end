@@ -127,17 +127,15 @@ const PreviewCard = ({
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
-      toast.success('거래가 등록되었습니다.')
-      query.refetchQueries({ queryKey: [OAUTH.유저정보, DEAL.미완료거래조회, DEAL.특정거래조회], type: 'all' })
-      // query.invalidateQueries({
-      //   queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
-      //   refetchType: 'all',
-      // })
       push({
         pathname: '/chats/edit',
         query: {
           channel: selectedChat?.channelId,
         },
+      })
+      return query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
+        refetchType: 'all',
       })
     },
     onError: (error: ApiError) => {
