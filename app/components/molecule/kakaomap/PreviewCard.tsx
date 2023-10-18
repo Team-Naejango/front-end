@@ -133,13 +133,16 @@ const PreviewCard = ({
           channel: selectedChat?.channelId,
         },
       })
-      return query.invalidateQueries({
-        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
-        refetchType: 'all',
-      })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
+    },
+    onSettled: () => {
+      return query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
+        refetchType: 'all',
+        type: 'all',
+      })
     },
   })
 

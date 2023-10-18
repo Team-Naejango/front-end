@@ -133,6 +133,7 @@ const MenuBox = ({
       return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
+        type: 'all',
       })
     },
     onError: (error: ApiError) => {
@@ -147,6 +148,7 @@ const MenuBox = ({
       return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
+        type: 'all',
       })
     },
     onError: (error: ApiError) => {
@@ -160,6 +162,7 @@ const MenuBox = ({
       setSystemMessage(data.data.message)
       return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
+        refetchType: 'all',
         type: 'all',
       })
     },
@@ -172,7 +175,7 @@ const MenuBox = ({
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      return query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
+      return query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all', type: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -183,7 +186,7 @@ const MenuBox = ({
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
       toast.success('잔고 충전이 완료되었습니다.')
-      return query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
+      return query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all', type: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
