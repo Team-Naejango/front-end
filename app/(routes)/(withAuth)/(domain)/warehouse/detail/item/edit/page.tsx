@@ -312,15 +312,10 @@ const EditItem = () => {
   }, [_itemInfo, groupChat, isEditMode])
 
   useEffect(() => {
-    setSelectedStorage(STORAGES[Number(count)])
-  }, [])
-
-  useEffect(() => {
     if (_itemInfo) {
       setValue('imgUrl', _itemInfo.result.imgUrl)
       setImagePreview(_itemInfo.result.imgUrl)
       setSelectedCategory({ categoryId: _itemInfo?.result.itemId, categoryName: _itemInfo.result.categoryName })
-      setSelectedStorage({ label: STORAGES[Number(count)].label, name: String(count) })
       setSelectedType({
         label: DEAL_TYPES.find(v => v.name === _itemInfo?.result.itemType)!.label,
         name: _itemInfo?.result.itemType,
@@ -468,14 +463,6 @@ const EditItem = () => {
             )
           })}
         </div>
-        <SelectBox
-          essential
-          disabled={isEditMode}
-          title={'저장창고'}
-          data={[{ label: '', name: '' }]}
-          select={selectedStorage}
-          setSelect={setSelectedStorage}
-        />
         <SelectBox
           essential
           disabled={isEditMode}
