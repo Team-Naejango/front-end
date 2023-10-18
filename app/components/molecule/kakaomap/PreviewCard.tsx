@@ -130,7 +130,6 @@ const PreviewCard = ({
       toast.success('거래가 등록되었습니다.')
       query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
-        exact: true,
         refetchType: 'all',
       })
       push({

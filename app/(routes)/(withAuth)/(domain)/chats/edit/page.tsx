@@ -82,6 +82,9 @@ const ChatDetail: NextPage = () => {
     enabled: !!channelId,
   })
 
+  // 입장한 채팅방 필터링
+  const enterChatInfo = [...(chats?.result || [])].filter(chat => chat.channelId === Number(channelId)).find(v => v)
+
   // 내 채팅방 ID 조회
   const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(channelId!), {
     enabled: !!channelId,
@@ -96,9 +99,6 @@ const ChatDetail: NextPage = () => {
   const { data: { data: mineInfo } = {}, refetch: refetchMineInfo } = useQuery([OAUTH.유저정보], () => userInfo(), {
     enabled: !!channelId,
   })
-
-  // 입장한 채팅방 필터링
-  const enterChatInfo = [...(chats?.result || [])].filter(chat => chat.channelId === Number(channelId)).find(v => v)
 
   // 최근 메세지 기록 조회
   const { data: { data: recentMessages } = {}, refetch: refetchRecentMessage } = useQuery(

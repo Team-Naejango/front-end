@@ -74,7 +74,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
         if (Notification.permission === NOTIFICATION_PERMISSION.허용) {
           showNotification(getAlarmStatus(alarmInfo.notificationType), alarmInfo.content)
-          toast.success(`${alarmInfo.content}이 도착했습니다.`)
+          toast.success(`${alarmInfo.content}`)
         }
       }
     })
