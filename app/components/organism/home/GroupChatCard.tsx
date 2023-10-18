@@ -91,7 +91,7 @@ const GroupChatCard = () => {
     <>
       <div
         className={cls(
-          'mb-24 mt-12 overflow-y-auto rounded-xl border border-[#ececec]',
+          'mb-32 mt-12 overflow-y-auto rounded-xl border border-[#ececec]',
           !groupChats?.result || groupChats?.result?.length <= 2 ? 'h-auto' : 'h-[300px]'
         )}>
         <div
