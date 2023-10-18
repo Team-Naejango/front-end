@@ -49,21 +49,17 @@ const Sign = () => {
       router.replace('/home')
     },
     onError: (error: ApiError) => {
-      console.log('error:', error)
       toast.error(error.message)
-      router.replace('/sign')
     },
   })
 
   // todo: API 미완성
   // const { mutate: mutateNickname } = useMutation(nickNameValidity, {
   //   onSuccess: () => {
-  //     console.log('닉네임 사용 가능')
   //     setIsNicknameDisabled(true)
-  //     setSelectedNickname(getValues('nickname'))
+  //     setSelectedNickname(nickname)
   //   },
   //   onError: (error: ApiError) => {
-  //     console.log('error:', error)
   //     toast.error(error.message)
   //   },
   // })
@@ -102,7 +98,7 @@ const Sign = () => {
     event.preventDefault()
     if (nickname === '') return false
 
-    // mutateNickname(watch('nickname'))
+    // mutateNickname(nickname)
   }
 
   // 성별 선택

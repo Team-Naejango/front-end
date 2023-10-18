@@ -136,6 +136,7 @@ const WareHouse = () => {
               query: {
                 crud: CRUD.수정,
                 storage: currentItem?.storageId,
+                name: currentItem?.name,
                 count: currentSlideIndex + 1,
               },
             }}

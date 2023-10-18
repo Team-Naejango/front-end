@@ -12,7 +12,7 @@ const ItemLIst = ({
   onDelete,
 }: {
   items: Item[]
-  params: { storageId: string; count: string }
+  params: { storageId: string; name: string; count: string }
   onDelete: (itemId: number) => void
 }) => {
   return (
@@ -25,11 +25,12 @@ const ItemLIst = ({
             query: {
               crud: CRUD.수정,
               storage: params.storageId,
+              name: params.name,
               count: params.count,
               item: item.itemId,
             },
           }}
-          className={cls('relative ring-[#32D7A0] focus:z-10 focus:outline-none focus:ring-1')}>
+          className={cls('relative ring-[#32D7A0] focus:z-10 focus:rounded-xl focus:outline-none focus:ring-1')}>
           <li className='flex items-center justify-around rounded-xl border border-[#ECECEC] p-4 hover:border-[#33cc99]/30'>
             <Image
               width={'100'}

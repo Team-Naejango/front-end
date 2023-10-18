@@ -133,6 +133,7 @@ const WareHouseCarousel = ({
                     pathname: '/warehouse/detail/edit',
                     query: {
                       storage: data.storageId,
+                      name: data.name,
                       count: swiper && swiper.realIndex,
                     },
                   }}>

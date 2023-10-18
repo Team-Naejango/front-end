@@ -95,7 +95,6 @@ const EditProfile = () => {
   //     setSelectedNickname(getValues('nickname'))
   //   },
   //   onError: (error: ApiError) => {
-  //     console.log('error:', error)
   //     toast.error(error.message)
   //   },
   // })

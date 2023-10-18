@@ -102,7 +102,7 @@ const Profile = () => {
   // 알림 구독 변환기
   const onSwitchConverter = () => {
     if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단) {
-      toast.error('알림 권한을 변경하려면 브라우저 설정에서 변경해주세요.')
+      toast.error('브라우저 설정에서 변경할 수 있습니다.')
       return
     }
 

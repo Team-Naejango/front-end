@@ -128,9 +128,11 @@ const PreviewCard = ({
         setSystemMessage(data.data.message)
       }
       toast.success('거래가 등록되었습니다.')
-      query.invalidateQueries([DEAL.조회])
-      query.invalidateQueries([DEAL.미완료거래조회])
-      query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
+        exact: true,
+        refetchType: 'all',
+      })
       push({
         pathname: '/chats/edit',
         query: {
@@ -198,10 +200,6 @@ const PreviewCard = ({
       toast.error(error.message)
     },
   })
-
-  useEffect(() => {
-    closeModal('chat')
-  }, [])
 
   // 프리뷰 창고목록 클릭 시
   const onClickPreview = (marker: SearchCondition | Storages) => {
@@ -279,6 +277,10 @@ const PreviewCard = ({
       },
     })
   }, [traderId])
+
+  useEffect(() => {
+    closeModal('channel')
+  }, [])
 
   useEffect(() => {
     personalManager()

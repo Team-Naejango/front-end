@@ -12,14 +12,16 @@ import { splashState } from '@/app/store/atom'
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [isLoading, setIsLoading] = useState<boolean>(pathname === '/')
-  const [isMountSplash, setIsMountSplash] = useRecoilState<boolean>(splashState)
+  const [isMountedSplash, setIsMountedSplash] = useRecoilState<boolean>(splashState)
 
+  // 스플래시 on 감지
   useEffect(() => {
-    setIsMountSplash(true)
-  }, [setIsMountSplash])
+    setIsMountedSplash(true)
+  }, [setIsMountedSplash])
 
+  // 스플래시 on -> 로딩 off
   useEffect(() => {
-    if (isMountSplash) {
+    if (isMountedSplash) {
       setIsLoading(false)
     }
   }, [pathname])
@@ -36,19 +38,19 @@ export default function Template({ children }: { children: React.ReactNode }) {
             'h-inherit w-inherit relative mx-auto max-w-xl rounded-[30px] p-4',
             isLoading ? 'overflow-auto' : ''
           )}>
-          {isLoading && isMountSplash ? (
+          {isLoading && isMountedSplash ? (
             <Splash
               closeSplash={() => {
                 setIsLoading(false)
               }}
-              isMountedSplash={isMountSplash}
+              isMountedSplash={isMountedSplash}
             />
           ) : (
             children
           )}
         </div>
       </div>
-      {/* toast */}`
+      {/* toast */}
       <CustomToast />
     </main>
   )

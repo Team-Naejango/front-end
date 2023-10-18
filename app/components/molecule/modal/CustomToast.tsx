@@ -10,13 +10,15 @@ const CustomToast = () => {
       containerStyle={{
         position: 'absolute',
         bottom: '15%',
-        fontSize: '11px',
+        fontSize: '12px',
         letterSpacing: '0.2px',
       }}
       toastOptions={{
         duration: 1500,
         style: {
+          textAlign: 'center',
           padding: '10px 12px',
+          lineHeight: '1.5',
           boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.01)',
         },
       }}>

@@ -82,9 +82,6 @@ const ChatDetail: NextPage = () => {
     enabled: !!channelId,
   })
 
-  // 입장한 채팅방 필터링
-  const enterChatInfo = [...(chats?.result || [])].filter(chat => chat.channelId === Number(channelId)).find(v => v)
-
   // 내 채팅방 ID 조회
   const { data: { data: chatId } = {} } = useQuery([CHAT.ID조회], () => getChatId(channelId!), {
     enabled: !!channelId,
@@ -99,6 +96,9 @@ const ChatDetail: NextPage = () => {
   const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
     enabled: !!channelId,
   })
+
+  // 입장한 채팅방 필터링
+  const enterChatInfo = [...(chats?.result || [])].filter(chat => chat.channelId === Number(channelId)).find(v => v)
 
   // 최근 메세지 기록 조회
   const { data: { data: recentMessages } = {}, refetch: refetchRecentMessage } = useQuery(
@@ -122,9 +122,7 @@ const ChatDetail: NextPage = () => {
         await closeChannel(String(channelId))
       }
       toast.success('채팅방이 종료되었습니다.')
-      query.invalidateQueries([CHAT.조회])
-      query.invalidateQueries([CHAT.참여자조회])
-      query.invalidateQueries([CHAT.메세지조회])
+      query.invalidateQueries([CHAT.조회, CHAT.참여자조회, CHAT.메세지조회])
       router.push('/chats')
     },
     onError: (error: ApiError) => {
@@ -184,7 +182,7 @@ const ChatDetail: NextPage = () => {
     }
   }
 
-  // 웹소켓 마운트
+  // 웹소켓 연결
   useEffect(() => {
     onConnect(channelId!)
 
@@ -213,7 +211,7 @@ const ChatDetail: NextPage = () => {
         client.current?.send(`/pub/channel/${channelId}`, {}, systemMessage || systemMessageStoreValue)
         reset()
       } else {
-        console.log('시스템 전송 에러')
+        console.log('시스템 메시지 전송 에러')
       }
       setSystemMessage(undefined)
       setSystemMessageStoreValue(undefined)

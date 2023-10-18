@@ -56,6 +56,7 @@ const WarehouseEdit = () => {
 
   const crud = searchParams.get('crud') || CRUD.등록
   const storageId = searchParams.get('storage')
+  const storageName = searchParams.get('name')
   const count = searchParams.get('count') || null
 
   const isEditMode = (crud === CRUD.수정 && count !== null) || false
@@ -63,7 +64,6 @@ const WarehouseEdit = () => {
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
     formState: { errors },
     reset,
@@ -250,7 +250,7 @@ const WarehouseEdit = () => {
 
   return (
     <>
-      <BackHeader canGoBack title={`창고`} />
+      <BackHeader canGoBack title={storageName || '창고 생성'} />
       <form className='mt-12 space-y-4 p-2' onSubmit={handleSubmit(onSubmit)}>
         <div className={'relative h-full w-full'}>
           <InputFile
@@ -320,7 +320,7 @@ const WarehouseEdit = () => {
                   <GrFormNext
                     className='absolute right-2 cursor-pointer text-xl text-[#A9A9A9]'
                     onClick={() => {
-                      if (isEditMode) return
+                      if (isEditMode) return false
                       setStep(STEP.위치선택)
                     }}
                   />

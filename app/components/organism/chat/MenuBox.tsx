@@ -20,7 +20,7 @@ import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
+import { transactionAmountState } from '@/app/store/atom'
 
 import {
   wire,
@@ -63,8 +63,7 @@ const MenuBox = ({
   const query = useQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
-  const setTransactionSellerAmount = useSetRecoilState(transactionSellerAmountState)
-  const setTransactionTraderAmount = useSetRecoilState(transactionTraderAmountState)
+  const setTransactionAmount = useSetRecoilState(transactionAmountState)
 
   const _amount = useRecoilValue(modalSelector('amount'))
   const _edit = useRecoilValue(modalSelector('edit'))
@@ -102,7 +101,7 @@ const MenuBox = ({
   )
 
   // 거래 조회
-  const { data: { data: deals } = {} } = useQuery([DEAL.조회, getTraderId], () => deal(), {
+  const { data: { data: deals } = {} } = useQuery([DEAL.조회, incompleteInfo], () => deal(), {
     enabled: !!channelId && !!getTraderId,
   })
 
@@ -128,9 +127,11 @@ const MenuBox = ({
   const { mutate: mutateModify } = useMutation(modify, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries([DEAL.조회])
-      query.invalidateQueries([DEAL.미완료거래조회])
-      query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
+        exact: true,
+        refetchType: 'all',
+      })
       query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
@@ -142,10 +143,11 @@ const MenuBox = ({
   const { mutate: mutateDelete } = useMutation(deleter, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries([DEAL.조회])
-      query.invalidateQueries([DEAL.미완료거래조회])
-      query.invalidateQueries([DEAL.특정거래조회])
-      query.invalidateQueries([ITEM.조회])
+      query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
+        exact: true,
+        refetchType: 'all',
+      })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -156,9 +158,11 @@ const MenuBox = ({
   const { mutate: mutateComplete } = useMutation(complete, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries([DEAL.조회])
-      query.invalidateQueries([DEAL.미완료거래조회])
-      query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries({
+        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
+        exact: true,
+        refetchType: 'all',
+      })
       query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
@@ -170,7 +174,7 @@ const MenuBox = ({
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      query.invalidateQueries([CHAT.조회])
+      query.invalidateQueries({ queryKey: [CHAT.조회], exact: true, refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -180,7 +184,7 @@ const MenuBox = ({
   // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
-      query.invalidateQueries([OAUTH.유저정보])
+      query.invalidateQueries({ queryKey: [OAUTH.유저정보], exact: true, refetchType: 'all' })
       toast.success('잔고 충전이 완료되었습니다.')
     },
     onError: (error: ApiError) => {
@@ -188,13 +192,12 @@ const MenuBox = ({
     },
   })
 
-  // 거래 잔고 탐지
+  // 거래 금액 탐지
   useEffect(() => {
-    if (searchInfo) {
-      setTransactionSellerAmount(sellerTransaction?.amount || 0)
-    } else {
-      setTransactionTraderAmount(traderTransaction ? Math.abs(traderTransaction.amount) : 0)
-    }
+    const trader = deals?.result.find(v => v.traderId === getTraderId)
+    const seller = deals?.result.find(v => v.traderId !== getTraderId)
+
+    setTransactionAmount(sellerTransaction ? seller?.amount || 0 : trader?.amount || 0)
   }, [searchInfo])
 
   // 거래 상태
@@ -232,9 +235,9 @@ const MenuBox = ({
   // 송금하기 모달
   const sendPoint = useCallback(() => {
     if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
-    if (isSeller) return toast.error('구매자만 송금이 가능합니다.')
     if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
       return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
+    if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
 
     openModal({
       modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },

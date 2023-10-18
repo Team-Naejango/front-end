@@ -35,7 +35,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           return config
         }
 
-        const hasToken = IsTokenValid()
+        const hasToken = IsTokenValid(accessToken)
 
         if (!hasToken) {
           if (accessToken) {
@@ -53,7 +53,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         } else {
           resetToken()
           toast.error('로그인 세션이 만료되었습니다. 다시 로그인 해주세요.')
-          router.replace('login')
+          router.replace('/login')
         }
 
         return config
@@ -70,6 +70,12 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         if (!error.headers) {
           error.headers = {} as AxiosHeaders
         }
+
+        // if (error.response.data.status === 400) {
+        //   resetToken()
+        //   toast.error('알 수 없는 에러가 발생했습니다. \n 잠시 후 다시 시도해주세요.')
+        //   router.replace('/login')
+        // }
 
         if (error.response.data.status === 401) {
           setNewAccessToken(error.response.data.reissuedAccessToken)

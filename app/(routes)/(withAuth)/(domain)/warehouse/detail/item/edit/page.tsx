@@ -26,6 +26,7 @@ import { useCategories } from '@/app/hooks/useCategories'
 import CategorySelectBox from '@/app/components/molecule/tab/CategorySelectBox'
 import { CATEGORY } from '@/app/libs/client/reactQuery/queryKey/common'
 import { CategoryResult } from '@/app/apis/types/domain/common/category'
+import { cls } from '@/app/libs/client/utils/util'
 
 import {
   itemInfo,
@@ -68,6 +69,7 @@ const EditItem = () => {
 
   const crud = searchParams.get('crud')
   const storageId = searchParams.get('storage')
+  const storageName = searchParams.get('name')
   const count = searchParams.get('count')
   const itemId = searchParams.get('item')
 
@@ -142,13 +144,15 @@ const EditItem = () => {
         mutateOpenGroup({
           itemId: data.data.result.id,
           defaultTitle: getValues('groupName')!,
-          limit: getValues('limit')!,
+          limit: Number(getValues('limit')),
         })
       }
       toast.success('아이템이 등록되었습니다.')
       query.invalidateQueries([WAREHOUSE.조회])
       query.invalidateQueries([ITEM.조회])
-      router.push(`/warehouse/detail/edit?storage=${storageId}&count=${count}&match=true&item=${data.data.result.id}`)
+      router.push(
+        `/warehouse/detail/edit?storage=${storageId}&name=${storageName}&count=${count}&match=true&item=${data.data.result.id}`
+      )
       router.refresh()
     },
     onError: (error: ApiError) => {
@@ -169,9 +173,8 @@ const EditItem = () => {
       // mutateStorage({ itemId: edit, storageIdList: updatedStorageIds })
       toast.success('아이템이 수정되었습니다.')
       query.invalidateQueries([WAREHOUSE.조회])
-      query.invalidateQueries([ITEM.조회])
-      query.invalidateQueries([ITEM.상세])
-      router.replace(`/warehouse/detail/edit?storage=${storageId}&count=${count}`)
+      query.invalidateQueries([ITEM.조회, ITEM.상세])
+      router.replace(`/warehouse/detail/edit?storage=${storageId}&name=${storageName}&count=${count}`)
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -413,6 +416,7 @@ const EditItem = () => {
         <div className={'relative'}>
           <InputField
             essential
+            disabled={isEditMode}
             type='text'
             label='해시태그'
             placeholder='해시태그는 최대 3개까지 추가할 수 있습니다.'
@@ -430,17 +434,25 @@ const EditItem = () => {
           />
           <BsPlusSquare
             className='absolute right-4 top-1/2 cursor-pointer text-xl text-[#222] hover:text-[#32D7A0]'
-            onClick={() => onAddHashTag(watch('hashTag'))}
+            onClick={() => {
+              if (isEditMode) return false
+              onAddHashTag(watch('hashTag'))
+            }}
           />
         </div>
         <p className='!mt-1.5 text-xs text-red-400'>{errors.hashTag?.message}</p>
         <div className={'!mt-2.5 flex gap-2'}>
           {hashTags.map(hashTag => {
             return (
-              <div key={hashTag} className={'flex items-center rounded-[20px] border py-1.5 pl-3 pr-1.5'}>
+              <div
+                key={hashTag}
+                className={cls(
+                  'flex items-center rounded-[20px] border py-1.5 pl-3 pr-1.5',
+                  isEditMode ? 'bg-[#eee]' : ''
+                )}>
                 <span className={'block truncate text-xs'}>{hashTag}</span>
-                <span
-                  role='presentation'
+                <button
+                  disabled={isEditMode}
                   className='ml-2 flex cursor-pointer text-gray-500 hover:text-red-500 focus:outline-none'
                   onClick={() => onDeleteHashTag(hashTag)}>
                   <svg
@@ -451,13 +463,14 @@ const EditItem = () => {
                     stroke='currentColor'>
                     <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
                   </svg>
-                </span>
+                </button>
               </div>
             )
           })}
         </div>
         <SelectBox
           essential
+          disabled={isEditMode}
           title={'저장창고'}
           data={[{ label: '', name: '' }]}
           select={selectedStorage}
@@ -489,7 +502,6 @@ const EditItem = () => {
               label='제한 인원'
               register={register('limit', {
                 required: '제한 인원을 입력해주세요.',
-                value: 2,
                 validate: {
                   checkLimit: value => {
                     if (!value) return

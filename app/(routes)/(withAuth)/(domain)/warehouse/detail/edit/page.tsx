@@ -56,6 +56,7 @@ const WareHouseItem = () => {
   const _delete = useRecoilValue(modalSelector('delete'))
 
   const storageId = searchParams.get('storage')
+  const storageName = searchParams.get('name')
   const count = searchParams.get('count')
   const isMatch = searchParams.get('match')
   const matchItemId = searchParams.get('item')
@@ -162,7 +163,7 @@ const WareHouseItem = () => {
     if (type === CHAT_TYPE.개인) {
       mutateJoin(String(selectedItem!.ownerId))
     } else if (type === CHAT_TYPE.그룹) {
-      if (groupChat?.result === null) {
+      if (!groupChat?.result) {
         toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
@@ -171,8 +172,8 @@ const WareHouseItem = () => {
         return closeModal('chat')
       }
 
-      mutateGroupJoin(String(groupChat?.result.channelId))
       closeModal('chat')
+      mutateGroupJoin(String(groupChat?.result.channelId))
     }
   }
 
@@ -246,7 +247,7 @@ const WareHouseItem = () => {
   }
 
   return (
-    <Layout canGoBack title={`창고${Number(count) + 1}`}>
+    <Layout canGoBack title={storageName || ''}>
       <div className='mt-8'>
         <RoundedTab setSelectedTab={onSelectedTab}>
           <Tab.Panel>
@@ -258,7 +259,7 @@ const WareHouseItem = () => {
               ) : (
                 <ItemList
                   items={filteredItemList}
-                  params={{ storageId: String(storageId), count: String(count) }}
+                  params={{ storageId: String(storageId), name: storageName || '', count: String(count) }}
                   onDelete={itemId => onDeleteItem(itemId)}
                 />
               ))}
@@ -272,7 +273,7 @@ const WareHouseItem = () => {
               ) : (
                 <ItemList
                   items={filteredItemList}
-                  params={{ storageId: String(storageId), count: String(count) }}
+                  params={{ storageId: String(storageId), name: storageName || '', count: String(count) }}
                   onDelete={itemId => onDeleteItem(itemId)}
                 />
               ))}
@@ -284,6 +285,7 @@ const WareHouseItem = () => {
             query: {
               crud: CRUD.등록,
               storage: storageId,
+              name: storageName,
               count: count || '',
               item: null,
             },
