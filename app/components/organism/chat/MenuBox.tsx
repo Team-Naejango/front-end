@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -115,7 +115,7 @@ const MenuBox = ({
   const sellerTransaction = incompleteInfo?.result.find(v => v)
 
   // 특정 거래 정보 조회
-  const { data: { data: searchInfo } = {} } = useQuery(
+  const { data: { data: searchInfo } = {}, refetch: refetchSearchInfo } = useQuery(
     [DEAL.특정거래조회],
     () => searchDeal(String(sellerTransaction?.id)),
     {
@@ -203,6 +203,12 @@ const MenuBox = ({
       setTransactionTraderAmount(traderTransaction ? traderTransaction.amount : Number(completeTraderAmount) || 0)
     }
   }, [deals, searchInfo])
+
+  useLayoutEffect(() => {
+    refetchDeals()
+    refetchSearchInfo()
+    refetchIncompleteInfo()
+  }, [searchInfo, deals, incompleteInfo, refetchDeals, refetchSearchInfo, refetchIncompleteInfo])
 
   // 거래 상태
   const getTransactionStatus = (value: string | undefined) => {
