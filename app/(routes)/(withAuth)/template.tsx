@@ -123,9 +123,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, [isLoggedIn, router])
 
   // 브라우저 종료 시
-  useUnloadEffect(async () => {
-    await logout()
-  })
+  // useUnloadEffect(async () => {
+  //   await logout()
+  // })
 
   return <>{children}</>
 }

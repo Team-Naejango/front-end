@@ -17,13 +17,14 @@ const App: NextPage = () => {
   const accessToken = useRecoilValue<string | undefined>(accessTokenState)
 
   useEffect(() => {
-    if (accessToken) {
-      setIsLoggedIn(true)
-      router.push('/home')
-    } else {
-      resetToken()
-      router.push('/')
-    }
+    // if (accessToken) {
+    //   setIsLoggedIn(true)
+    //   router.push('/home')
+    // }
+    // else {
+    //   resetToken()
+    //   router.push('/')
+    // }
   }, [])
 
   return <>{isLoggedIn ? <Home /> : <Login />}</>

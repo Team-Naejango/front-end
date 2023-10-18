@@ -123,12 +123,12 @@ const PreviewCard = ({
 
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(register, {
-    onSuccess: async data => {
+    onSuccess: data => {
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
       toast.success('거래가 등록되었습니다.')
-      await query.invalidateQueries({
+      query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
         exact: true,
         refetchType: 'all',

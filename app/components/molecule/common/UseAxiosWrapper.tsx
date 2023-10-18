@@ -71,12 +71,6 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           error.headers = {} as AxiosHeaders
         }
 
-        // if (error.response.data.status === 400) {
-        //   resetToken()
-        //   toast.error('알 수 없는 에러가 발생했습니다. \n 잠시 후 다시 시도해주세요.')
-        //   router.replace('/login')
-        // }
-
         if (error.response.data.status === 401) {
           setNewAccessToken(error.response.data.reissuedAccessToken)
           error.headers = {
