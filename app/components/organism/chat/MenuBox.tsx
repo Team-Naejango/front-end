@@ -20,7 +20,7 @@ import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { transactionAmountState } from '@/app/store/atom'
+import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
 
 import {
   wire,
@@ -50,12 +50,14 @@ export interface FormFields {
 const MenuBox = ({
   channelId,
   userInfo,
+  refetchUserInfo,
   isOpen,
   setSystemMessage,
   onClick,
 }: {
   channelId: string | null
   userInfo: Member | null
+  refetchUserInfo: any
   isOpen: boolean
   setSystemMessage: Dispatch<SetStateAction<string | undefined>>
   onClick: (e: React.MouseEvent<HTMLDivElement>) => void
@@ -63,7 +65,8 @@ const MenuBox = ({
   const query = useQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
-  const setTransactionAmount = useSetRecoilState(transactionAmountState)
+  const setTransactionSellerAmount = useSetRecoilState(transactionSellerAmountState)
+  const setTransactionTraderAmount = useSetRecoilState(transactionTraderAmountState)
 
   const _amount = useRecoilValue(modalSelector('amount'))
   const _edit = useRecoilValue(modalSelector('edit'))
@@ -92,16 +95,16 @@ const MenuBox = ({
   })?.participantId
 
   // 미완료 거래 조회
-  const { data: { data: incompleteInfo } = {}, isSuccess: isSuccessIncompleteInfo } = useQuery(
-    [DEAL.미완료거래조회, getTraderId, channelId],
-    () => incompleteDeal(String(getTraderId)),
-    {
-      enabled: !!channelId && !!getTraderId,
-    }
-  )
+  const {
+    data: { data: incompleteInfo } = {},
+    isSuccess: isSuccessIncompleteInfo,
+    refetch: refetchIncompleteInfo,
+  } = useQuery([DEAL.미완료거래조회, getTraderId, channelId], () => incompleteDeal(String(getTraderId)), {
+    enabled: !!channelId && !!getTraderId,
+  })
 
   // 거래 조회
-  const { data: { data: deals } = {} } = useQuery([DEAL.조회, incompleteInfo], () => deal(), {
+  const { data: { data: deals } = {}, refetch: refetchDeals } = useQuery([DEAL.조회, incompleteInfo], () => deal(), {
     enabled: !!channelId && !!getTraderId,
   })
 
@@ -194,11 +197,14 @@ const MenuBox = ({
 
   // 거래 금액 탐지
   useEffect(() => {
-    const trader = deals?.result.find(v => v.traderId === getTraderId)
-    const seller = deals?.result.find(v => v.traderId !== getTraderId)
-
-    setTransactionAmount(sellerTransaction ? seller?.amount || 0 : trader?.amount || 0)
-  }, [searchInfo])
+    if (searchInfo) {
+      const completeSellerAmount = deals?.result.find(v => v.traderId !== getTraderId)?.amount
+      setTransactionSellerAmount(sellerTransaction?.amount || Number(completeSellerAmount) || 0)
+    } else {
+      const completeTraderAmount = deals?.result.find(v => v.traderId === getTraderId)?.amount
+      setTransactionTraderAmount(traderTransaction ? traderTransaction.amount : Number(completeTraderAmount) || 0)
+    }
+  }, [deals, searchInfo])
 
   // 거래 상태
   const getTransactionStatus = (value: string | undefined) => {
@@ -233,11 +239,14 @@ const MenuBox = ({
   }
 
   // 송금하기 모달
-  const sendPoint = useCallback(() => {
+  const sendPoint = useCallback(async () => {
+    await refetchDeals()
+    await refetchUserInfo()
+
+    if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
     if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
     if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
       return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
-    if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
 
     openModal({
       modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },
@@ -248,7 +257,9 @@ const MenuBox = ({
   }, [traderTransaction?.id])
 
   // 거래완료 모달
-  const completeDeal = () => {
+  const completeDeal = async () => {
+    await refetchIncompleteInfo()
+
     if (sellerTransaction?.status !== TRANSACTION_TYPE.송금완료)
       return toast.error('구매자가 송금을 완료하지 않았습니다.')
 

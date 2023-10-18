@@ -8,7 +8,7 @@ import { cls, formatKoreanCurrency } from '@/app/libs/client/utils/util'
 import { ChatResponse } from '@/app/(routes)/(withAuth)/(domain)/chats/edit/page'
 import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
 import { GroupChatUserInfo } from '@/app/apis/types/domain/chat/chat'
-import { transactionAmountState } from '@/app/store/atom'
+import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
 
 interface MessageProps {
   data: ChatResponse
@@ -17,7 +17,8 @@ interface MessageProps {
 }
 
 const Message = ({ data, isMe, membersInfo }: MessageProps) => {
-  const transactionAmount = useRecoilValue(transactionAmountState)
+  const transactionSellerAmount = useRecoilValue(transactionSellerAmountState)
+  const transactionTraderAmount = useRecoilValue(transactionTraderAmountState)
 
   // 유저 이미지 필터링
   const userImage = membersInfo?.result.find(v => v.participantId === data.senderId)?.imgUrl
@@ -84,7 +85,7 @@ const Message = ({ data, isMe, membersInfo }: MessageProps) => {
             </p>
             <p className={'text-[13px]'}>
               <span className={'block text-[12px]'}>거래 금액</span>
-              {`${formatKoreanCurrency(transactionAmount)}`}
+              {`${formatKoreanCurrency(transactionSellerAmount || transactionTraderAmount)}`}
             </p>
           </div>
         </div>

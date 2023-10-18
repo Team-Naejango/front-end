@@ -10,7 +10,7 @@ export const DEAL = {
 
 // 채팅
 export const CHAT = {
-  조회: 'readDeal',
+  조회: 'readChat',
   참여자조회: 'readUserinfoInGroupChat',
   ID조회: 'readChatID',
   근처그룹조회: 'readNearbyGroupChat',

@@ -93,7 +93,7 @@ const ChatDetail: NextPage = () => {
   })
 
   // 프로필 조회
-  const { data: { data: mineInfo } = {} } = useQuery([OAUTH.유저정보], () => userInfo(), {
+  const { data: { data: mineInfo } = {}, refetch: refetchMineInfo } = useQuery([OAUTH.유저정보], () => userInfo(), {
     enabled: !!channelId,
   })
 
@@ -267,6 +267,7 @@ const ChatDetail: NextPage = () => {
           <MenuBox
             channelId={channelId || null}
             userInfo={mineInfo?.result || null}
+            refetchUserInfo={refetchMineInfo}
             isOpen={isOpenBox}
             setSystemMessage={setSystemMessage}
             onClick={e => {

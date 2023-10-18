@@ -113,7 +113,7 @@ const PreviewCard = ({
   )
 
   // 미완료 거래 조회
-  const { data: { data: incompleteInfo } = {} } = useQuery(
+  const { data: { data: incompleteInfo } = {}, refetch: refetchIncompleteInfo } = useQuery(
     [DEAL.미완료거래조회, traderId],
     () => incompleteDeal(String(traderId)),
     {
@@ -123,12 +123,12 @@ const PreviewCard = ({
 
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(register, {
-    onSuccess: data => {
+    onSuccess: async data => {
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
       toast.success('거래가 등록되었습니다.')
-      query.invalidateQueries({
+      await query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
         exact: true,
         refetchType: 'all',
@@ -253,7 +253,9 @@ const PreviewCard = ({
   }
 
   // 거래등록 모달
-  const registerDeal = useCallback(() => {
+  const registerDeal = useCallback(async () => {
+    await refetchIncompleteInfo()
+
     openModal({
       modal: { id: 'register', type: MODAL_TYPES.CONFIRM },
       callback: () => {
