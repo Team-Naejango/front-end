@@ -34,6 +34,7 @@ import {
 } from '@/app/apis/domain/chat/deal'
 import { account } from '@/app/apis/domain/profile/account'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
+import { TransactionResult } from '@/app/apis/types/domain/chat/deal'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -268,7 +269,7 @@ const MenuBox = ({
 
     if (prevTraderTransaction?.progress !== '거래 약속') {
       // 이전 데이터를 복원하고 에러 메시지를 표시합니다.
-      setTraderDeal(prevTraderTransaction)
+      setTraderDeal(prevTraderTransaction || null)
       return toast.error('거래 예약 상태에서만 가능합니다.')
     }
 
