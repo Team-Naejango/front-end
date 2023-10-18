@@ -238,8 +238,12 @@ const MenuBox = ({
 
   // 송금하기 모달
   const sendPoint = useCallback(async () => {
-    await refetchDeals()
-    await refetchUserInfo()
+    await query.refetchQueries({
+      queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, OAUTH.유저정보],
+      type: 'all',
+    })
+    // await refetchDeals()
+    // await refetchUserInfo()
 
     if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
     if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
