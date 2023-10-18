@@ -184,7 +184,8 @@ const MenuBox = ({
   // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
-      query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
+      query.refetchQueries({ queryKey: [OAUTH.유저정보], type: 'all' })
+      // query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
       toast.success('잔고 충전이 완료되었습니다.')
     },
     onError: (error: ApiError) => {
