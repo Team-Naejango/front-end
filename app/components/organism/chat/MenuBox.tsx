@@ -34,7 +34,6 @@ import {
 } from '@/app/apis/domain/chat/deal'
 import { account } from '@/app/apis/domain/profile/account'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
-import { TransactionResult } from '@/app/apis/types/domain/chat/deal'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
@@ -66,7 +65,6 @@ const MenuBox = ({
   const query = useQueryClient()
   const { openModal } = useModal()
   const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
-  const [traderDeal, setTraderDeal] = useState<TransactionResult | null>(null)
   const setTransactionSellerAmount = useSetRecoilState(transactionSellerAmountState)
   const setTransactionTraderAmount = useSetRecoilState(transactionTraderAmountState)
 
@@ -261,33 +259,17 @@ const MenuBox = ({
 
     if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
 
-    // 1. 이전 거래 정보를 저장
-    const prevTraderTransaction = traderTransaction
-
-    // 2. traderTransaction을 초기화하여 UI에서 로딩 상태를 표시합니다.
-    setTraderDeal(null)
-
-    if (prevTraderTransaction?.progress !== '거래 약속') {
-      // 이전 데이터를 복원하고 에러 메시지를 표시합니다.
-      setTraderDeal(prevTraderTransaction || null)
-      return toast.error('거래 예약 상태에서만 가능합니다.')
-    }
-
-    // if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
-    // if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
-    // if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
-    //   return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
-
     openModal({
       modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },
-      callback: async () => {
-        await mutateWire(String(traderTransaction?.id))
+      callback: () => {
+        if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
+        if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
+          return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
 
-        await refetchDeals()
-        await refetchUserInfo()
+        mutateWire(String(traderTransaction?.id))
       },
     })
-  }, [isSeller, traderTransaction])
+  }, [isSeller, mutateWire, openModal, refetchDeals, refetchUserInfo, traderTransaction, userInfo?.balance])
 
   // 거래완료 모달
   const completeDeal = async () => {

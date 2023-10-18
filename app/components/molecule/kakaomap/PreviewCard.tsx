@@ -171,7 +171,6 @@ const PreviewCard = ({
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
     onSuccess: data => {
-      toast.success('개인 채팅방 입장하였습니다.')
       query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
