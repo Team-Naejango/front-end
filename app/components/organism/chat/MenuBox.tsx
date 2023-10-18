@@ -208,7 +208,17 @@ const MenuBox = ({
     refetchDeals()
     refetchSearchInfo()
     refetchIncompleteInfo()
-  }, [searchInfo, deals, incompleteInfo, refetchDeals, refetchSearchInfo, refetchIncompleteInfo])
+    refetchUserInfo()
+  }, [
+    searchInfo,
+    deals,
+    incompleteInfo,
+    refetchDeals,
+    refetchSearchInfo,
+    refetchIncompleteInfo,
+    userInfo,
+    refetchUserInfo,
+  ])
 
   // 거래 상태
   const getTransactionStatus = (value: string | undefined) => {
