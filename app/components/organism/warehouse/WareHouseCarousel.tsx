@@ -30,7 +30,8 @@ const WareHouseCarousel = ({
   const totalSlides = datas?.result.length || 0
   const findLastIdx = swiper && swiper.realIndex === totalSlides - 1
 
-  const updatePrevButtonState = useCallback(() => {
+  // 이전버튼 비활성화 상태
+  const updatePreviousDisableButton = useCallback(() => {
     if (swiper && swiper.realIndex === 0) {
       document.querySelector('.swiper-button-prev')?.classList.add('swiper-button-disabled')
     } else {
@@ -42,7 +43,7 @@ const WareHouseCarousel = ({
   const onSlideControls = () => {
     if (swiper) {
       onSlideChange(swiper.realIndex)
-      updatePrevButtonState()
+      updatePreviousDisableButton()
 
       const { realIndex, slides } = swiper
       swiper.allowSlidePrev = realIndex !== 0
@@ -50,8 +51,8 @@ const WareHouseCarousel = ({
     }
   }
 
-  // 이전 화살표 막음
-  const blockPrevSlide = () => {
+  // 이전버튼 막음
+  const disablePreviousSlide = () => {
     if (swiper) {
       const { realIndex } = swiper
       swiper.allowSlidePrev = realIndex !== 0
@@ -82,16 +83,16 @@ const WareHouseCarousel = ({
     onSwiper: setSwiper,
     onSlideChange: onSlideControls,
     onTouchStart: () => {
-      blockPrevSlide()
+      disablePreviousSlide()
     },
     onTouchEnd: () => {
-      updatePrevButtonState()
+      updatePreviousDisableButton()
     },
   }
 
   useEffect(() => {
-    updatePrevButtonState()
-  }, [updatePrevButtonState])
+    updatePreviousDisableButton()
+  }, [updatePreviousDisableButton])
 
   return (
     <Swiper {...swiperParams} className={'mt-16 h-40 w-full'}>

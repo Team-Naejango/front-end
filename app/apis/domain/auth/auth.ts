@@ -16,9 +16,6 @@ export interface SignParam {
   phoneNumber: string
   // 이미지 링크
   imgUrl: string
-
-  // 액세스 토큰
-  accessToken: string
 }
 
 /**
@@ -31,14 +28,13 @@ export interface SignParam {
  * @param params.phoneNumber // 전화번호
  * @param params.imgUrl // 이미지 링크
  *
- * @param params.accessToken // 액세스 토큰
- *
+ * @param accessToken // 액세스 토큰
  * @param params
  */
-export async function sign(params: SignParam): Promise<Response<null>> {
+export async function sign(params: SignParam, accessToken: string): Promise<Response<null>> {
   return instance.post('/api/user/profile', params, {
     headers: {
-      Authorization: `Bearer ${params.accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
   })
 }

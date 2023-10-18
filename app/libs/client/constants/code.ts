@@ -31,6 +31,17 @@ export const CRUD = {
 export type E_CRUD = (typeof CRUD)[keyof typeof CRUD]
 
 /**
+ * 회원가입 상태
+ */
+export const LOGIN_STATUS = {
+  가입필요: 'TEMPORAL',
+  가입한유저: 'USER',
+  로그인유저: 'already_logged_in',
+} as const
+
+export type E_LOGIN_STATUS = (typeof LOGIN_STATUS)[keyof typeof LOGIN_STATUS]
+
+/**
  * 모달 타입
  */
 export const MODAL_TYPES = {

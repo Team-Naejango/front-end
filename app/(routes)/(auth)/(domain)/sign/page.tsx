@@ -43,7 +43,7 @@ const Sign = () => {
   const nickname = watch('nickname')
 
   // 회원가입
-  const { mutate: mutateSign } = useMutation(sign, {
+  const { mutate: mutateSign } = useMutation((param: SignParam) => sign({ ...param }, accessToken!), {
     onSuccess: () => {
       toast.success('회원가입이 완료되었습니다.')
       router.replace('/home')
@@ -65,7 +65,7 @@ const Sign = () => {
   // })
 
   // 전송
-  const onSubmit = () => {
+  const onSubmit = async () => {
     // if (!isNicknameDisabled) return toast.error('닉네임 중복검사가 필요합니다.')
     // if (isNicknameDisabled && selectedNickname !== nickname) return toast.error('닉네임 중복검사가 필요합니다.)
 
@@ -80,7 +80,7 @@ const Sign = () => {
       imgUrl: '',
     }
 
-    mutateSign({ ...params, accessToken })
+    mutateSign({ ...params })
   }
 
   useEffect(() => {
