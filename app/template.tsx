@@ -11,12 +11,13 @@ import { splashState } from '@/app/store/atom'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const [isLoading, setIsLoading] = useState<boolean>(() => pathname === '/' || false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isMountedSplash, setIsMountedSplash] = useRecoilState<boolean>(splashState)
 
   // 스플래시 on 감지
   useEffect(() => {
     setIsMountedSplash(true)
+    setIsLoading(true)
   }, [setIsMountedSplash])
 
   // 스플래시 on -> 로딩 off
