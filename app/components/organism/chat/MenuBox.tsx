@@ -196,9 +196,10 @@ const MenuBox = ({
       const completeSellerAmount = deals?.result.find(v => v.traderId !== getTraderId)?.amount
       setTransactionSellerAmount(sellerTransaction?.amount || Number(completeSellerAmount) || 0)
     } else {
-      const completeTraderAmount = deals?.result.reduce((prev, current) =>
-        current.id > prev.id ? current : prev
-      ).amount
+      const completeTraderAmount = deals?.result.reduce((prev, current) => (current.id > prev.id ? current : prev), {
+        id: -1,
+        amount: 0,
+      }).amount
       setTransactionTraderAmount(traderTransaction ? traderTransaction.amount : Number(completeTraderAmount) || 0)
     }
   }, [deals, searchInfo, sellerTransaction?.amount, traderTransaction])

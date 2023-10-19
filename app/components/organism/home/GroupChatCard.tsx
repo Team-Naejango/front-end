@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
+import initialLogo from '@/app/assets/image/logo_n.png'
 
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { locationState } from '@/app/store/atom'
@@ -111,26 +112,21 @@ const GroupChatCard = () => {
                   role={'presentation'}
                   key={chat.channelId}
                   className={cls(
-                    'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg border border-gray-300 bg-white',
+                    'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg border border-gray-300 bg-white pl-2',
                     activeIndex === index ? 'ring-1 ring-[#32D7A0]' : 'ring-[#ddd]'
                   )}
                   onClick={() => {
                     setActiveIndex(index)
                     onSelectedGroupChat(chat)
                   }}>
-                  <div className='relative h-16 w-16 flex-shrink-0'>
-                    <div className='absolute left-0 top-0 flex h-full w-full items-center justify-center'>
-                      <Image
-                        src={'https://stackdiary.com/140x100.png'}
-                        width={'100'}
-                        height={'100'}
-                        alt={'아이템 이미지'}
-                        loading={'lazy'}
-                        className={
-                          'duration-50 absolute left-0 top-0 h-full w-full object-cover object-center transition'
-                        }
-                      />
-                    </div>
+                  <div className='relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#33CC99]'>
+                    <Image
+                      src={initialLogo}
+                      width={'24'}
+                      height={'24'}
+                      alt={'이니셜 로고'}
+                      className={'object-cover'}
+                    />
                   </div>
                   <div className='relative flex h-16 w-full flex-col justify-center py-1 pl-4'>
                     <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm'>

@@ -79,7 +79,7 @@ const Alarms = () => {
                 key={alarm.id}
                 className={cls(
                   'relative flex items-center space-x-3 rounded-xl border border-transparent px-4 py-3',
-                  alarm.isRead ? 'hover:bg-[#1abc9c]/10' : 'bg-[#1abc9c]/20 hover:bg-[#000]/5'
+                  alarm.isRead ? 'hover:bg-[#1abc9c]/10' : 'bg-[#1abc9c]/20'
                 )}
                 onClick={() => onReadAlarm(alarm.id)}>
                 <div
