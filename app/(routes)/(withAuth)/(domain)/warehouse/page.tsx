@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { LuEdit2 } from 'react-icons/lu'
+import { LuPen } from 'react-icons/lu'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
@@ -142,7 +142,7 @@ const WareHouse = () => {
             }}
             className={`${!result || result?.length === 0 ? 'pointer-events-none bg-[#ddd] hover:!bg-[#ccc]' : ''}`}>
             <span className={'text-xs'}>
-              <LuEdit2 fontSize={'21'} />
+              <LuPen fontSize={'21'} />
             </span>
           </FloatingButton>
         </div>
