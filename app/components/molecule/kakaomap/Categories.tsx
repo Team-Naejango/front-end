@@ -77,7 +77,7 @@ const Categories = ({
           })}
         </ul>
       </Swiper>
-      <div role={'presentation'} className={'swiper-button-next !block'} onClick={onNextSwiper}>
+      <div role={'presentation'} className={'!block'} onClick={onNextSwiper}>
         <button className={'ml-1 whitespace-nowrap hover:underline'}>&rarr;</button>
       </div>
     </div>
