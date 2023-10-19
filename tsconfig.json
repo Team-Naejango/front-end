@@ -23,9 +23,9 @@
       "@/*": ["./*"],
     },
     "types": [
-      "kakao.maps.d.ts"
+      "kakao.maps.d.ts", "@types/jest"
     ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "@types/**/*", "@types/**/*.ts", "@types/**/*.d.ts"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/tests/*.test.ts"]
 }

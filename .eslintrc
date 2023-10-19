@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "plugin:prettier/recommended", "next/core-web-vitals", "plugin:react/recommended"],
+  "extends": ["airbnb", "plugin:prettier/recommended", "next/core-web-vitals", "plugin:react/recommended", "plugin:testing-library/react", "plugin:jest-dom/recommended"],
   "rules": {
     "prettier/prettier": ["error"],
     // "off" or 0 - turn the rule off
@@ -80,7 +80,8 @@
     "node": true,
     "commonjs": true,
     "es2022": true,
-    "worker": true
+    "worker": true,
+    "jest": true
   },
   "globals": { "_": true },
   "plugins": ["import", "html"]
