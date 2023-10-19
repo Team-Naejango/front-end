@@ -115,7 +115,7 @@ const MenuBox = ({
   const sellerTransaction = incompleteInfo?.result.find(v => v)
 
   // 특정 거래 정보 조회
-  const { data: { data: searchInfo } = {}, refetch: refetchSearchInfo } = useQuery(
+  const { data: { data: searchInfo } = {} } = useQuery(
     [DEAL.특정거래조회],
     () => searchDeal(String(sellerTransaction?.id)),
     {
@@ -196,18 +196,12 @@ const MenuBox = ({
       const completeSellerAmount = deals?.result.find(v => v.traderId !== getTraderId)?.amount
       setTransactionSellerAmount(sellerTransaction?.amount || Number(completeSellerAmount) || 0)
     } else {
-      const completeTraderAmount = deals?.result.find(v => v.traderId === getTraderId)?.amount
+      const completeTraderAmount = deals?.result.reduce((prev, current) =>
+        current.id > prev.id ? current : prev
+      ).amount
       setTransactionTraderAmount(traderTransaction ? traderTransaction.amount : Number(completeTraderAmount) || 0)
     }
-  }, [
-    deals,
-    getTraderId,
-    searchInfo,
-    sellerTransaction?.amount,
-    setTransactionSellerAmount,
-    setTransactionTraderAmount,
-    traderTransaction,
-  ])
+  }, [deals, searchInfo, sellerTransaction?.amount, traderTransaction])
 
   // 거래 상태
   const getTransactionStatus = (value: string | undefined) => {
