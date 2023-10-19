@@ -1,6 +1,6 @@
 'use client'
 
-import React, { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
@@ -133,7 +133,6 @@ const MenuBox = ({
       return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
-        type: 'all',
       })
     },
     onError: (error: ApiError) => {
@@ -148,7 +147,6 @@ const MenuBox = ({
       return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
-        type: 'all',
       })
     },
     onError: (error: ApiError) => {
@@ -163,7 +161,6 @@ const MenuBox = ({
       return query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
-        type: 'all',
       })
     },
     onError: (error: ApiError) => {
@@ -175,7 +172,7 @@ const MenuBox = ({
   const { mutate: mutateWire } = useMutation(wire, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      return query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all', type: 'all' })
+      return query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -186,7 +183,7 @@ const MenuBox = ({
   const { mutate: mutateAccount } = useMutation(account, {
     onSuccess: () => {
       toast.success('잔고 충전이 완료되었습니다.')
-      return query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all', type: 'all' })
+      return query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -202,22 +199,14 @@ const MenuBox = ({
       const completeTraderAmount = deals?.result.find(v => v.traderId === getTraderId)?.amount
       setTransactionTraderAmount(traderTransaction ? traderTransaction.amount : Number(completeTraderAmount) || 0)
     }
-  }, [deals, searchInfo])
-
-  useLayoutEffect(() => {
-    refetchDeals()
-    refetchSearchInfo()
-    refetchIncompleteInfo()
-    refetchUserInfo()
   }, [
-    searchInfo,
     deals,
-    incompleteInfo,
-    refetchDeals,
-    refetchSearchInfo,
-    refetchIncompleteInfo,
-    userInfo,
-    refetchUserInfo,
+    getTraderId,
+    searchInfo,
+    sellerTransaction?.amount,
+    setTransactionSellerAmount,
+    setTransactionTraderAmount,
+    traderTransaction,
   ])
 
   // 거래 상태
@@ -258,18 +247,17 @@ const MenuBox = ({
     await refetchUserInfo()
 
     if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
+    if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
+    if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
+      return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
 
     openModal({
       modal: { id: 'send', type: MODAL_TYPES.DIALOG, title: '송금', content: '송금 하시겠습니까?' },
       callback: () => {
-        if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
-        if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
-          return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
-
         mutateWire(String(traderTransaction?.id))
       },
     })
-  }, [isSeller, mutateWire, openModal, refetchDeals, refetchUserInfo, traderTransaction, userInfo?.balance])
+  }, [isSeller, openModal, traderTransaction, userInfo?.balance])
 
   // 거래완료 모달
   const completeDeal = async () => {

@@ -149,7 +149,7 @@ const EditItem = () => {
       }
       toast.success('아이템이 등록되었습니다.')
       query.invalidateQueries([WAREHOUSE.조회])
-      query.invalidateQueries({ queryKey: [ITEM.조회], type: 'all', refetchType: 'all' })
+      query.invalidateQueries({ queryKey: [ITEM.조회], refetchType: 'all' })
       router.push(
         `/warehouse/detail/edit?storage=${storageId}&name=${storageName}&count=${count}&match=true&item=${data.data.result.id}`
       )
