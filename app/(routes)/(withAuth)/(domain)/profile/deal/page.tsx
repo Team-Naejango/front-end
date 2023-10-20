@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import Layout from '@/app/components/template/main/layout/Layout'
@@ -11,11 +11,7 @@ import { deal } from '@/app/apis/domain/chat/deal'
 
 const Deal = () => {
   // 거래 조회
-  const { data: { data: deals } = {}, refetch } = useQuery([DEAL.조회], deal)
-
-  useEffect(() => {
-    refetch()
-  }, [])
+  const { data: { data: deals } = {} } = useQuery([DEAL.조회], deal)
 
   return (
     <Layout canGoBack title='거래 내역'>

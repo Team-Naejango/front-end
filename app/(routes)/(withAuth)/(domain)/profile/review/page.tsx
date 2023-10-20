@@ -12,13 +12,17 @@ import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import Loading from '@/app/loading'
 import ReviewCard from '@/app/components/organism/profile/review/ReviewCard'
-import WriteReviewPopup from '@/app/components/organism/profile/review/WriteReviewPopup'
+import WriteReview from '@/app/components/organism/profile/review/WriteReview'
 
 const CustomModal = dynamic(() => import('@/app/components/molecule/modal/CustomModal'), {
   ssr: false,
   loading: () => <Loading />,
 })
 
+/**
+ * todo: 작업 보류
+ *
+ * */
 const Review = () => {
   const { openModal } = useModal()
   const _review = useRecoilValue(modalSelector('writeReview'))
@@ -44,8 +48,7 @@ const Review = () => {
 
       {_review.modal.show ? (
         <CustomModal id={_review.modal.id} btn>
-          {/* todo: 작업 보류 */}
-          <WriteReviewPopup />
+          <WriteReview />
         </CustomModal>
       ) : null}
     </Layout>

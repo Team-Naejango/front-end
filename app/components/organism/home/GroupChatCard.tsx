@@ -48,9 +48,9 @@ const GroupChatCard = () => {
 
   // 그룹 채팅방 참여
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
-    onSuccess: data => {
+    onSuccess: async data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      query.invalidateQueries([CHAT.조회])
+      await query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
@@ -66,7 +66,7 @@ const GroupChatCard = () => {
   // 근처 그룹 채팅방 선택 모달
   const onSelectedGroupChat = (chat: NearbyResult) => {
     if (!chat) {
-      toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
+      toast.error('등록된 그룹채팅이 없습니다. \n 다음에 다시 이용해주세요.')
       return closeModal('groupChat')
     }
     if (chat.participantsCount === chat.channelLimit) {

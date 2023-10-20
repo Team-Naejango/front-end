@@ -79,7 +79,7 @@ const PlaceMarker = ({
   const search = watch('search')
 
   // 근처 창고 조회
-  const { data: { data: storages } = {}, refetch } = useQuery(
+  const { data: { data: storages } = {}, refetch: refetchStorages } = useQuery(
     [PLACE.조회],
     () =>
       nearbyStorage({
@@ -87,7 +87,7 @@ const PlaceMarker = ({
         lat: String(userArea.latitude),
         rad: '1500',
         page: '0',
-        size: '20',
+        size: '30',
       }),
     { enabled: !!kakaoMap }
   )
@@ -249,7 +249,7 @@ const PlaceMarker = ({
           onCreate={setKakaoMap}
           onDragEnd={async map => {
             try {
-              const storage = await refetch()
+              const storage = await refetchStorages()
 
               const markers = storage.data?.data.result.map(value => {
                 return {

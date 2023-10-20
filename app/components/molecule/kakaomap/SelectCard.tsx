@@ -89,7 +89,7 @@ const SelectCard = ({ title, dragedPreviews, isDragedMixture }: CardSelectProps)
   const onClickWish = (itemId: number) => {
     if (!itemId) return
     const isMyStorageItem = mineInfo?.result.userId === itemInfo?.ownerId
-    if (isMyStorageItem) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
+    if (isMyStorageItem) return toast.error('회원님의 창고 아이템입니다. \n 다른 창고를 선택해주세요.')
 
     const isSubscribe = wishs && wishs.result.some(v => v.id === itemId)
     isSubscribe ? mutateUnWish(String(itemId)) : mutateWish(String(itemId))

@@ -9,6 +9,7 @@ import { ChatResponse } from '@/app/(routes)/(withAuth)/(domain)/chats/edit/page
 import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
 import { GroupChatUserInfo } from '@/app/apis/types/domain/chat/chat'
 import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
+import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 
 interface MessageProps {
   data: ChatResponse
@@ -16,22 +17,26 @@ interface MessageProps {
   membersInfo: GroupChatUserInfo | undefined
 }
 
-const Message = ({ data, isMe, membersInfo }: MessageProps) => {
+const SystemMessage = ({ data, isMe, membersInfo }: MessageProps) => {
   const transactionSellerAmount = useRecoilValue(transactionSellerAmountState)
   const transactionTraderAmount = useRecoilValue(transactionTraderAmountState)
 
   // 유저 이미지 필터링
   const userImage = membersInfo?.result.find(v => v.participantId === data.senderId)?.imgUrl
 
-  // 거래 메세지
-  const isTradeMessage = (message: string) => {
-    return (
-      message === '거래 정보 수정 성공' ||
-      message === '송금 요청 성공' ||
-      message === '거래 완료 요청 성공' ||
-      message === '거래 삭제 성공'
-    )
+  // 등록된 거래 유저 닉네임
+  const getTradingUserName = (membersInfo: GroupChatUserInfo | undefined, participantId: number, convert: boolean) => {
+    const participant = membersInfo?.result.find(v => {
+      if (convert) {
+        return v.participantId !== participantId
+      }
+      return v.participantId === participantId
+    })
+    return participant?.nickname
   }
+
+  const sellerName = getTradingUserName(membersInfo, data.senderId, false)
+  const traderName = getTradingUserName(membersInfo, data.senderId, true)
 
   // 메세지 타입
   const getStatus = (value: string) => {
@@ -47,19 +52,15 @@ const Message = ({ data, isMe, membersInfo }: MessageProps) => {
 
   const messageType = getStatus(data.messageType)
 
-  // 등록된 거래 유저 닉네임
-  const getNickname = (membersInfo: GroupChatUserInfo | undefined, participantId: number, convert: boolean) => {
-    const participant = membersInfo?.result.find(v => {
-      if (convert) {
-        return v.participantId !== participantId
-      }
-      return v.participantId === participantId
-    })
-    return participant?.nickname
+  // 거래 메세지
+  const isTradeMessage = (message: string) => {
+    return (
+      message === TRANSACTION_MESSAGE.정보수정 ||
+      message === TRANSACTION_MESSAGE.송금완료 ||
+      message === TRANSACTION_MESSAGE.거래완료 ||
+      message === TRANSACTION_MESSAGE.거래삭제
+    )
   }
-
-  const sellerName = getNickname(membersInfo, data.senderId, false)
-  const traderName = getNickname(membersInfo, data.senderId, true)
 
   return messageType || isTradeMessage(data.content) ? (
     messageType === MESSAGE_TYPE.구독 ? null : messageType === MESSAGE_TYPE.거래 ||
@@ -134,4 +135,4 @@ const Message = ({ data, isMe, membersInfo }: MessageProps) => {
   )
 }
 
-export default Message
+export default SystemMessage

@@ -27,10 +27,8 @@ const CustomModal = dynamic(() => import('@/app/components/molecule/modal/Custom
 const Home = () => {
   const router = useRouter()
   const { openModal, closeModal } = useModal()
-
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
   const [currentSlideIndex, setCurrentSlideIndex] = useState<number>(0)
-
   const _fork = useRecoilValue(modalSelector('fork'))
   const _item = useRecoilValue(modalSelector('item'))
 

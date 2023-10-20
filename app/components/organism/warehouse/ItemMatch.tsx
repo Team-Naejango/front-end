@@ -35,7 +35,8 @@ const ItemMatch = ({
     }
   )
 
-  const onSelectItem = (item: ItemMatchResult) => {
+  // 선택된 아이템 정보
+  const onSelectedItem = (item: ItemMatchResult) => {
     onSelect(item)
     setActiveIndex(item)
   }
@@ -67,7 +68,7 @@ const ItemMatch = ({
                   'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg bg-white outline-none ring-1 hover:ring-[#32D7A0]',
                   activeIndex?.itemId === item.itemId ? 'ring-[#32D7A0]' : 'ring-[#ddd]'
                 )}
-                onClick={() => onSelectItem(item)}>
+                onClick={() => onSelectedItem(item)}>
                 <div className='relative flex h-16 w-full flex-col justify-center py-1'>
                   <p className='w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-left indent-4 text-[13px]'>
                     {item.name}

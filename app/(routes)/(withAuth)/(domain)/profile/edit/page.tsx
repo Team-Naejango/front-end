@@ -75,11 +75,11 @@ const EditProfile = () => {
 
   // 프로필 변경
   const { mutate: mutateUserInfoModify } = useMutation((params: Member) => modifyUserInfo({ ...params }), {
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('프로필이 변경되었습니다.')
-      query.invalidateQueries([OAUTH.유저정보])
-      query.invalidateQueries([CHAT.참여자조회])
-      query.invalidateQueries([DEAL.특정거래조회])
+      await query.invalidateQueries([OAUTH.유저정보])
+      await query.invalidateQueries([CHAT.참여자조회])
+      await query.invalidateQueries([DEAL.특정거래조회])
       router.push('/profile')
     },
     onError: (error: ApiError) => {

@@ -7,12 +7,6 @@ import { IoLogOutOutline, IoSettingsOutline } from 'react-icons/io5'
 
 import { cls } from '@/app/libs/client/utils/util'
 
-interface DropDownProps {
-  title?: string
-  labels: Array<{ href?: string; label: string }>
-  onClick?: (label: string) => void
-}
-
 /**
  * @example labels
  *
@@ -23,6 +17,12 @@ interface DropDownProps {
  *   { href: '/sign-out', label: 'Sign out' },
  * ]
  * */
+
+interface DropDownProps {
+  title?: string
+  labels: Array<{ href?: string; label: string }>
+  onClick?: (label: string) => void
+}
 
 const DropDown = ({ title, labels, onClick }: DropDownProps) => {
   return (

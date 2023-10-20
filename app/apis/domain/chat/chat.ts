@@ -48,7 +48,7 @@ export async function recentMessage(params: {
  *
  * @param params
  */
-export async function convertedName(params: { chatId: string; title: string }): Promise<Response<{ data: ChatName }>> {
+export async function convertTitle(params: { chatId: string; title: string }): Promise<Response<{ data: ChatName }>> {
   return withAuth.patch(`/api/chat/${params.chatId}`, params)
 }
 

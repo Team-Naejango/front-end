@@ -20,7 +20,7 @@ import SelectBox from '@/app/components/atom/SelectBox'
 import InputFile from '@/app/components/atom/InputFile'
 import { CRUD, ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { ITEM, WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { DEAL_TYPES, STORAGES } from '@/app/libs/client/constants/static'
+import { DEAL_TYPES } from '@/app/libs/client/constants/static'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { useCategories } from '@/app/hooks/useCategories'
 import CategorySelectBox from '@/app/components/molecule/tab/CategorySelectBox'
@@ -32,8 +32,8 @@ import {
   itemInfo,
   saveItem,
   modifyItem,
-  OmitStorageIdItemParam,
   storageGroupChannel,
+  OmitStorageIdItemParam,
 } from '@/app/apis/domain/warehouse/warehouse'
 import { openGroupChat } from '@/app/apis/domain/chat/channel'
 import { category } from '@/app/apis/domain/common/category'
@@ -56,7 +56,6 @@ const EditItem = () => {
   const query = useQueryClient()
   const { findCategoryList } = useCategories()
   const [selectedCategory, setSelectedCategory] = useState<CategoryResult>({ categoryId: 0, categoryName: '전체' })
-  const [selectedStorage, setSelectedStorage] = useState<{ label: string; name: string }>(STORAGES[0])
   const [selectedType, setSelectedType] = useState<{ label: string; name: string }>(DEAL_TYPES[0])
   const [imageFile, setImageFile] = useState<FileList | null>(null)
   const [imagePreview, setImagePreview] = useState<string | undefined>(undefined)
@@ -74,8 +73,6 @@ const EditItem = () => {
   const itemId = searchParams.get('item')
 
   const isEditMode = (crud === CRUD.수정 && itemId !== '' && storageId !== '') || false
-
-  // const storageIds = selectedStorage.map(value => value.id)
 
   const {
     register,
@@ -139,7 +136,7 @@ const EditItem = () => {
 
   // 아이템 등록
   const { mutate: mutateSave } = useMutation(saveItem, {
-    onSuccess: data => {
+    onSuccess: async data => {
       if (selectedType.name === ITEM_TYPE.공동구매) {
         mutateOpenGroup({
           itemId: data.data.result.id,
@@ -148,32 +145,23 @@ const EditItem = () => {
         })
       }
       toast.success('아이템이 등록되었습니다.')
-      query.invalidateQueries([WAREHOUSE.조회])
-      query.invalidateQueries({ queryKey: [ITEM.조회], refetchType: 'all' })
+      await query.invalidateQueries([WAREHOUSE.조회])
+      await query.invalidateQueries([ITEM.조회])
       router.push(
         `/warehouse/detail/edit?storage=${storageId}&name=${storageName}&count=${count}&match=true&item=${data.data.result.id}`
       )
-      router.refresh()
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
 
-  // 다중 아이템 창고 수정
-  // const { mutate: mutateStorage } = useMutation(modifyStorageItem, {
-  //   onError: (error: ApiError) => {
-  //     toast.error(error.message)
-  //   },
-  // })
-
   // 아이템 수정
   const { mutate: mutateModify } = useMutation((params: OmitStorageIdItemParam) => modifyItem(itemId!, params), {
-    onSuccess: () => {
-      // mutateStorage({ itemId: edit, storageIdList: updatedStorageIds })
+    onSuccess: async () => {
       toast.success('아이템이 수정되었습니다.')
-      query.invalidateQueries([WAREHOUSE.조회])
-      query.invalidateQueries([ITEM.조회, ITEM.상세])
+      await query.invalidateQueries([WAREHOUSE.조회])
+      await query.invalidateQueries([ITEM.조회])
       router.replace(`/warehouse/detail/edit?storage=${storageId}&name=${storageName}&count=${count}`)
     },
     onError: (error: ApiError) => {
@@ -263,7 +251,6 @@ const EditItem = () => {
 
     if (!imagePreview) return toast.error('이미지를 등록해주세요.')
     if (selectedCategory.categoryName === '전체') return toast.error('다른 카테고리를 선택해주세요.')
-    if (selectedStorage.name?.length === 0) return toast.error('창고를 선택해주세요.')
     if (hashTags.length === 0) return setError('hashTag', { message: '해시태그를 추가해주세요.' })
 
     if (imageFile && imageFile.length > 0) {

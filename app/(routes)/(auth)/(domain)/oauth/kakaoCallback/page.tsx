@@ -18,7 +18,7 @@ const KakaoCallback = () => {
 
   const loginStatus = serchParams.get('loginStatus')
 
-  // 회원 유무별 리다이렉팅
+  // 회원 조건별 리다이렉팅
   useEffect(() => {
     const redirectUser = async () => {
       try {

@@ -8,6 +8,10 @@ import ItemList from '@/app/components/organism/profile/review/ItemList'
 import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { Transaction } from '@/app/apis/types/domain/chat/deal'
 
+/**
+ * todo: 작업 보류
+ *
+ * */
 const ReviewCard = () => {
   const [selectedTab, setSelectedTab] = useState<string | string[]>([ITEM_TYPE.개인구매, ITEM_TYPE.공동구매])
   const [reviews] = useState<Transaction>({

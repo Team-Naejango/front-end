@@ -2,24 +2,11 @@ import { AxiosError, AxiosResponse, AxiosResponseHeaders, InternalAxiosRequestCo
 import type { AxiosRequestConfig } from 'axios'
 import { ApiError } from 'next/dist/server/api-utils'
 import { toast } from 'react-hot-toast'
+import { ApiErrorData } from '@/app/apis/types/response/response'
 
 export interface HeaderType extends AxiosResponseHeaders {
   ['Content-Type']: string
   Authorization: string
-}
-
-type Refresh = {
-  error?: string
-  message?: string
-  status?: number
-  reissuedAccessToken?: string
-  body: {
-    error: string
-    message: string
-    status: number
-    reissuedAccessToken: string
-  }
-  statusCodeValue?: number
 }
 
 export const requestConfigurator = (config: InternalAxiosRequestConfig<AxiosRequestConfig>) => {
@@ -40,7 +27,7 @@ export const responseApiErrorThrower = (response: AxiosResponse) => {
 export const responseNormalizer = async (error: AxiosError) => {
   if (!error.config) return false
 
-  const data = error.response?.data as Refresh
+  const data = error.response?.data as ApiErrorData
 
   if (data.status === 403) {
     if (data.error === 'FORBIDDEN') {

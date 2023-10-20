@@ -17,3 +17,18 @@ export type Response<T = unknown> = {
   GetServerSidePropsResult: T
   success: boolean
 }
+
+export interface ApiErrorData {
+  error: string
+  message: string
+  status: number
+}
+
+export interface ApiErrorRefresh {
+  body: {
+    error: string
+    message: string
+    status: number
+    reissuedAccessToken: string
+  }
+}

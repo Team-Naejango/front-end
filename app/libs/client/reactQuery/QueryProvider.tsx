@@ -36,7 +36,6 @@ function QueryProvider({ children }: React.PropsWithChildren) {
   )
 
   const queryCache = queryClient.getQueryCache()
-  const mutationCache = queryClient.getMutationCache()
 
   useEffect(() => {
     // 에러 캐시 제거 (query)
@@ -48,18 +47,10 @@ function QueryProvider({ children }: React.PropsWithChildren) {
       }
     })
 
-    // 에러 캐시 제거 (mutation)
-    const mutationUnsubscribe = mutationCache.subscribe(event => {
-      if (event?.mutation?.state?.status === 'error') {
-        queryClient.getMutationCache().remove(event.mutation)
-      }
-    })
-
     return () => {
       queryUnsubscribe()
-      mutationUnsubscribe()
     }
-  }, [queryClient, queryCache, mutationCache])
+  }, [queryClient, queryCache])
 
   return (
     <QueryClientProvider client={queryClient}>

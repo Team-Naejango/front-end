@@ -12,14 +12,14 @@ import { useModal } from '@/app/hooks/useModal'
 import Button from '@/app/components/atom/Button'
 import { Member } from '@/app/apis/types/domain/profile/profile'
 
-import { convertedName } from '@/app/apis/domain/chat/chat'
+import { convertTitle } from '@/app/apis/domain/chat/chat'
 import { groupChatUserInfo } from '@/app/apis/domain/chat/channel'
 
 interface SettingProps {
   title: string
 }
 
-const SettingModal = ({
+const Setting = ({
   channelId,
   chatId,
   title,
@@ -46,7 +46,7 @@ const SettingModal = ({
   })
 
   // 채팅방 제목 변경
-  const { mutate: mutateName } = useMutation(convertedName, {
+  const { mutate: mutateName } = useMutation(convertTitle, {
     onSuccess: () => {
       query.invalidateQueries([CHAT.조회])
       closeModal('setting')
@@ -137,4 +137,4 @@ const SettingModal = ({
   )
 }
 
-export default SettingModal
+export default Setting

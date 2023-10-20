@@ -14,8 +14,8 @@ export const tokenEffect: <T>(key: string) => AtomEffect<T> =
         try {
           const response = await refresh()
 
-          if (response.data?.result) {
-            setAccessToken(response.data.result)
+          if (response.data) {
+            return response.data.result
           }
         } catch (error) {
           console.error('재발급 오류:', error)

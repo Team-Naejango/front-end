@@ -15,7 +15,7 @@ import Button from '@/app/components/atom/Button'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
-import FollowUserItemPopup from '@/app/components/organism/profile/follow/FollowUserItemPopup'
+import FollowUserItem from '@/app/components/organism/profile/follow/FollowUserItem'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 
@@ -146,7 +146,7 @@ const Follow = () => {
 
       {_follow.modal.show ? (
         <CustomModal id={_follow.modal.id} type={MODAL_TYPES.ALERT}>
-          <FollowUserItemPopup items={_itemInfo?.result || []} />
+          <FollowUserItem items={_itemInfo?.result || []} />
           <div className={'mt-4 text-center'}>
             <Button small text={'확인'} className={'!flex-grow-0 !py-2'} onClick={() => closeModal(_follow.modal.id)} />
           </div>

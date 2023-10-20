@@ -142,9 +142,9 @@ const MenuBox = ({
 
   // 거래 삭제
   const { mutate: mutateDelete } = useMutation(deleter, {
-    onSuccess: data => {
+    onSuccess: async data => {
       setSystemMessage(data.data.message)
-      return query.invalidateQueries({
+      await query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
       })
@@ -156,9 +156,9 @@ const MenuBox = ({
 
   // 거래 완료
   const { mutate: mutateComplete } = useMutation(complete, {
-    onSuccess: data => {
+    onSuccess: async data => {
       setSystemMessage(data.data.message)
-      return query.invalidateQueries({
+      await query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
         refetchType: 'all',
       })
@@ -170,9 +170,9 @@ const MenuBox = ({
 
   // 송금 완료
   const { mutate: mutateWire } = useMutation(wire, {
-    onSuccess: data => {
+    onSuccess: async data => {
       setSystemMessage(data.data.message)
-      return query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
+      await query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -181,9 +181,9 @@ const MenuBox = ({
 
   // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success('잔고 충전이 완료되었습니다.')
-      return query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
+      await query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
     },
     onError: (error: ApiError) => {
       toast.error(error.message)

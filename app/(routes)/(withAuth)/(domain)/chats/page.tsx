@@ -19,15 +19,11 @@ const Chats = () => {
   const [closeBanner, setCloseBanner] = useState<boolean>(false)
 
   // 채팅방 목록 조회
-  const { data: { data: chats } = {}, refetch } = useQuery([CHAT.조회], () => chat())
+  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat())
 
   const onMoveBanner = () => {
     router.push('/events')
   }
-
-  useEffect(() => {
-    refetch()
-  }, [])
 
   return (
     <Layout hasHeader seoTitle={'채팅'}>

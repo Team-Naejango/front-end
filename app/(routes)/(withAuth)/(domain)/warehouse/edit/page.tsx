@@ -9,8 +9,8 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3'
 import { GrFormNext } from 'react-icons/gr'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
-import mapIcon from '@/app/assets/image/map.svg'
 import uuid from 'react-uuid'
+import mapIcon from '@/app/assets/image/map.svg'
 
 import BackHeader from '@/app/components/template/main/header/BackHeader'
 import InputField from '@/app/components/atom/InputField'
@@ -84,10 +84,10 @@ const WarehouseEdit = () => {
 
   // 창고 등록
   const { mutate: mutateSave } = useMutation(saveStorage, {
-    onSuccess: () => {
-      query.invalidateQueries([WAREHOUSE.조회])
-      query.invalidateQueries([ITEM.조회])
-      query.invalidateQueries([PLACE.조회])
+    onSuccess: async () => {
+      await query.invalidateQueries([WAREHOUSE.조회])
+      await query.invalidateQueries([ITEM.조회])
+      await query.invalidateQueries([PLACE.조회])
       toast.success('창고가 등록되었습니다.')
       router.push('/warehouse')
     },
@@ -98,9 +98,9 @@ const WarehouseEdit = () => {
 
   // 창고 수정
   const { mutate: mutateModify } = useMutation(modifyStorage, {
-    onSuccess: () => {
-      query.invalidateQueries([WAREHOUSE.조회])
-      query.invalidateQueries([PLACE.조회])
+    onSuccess: async () => {
+      await query.invalidateQueries([WAREHOUSE.조회])
+      await query.invalidateQueries([PLACE.조회])
       toast.success('창고가 수정되었습니다.')
       router.push('/warehouse')
     },

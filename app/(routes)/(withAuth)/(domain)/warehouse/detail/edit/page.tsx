@@ -96,8 +96,8 @@ const WareHouseItem = () => {
 
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
-    onSuccess: data => {
-      query.invalidateQueries([CHAT.조회])
+    onSuccess: async data => {
+      await query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
@@ -112,9 +112,9 @@ const WareHouseItem = () => {
 
   // 그룹 채팅방 참여
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
-    onSuccess: data => {
+    onSuccess: async data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      query.invalidateQueries([CHAT.조회])
+      await query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
@@ -163,11 +163,11 @@ const WareHouseItem = () => {
       mutateJoin(String(selectedItem!.ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat?.result) {
-        toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
+        toast.error('등록된 그룹채팅이 없습니다. \n 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
       if (groupChat?.result?.participantsCount === groupChat?.result?.channelLimit) {
-        toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해주세요.')
+        toast.error('현재 채팅방 참여 인원수가 최대입니다. \n 다음에 다시 이용해주세요.')
         return closeModal('chat')
       }
 

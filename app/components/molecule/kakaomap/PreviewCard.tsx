@@ -27,12 +27,13 @@ import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import Register from '@/app/components/organism/chat/Register'
 import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 import SelectChatList from '@/app/components/organism/place/SelectChatList'
+import { ApiErrorData } from '@/app/apis/types/response/response'
 
 import { DealParam, incompleteDeal, saveDeal as register } from '@/app/apis/domain/chat/deal'
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
 import { userInfo } from '@/app/apis/domain/profile/profile'
 import { groupChatUserInfo, joinChat } from '@/app/apis/domain/chat/channel'
-import { chat, joinGroupChat } from '@/app/apis/domain/chat/chat'
+import { joinGroupChat } from '@/app/apis/domain/chat/chat'
 import { storage, storageGroupChannel } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps */
@@ -123,11 +124,11 @@ const PreviewCard = ({
 
   // 거래 등록
   const { mutate: mutateRegister } = useMutation(register, {
-    onSuccess: data => {
+    onSuccess: async data => {
       if (data.data.message !== TRANSACTION_MESSAGE.예약등록) {
         setSystemMessage(data.data.message)
       }
-      query.invalidateQueries({
+      await query.invalidateQueries({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
         refetchType: 'all',
       })
@@ -167,8 +168,8 @@ const PreviewCard = ({
 
   // 개인 채팅 개설
   const { mutate: mutateJoin } = useMutation(joinChat, {
-    onSuccess: data => {
-      query.invalidateQueries([CHAT.조회])
+    onSuccess: async data => {
+      await query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
@@ -183,9 +184,9 @@ const PreviewCard = ({
 
   // 그룹 채팅방 참여
   const { mutate: mutateGroupJoin } = useMutation(joinGroupChat, {
-    onSuccess: data => {
+    onSuccess: async data => {
       toast.success('그룹 채팅방에 입장하였습니다.')
-      query.invalidateQueries([CHAT.조회])
+      await query.invalidateQueries([CHAT.조회])
       push({
         pathname: '/chats/edit',
         query: {
@@ -193,7 +194,23 @@ const PreviewCard = ({
         },
       })
     },
-    onError: (error: GroupChat) => {
+    onError: (error: AxiosError) => {
+      const data = error.response?.data as ApiErrorData
+      if (data.error === 'CONFLICT') {
+        return toast.error(data.message)
+      }
+
+      if (error.response?.status === 409) {
+        const data = error.response?.data as GroupChat
+        toast.success(data.message)
+        return push({
+          pathname: '/chats/edit',
+          query: {
+            channel: data.result.channelId,
+          },
+        })
+      }
+
       toast.error(error.message)
     },
   })
@@ -277,19 +294,17 @@ const PreviewCard = ({
     })
   }, [traderId])
 
-  useEffect(() => {
-    closeModal('channel')
-  }, [])
-
+  // 거래 ID 바인딩
   useEffect(() => {
     personalManager()
   }, [personalManager])
 
+  // 거래 ID가 있다면 거래등록 모달 오픈
   useEffect(() => {
     if (traderId) {
       registerDeal()
     }
-  }, [registerDeal, traderId])
+  }, [traderId, registerDeal])
 
   // 채팅방 선택 시
   const onSelectChat = (chat: ChatInfoList) => {
@@ -307,12 +322,17 @@ const PreviewCard = ({
         type: MODAL_TYPES.ALERT,
         title: '채널 선택',
       },
+      callback: () => {
+        setDisabledGroup(false)
+        setDisabledPersonal(false)
+      },
     })
   }
 
   // 채팅 신청
   const onRegisterChat = (type: E_ITEM_TYPE, ownerId: number) => {
-    if (mineInfo?.result.userId === ownerId) return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
+    if (mineInfo?.result.userId === ownerId)
+      return toast.error('회원님의 창고 아이템입니다. \n 다른 창고를 선택해주세요.')
 
     const isPersonal = type === ITEM_TYPE.개인구매 || type === ITEM_TYPE.개인판매
 
@@ -328,7 +348,7 @@ const PreviewCard = ({
   const onClickFollow = (storageId: number) => {
     if (!storageId) return
     const isMyStorage = storageInfo?.result.some(v => v.storageId === storageId)
-    if (isMyStorage) return toast.error('회원님의 창고입니다. 다른 창고를 선택해주세요.')
+    if (isMyStorage) return toast.error('회원님의 창고입니다. \n 다른 창고를 선택해주세요.')
 
     const isSubscribe = follows && follows.result.some(v => v.id === storageId)
     isSubscribe ? mutateUnfollow(String(storageId)) : mutateFollow(String(storageId))
@@ -342,19 +362,20 @@ const PreviewCard = ({
       const ownerId = dragedPreviews?.find(v => v.ownerId)?.ownerId
 
       if (mineInfo?.result.userId === ownerId)
-        return toast.error('회원님의 창고 아이템입니다. 다른 창고를 선택해주세요.')
+        return toast.error('회원님의 창고 아이템입니다. \n 다른 창고를 선택해주세요.')
 
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
-        toast.error('등록된 그룹채팅이 없습니다. 다음에 다시 이용해주세요.')
-        return closeModal('chat')
+        toast.error('등록된 그룹채팅이 없습니다. \n 다음에 다시 이용해주세요.')
+        return closeModal('channel')
       }
       if (groupChat.result?.participantsCount === groupChat.result?.channelLimit) {
-        toast.error('현재 채팅방 참여 인원수가 최대입니다. 다음에 다시 이용해주세요.')
-        return closeModal('chat')
+        toast.error('현재 채팅방 참여 인원수가 최대입니다. \n 다음에 다시 이용해주세요.')
+        return closeModal('channel')
       }
 
+      closeModal('channel')
       mutateGroupJoin(String(groupChat?.result.channelId))
     }
   }

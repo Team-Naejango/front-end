@@ -14,7 +14,7 @@ import { ApiError } from 'next/dist/server/api-utils'
 import uuid from 'react-uuid'
 
 import Layout from '@/app/components/template/main/layout/Layout'
-import Message from '@/app/components/atom/Message'
+import SystemMessage from '@/app/components/organism/chat/SystemMessage'
 import DropDown from '@/app/components/molecule/tab/DropDown'
 import InputField from '@/app/components/atom/InputField'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
@@ -22,7 +22,7 @@ import Loading from '@/app/loading'
 import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
-import SettingModal from '@/app/components/organism/chat/SettingModal'
+import Setting from '@/app/components/organism/chat/Setting'
 import MenuBox from '@/app/components/organism/chat/MenuBox'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { systemMessageState } from '@/app/store/atom'
@@ -122,7 +122,7 @@ const ChatDetail: NextPage = () => {
         await closeChannel(String(channelId))
       }
       toast.success('채팅방이 종료되었습니다.')
-      query.invalidateQueries([CHAT.조회, CHAT.참여자조회, CHAT.메세지조회])
+      await query.invalidateQueries([CHAT.조회, CHAT.참여자조회, CHAT.메세지조회])
       router.push('/chats')
     },
     onError: (error: ApiError) => {
@@ -248,7 +248,7 @@ const ChatDetail: NextPage = () => {
           </span>
           {chatMessageList.map(data => {
             return (
-              <Message
+              <SystemMessage
                 key={uuid()}
                 data={data}
                 membersInfo={membersInfo}
@@ -299,7 +299,7 @@ const ChatDetail: NextPage = () => {
 
       {setting.modal.show ? (
         <CustomModal id={setting.modal.id} type={MODAL_TYPES.ALERT}>
-          <SettingModal
+          <Setting
             channelId={channelId!}
             chatId={chatId?.result as number | null}
             title={String(enterChatInfo?.title)}

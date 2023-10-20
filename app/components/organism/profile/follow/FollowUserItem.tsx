@@ -5,15 +5,15 @@ import Image from 'next/image'
 
 import { Item } from '@/app/apis/types/domain/warehouse/warehouse'
 
-const FollowUserItemPopup = ({ items }: { items: Item[] }) => {
-  const ref = useRef<HTMLDivElement | null>(null)
+const FollowUserItem = ({ items }: { items: Item[] }) => {
+  const currentItemRef = useRef<HTMLDivElement | null>(null)
 
   return (
     <div className='grid grid-cols-2 grid-rows-[minmax(0,1fr)] justify-items-center gap-4 py-4'>
       {items ? (
         items.map(item => {
           return (
-            <div key={item.itemId} role={'presentation'} ref={ref} className={'relative'}>
+            <div key={item.itemId} role={'presentation'} ref={currentItemRef} className={'relative'}>
               <Image
                 width={'100'}
                 src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
@@ -42,4 +42,4 @@ const FollowUserItemPopup = ({ items }: { items: Item[] }) => {
   )
 }
 
-export default FollowUserItemPopup
+export default FollowUserItem

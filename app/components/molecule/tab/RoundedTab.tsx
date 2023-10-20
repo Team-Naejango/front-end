@@ -16,8 +16,6 @@ const DEAL_TYPE_MAPPING: { label: string; name: string | string[] }[] = [
   { label: 'SELL', name: ITEM_TYPE.개인판매 },
 ]
 
-// const ButtonType: ['BUY', 'SELL'] = ['BUY', 'SELL']
-
 const RoundedTab = ({ setSelectedTab, children }: RoundedTabProps) => {
   return (
     <div className='w-full max-w-md pt-4'>
