@@ -296,10 +296,6 @@ const PreviewCard = ({
     })
   }, [traderId])
 
-  useEffect(() => {
-    closeModal('channel')
-  }, [])
-
   // 거래 ID 바인딩
   useEffect(() => {
     personalManager()
@@ -370,6 +366,7 @@ const PreviewCard = ({
       if (mineInfo?.result.userId === ownerId)
         return toast.error('회원님의 창고 아이템입니다. \n 다른 창고를 선택해주세요.')
 
+      closeModal('channel')
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
