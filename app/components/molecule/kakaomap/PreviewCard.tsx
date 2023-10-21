@@ -296,6 +296,10 @@ const PreviewCard = ({
     })
   }, [traderId])
 
+  useEffect(() => {
+    closeModal('channel')
+  }, [])
+
   // 거래 ID 바인딩
   useEffect(() => {
     personalManager()
