@@ -137,7 +137,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         window.removeEventListener('popstate', onLimitBack)
       }
     }
-  }, [isLoggedIn])
+  }, [isLoggedIn, router])
 
   // 브라우저 종료 시
   useUnloadEffect(async () => {
