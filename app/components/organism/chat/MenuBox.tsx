@@ -18,7 +18,7 @@ import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import Register from '@/app/components/organism/chat/Register'
 import Loading from '@/app/loading'
 import { Member } from '@/app/apis/types/domain/profile/profile'
-import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
+import { cls, formatCurrentIsoDate } from '@/app/libs/client/utils/util'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
 
@@ -226,7 +226,7 @@ const MenuBox = ({
         const omitCommaAmount = String(watch('amount')).replace(/,/g, '')
 
         const params: ModifyParam = {
-          date: formatIsoDate(),
+          date: formatCurrentIsoDate(),
           amount: Number(omitCommaAmount),
           transactionId: String(searchInfo?.result.id),
         }
@@ -300,28 +300,34 @@ const MenuBox = ({
             <span className='block text-sm text-white'>거래 신청</span>
           </button>
           <button
-            disabled={!isSeller || searchInfo?.result.progress === '거래 완료'}
+            disabled={!isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction}
             className={cls(
               'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller || searchInfo?.result.progress === '거래 완료' ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              !isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+                ? 'bg-[#ddd] hover:bg-[#ddd]'
+                : ''
             )}
             onClick={modifyDeal}>
             <span className='block text-sm text-white'>거래 수정</span>
           </button>
           <button
-            disabled={!isSeller || searchInfo?.result.progress === '거래 완료'}
+            disabled={!isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction}
             className={cls(
               'w-1/3 cursor-pointer bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller || searchInfo?.result.progress === '거래 완료' ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              !isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+                ? 'bg-[#ddd] hover:bg-[#ddd]'
+                : ''
             )}
             onClick={deleteDeal}>
             <span className='block text-sm text-white'>거래 삭제</span>
           </button>
           <button
-            disabled={!isSeller || searchInfo?.result.progress === '거래 완료'}
+            disabled={!isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction}
             className={cls(
               'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller || searchInfo?.result.progress === '거래 완료' ? 'bg-[#ddd] hover:bg-[#ddd]' : ''
+              !isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+                ? 'bg-[#ddd] hover:bg-[#ddd]'
+                : ''
             )}
             onClick={completeDeal}>
             <span className='block text-sm text-white'>거래 완료</span>
