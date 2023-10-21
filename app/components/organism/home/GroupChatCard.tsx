@@ -122,10 +122,8 @@ const GroupChatCard = () => {
                   <div className='relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#33CC99]'>
                     <Image
                       src={initialLogo}
-                      width={'24'}
-                      height={'24'}
                       alt={'이니셜 로고'}
-                      className={'object-cover'}
+                      style={{ objectFit: 'cover', width: '24px', height: '24px' }}
                     />
                   </div>
                   <div className='relative flex h-16 w-full flex-col justify-center py-1 pl-4'>

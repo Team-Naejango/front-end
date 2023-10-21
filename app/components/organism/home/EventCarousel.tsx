@@ -37,7 +37,7 @@ const EventCarousel = () => {
   }
 
   return (
-    <Swiper {...swiperParams} className={'!absolute left-0 top-0 w-full rounded-xl'}>
+    <Swiper {...swiperParams} className={'!absolute left-0 top-0 w-full overflow-hidden rounded-xl'}>
       {HOMEIMAGES.map(data => {
         return (
           data.ing && (
@@ -49,9 +49,7 @@ const EventCarousel = () => {
                   placeholder='blur'
                   blurDataURL={data.blurUrl}
                   alt={'여행 이벤트 이미지'}
-                  width={375}
-                  height={260}
-                  style={{ objectFit: 'cover', height: '260px' }}
+                  style={{ objectFit: 'cover', width: '375px', height: '260px' }}
                 />
                 <p
                   className={cls(
