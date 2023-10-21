@@ -188,7 +188,7 @@ const ChatDetail: NextPage = () => {
 
     return () => {
       if (client.current) {
-        client.current?.disconnect()
+        // client.current?.disconnect()
         refetchRecentMessage()
       }
     }
