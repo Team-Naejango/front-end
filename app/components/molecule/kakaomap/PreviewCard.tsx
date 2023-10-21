@@ -13,7 +13,7 @@ import Loading from '@/app/loading'
 import { CHAT_TYPE, E_CHAT_TYPE, E_ITEM_TYPE, ITEM_TYPE, MODAL_TYPES } from '@/app/libs/client/constants/code'
 import SelectCard from '@/app/components/molecule/kakaomap/SelectCard'
 import { modalSelector } from '@/app/store/modal'
-import { cls, formatIsoDate } from '@/app/libs/client/utils/util'
+import { cls, formatCurrentIsoDate } from '@/app/libs/client/utils/util'
 import { markerItemsState, activatedWareHouseTitleState, systemMessageState } from '@/app/store/atom'
 import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { Item, SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
@@ -257,6 +257,8 @@ const PreviewCard = ({
 
   // 채팅방 선택 모달
   const onSelectChatModal = () => {
+    if (selectedItem?.itemType === ITEM_TYPE.공동구매) return toast.error('공동구매는 거래를 이용하실 수 없습니다.')
+
     openModal({
       modal: {
         id: 'selectChat',
@@ -282,7 +284,7 @@ const PreviewCard = ({
           closeModal('selectChat')
         } else {
           const params: DealParam = {
-            date: formatIsoDate(),
+            date: formatCurrentIsoDate(),
             amount: Number(omitCommaAmount),
             traderId: traderId!,
             itemId: selectedItem?.itemId!,
@@ -368,10 +370,6 @@ const PreviewCard = ({
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
         toast.error('등록된 그룹채팅이 없습니다. \n 다음에 다시 이용해주세요.')
-        return closeModal('channel')
-      }
-      if (groupChat.result?.participantsCount === groupChat.result?.channelLimit) {
-        toast.error('현재 채팅방 참여 인원수가 최대입니다. \n 다음에 다시 이용해주세요.')
         return closeModal('channel')
       }
 

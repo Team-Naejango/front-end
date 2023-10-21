@@ -4,7 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import { useRecoilValue } from 'recoil'
 
-import { cls, formatKoreanCurrency } from '@/app/libs/client/utils/util'
+import { cls, formatKoreanCurrency, formatRemoveSecondsTime } from '@/app/libs/client/utils/util'
 import { ChatResponse } from '@/app/(routes)/(withAuth)/(domain)/chats/edit/page'
 import { MESSAGE_TYPE } from '@/app/libs/client/constants/code'
 import { GroupChatUserInfo } from '@/app/apis/types/domain/chat/chat'
@@ -130,7 +130,7 @@ const SystemMessage = ({ data, isMe, membersInfo }: MessageProps) => {
         )}>
         <p>{data.content}</p>
       </div>
-      <span className={'text-[10px]'}>{new Date(data.sentAt).toLocaleTimeString()}</span>
+      <span className={'text-[10px]'}>{formatRemoveSecondsTime(data.sentAt)}</span>
     </div>
   )
 }
