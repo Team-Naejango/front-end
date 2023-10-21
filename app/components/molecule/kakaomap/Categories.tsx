@@ -56,7 +56,7 @@ const Categories = ({
   }
 
   return (
-    <div className={'mt-2 flex'}>
+    <div className={'mt-2 flex items-center'}>
       <Swiper {...swiperParams}>
         <ul>
           {categories?.result.map(data => {
