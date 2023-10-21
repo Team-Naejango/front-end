@@ -89,7 +89,7 @@ export type E_NOTIFICATION_PERMISSION = (typeof NOTIFICATION_PERMISSION)[keyof t
  */
 export const NOTIFICATION_TYPE = {
   거래: 'TRANSACTION',
-  채팅: 'CHATTING',
+  채팅: 'CHAT',
 } as const
 
 export type E_NOTIFICATION_TYPE = (typeof NOTIFICATION_TYPE)[keyof typeof NOTIFICATION_TYPE]

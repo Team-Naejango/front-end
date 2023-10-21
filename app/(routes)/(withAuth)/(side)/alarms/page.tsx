@@ -60,7 +60,7 @@ const Alarms = () => {
   const getAlarmStatus = (value: E_NOTIFICATION_TYPE) => {
     return {
       TRANSACTION: '거래',
-      CHATTING: '채팅',
+      CHAT: '채팅',
     }[value]
   }
 

@@ -43,22 +43,25 @@ export default function Template({ children }: { children: React.ReactNode }) {
         }
       }
 
-      // 첫 알림 푸시
-      if (firstConnection) {
-        SSE.onopen = () => {
-          if (Notification.permission === NOTIFICATION_PERMISSION.허용) {
+      SSE.onopen = () => {
+        if (Notification.permission === NOTIFICATION_PERMISSION.허용) {
+          // 첫 알림 푸시
+          if (firstConnection) {
             showNotification('알림', '앱 알림을 구독하였습니다.')
             toast.success('앱 알림을 구독하였습니다.')
+          } else {
+            console.log('재연결 완료')
           }
         }
       }
 
+      // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
         subscribe(false)
       }
 
-      // SSE 감지 후 브라우저 알림 노출
+      // SSE 감지 후 브라우저 알림 푸시
       SSE.addEventListener('sse', (event: any) => {
         const isJson = (data: string) => {
           try {
@@ -81,7 +84,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
             const getAlarmStatus = (value: E_NOTIFICATION_TYPE) => {
               return {
                 TRANSACTION: '거래',
-                CHATTING: '채팅',
+                CHAT: '채팅',
               }[value]
             }
 
@@ -136,12 +139,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
         window.removeEventListener('popstate', onLimitBack)
       }
     }
-  }, [isLoggedIn, router])
+  }, [isLoggedIn])
 
   // 브라우저 종료 시
-  // useUnloadEffect(async () => {
-  //   await logout()
-  // })
+  useUnloadEffect(async () => {
+    await logout()
+  })
 
   return <>{children}</>
 }
