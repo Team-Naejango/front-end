@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
@@ -9,7 +9,7 @@ import initialLogo from '@/app/assets/image/logo_n.png'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import SmallBanner from '@/app/components/molecule/banner/SmallBanner'
-import { cls } from '@/app/libs/client/utils/util'
+import { cls, formatRemoveSecondsTime } from '@/app/libs/client/utils/util'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 
 import { chat } from '@/app/apis/domain/chat/chat'
@@ -19,7 +19,9 @@ const Chats = () => {
   const [closeBanner, setCloseBanner] = useState<boolean>(false)
 
   // 채팅방 목록 조회
-  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat())
+  const { data: { data: chats } = {} } = useQuery([CHAT.조회], () => chat(), {
+    refetchOnMount: 'always',
+  })
 
   const onMoveBanner = () => {
     router.push('/events')
@@ -59,7 +61,7 @@ const Chats = () => {
                 </p>
               </div>
               <div className={'flex w-16 flex-col items-end'}>
-                <span className={'ml-8 text-xs'}>{chat.lastChatAt}</span>
+                <span className={'ml-8 whitespace-nowrap text-xs'}>{formatRemoveSecondsTime(chat.lastChatAt)}</span>
                 <span
                   className={cls(
                     'mt-0.5',

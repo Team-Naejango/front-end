@@ -11,7 +11,9 @@ import { deal } from '@/app/apis/domain/chat/deal'
 
 const Deal = () => {
   // 거래 조회
-  const { data: { data: deals } = {} } = useQuery([DEAL.조회], deal)
+  const { data: { data: deals } = {} } = useQuery([DEAL.조회], deal, {
+    refetchOnMount: 'always',
+  })
 
   return (
     <Layout canGoBack title='거래 내역'>
