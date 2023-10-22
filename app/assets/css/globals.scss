@@ -17,10 +17,10 @@
 
 // scrollbar
 body{
-  -ms-overflow-style: none !important;
+  -ms-overflow-style: none;
 }
 section::-webkit-scrollbar {
-  display: none !important;
+  display: none;
 }
 
 // input
