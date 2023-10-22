@@ -462,6 +462,7 @@ const EditItem = () => {
           <>
             <InputField
               essential
+              disabled={isEditMode}
               type='text'
               label='그룹 제목'
               placeholder='그룹 제목'
@@ -472,6 +473,7 @@ const EditItem = () => {
             <p className='!mt-1.5 text-xs text-red-400'>{errors.groupName?.message}</p>
             <InputField
               essential
+              disabled={isEditMode}
               type='number'
               label='제한 인원'
               register={register('limit', {

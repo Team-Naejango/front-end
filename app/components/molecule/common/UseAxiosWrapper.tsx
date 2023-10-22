@@ -1,6 +1,6 @@
 'use client'
 
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode, Suspense, useEffect } from 'react'
 import { AxiosHeaders, AxiosRequestConfig, AxiosRequestHeaders, InternalAxiosRequestConfig } from 'axios'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { toast } from 'react-hot-toast'
@@ -90,7 +90,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     }
   }, [accessToken])
 
-  return <React.Suspense>{children}</React.Suspense>
+  return <Suspense>{children}</Suspense>
 }
 
 export default UseAxiosWrapper
