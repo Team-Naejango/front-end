@@ -28,17 +28,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
   }, [pathname])
 
   return (
-    <main className='relative mx-auto h-[750px] w-[375px] max-w-xl overflow-visible bg-white'>
-      <div
-        className={cls(
-          'h-inherit w-inherit absolute left-2/4 top-1/2 box-content translate-x-[-50%] translate-y-[-50%] overflow-x-hidden rounded-[30px] border-[10px] bg-transparent',
-          isLoading ? 'border-white' : ''
-        )}>
-        <div
-          className={cls(
-            'h-inherit w-inherit relative mx-auto max-w-xl rounded-[30px] p-4',
-            isLoading ? 'overflow-auto' : ''
-          )}>
+    <main id='main'>
+      <div className={'title-content'}>
+        <p className={'sub-title'}>공동구매 및 중고거래 플랫폼</p>
+        <h1 className={'main-title'}>내 잔고를 부탁해</h1>
+      </div>
+      <div className={cls('wrapper', isLoading ? '!border-white' : '')}>
+        <div className={cls('main-container', isLoading ? 'overflow-auto' : 'overflow-hidden')}>
           {isLoading && isMountedSplash ? (
             <Splash
               closeSplash={() => {

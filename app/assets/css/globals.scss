@@ -1,18 +1,26 @@
-/* ******************************** common ******************************** */
+/* ******************************************* common ******************************************* */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 @tailwind variants;
 
-/* ******************************** reset ******************************** */
+// font
+@font-face {
+  font-family: 'Cafe24Ssurround';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/Cafe24Ssurround.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* ******************************************* reset ******************************************* */
 
 // scrollbar
 body{
-  -ms-overflow-style: none;
+  -ms-overflow-style: none !important;
 }
 section::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 // input
@@ -22,7 +30,7 @@ input::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }
 
-/* ******************************** util ******************************** */
+/* ******************************************* util ******************************************* */
 
 .w-inherit {
   width: inherit;
@@ -32,19 +40,79 @@ input::-webkit-inner-spin-button {
   height: inherit;
 }
 
-/* ******************************** custom ******************************** */
+/* ******************************************* custom ******************************************* */
 
 body {
   height: 100vh;
+  background: url("../image/naejango_bg.svg") no-repeat center center/cover;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f1f1f1;
   color: #222;
 }
 
-// swiper
-/* home */
+#main {
+  position: relative;
+  margin: 0 auto;
+  width: 375px;
+  height: 750px;
+  max-width: 36rem;
+  overflow: visible;
+  background: #fff;
+
+  .title-content {
+    position: fixed;
+    right: 8rem;
+    top: 33.333%;
+    transform: translateY(-50%);
+
+    .sub-title {
+      font-family: Cafe24Ssurround, sans-serif;
+      font-size: 25px;
+      margin-bottom: 0.25rem;
+      text-align: right;
+    }
+
+    .main-title {
+      font-family: Cafe24Ssurround, sans-serif;
+      font-size: 42px;
+      color: #33CC99;
+      text-align: right;
+    }
+
+    @media (min-width: 1920px) {
+      right: 10rem
+    }
+  }
+
+  .wrapper {
+    width: inherit;
+    height: inherit;
+    box-sizing: content-box;
+    overflow-x: hidden;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 30px;
+    border: 10px solid #e5e7eb;
+    background: transparent;
+  }
+
+  .main-container {
+    width: inherit;
+    height: inherit;
+    position: relative;
+    margin: 0 auto;
+    max-width: 36rem;
+    padding: 1rem;
+    border-radius: 20px;
+
+  }
+}
+
+// home
+/* swiper */
 .swiper-button-next:after,
 .swiper-button-prev:after {
   display: none;
@@ -57,7 +125,7 @@ body {
   background-position: center;
 }
 
-/* warehouse */
+// warehouse
 .slider_fade {
   opacity: 0;
   transition: opacity 0.5s;
