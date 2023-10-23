@@ -61,11 +61,11 @@ const Categories = ({
         <ul>
           {categories?.result.map(data => {
             return (
-              <SwiperSlide key={data.categoryId}>
+              <SwiperSlide key={data.categoryId} className={'!w-auto'}>
                 <li
                   role='presentation'
                   className={cls(
-                    'cursor-pointer rounded border border-[#e5e7eb] py-1.5 text-center text-xs hover:underline hover:underline-offset-2',
+                    'cursor-pointer rounded border border-[#e5e7eb] px-2.5 py-1.5 text-center text-xs hover:underline hover:underline-offset-2',
                     data.categoryName === selectedCategory?.name ? '!border-[#32D7A0]' : '',
                     data.categoryName.length > 4 ? 'whitespace-nowrap' : ''
                   )}
