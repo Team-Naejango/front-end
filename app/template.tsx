@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useRecoilState } from 'recoil'
+import naejangoBg from '@/app/assets/image/naejango_bg.svg'
 
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 import CustomToast from '@/app/components/molecule/modal/CustomToast'
 import { splashState } from '@/app/store/atom'
+import Image from 'next/image'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -29,6 +31,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   return (
     <main id='main'>
+      <Image priority quality={100} src={naejangoBg} alt={'내 잔고를 부탁해 배경 이미지'} className={'bg-area'} />
       <div className={'title-content'}>
         <p className={'sub-title'}>공동구매 및 중고거래 플랫폼</p>
         <h1 className={'main-title'}>내 잔고를 부탁해</h1>
