@@ -27,7 +27,7 @@ import { FormFields } from '@/app/components/organism/chat/MenuBox'
 import Register from '@/app/components/organism/chat/Register'
 import { TRANSACTION_MESSAGE } from '@/app/libs/client/constants/app/transaction'
 import SelectChatList from '@/app/components/organism/place/SelectChatList'
-import { ApiErrorData } from '@/app/apis/types/response/response'
+import { AxiosErrorResponse } from '@/app/apis/types/response/response'
 
 import { DealParam, incompleteDeal, saveDeal as register } from '@/app/apis/domain/chat/deal'
 import { follow, saveFollow, unFollow } from '@/app/apis/domain/profile/follow'
@@ -132,6 +132,8 @@ const PreviewCard = ({
         queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회],
         refetchType: 'all',
       })
+      await query.invalidateQueries([CHAT.조회])
+      await query.invalidateQueries([CHAT.메세지조회])
       push({
         pathname: '/chats/edit',
         query: {
@@ -195,7 +197,7 @@ const PreviewCard = ({
       })
     },
     onError: (error: AxiosError) => {
-      const data = error.response?.data as ApiErrorData
+      const data = error.response?.data as AxiosErrorResponse
       if (data.error === 'CONFLICT') {
         return toast.error(data.message)
       }

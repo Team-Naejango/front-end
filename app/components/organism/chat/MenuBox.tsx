@@ -10,7 +10,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import { CHAT, DEAL } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { modalSelector } from '@/app/store/modal'
-import { MODAL_TYPES, TRANSACTION_TYPE } from '@/app/libs/client/constants/code'
+import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import { POINTS } from '@/app/libs/client/constants/static'
 import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
@@ -94,28 +94,28 @@ const MenuBox = ({
     return value.participantId !== userInfo?.userId
   })?.participantId
 
-  // 미완료 거래 조회
-  const {
-    data: { data: incompleteInfo } = {},
-    isSuccess: isSuccessIncompleteInfo,
-    refetch: refetchIncompleteInfo,
-  } = useQuery([DEAL.미완료거래조회, getTraderId, channelId], () => incompleteDeal(String(getTraderId)), {
-    enabled: !!channelId && !!getTraderId,
-  })
-
   // 거래 조회
-  const { data: { data: deals } = {}, refetch: refetchDeals } = useQuery([DEAL.조회, incompleteInfo], () => deal(), {
+  const { data: { data: deals } = {} } = useQuery([DEAL.조회], () => deal(), {
     enabled: !!channelId && !!getTraderId,
   })
 
   // [구매자입장] 미거래 정보
   const traderTransaction = deals?.result.find(v => v.traderId === getTraderId && v.progress !== '거래 완료')
 
+  // 미완료 거래 조회
+  const { data: { data: incompleteInfo } = {}, isSuccess: isSuccessIncompleteInfo } = useQuery(
+    [DEAL.미완료거래조회, getTraderId, channelId],
+    () => incompleteDeal(String(getTraderId)),
+    {
+      enabled: !!channelId && !!getTraderId,
+    }
+  )
+
   // [판매자입장] 미거래 정보
   const sellerTransaction = incompleteInfo?.result.find(v => v)
 
   // 특정 거래 정보 조회
-  const { data: { data: searchInfo } = {} } = useQuery(
+  const { data: { data: searchInfo } = {}, refetch: refetchSearchInfo } = useQuery(
     [DEAL.특정거래조회],
     () => searchDeal(String(sellerTransaction?.id)),
     {
@@ -130,10 +130,10 @@ const MenuBox = ({
   const { mutate: mutateModify } = useMutation(modify, {
     onSuccess: data => {
       setSystemMessage(data.data.message)
-      return query.invalidateQueries({
-        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
-        refetchType: 'all',
-      })
+      query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -142,12 +142,12 @@ const MenuBox = ({
 
   // 거래 삭제
   const { mutate: mutateDelete } = useMutation(deleter, {
-    onSuccess: async data => {
+    onSuccess: data => {
       setSystemMessage(data.data.message)
-      await query.invalidateQueries({
-        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
-        refetchType: 'all',
-      })
+      query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -156,12 +156,12 @@ const MenuBox = ({
 
   // 거래 완료
   const { mutate: mutateComplete } = useMutation(complete, {
-    onSuccess: async data => {
+    onSuccess: data => {
       setSystemMessage(data.data.message)
-      await query.invalidateQueries({
-        queryKey: [DEAL.조회, DEAL.미완료거래조회, DEAL.특정거래조회, ITEM.조회],
-        refetchType: 'all',
-      })
+      query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
+      query.invalidateQueries([DEAL.특정거래조회])
+      query.invalidateQueries([ITEM.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -170,9 +170,9 @@ const MenuBox = ({
 
   // 송금 완료
   const { mutate: mutateWire } = useMutation(wire, {
-    onSuccess: async data => {
+    onSuccess: data => {
       setSystemMessage(data.data.message)
-      await query.invalidateQueries({ queryKey: [CHAT.조회], refetchType: 'all' })
+      query.invalidateQueries([CHAT.조회])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -181,14 +181,21 @@ const MenuBox = ({
 
   // 잔고 충전
   const { mutate: mutateAccount } = useMutation(account, {
-    onSuccess: async () => {
+    onSuccess: () => {
       toast.success('잔고 충전이 완료되었습니다.')
-      await query.invalidateQueries({ queryKey: [OAUTH.유저정보], refetchType: 'all' })
+      query.invalidateQueries([OAUTH.유저정보])
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
     },
   })
+
+  useEffect(() => {
+    if (deals) {
+      query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.특정거래조회])
+    }
+  }, [deals, query])
 
   // 거래 금액 탐지
   useEffect(() => {
@@ -204,21 +211,12 @@ const MenuBox = ({
     }
   }, [deals, searchInfo, sellerTransaction?.amount, traderTransaction])
 
-  // 거래 상태
-  const getTransactionStatus = (value: string | undefined) => {
-    if (value) {
-      return {
-        TRANSACTION_APPOINTMENT: '거래예약',
-        REMITTANCE_COMPLETION: '송금완료',
-        TRANSACTION_COMPLETION: '거래완료',
-      }[value]
-    }
-  }
-
   // 거래수정 모달
-  const modifyDeal = () => {
-    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래예약)
-      return toast.error(`${getTransactionStatus(sellerTransaction?.status)} 상태이므로 거래 수정이 불가능합니다.`)
+  const modifyDeal = async () => {
+    await refetchSearchInfo()
+
+    if (searchInfo?.result.progress !== '거래 약속')
+      return toast.error(`${searchInfo?.result.progress} 상태이므로 거래 수정이 불가능합니다.`)
 
     openModal({
       modal: { id: 'edit', type: MODAL_TYPES.CONFIRM },
@@ -236,9 +234,36 @@ const MenuBox = ({
     })
   }
 
+  // 거래완료 모달
+  const completeDeal = async () => {
+    await refetchSearchInfo()
+
+    if (searchInfo?.result.progress !== '송금 완료') return toast.error('구매자가 송금을 완료하지 않았습니다.')
+
+    openModal({
+      modal: { id: 'complete', type: MODAL_TYPES.DIALOG, title: '거래 완료', content: '거래를 완료 하시겠습니까?' },
+      callback: () => {
+        mutateComplete(String(searchInfo?.result.id))
+      },
+    })
+  }
+
+  // 거래삭제 모달
+  const deleteDeal = async () => {
+    await refetchSearchInfo()
+
+    if (searchInfo?.result.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 삭제가 가능합니다.')
+
+    openModal({
+      modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '거래 삭제', content: '거래를 삭제 하시겠습니까?' },
+      callback: () => {
+        mutateDelete(String(searchInfo?.result.id))
+      },
+    })
+  }
+
   // 송금하기 모달
   const sendPoint = useCallback(async () => {
-    await refetchDeals()
     await refetchUserInfo()
 
     if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
@@ -253,34 +278,6 @@ const MenuBox = ({
       },
     })
   }, [isSeller, openModal, traderTransaction, userInfo?.balance])
-
-  // 거래완료 모달
-  const completeDeal = async () => {
-    await refetchIncompleteInfo()
-
-    if (sellerTransaction?.status !== TRANSACTION_TYPE.송금완료)
-      return toast.error('구매자가 송금을 완료하지 않았습니다.')
-
-    openModal({
-      modal: { id: 'complete', type: MODAL_TYPES.DIALOG, title: '거래 완료', content: '거래를 완료 하시겠습니까?' },
-      callback: () => {
-        mutateComplete(String(searchInfo?.result.id))
-      },
-    })
-  }
-
-  // 거래삭제 모달
-  const deleteDeal = () => {
-    if (sellerTransaction?.status !== TRANSACTION_TYPE.거래예약)
-      return toast.error('거래 예약 상태에서만 삭제가 가능합니다.')
-
-    openModal({
-      modal: { id: 'delete', type: MODAL_TYPES.DIALOG, title: '거래 삭제', content: '거래를 삭제 하시겠습니까?' },
-      callback: () => {
-        mutateDelete(String(searchInfo?.result.id))
-      },
-    })
-  }
 
   // 잔고 충전 모달
   const chargePoint = () => {
