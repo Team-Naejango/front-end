@@ -1,9 +1,14 @@
 export interface Paging {
-  page?: number // 현재 페이지
-  size?: number // 사이즈
-  totalPage?: number // 전체 페이지
-  totalCount?: number // 전체 row
-  result?: number // 검색 결과 수
+  // 현재 페이지
+  page: number
+  // 사이즈
+  size: number
+  // 전체 페이지
+  totalPage: number
+  // 전체 row
+  totalCount: number
+  // 검색 결과 수
+  result: number
 }
 
 export type Common = {
@@ -18,17 +23,17 @@ export type Response<T = unknown> = {
   success: boolean
 }
 
-export interface ApiErrorData {
-  error: string
-  message: string
-  status: number
-}
-
-export interface ApiErrorRefresh {
+export interface TokenRefreshAxiosErrorResponse {
   body: {
     error: string
     message: string
     status: number
     reissuedAccessToken: string
   }
+}
+
+export interface AxiosErrorResponse {
+  error: string
+  message: string
+  status: number
 }

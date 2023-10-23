@@ -3,8 +3,8 @@ import axios from 'axios'
 import {
   requestConfigurator,
   requestErrorRejecter,
-  responseApiErrorThrower,
-  responseNormalizer,
+  responseAxiosErrorThrower,
+  responseErrorRejecter,
 } from '@/app/apis/config/axios'
 
 const instance = axios.create({
@@ -14,6 +14,6 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(requestConfigurator, requestErrorRejecter)
-instance.interceptors.response.use(responseApiErrorThrower, responseNormalizer)
+instance.interceptors.response.use(responseAxiosErrorThrower, responseErrorRejecter)
 
 export { instance }

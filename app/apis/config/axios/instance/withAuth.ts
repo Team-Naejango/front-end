@@ -3,8 +3,8 @@ import axios from 'axios'
 import {
   requestConfigurator,
   requestErrorRejecter,
-  responseApiErrorThrower,
-  responseNormalizer,
+  responseAxiosErrorThrower,
+  responseErrorRejecter,
 } from '@/app/apis/config/axios'
 
 const withAuth = axios.create({
@@ -14,6 +14,6 @@ const withAuth = axios.create({
 })
 
 withAuth.interceptors.request.use(requestConfigurator, requestErrorRejecter)
-withAuth.interceptors.response.use(responseApiErrorThrower, responseNormalizer)
+withAuth.interceptors.response.use(responseAxiosErrorThrower, responseErrorRejecter)
 
 export { withAuth }

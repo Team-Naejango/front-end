@@ -21,10 +21,10 @@ export const defaultQueryClientOptions = {
 export const defaultQueryCache = new QueryCache({
   onError: (error: unknown) => {
     if (error instanceof ApiError) {
-      const errorMessage = error.message || '알 수 없는 오류 발생'
+      // const errorMessage = error.message || '통신 에러가 발생하였습니다. \n 잠시 후 다시 시도해주세요.'
       // toast.error(errorMessage)
     } else {
-      // toast.error('알 수 없는 오류 발생')
+      // toast.error('통신 에러가 발생하였습니다. \n 잠시 후 다시 시도해주세요.')
     }
     return Promise.reject(error)
   },

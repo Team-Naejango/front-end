@@ -80,6 +80,13 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           return withAuth.request(error.config)
         }
 
+        if (error.response.data.status === 403) {
+          if (error.response.data.error === 'FORBIDDEN') {
+            toast.error('회원가입을 진행해 주세요.')
+            router.replace('/sign')
+          }
+        }
+
         return Promise.reject(error)
       }
     )
