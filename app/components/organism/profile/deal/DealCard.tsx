@@ -69,7 +69,7 @@ const DealCard = ({ deals }: { deals: Transaction | undefined }) => {
   return (
     <>
       {deals?.result?.length === 0 ? (
-        <div className='flex h-[450px] items-center justify-center'>
+        <div className={'absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'}>
           <p className='text-sm'>존재하는 거래내역이 없습니다.</p>
         </div>
       ) : (
