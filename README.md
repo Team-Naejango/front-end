@@ -19,18 +19,18 @@
 
 <br />
 
-## 기술스택
-🛠 프론트엔드  
+## 🛠 기술스택
+- 프론트엔드  
 PWA, Typescript, Next.Js @v13, Tailwind CSS, Recoil, React-Query, Kakao SDK, AWS S3, AWS CodePipeline, AWS CloudFront  
 
 <br />
 
-🛠 백엔드  
+- 백엔드  
 Spring Boot, Jpa + QueryDsl, Spring Security, AWS S3, AWS EC2, AWS ELS, AWS ElastiCache for Redis, AWS RDS for PostgreSQL, Swagger
 
 <br />
 
-## 구현 기능
+## 📱 구현 기능
 
 - 🔐 계정
   - 카카오 로그인 / 로그아웃 / 탈퇴
