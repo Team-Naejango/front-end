@@ -15,8 +15,6 @@ import SwitchButton from '@/app/components/atom/SwitchButton'
 import { E_SWITCH_STATUS, MODAL_TYPES, NOTIFICATION_PERMISSION, SWITCH_STATUS } from '@/app/libs/client/constants/code'
 import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
-import { removeAuthToken } from '@/app/libs/client/utils/cookie'
-import { AUTH_TOKEN } from '@/app/libs/client/constants/store/common'
 import Loading from '@/app/loading'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
@@ -24,6 +22,7 @@ import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
+import { useClearSession } from '@/app/hooks/useClearSession'
 
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
 import { logout as kill } from '@/app/apis/domain/auth/auth'
@@ -37,6 +36,7 @@ const Profile = () => {
   const router = useRouter()
   const query = useQueryClient()
   const { openModal } = useModal()
+  const { resetToken } = useClearSession()
 
   const [switchStatus, setSwitchStatus] = useState<E_SWITCH_STATUS>(SWITCH_STATUS.오프)
   const [isNotificationSupported, setIsNotificationSupported] = useState<boolean>(false)
@@ -54,9 +54,9 @@ const Profile = () => {
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
       toast.success('회원 탈퇴가 완료되었습니다.')
-      removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
       query.invalidateQueries([WAREHOUSE.조회, FOLLOW.조회, WISH.조회, CHAT.조회])
       query.invalidateQueries([OAUTH.유저정보])
+      resetToken()
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
@@ -96,7 +96,9 @@ const Profile = () => {
   }, [])
 
   useEffect(() => {
-    if (switchStatus && isNotificationSupported) subscribeToNotifications()
+    if (switchStatus && isNotificationSupported) {
+      subscribeToNotifications()
+    }
   }, [switchStatus])
 
   // 알림 구독 변환기
@@ -129,7 +131,7 @@ const Profile = () => {
         await kill()
           .then(() => {
             toast.success('로그아웃이 완료되었습니다.')
-            removeAuthToken(AUTH_TOKEN.접근, AUTH_TOKEN.갱신)
+            resetToken()
           })
           .catch(error => {
             toast.error(error.message)
