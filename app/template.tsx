@@ -3,13 +3,13 @@
 import React, { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useRecoilState } from 'recoil'
+import Image from 'next/image'
 import naejangoBg from '@/app/assets/image/naejango_bg.svg'
 
 import Splash from '@/app/components/molecule/common/Splash'
 import { cls } from '@/app/libs/client/utils/util'
 import CustomToast from '@/app/components/molecule/modal/CustomToast'
 import { splashState } from '@/app/store/atom'
-import Image from 'next/image'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()

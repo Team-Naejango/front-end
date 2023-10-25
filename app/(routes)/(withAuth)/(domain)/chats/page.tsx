@@ -11,6 +11,7 @@ import Layout from '@/app/components/template/main/layout/Layout'
 import SmallBanner from '@/app/components/molecule/banner/SmallBanner'
 import { cls, formatRemoveSecondsTime } from '@/app/libs/client/utils/util'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
+import { CHAT_TYPE } from '@/app/libs/client/constants/code'
 
 import { chat } from '@/app/apis/domain/chat/chat'
 
@@ -52,7 +53,7 @@ const Chats = () => {
               <div className={'inline-block'}>
                 <p className='text-[15px] text-gray-700'>
                   {chat.title}
-                  {chat.channelType === 'GROUP' ? (
+                  {chat.channelType === CHAT_TYPE.그룹 ? (
                     <span className={'ml-1 text-sm'}>{chat.participantsCount}</span>
                   ) : null}
                 </p>
