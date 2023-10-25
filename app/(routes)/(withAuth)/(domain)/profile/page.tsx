@@ -211,7 +211,7 @@ const Profile = () => {
             role={'presentation'}
             onClick={() => onLink('/profile/wish')}
             className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
-            <span className={'text-sm'}>관심 상품</span>
+            <span className={'text-sm'}>관심 아이템</span>
             <GrFormNext />
           </li>
           <li
