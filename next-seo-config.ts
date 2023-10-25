@@ -7,15 +7,20 @@ const NEXT_SEO_DEFAULT: Metadata = {
   keywords: [
     '공동구매',
     '공구',
-    '물물거래',
-    '물물교환',
     '중고거래',
     '1인가구',
     '커뮤니티',
     '플랫폼',
     '맞춤형',
     '생필품',
-    '신선품',
+    '식품',
+    '의류',
+    '전자기기',
+    '뷰티',
+    '창고',
+    '창고공간',
+    '창고스팟',
+    '채팅',
   ],
   icons: [
     { rel: 'icon', url: '/icon-192x192.png' },
@@ -23,8 +28,8 @@ const NEXT_SEO_DEFAULT: Metadata = {
   ],
   openGraph: {
     title: '내 잔고를 부탁해',
-    description: '1인 가구 맞춤형 공동구매 및 물물교환 커뮤니티 플랫폼',
-    url: 'https://d1ad0vl3i2dudp.cloudfront.net/',
+    description: '1인 가구 맞춤형 공동구매 및 중고거래 커뮤니티 플랫폼',
+    url: 'https://naejango.site/',
     siteName: '내 잔고를 부탁해',
     images: [
       {
@@ -44,7 +49,7 @@ const NEXT_SEO_DEFAULT: Metadata = {
   twitter: {
     card: 'summary',
     title: '내 잔고를 부탁해',
-    description: '1인 가구 맞춤형 공동구매 및 물물교환 커뮤니티 플랫폼',
+    description: '1인 가구 맞춤형 공동구매 및 중고거래 커뮤니티 플랫폼',
   },
 }
 
