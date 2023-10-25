@@ -21,7 +21,7 @@
 
 ## 🛠 기술스택
 - 프론트엔드  
-PWA, Typescript, Next.Js @v13, Tailwind CSS, Recoil, React-Query, Kakao SDK, AWS S3, AWS CodePipeline, AWS CloudFront  
+Typescript, Next.Js @v13, Tailwind CSS, Recoil, React-Query, Kakao SDK, AWS S3, AWS CodePipeline, AWS CloudFront, PWA  
 
 <br />
 
