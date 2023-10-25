@@ -99,6 +99,10 @@ body {
       text-align: right;
     }
 
+    @media (max-width: 999px) {
+      display: none;
+    }
+
     @media (min-width: 1920px) {
       right: 10rem
     }
