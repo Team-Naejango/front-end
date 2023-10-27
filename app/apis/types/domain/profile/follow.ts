@@ -15,14 +15,14 @@ export type ItemType = {
   status: boolean
 }
 
-export type FollowResult = {
-  // edit
+export interface FollowResult {
+  // 창고 ID
   id: number
   // 창고 이름
   name: string
   // 창고 설명
   description: string
-  // 창고 url
+  // 창고 URL
   imgUrl: string
   // 창고 아이템 목록
   items: ItemType[]
