@@ -63,7 +63,7 @@ const ChatDetail: NextPage = () => {
   const query = useQueryClient()
   const { openModal } = useModal()
   const client = useRef<CompatClient>()
-  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
 
   const [chatMessageList, setChatMessageList] = useState<ChatResponse[]>([])
   const [isOpenBox, setIsOpenBox] = useState<boolean>(true)
@@ -189,6 +189,8 @@ const ChatDetail: NextPage = () => {
     return () => {
       if (client.current) {
         refetchRecentMessage()
+        client.current = undefined
+        scrollRef.current = null
       }
     }
   }, [])

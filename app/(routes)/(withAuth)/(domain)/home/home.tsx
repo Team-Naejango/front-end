@@ -39,6 +39,7 @@ const Home = () => {
   useEffect(() => {
     if (selectedStorage === null) return
 
+    closeModal('item')
     router.push(`/warehouse/detail/item/edit?crud=C&storage=${selectedStorage}&count=${currentSlideIndex}&item=`)
   }, [selectedStorage])
 
@@ -76,6 +77,7 @@ const Home = () => {
 
   // 창고 생성 리다이렉트
   const onSelectAddStorage = () => {
+    closeModal('fork')
     router.push(`/warehouse/edit?crud=C&storage=${(storageInfo?.result.length || 0) + 1}`)
   }
 

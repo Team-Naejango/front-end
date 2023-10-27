@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 import { cls } from '@/app/libs/client/utils/util'
@@ -33,6 +33,12 @@ const FollowUserItem = ({
 
     return itemTypeNm
   }
+
+  useEffect(() => {
+    return () => {
+      currentItemRef.current = null
+    }
+  }, [])
 
   return (
     <div className='grid grid-cols-2 grid-rows-[minmax(0,1fr)] justify-items-center gap-4 py-4'>

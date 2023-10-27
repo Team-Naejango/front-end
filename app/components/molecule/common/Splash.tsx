@@ -15,7 +15,7 @@ interface SplashProps {
 }
 
 const SplashScreen = ({ isMountedSplash, closeSplash }: SplashProps) => {
-  const splashRef = useRef<HTMLDivElement>(null)
+  const splashRef = useRef<HTMLDivElement | null>(null)
   const isSetSplashVisible = useSetRecoilState(splashState)
 
   const animateSplash = () => {
@@ -60,6 +60,7 @@ const SplashScreen = ({ isMountedSplash, closeSplash }: SplashProps) => {
     return () => {
       animation.kill()
       isSetSplashVisible(true)
+      splashRef.current = null
     }
   }, [])
 
