@@ -101,7 +101,15 @@
 
 ## 🎨 레이아웃
 
-![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template.png)
+![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template_01.png)
+![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template_02.png)
+![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template_03.png)
+
+## 🚀 트러블 슈팅
+
+[로그인 이슈](https://airhalfsoundhalf.github.io/tech-blog/troubleshooting/2023/10/27/naejango_trouble_shooting_01.html)
+
+<br />
 
 현재, GIF로 서비스 시연 영상 만드는 중입니다.  
 프론트엔드 트러블 슈팅 작성중입니다.
