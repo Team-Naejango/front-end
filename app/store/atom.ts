@@ -21,13 +21,28 @@ interface LocationType {
 }
 
 /**
- * 유저 위치정보
+ * 유저 위치정보(고정)
+ * 취업할 때까지만 강남역 고정 좌표
  *
  * @property latitude // x좌표
  * @property longitude // y좌표
  * */
 export const locationState = atom<LocationType>({
   key: `${COMMON_STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: {
+    latitude: 37.49648606,
+    longitude: 127.02836155,
+  },
+})
+
+/**
+ * 유저 위치정보(실제)
+ *
+ * @property latitude // x좌표
+ * @property longitude // y좌표
+ * */
+export const locationRealState = atom<LocationType>({
+  key: `${COMMON_STORE_KEY.실제위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
     latitude: 37.49648606,
     longitude: 127.02836155,

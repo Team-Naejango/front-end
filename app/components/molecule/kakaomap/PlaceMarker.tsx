@@ -12,8 +12,8 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
-import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
-import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
+import { LocationProps } from '@/app/hooks/useGeolocation'
+import { activatedWareHouseTitleState, locationRealState } from '@/app/store/atom'
 import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 import { useCategories } from '@/app/hooks/useCategories'
@@ -57,9 +57,8 @@ const PlaceMarker = ({
   info,
   setInfo,
 }: EventProps) => {
-  const { getUserAddress } = useGeolocation()
   const { findCategoryList } = useCategories()
-  const userArea = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
+  const userRealArea = useRecoilValue<{ latitude: number; longitude: number }>(locationRealState)
   const setSelectedTitle = useSetRecoilState<string>(activatedWareHouseTitleState)
 
   // let isUseBounds = true
@@ -82,8 +81,8 @@ const PlaceMarker = ({
     [PLACE.조회],
     () =>
       nearbyStorage({
-        lat: String(userArea.latitude),
-        lon: String(userArea.longitude),
+        lat: String(myLocation.coordinates.latitude),
+        lon: String(myLocation.coordinates.longitude),
         rad: '1500',
         page: '0',
         size: '30',
@@ -106,8 +105,6 @@ const PlaceMarker = ({
       if (status === window.kakao.maps.services.Status.OK) {
         setIsUpdatePreview(true)
         const bounds = new window.kakao.maps.LatLngBounds()
-
-        getUserAddress()
 
         const newMarkers = storages?.result.map(storage => {
           const markers = { ...storage }
@@ -140,8 +137,8 @@ const PlaceMarker = ({
       const bounds = new window.kakao.maps.LatLngBounds()
 
       const searchParams: ItemSearchParam = {
-        lon: String(userArea.longitude),
-        lat: String(userArea.latitude),
+        lat: String(myLocation.coordinates.latitude),
+        lon: String(myLocation.coordinates.longitude),
         rad: '1500',
         page: '0',
         size: '20',
@@ -169,6 +166,8 @@ const PlaceMarker = ({
 
   useEffect(() => {
     if (!kakaoMap) return
+
+    refetchStorages()
 
     const status = kakao.maps.services.Status.OK
     kakaoMapCallback(status)
@@ -244,6 +243,7 @@ const PlaceMarker = ({
             width: '100%',
             height: '250px',
             borderRadius: '8px',
+            position: 'relative',
           }}
           onCreate={setKakaoMap}
           onDragEnd={async map => {
@@ -282,13 +282,50 @@ const PlaceMarker = ({
               }
             }
           }}>
+          <div className={'absolute right-4 top-[7.5rem] z-50 rounded border border-[#222] bg-white px-1'}>
+            <button
+              onClick={async () => {
+                if (kakaoMap) {
+                  const bounds = new window.kakao.maps.LatLngBounds()
+
+                  setMyLocation({
+                    coords: {
+                      latitude: userRealArea.latitude,
+                      longitude: userRealArea.longitude,
+                    },
+                  })
+
+                  const storage = await nearbyStorage({
+                    lat: String(userRealArea.latitude),
+                    lon: String(userRealArea.longitude),
+                    rad: '1500',
+                    page: '0',
+                    size: '30',
+                  })
+
+                  const markers = storage?.data.result.map(value => {
+                    const markers = { ...value }
+
+                    bounds.extend(new window.kakao.maps.LatLng(userRealArea.latitude, userRealArea.longitude))
+                    return markers
+                  })
+                  updateMarkers(markers || [])
+
+                  kakaoMap.setLevel(5)
+                  kakaoMap.panTo(new window.kakao.maps.LatLng(userRealArea.latitude, userRealArea.longitude))
+                }
+              }}
+              className={'text-xs'}>
+              원위치
+            </button>
+          </div>
           {markers?.map(marker => {
             return (
               <div key={uuid()}>
                 <MapMarker
                   position={{
-                    lat: marker.coord.latitude || userArea.latitude,
-                    lng: marker.coord.longitude || userArea.longitude,
+                    lat: marker.coord.latitude || myLocation.coordinates.latitude,
+                    lng: marker.coord.longitude || myLocation.coordinates.longitude,
                   }}
                   image={{
                     src: 'https://naejango.s3.ap-northeast-2.amazonaws.com/images/place_marker.svg',
@@ -303,8 +340,8 @@ const PlaceMarker = ({
                 {info && info.name === marker.name && (
                   <CustomOverlayMap
                     position={{
-                      lat: marker.coord.latitude || userArea.latitude,
-                      lng: marker.coord.longitude || userArea.longitude,
+                      lat: marker.coord.latitude || myLocation.coordinates.latitude,
+                      lng: marker.coord.longitude || myLocation.coordinates.longitude,
                     }}
                     yAnchor={2.1}>
                     <div>

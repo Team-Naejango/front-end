@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/navigation'
 
-import { locationState } from '@/app/store/atom'
+import { locationRealState, locationState } from '@/app/store/atom'
 import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 
 export interface LocationProps {
@@ -16,15 +16,16 @@ export interface LocationProps {
 const useGeolocation = () => {
   const router = useRouter()
   const [userArea, setUserArea] = useRecoilState<{ latitude: number; longitude: number }>(locationState)
+  const setUserRealArea = useSetRecoilState<{ latitude: number; longitude: number }>(locationRealState)
   const [myLocation, setMyLocation] = useState<LocationProps>({
     isLoaded: false,
     coordinates: { latitude: userArea.latitude, longitude: userArea.longitude },
   })
 
   // 유저 현재 주소
-  const getUserAddress = () => {
+  const getUserAddress = ({ latitude, longitude }: { latitude: number; longitude: number }) => {
     const geocoder = new window.kakao.maps.services.Geocoder()
-    const currentPos = new window.kakao.maps.LatLng(userArea.latitude, userArea.longitude)
+    const currentPos = new window.kakao.maps.LatLng(latitude, longitude)
 
     geocoder.coord2Address(currentPos.getLng(), currentPos.getLat(), (result, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
@@ -47,7 +48,7 @@ const useGeolocation = () => {
           longitude: position.coords.longitude,
         },
       }))
-      setUserArea({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+      setUserArea({ latitude: 37.49648606, longitude: 127.02836155 })
     },
     [setMyLocation]
   )
@@ -81,7 +82,10 @@ const useGeolocation = () => {
         longitude: 127.02836155,
       },
     })
-    // navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
+    navigator.geolocation.getCurrentPosition((position: { coords: { latitude: number; longitude: number } }) => {
+      setUserRealArea({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+      getUserAddress({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+    }, coordOnError)
   }, [])
 
   return { myLocation, setMyLocation: coordOnSuccess, getUserAddress }
