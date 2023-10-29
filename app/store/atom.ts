@@ -29,8 +29,8 @@ interface LocationType {
 export const locationState = atom<LocationType>({
   key: `${COMMON_STORE_KEY.위치정보}/${new Date().getUTCMilliseconds() * Math.random()}`,
   default: {
-    latitude: 37.5704,
-    longitude: 126.9922,
+    latitude: 37.49648606,
+    longitude: 127.02836155,
   },
 })
 

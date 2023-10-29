@@ -4,11 +4,11 @@ import React, { useCallback, useEffect, useLayoutEffect, Dispatch, SetStateActio
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
+import { AxiosError } from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
-import { AxiosError } from 'axios'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
@@ -16,7 +16,6 @@ import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
 import { activatedWareHouseTitleState, locationState } from '@/app/store/atom'
 import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
-import { ITEM_TYPE } from '@/app/libs/client/constants/code'
 import { useCategories } from '@/app/hooks/useCategories'
 
 import { nearbyStorage } from '@/app/apis/domain/place/place'
@@ -238,7 +237,7 @@ const PlaceMarker = ({
 
       {myLocation.isLoaded ? (
         <Map
-          center={{ lat: userArea.latitude, lng: userArea.longitude }}
+          center={{ lat: 37.49648606, lng: 127.02836155 }}
           zoomable
           level={5}
           style={{
