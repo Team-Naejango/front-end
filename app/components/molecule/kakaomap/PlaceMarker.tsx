@@ -316,7 +316,7 @@ const PlaceMarker = ({
                 }
               }}
               className={'text-xs'}>
-              원위치
+              현위치
             </button>
           </div>
           {markers?.map(marker => {
