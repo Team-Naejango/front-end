@@ -60,7 +60,6 @@ const SplashScreen = ({ isMountedSplash, closeSplash }: SplashProps) => {
     return () => {
       animation.kill()
       isSetSplashVisible(true)
-      splashRef.current = null
     }
   }, [])
 

@@ -72,7 +72,16 @@ const useGeolocation = () => {
         message: '알 수 없는 에러로 인해 위치 데이터를 사용할 수 없습니다.',
       })
     }
-    navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
+
+    // 취업할 동안만 강남역으로 고정
+    setMyLocation({
+      isLoaded: true,
+      coordinates: {
+        latitude: 37.49648606,
+        longitude: 127.02836155,
+      },
+    })
+    // navigator.geolocation.getCurrentPosition(coordOnSuccess, coordOnError)
   }, [])
 
   return { myLocation, setMyLocation: coordOnSuccess, getUserAddress }

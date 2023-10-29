@@ -82,8 +82,8 @@ const PlaceMarker = ({
     [PLACE.조회],
     () =>
       nearbyStorage({
-        lon: String(userArea.longitude),
         lat: String(userArea.latitude),
+        lon: String(userArea.longitude),
         rad: '1500',
         page: '0',
         size: '30',
