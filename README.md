@@ -15,7 +15,7 @@
 |                                                       프론트엔드                                                        |                                                        백엔드                                                         |                                                         백엔드                                                          
 | :---------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
 | <img src="https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/github_avatar_taeyong.png" width=200px alt="_"/> | <img src="https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/github_avatar_kihong.jpeg" width=200px alt="_"/> | <img src="https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/github_avatar_sejun.jpeg" width=200px alt="_"/> |
-|                                           [airhalfsoundhalf](https://github.com/airhalfsoundhalf)                                            |                                            [utopiandreams](https://github.com/utopiandreams)                                            |                                          [asjjun](https://github.com/asjjun)                                           |
+|                                           [이태용](https://github.com/airhalfsoundhalf)                                            |                                            [김기홍](https://github.com/utopiandreams)                                            |                                          [안세준](https://github.com/asjjun)                                           |
 
 <br />
 
@@ -95,7 +95,7 @@
 
 <br />
 
-![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_ci.svg)
+![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_ci_05.svg)
 
 <br />
 
@@ -141,9 +141,13 @@
 |---|---|---|
 |![거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/28.svg)|![상세 거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/29.svg)|![계정 설정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/30.svg)|
 
-|아이템 매칭 | PWA | 브라우저 알림 푸시(첫 알림 허용/채팅 신청 시/거래 등록 시) |
+|아이템 매칭 | 창고 검색 | PWA |
 |---|---|---|
-|![아이템 매칭](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/item_match.gif)|![PWA](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/PWA.gif)|![브라우저 알림](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/alarm.gif)|
+|![아이템 매칭](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/itemMatch.gif)|![창고 검색](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/search_02.gif)|![PWA](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/PWA_02.gif)|
+
+|브라우저 알림 푸시(첫 알림 허용/채팅 신청 시/거래 등록 시)
+|---|
+|![브라우저 알림](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/alarm_01.gif)|
 
 <br />
 <br />
