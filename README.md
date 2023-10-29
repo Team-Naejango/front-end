@@ -15,7 +15,7 @@
 |                                                       프론트엔드                                                        |                                                        백엔드                                                         |                                                         백엔드                                                          
 | :---------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------------------------: |
 | <img src="https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/github_avatar_taeyong.png" width=200px alt="_"/> | <img src="https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/github_avatar_kihong.jpeg" width=200px alt="_"/> | <img src="https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/github_avatar_sejun.jpeg" width=200px alt="_"/> |
-|                                           [airhalfsoundhalf](https://github.com/airhalfsoundhalf)                                            |                                            [utopiandreams](https://github.com/utopiandreams)                                            |                                          [asjjun](https://github.com/asjjun)                                           |
+|                                           [이태용](https://github.com/airhalfsoundhalf)                                            |                                            [김기홍](https://github.com/utopiandreams)                                            |                                          [안세준](https://github.com/asjjun)                                           |
 
 <br />
 
@@ -95,15 +95,62 @@
 
 <br />
 
-![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_ci.svg)
+![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_ci_05.svg)
 
 <br />
 
-## 🎨 레이아웃
+## 🎨 UI
 
-![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template_01.png)
-![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template_02.png)
-![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_template_03.png)
+|스플래시 | 로그인| 회원가입 | 
+|---|---|---|
+|![스플래시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/01.svg)|![로그인](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/02.svg)|![회원가입](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/03.svg)|
+
+|홈 화면| 이벤트 목록 | 알림 목록 |
+|---|---|---|
+|![홈 화면](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/04.svg)|![이벤트 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/05.svg)|![알림 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/06.svg)|
+
+|창고 공간| 창고 생성 | 창고 아이템 목록 |
+|---|---|---|
+|![창고 공간](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/07.svg)|![창고 생성](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/08_2.svg)|![창고 아이템 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/09.svg)|
+
+|창고 아이템 수정| 창고 스팟 | 창고 선택 시 |
+|---|---|---|
+|![창고 아이템 수정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/10.svg)|![창고 스팟](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/11.svg)|![창고 선택 시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/12.svg)|
+
+|창고 아이템 선택 | 거래신청 채팅방 선택(판매자만) | 거래 등록(판매자만) |
+|---|---|---|
+|![창고 아이템 선택](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/13.svg)|![거래신청 채팅방 선택(판매자만)](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/14.svg)|![거래 등록(판매자만)](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/15.svg)|
+
+|채팅 목록 | 채팅방 입장 | 거래 등록 시 |
+|---|---|---|
+|![채팅 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/16.svg)|![채팅방 입장](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/17.svg)|![거래 등록 시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/18.svg)|
+
+|잔고 충전(모달) | 금액 송금(구매자만) | 거래완료 시 거래 내역 |
+|---|---|---|
+|![잔고 충전(모달)](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/19.svg)|![금액 송금(구매자만)](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/20.svg)|![거래완료 시 거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/21.svg)|
+
+|채팅방 설정 | 프로필 | 상세 프로필 |
+|---|---|---|
+|![채팅방 설정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/22.svg)|![프로필](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/23.svg)|![상세 프로필](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/24.svg)|
+
+|팔로우 목록 | 팔로우한 창고 상세 아이템 | 관심 목록 |
+|---|---|---|
+|![팔로우 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/25.svg)|![팔로우한 창고 상세 아이템](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/26.svg)|![관심 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/27.svg)|
+
+|거래 내역 | 상세 거래 내역 | 계정 설정 |
+|---|---|---|
+|![거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/28.svg)|![상세 거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/29.svg)|![계정 설정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/30.svg)|
+
+|아이템 매칭 | 창고 검색 | PWA |
+|---|---|---|
+|![아이템 매칭](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/itemMatch.gif)|![창고 검색](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/search_02.gif)|![PWA](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/PWA_02.gif)|
+
+|브라우저 알림 푸시(첫 알림 허용/채팅 신청 시/거래 등록 시)
+|---|
+|![브라우저 알림](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/alarm_01.gif)|
+
+<br />
+<br />
 
 ## 🚀 트러블 슈팅
 
