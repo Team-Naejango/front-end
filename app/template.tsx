@@ -19,15 +19,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
   // 스플래시 on 감지
   useEffect(() => {
     setIsMountedSplash(true)
-    setIsLoading(true)
   }, [setIsMountedSplash])
 
   // 스플래시 on -> 로딩 off
   useEffect(() => {
+    setIsLoading(true)
     if (isMountedSplash) {
       setIsLoading(false)
     }
-  }, [isMountedSplash])
+  }, [pathname])
 
   return (
     <main id='main'>
