@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { AxiosError } from 'axios'
 import { useSetRecoilState } from 'recoil'
+import { toast } from 'react-hot-toast'
 
 import Loading from '@/app/loading'
 import { accessTokenState } from '@/app/store/auth'
@@ -29,6 +30,7 @@ const KakaoCallback = () => {
           const hasLoggedIn = loginStatus === LOGIN_STATUS.가입한유저 || loginStatus === LOGIN_STATUS.로그인유저
 
           if (hasLoggedIn) {
+            toast.success('로그인 성공하였습니다.')
             return router.push('/home')
           }
           return router.push('/sign')

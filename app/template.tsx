@@ -27,7 +27,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     if (isMountedSplash) {
       setIsLoading(false)
     }
-  }, [pathname])
+  }, [isMountedSplash])
 
   return (
     <main id='main'>
