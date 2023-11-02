@@ -28,8 +28,10 @@ const Header = ({
 
   const address = typeof localStorage === 'undefined' ? undefined : localStorage.getItem(COMMON_STORE_KEY.주소)
 
-  const onMoveAlarm = () => {
+  const onMoveAlarm = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault()
     if (setting) return
+
     router.push('/alarms')
   }
 
@@ -50,7 +52,7 @@ const Header = ({
             </div>
             <div
               role='presentation'
-              onClick={onMoveAlarm}
+              onClick={e => onMoveAlarm(e)}
               className={cls(
                 'relative flex h-12 w-12 items-center justify-center bg-[#f5f5f5] hover:bg-[#f0f0f0]',
                 setting ? 'rounded-full' : 'cursor-pointer rounded-md'
