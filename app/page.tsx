@@ -32,7 +32,7 @@ const App: NextPage = () => {
     }
   }, [])
 
-  return newAccessToken ? <Home /> : <Login />
+  return <Login />
 }
 
 export default App
