@@ -101,11 +101,11 @@ const WareHouseCarousel = ({
           <div className='relative mx-auto flex h-40 w-40 items-center justify-center rounded-md border border-[#ccc] bg-white shadow-sm hover:border-[#32D7A0] hover:text-white hover:transition-all hover:duration-200'>
             <Image
               priority
-              src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/storage.png'}
+              src={'https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/assets/storage_bg_none.png'}
               alt={'창고 이미지'}
-              width={144}
-              height={144}
-              style={{ objectFit: 'cover', margin: '0 auto', height: '100%', padding: '4px', paddingBottom: '6px' }}
+              width={180}
+              height={180}
+              style={{ objectFit: 'cover', margin: '0 auto', width: '100%', height: '180px' }}
               quality={100}
             />
           </div>
