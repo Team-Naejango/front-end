@@ -10,9 +10,9 @@ import { toast } from 'react-hot-toast'
 import { accessTokenState } from '@/app/store/auth'
 import { E_NOTIFICATION_TYPE, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 import { SSEType } from '@/app/apis/types/domain/common/alarm'
-import { useUnloadEffect } from '@/app/hooks/useUnloadEffect'
-
-import { logout } from '@/app/apis/domain/auth/auth'
+// import { useUnloadEffect } from '@/app/hooks/useUnloadEffect'
+//
+// import { logout } from '@/app/apis/domain/auth/auth'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -137,10 +137,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }, [isLoggedIn, router])
 
-  // 브라우저 종료 시
-  useUnloadEffect(async () => {
-    await logout()
-  })
+  // // 브라우저 종료 시
+  // useUnloadEffect(async () => {
+  //   await logout()
+  // })
 
   return <>{children}</>
 }
