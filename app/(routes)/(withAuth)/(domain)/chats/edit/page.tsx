@@ -145,7 +145,7 @@ const ChatDetail: NextPage = () => {
     })
 
     client.current.onStompError = () => {
-      toast.error('채팅방 연결이 불안정합니다. 잠시후 다시 이용해 주세요.')
+      toast.error('채팅방 연결이 불안정합니다. 잠시 후 다시 이용해주세요.')
     }
 
     client.current.connect(
@@ -166,7 +166,7 @@ const ChatDetail: NextPage = () => {
     )
 
     client.current?.onWebSocketError(() => {
-      toast.error('채팅방 연결이 불안정합니다. 잠시후 다시 이용해 주세요.')
+      toast.error('채팅방 연결이 불안정합니다. 잠시 후 다시 이용해주세요.')
     })
   }
 
