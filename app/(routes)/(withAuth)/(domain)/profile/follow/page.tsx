@@ -128,10 +128,10 @@ const Follow = () => {
                     <div className={'flex items-center justify-center gap-2'}>
                       <Image
                         key={follow.imgUrl}
-                        width={'100'}
                         src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/warehouse/${encodeURIComponent(
                           follow.imgUrl
                         )}`}
+                        width={'100'}
                         height={'100'}
                         alt='창고 이미지'
                         className={'h-10 w-10 rounded-full border border-[#ccc] object-cover'}
@@ -155,10 +155,11 @@ const Follow = () => {
                     return (
                       <div key={item.itemId} className={'relative'}>
                         <Image
-                          width={'100'}
+                          key={item.imgUrl}
                           src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
                             item.imgUrl
                           )}`}
+                          width={'100'}
                           height={'100'}
                           alt='아이템 이미지'
                           className={'h-24 w-24 rounded border border-[#ddd] object-cover'}

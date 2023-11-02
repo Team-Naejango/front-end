@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react'
 import { NextPage } from 'next'
-import { AxiosError } from 'axios'
 import { useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/navigation'
 
@@ -16,18 +15,16 @@ const App: NextPage = () => {
   const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
 
   useEffect(() => {
-    try {
-      const _refresh = refresh()
+    const _refresh = refresh()
 
-      _refresh.then(response => {
+    _refresh
+      .then(response => {
         setNewAccessToken(response.data.result)
         router.replace('/home?isLoggedIn=true')
       })
-    } catch (error: unknown) {
-      if (error instanceof AxiosError) {
-        console.log('토큰 재발급 에러:', error)
-      }
-    }
+      .catch(error => {
+        console.log('리프레시 토큰이 없기 때문', error)
+      })
   }, [])
 
   return <Login />
