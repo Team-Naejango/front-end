@@ -132,6 +132,7 @@ const Profile = () => {
           .then(() => {
             toast.success('로그아웃이 완료되었습니다.')
             resetToken()
+            query.clear()
           })
           .catch(error => {
             toast.error(error.message)
