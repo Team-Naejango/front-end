@@ -35,7 +35,7 @@ const KakaoCallback = () => {
           }
           return router.push('/sign')
         })
-      } catch (error) {
+      } catch (error: unknown) {
         if (error instanceof AxiosError) {
           return Promise.reject(error)
         }
