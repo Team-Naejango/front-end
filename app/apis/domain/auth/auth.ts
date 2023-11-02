@@ -48,6 +48,14 @@ export async function nonUser(): Promise<Response<{ data: Common }>> {
 }
 
 /**
+ * 공용 로그인
+ *
+ */
+export async function commonUser(): Promise<Response<{ data: Common }>> {
+  return instance.get('/api/auth/common-user')
+}
+
+/**
  * 로그아웃
  *
  */

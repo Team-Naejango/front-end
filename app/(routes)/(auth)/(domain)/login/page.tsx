@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { BiKey, BiUser } from 'react-icons/bi'
-import { PiUserCircleMinus } from 'react-icons/pi'
+import { PiUserCircleMinus, PiUserCirclePlus } from 'react-icons/pi'
 import axios, { AxiosError } from 'axios'
 import kakaoLogo from '@/app/assets/image/kakao.svg'
 
@@ -16,6 +16,8 @@ import InputField from '@/app/components/atom/InputField'
 import Button from '@/app/components/atom/Button'
 import { splashState } from '@/app/store/atom'
 import { accessTokenState } from '@/app/store/auth'
+
+import { commonUser } from '@/app/apis/domain/auth/auth'
 
 interface FormProps {
   email: string
@@ -66,6 +68,21 @@ const Login = () => {
         }
       } else {
         toast.error('게스트 로그인에 실패하였습니다.')
+      }
+    }
+  }
+
+  // 공용 로그인
+  const onLoginCommonUser = async () => {
+    try {
+      const common = await commonUser()
+
+      toast.success('게스트 로그인에 성공하였습니다.')
+      setNewAccessToken(common.data.result)
+      router.replace('/home?isLoggedIn=true')
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error('공용 로그인에 실패하였습니다.')
       }
     }
   }
@@ -134,8 +151,14 @@ const Login = () => {
                 <button
                   onClick={onLoginNonUser}
                   className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
+                  <PiUserCirclePlus fontSize={'20'} className='mr-2.5' />
+                  비회원 로그인
+                </button>
+                <button
+                  onClick={onLoginCommonUser}
+                  className='flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-sm font-normal text-gray-500 shadow-sm hover:bg-gray-50'>
                   <PiUserCircleMinus fontSize={'20'} className='mr-2.5' />
-                  게스트 로그인
+                  체험하기 (공용계정)
                 </button>
               </div>
             </div>
