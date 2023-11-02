@@ -4,11 +4,13 @@ import React, { useCallback, useEffect, useLayoutEffect, Dispatch, SetStateActio
 import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
+import Image from 'next/image'
 import { AxiosError } from 'axios'
 import { useQuery } from '@tanstack/react-query'
 import uuid from 'react-uuid'
 import Skeleton from 'react-loading-skeleton'
 import 'react-loading-skeleton/dist/skeleton.css'
+import currentArea from '@/app/assets/image/current_area.svg'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
@@ -282,7 +284,10 @@ const PlaceMarker = ({
               }
             }
           }}>
-          <div className={'absolute right-4 top-[7.5rem] z-50 rounded border border-[#222] bg-white px-1'}>
+          <div
+            className={
+              'absolute right-4 top-[7.5rem] z-50 rounded-md border border-gray-200 bg-white bg-clip-padding p-1.5 shadow-sm'
+            }>
             <button
               onClick={async () => {
                 if (kakaoMap) {
@@ -315,8 +320,8 @@ const PlaceMarker = ({
                   kakaoMap.panTo(new window.kakao.maps.LatLng(userRealArea.latitude, userRealArea.longitude))
                 }
               }}
-              className={'text-xs'}>
-              현위치
+              className={'flex h-full items-center justify-center text-xs'}>
+              <Image src={currentArea} alt='현재 위치 이미지' width={18} height={18} />
             </button>
           </div>
           {markers?.map(marker => {
