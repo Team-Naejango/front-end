@@ -27,7 +27,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      heartbeatTimeout: 1000 * 60 * 60, // 60분
+      heartbeatTimeout: 1000 * 60, // 1분
       withCredentials: true,
     })
 
@@ -53,8 +53,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
       }
     }
 
+    // 재연결 시도
     SSE.onerror = () => {
       SSE.close()
+      subscribe(false)
     }
 
     // SSE 감지 후 브라우저 알림 푸시
@@ -108,7 +110,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
           navigator.serviceWorker.register('/sw.js').then(async () => {
             try {
               await subscribe(true)
-            } catch (error) {
+            } catch (error: unknown) {
               if (error instanceof AxiosError) {
                 return Promise.reject(error)
               }
