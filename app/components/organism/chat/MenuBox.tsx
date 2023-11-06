@@ -190,6 +190,7 @@ const MenuBox = ({
   useEffect(() => {
     if (deals) {
       query.invalidateQueries([DEAL.조회])
+      query.invalidateQueries([DEAL.미완료거래조회])
       query.invalidateQueries([DEAL.특정거래조회])
     }
   }, [deals, query])
@@ -285,6 +286,10 @@ const MenuBox = ({
       },
     })
   }
+
+  console.log('searchInfo:', searchInfo)
+  console.log('sellerTransaction:', sellerTransaction)
+  console.log('incompleteInfo:', incompleteInfo)
 
   return (
     <>
