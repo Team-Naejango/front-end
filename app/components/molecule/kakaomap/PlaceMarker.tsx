@@ -19,13 +19,13 @@ import { activatedWareHouseTitleState, currentLocationState, locationRealState }
 import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 import { useCategories } from '@/app/hooks/useCategories'
+import { E_SWITCH_STATUS } from '@/app/libs/client/constants/code'
 
 import { nearbyStorage } from '@/app/apis/domain/place/place'
 import { itemSearch, ItemSearchParam } from '@/app/apis/domain/warehouse/warehouse'
 
 /* global kakao, maps, services */
 import Status = kakao.maps.services.Status
-import { E_SWITCH_STATUS } from '@/app/libs/client/constants/code'
 
 interface EventProps {
   kakaoMap: kakao.maps.Map | null
