@@ -32,7 +32,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        heartbeatTimeout: 1000 * 60, // 1분
+        heartbeatTimeout: 1000 * 60 * 60, // 60분
         withCredentials: true,
       })
 
