@@ -68,7 +68,7 @@ const GroupChatCard = () => {
   useLayoutEffect(() => {
     if (isCurrentLocationStatus) {
       refetchGroupChats()
-      query.invalidateQueries([CHAT.근처그룹조회])
+      query.invalidateQueries({ queryKey: [CHAT.근처그룹조회], refetchType: 'all' })
     }
   }, [isCurrentLocationStatus, query, refetchGroupChats])
 
