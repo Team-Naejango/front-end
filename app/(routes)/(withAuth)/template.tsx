@@ -60,7 +60,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
       // 재연결 시도
       SSE.onerror = (ev: any) => {
-        console.log('ev:', ev)
+        // console.log('ev:', ev)
         SSE.close()
         subscribe(false)
       }
