@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/navigation'
 
-import { locationRealState, locationState } from '@/app/store/atom'
+import { currentLocationState, locationRealState, locationState } from '@/app/store/atom'
 import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
+import { E_SWITCH_STATUS } from '@/app/libs/client/constants/code'
 
 export interface LocationProps {
   isLoaded: boolean
@@ -16,6 +17,7 @@ export interface LocationProps {
 const useGeolocation = () => {
   const router = useRouter()
   const [userArea, setUserArea] = useRecoilState<{ latitude: number; longitude: number }>(locationState)
+  const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
   const setUserRealArea = useSetRecoilState<{ latitude: number; longitude: number }>(locationRealState)
   const [myLocation, setMyLocation] = useState<LocationProps>({
     isLoaded: false,
@@ -48,9 +50,13 @@ const useGeolocation = () => {
           longitude: position.coords.longitude,
         },
       }))
-      setUserArea({ latitude: 37.49648606, longitude: 127.02836155 })
+      if (isCurrentLocationStatus) {
+        setUserArea({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+      } else {
+        setUserArea({ latitude: 37.49648606, longitude: 127.02836155 })
+      }
     },
-    [setMyLocation]
+    [isCurrentLocationStatus, setMyLocation]
   )
 
   // 실패 콜백

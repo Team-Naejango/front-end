@@ -189,6 +189,7 @@ const ChatDetail: NextPage = () => {
     return () => {
       if (client.current) {
         refetchRecentMessage()
+        client.current?.disconnect()
         client.current = undefined
         scrollRef.current = null
       }

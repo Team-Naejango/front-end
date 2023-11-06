@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-hot-toast'
 import { GrFormNext } from 'react-icons/gr'
@@ -22,6 +22,7 @@ import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
 import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
+import { currentLocationState } from '@/app/store/atom'
 import { useClearSession } from '@/app/hooks/useClearSession'
 
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
@@ -38,9 +39,11 @@ const Profile = () => {
   const { openModal } = useModal()
   const { resetToken } = useClearSession()
 
-  const [switchStatus, setSwitchStatus] = useState<E_SWITCH_STATUS>(SWITCH_STATUS.오프)
+  const [isSwitchNotificationStatus, setIsSwitchNotificationStatus] = useState<E_SWITCH_STATUS>(SWITCH_STATUS.오프)
   const [isNotificationSupported, setIsNotificationSupported] = useState<boolean>(false)
 
+  const [isSwitchCurrentLocationStatus, setIsSwitchCurrentLocationStatus] =
+    useRecoilState<E_SWITCH_STATUS>(currentLocationState)
   const _account = useRecoilValue(modalSelector('account'))
   const _logout = useRecoilValue(modalSelector('logout'))
   const _withdrawal = useRecoilValue(modalSelector('withdrawal'))
@@ -75,13 +78,12 @@ const Profile = () => {
       return
 
     await Notification.requestPermission(permission => {
-      console.log('permission:', permission)
       if (permission === NOTIFICATION_PERMISSION.허용) {
-        setSwitchStatus(true)
+        setIsSwitchNotificationStatus(true)
         toast.success('알림이 구독되었습니다.')
       }
       if (permission === NOTIFICATION_PERMISSION.차단) {
-        setSwitchStatus(false)
+        setIsSwitchNotificationStatus(false)
         toast.success('알림이 차단되었습니다.')
       }
     }).catch(error => {
@@ -92,23 +94,30 @@ const Profile = () => {
   useEffect(() => {
     if ('Notification' in window) setIsNotificationSupported(true)
     if ('permissions' in navigator) navigator.permissions.query({ name: 'notifications' })
-    notificationPermission === 'granted' ? setSwitchStatus(SWITCH_STATUS.온) : setSwitchStatus(SWITCH_STATUS.오프)
+    notificationPermission === 'granted'
+      ? setIsSwitchNotificationStatus(SWITCH_STATUS.온)
+      : setIsSwitchNotificationStatus(SWITCH_STATUS.오프)
   }, [])
 
   useEffect(() => {
-    if (switchStatus && isNotificationSupported) {
+    if (isSwitchNotificationStatus && isNotificationSupported) {
       subscribeToNotifications()
     }
-  }, [switchStatus])
+  }, [isSwitchNotificationStatus])
 
   // 알림 구독 변환기
-  const onSwitchConverter = () => {
+  const onSwitchNotificationConverter = () => {
     if (notificationPermission === NOTIFICATION_PERMISSION.허용 || NOTIFICATION_PERMISSION.차단) {
       toast.error('브라우저 설정에서 변경할 수 있습니다.')
       return
     }
 
-    setSwitchStatus(convert => !convert)
+    setIsSwitchNotificationStatus(convert => !convert)
+  }
+
+  // 현재 위치 변환기
+  const onSwitchGeolocationConverter = () => {
+    setIsSwitchCurrentLocationStatus(convert => !convert)
   }
 
   // 설정 모달
@@ -193,8 +202,12 @@ const Profile = () => {
             <GrFormNext />
           </li>
           <li className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
+            <span className={'text-sm'}>현재 위치</span>
+            <SwitchButton value={isSwitchCurrentLocationStatus} changeHandler={onSwitchGeolocationConverter} />
+          </li>
+          <li className={'flex cursor-pointer items-center justify-between py-3 hover:text-gray-600'}>
             <span className={'text-sm'}>알림 설정</span>
-            <SwitchButton value={switchStatus} changeHandler={onSwitchConverter} />
+            <SwitchButton value={isSwitchNotificationStatus} changeHandler={onSwitchNotificationConverter} />
           </li>
           <li
             role={'presentation'}

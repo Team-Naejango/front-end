@@ -49,6 +49,16 @@ export const locationRealState = atom<LocationType>({
   },
 })
 
+/**
+ * 현재 위치 / 가상 위치
+ * @default 현재 위치(false)
+ *
+ * */
+export const currentLocationState = atom<boolean>({
+  key: `${COMMON_STORE_KEY.위치옵션}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: false,
+})
+
 /* ****************************************************************** 창고스팟 ****************************************************************** */
 
 /**

@@ -62,7 +62,7 @@ const SystemMessage = ({ data, isMe, membersInfo }: MessageProps) => {
     )
   }
 
-  return messageType || isTradeMessage(data.content) ? (
+  return messageType || isTradeMessage(data.content) || data.content.includes('채팅방을 나가셨습니다.') ? (
     messageType === MESSAGE_TYPE.구독 ? null : messageType === MESSAGE_TYPE.거래 ||
       data.content === '거래 완료 요청 성공' ? (
       <div className={'text-center'}>

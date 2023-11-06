@@ -123,9 +123,6 @@ const MenuBox = ({
     }
   )
 
-  // 판매자 유저 판별
-  const isSeller = getTraderId === searchInfo?.result.traderId
-
   // 거래 수정
   const { mutate: mutateModify } = useMutation(modify, {
     onSuccess: data => {
@@ -266,7 +263,7 @@ const MenuBox = ({
   const sendPoint = useCallback(async () => {
     await refetchUserInfo()
 
-    if (isSeller) return toast.error('구매자만 송금 할 수 있습니다.')
+    if (searchInfo?.result.status === '판매') return toast.error('구매자만 송금 할 수 있습니다.')
     if (traderTransaction?.progress !== '거래 약속') return toast.error('거래 예약 상태에서만 가능합니다.')
     if (Math.abs(traderTransaction?.amount!) > userInfo?.balance!)
       return toast.error('보유하신 잔고가 부족합니다. 잔고를 충전해 주세요.')
@@ -277,7 +274,7 @@ const MenuBox = ({
         mutateWire(String(traderTransaction?.id))
       },
     })
-  }, [isSeller, openModal, traderTransaction, userInfo?.balance])
+  }, [searchInfo?.result.status, openModal, traderTransaction, userInfo?.balance])
 
   // 잔고 충전 모달
   const chargePoint = () => {
@@ -297,10 +294,12 @@ const MenuBox = ({
             <span className='block text-sm text-white'>거래 신청</span>
           </button>
           <button
-            disabled={!isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction}
+            disabled={
+              searchInfo?.result.status === '구매' || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+            }
             className={cls(
               'w-1/3 cursor-pointer border-r border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+              searchInfo?.result.status === '구매' || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
                 ? 'bg-[#ddd] hover:bg-[#ddd]'
                 : ''
             )}
@@ -308,10 +307,12 @@ const MenuBox = ({
             <span className='block text-sm text-white'>거래 수정</span>
           </button>
           <button
-            disabled={!isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction}
+            disabled={
+              searchInfo?.result.status === '구매' || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+            }
             className={cls(
               'w-1/3 cursor-pointer bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+              searchInfo?.result.status === '구매' || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
                 ? 'bg-[#ddd] hover:bg-[#ddd]'
                 : ''
             )}
@@ -319,10 +320,12 @@ const MenuBox = ({
             <span className='block text-sm text-white'>거래 삭제</span>
           </button>
           <button
-            disabled={!isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction}
+            disabled={
+              searchInfo?.result.status === '구매' || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+            }
             className={cls(
               'w-1/3 cursor-pointer border-r border-t border-white bg-[#33CC99] px-4 py-5 hover:bg-[#32D7A0]',
-              !isSeller || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
+              searchInfo?.result.status === '구매' || searchInfo?.result.progress === '거래 완료' || !sellerTransaction
                 ? 'bg-[#ddd] hover:bg-[#ddd]'
                 : ''
             )}

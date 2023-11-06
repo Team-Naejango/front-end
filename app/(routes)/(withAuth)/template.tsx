@@ -7,17 +7,21 @@ import { AxiosError } from 'axios'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
 
-import { accessTokenState } from '@/app/store/auth'
-import { E_NOTIFICATION_TYPE, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
+import { accessTokenSelector } from '@/app/store/auth'
+import { E_NOTIFICATION_TYPE, E_SWITCH_STATUS, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 import { SSEType } from '@/app/apis/types/domain/common/alarm'
+import { currentLocationState } from '@/app/store/atom'
+import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 // import { useUnloadEffect } from '@/app/hooks/useUnloadEffect'
-//
+
 // import { logout } from '@/app/apis/domain/auth/auth'
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
+
+  const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
 
@@ -122,6 +126,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  useEffect(() => {
+    if (isLoggedIn && !isCurrentLocationStatus) {
+      localStorage.setItem(COMMON_STORE_KEY.주소, '서울 강남구 역삼동 858')
+    }
+  }, [])
+
   // 뒤로가기 막음
   useEffect(() => {
     if (isLoggedIn) {
@@ -137,7 +147,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }, [isLoggedIn, router])
 
-  // // 브라우저 종료 시
+  // 브라우저 종료 시
   // useUnloadEffect(async () => {
   //   await logout()
   // })

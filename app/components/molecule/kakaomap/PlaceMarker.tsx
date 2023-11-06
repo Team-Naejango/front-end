@@ -14,8 +14,8 @@ import currentArea from '@/app/assets/image/current_area.svg'
 
 import SearchInput from '@/app/components/atom/SearchInput'
 import Button from '@/app/components/atom/Button'
-import { LocationProps } from '@/app/hooks/useGeolocation'
-import { activatedWareHouseTitleState, locationRealState } from '@/app/store/atom'
+import useGeolocation, { LocationProps } from '@/app/hooks/useGeolocation'
+import { activatedWareHouseTitleState, currentLocationState, locationRealState } from '@/app/store/atom'
 import { SearchCondition, Storages } from '@/app/apis/types/domain/warehouse/warehouse'
 import { PLACE } from '@/app/libs/client/reactQuery/queryKey/place'
 import { useCategories } from '@/app/hooks/useCategories'
@@ -25,6 +25,7 @@ import { itemSearch, ItemSearchParam } from '@/app/apis/domain/warehouse/warehou
 
 /* global kakao, maps, services */
 import Status = kakao.maps.services.Status
+import { E_SWITCH_STATUS } from '@/app/libs/client/constants/code'
 
 interface EventProps {
   kakaoMap: kakao.maps.Map | null
@@ -59,11 +60,16 @@ const PlaceMarker = ({
   info,
   setInfo,
 }: EventProps) => {
+  const { getUserAddress } = useGeolocation()
   const { findCategoryList } = useCategories()
+
+  const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
   const userRealArea = useRecoilValue<{ latitude: number; longitude: number }>(locationRealState)
   const setSelectedTitle = useSetRecoilState<string>(activatedWareHouseTitleState)
 
   // let isUseBounds = true
+
+  console.log('myLocation:', myLocation)
 
   const {
     watch,
@@ -107,6 +113,10 @@ const PlaceMarker = ({
       if (status === window.kakao.maps.services.Status.OK) {
         setIsUpdatePreview(true)
         const bounds = new window.kakao.maps.LatLngBounds()
+
+        if (!isCurrentLocationStatus) {
+          getUserAddress({ latitude: myLocation.coordinates.latitude, longitude: myLocation.coordinates.longitude })
+        }
 
         const newMarkers = storages?.result.map(storage => {
           const markers = { ...storage }

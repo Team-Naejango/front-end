@@ -29,5 +29,6 @@ export const COMMON_STORE_KEY = {
   스플래쉬: 'storeSplash',
   위치정보: 'storeLocation',
   실제위치정보: 'storeRealLocation',
+  위치옵션: 'storeOptionLocation',
   주소: 'storeAddress',
 }

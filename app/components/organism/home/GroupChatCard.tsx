@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import Image from 'next/image'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
@@ -10,9 +10,9 @@ import { ApiError } from 'next/dist/server/api-utils'
 import initialLogo from '@/app/assets/image/logo_n.png'
 
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
-import { locationState } from '@/app/store/atom'
+import { currentLocationState, locationRealState, locationState } from '@/app/store/atom'
 import { cls } from '@/app/libs/client/utils/util'
-import { MODAL_TYPES } from '@/app/libs/client/constants/code'
+import { E_SWITCH_STATUS, MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import Loading from '@/app/loading'
@@ -34,14 +34,16 @@ const GroupChatCard = () => {
 
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
+  const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
   const userArea = useRecoilValue<{ latitude: number; longitude: number }>(locationState)
+  const userRealArea = useRecoilValue<{ latitude: number; longitude: number }>(locationRealState)
   const _groupChat = useRecoilValue(modalSelector('groupChat'))
 
   // 근처 그룹 채팅 조회
-  const { data: { data: groupChats } = {} } = useQuery([CHAT.근처그룹조회], () =>
+  const { data: { data: groupChats } = {}, refetch: refetchGroupChats } = useQuery([CHAT.근처그룹조회], () =>
     nearbyGroupChat({
-      lon: String(userArea.longitude),
-      lat: String(userArea.latitude),
+      lat: String(isCurrentLocationStatus ? userRealArea.latitude : userArea.latitude),
+      lon: String(isCurrentLocationStatus ? userRealArea.longitude : userArea.longitude),
       rad: '1500',
     })
   )
@@ -62,6 +64,13 @@ const GroupChatCard = () => {
       toast.error(error.message)
     },
   })
+
+  useLayoutEffect(() => {
+    if (isCurrentLocationStatus) {
+      refetchGroupChats()
+      query.invalidateQueries([CHAT.근처그룹조회])
+    }
+  }, [isCurrentLocationStatus, query, refetchGroupChats])
 
   // 근처 그룹 채팅방 선택 모달
   const onSelectedGroupChat = (chat: NearbyResult) => {
