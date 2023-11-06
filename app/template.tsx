@@ -22,14 +22,14 @@ export default function Template({ children }: { children: React.ReactNode }) {
       setIsMountedSplash(true)
       setIsLoading(true)
     }
-  }, [setIsMountedSplash])
+  }, [isMountedSplash, setIsMountedSplash])
 
   // 스플래시 on -> 로딩 off
   useEffect(() => {
     if (isMountedSplash) {
       setIsLoading(false)
     }
-  }, [pathname])
+  }, [])
 
   return (
     <main id='main'>
