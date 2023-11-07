@@ -139,6 +139,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     [accessToken, setNewAccessToken]
   )
 
+  // SSE 알림 재연결
   useEffect(() => {
     if (isSseReconnect) {
       subscribe(false, accessToken)
@@ -169,6 +170,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  // 좌표 시작은 강남역
   useEffect(() => {
     if (isLoggedIn && !isCurrentLocationStatus) {
       localStorage.setItem(COMMON_STORE_KEY.주소, '서울 강남구 역삼동 858')

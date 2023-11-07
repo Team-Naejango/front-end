@@ -113,6 +113,8 @@ export type NearbyResult = {
   ownerId: number
   // 공동 구매 아이템 ID
   itemId: number
+  // 아이템 이미지 URL
+  imgUrl: string
   // 채널 참여자 수
   participantsCount: number
   // 채널 제목
