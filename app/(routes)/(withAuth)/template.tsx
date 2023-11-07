@@ -31,10 +31,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams()
 
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
-  const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenState)
-  // const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
+  const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenSelector)
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
+
+  console.log('newAccessToken:', newAccessToken)
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
@@ -42,6 +43,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
       const decodedToken = jwtDecode(token || '') as { exp: number }
       const expTime = decodedToken.exp * 1000
       const currentTime = Date.now()
+
+      console.log('token:', token)
+      console.log('currentTime:', currentTime)
+      console.log('expTime:', expTime)
 
       let options: EventSourceOption = {
         headers: { Authorization: '' },
