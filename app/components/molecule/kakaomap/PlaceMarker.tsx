@@ -69,8 +69,6 @@ const PlaceMarker = ({
 
   // let isUseBounds = true
 
-  console.log('myLocation:', myLocation)
-
   const {
     watch,
     handleSubmit,
@@ -296,7 +294,7 @@ const PlaceMarker = ({
           }}>
           <div
             className={
-              'absolute right-4 top-[7.5rem] z-50 rounded-md border border-gray-200 bg-white bg-clip-padding p-1.5 shadow-sm'
+              'absolute right-4 top-[7.5rem] z-50 rounded-md border border-gray-200 bg-white bg-clip-padding p-1.5 shadow-sm hover:border-[#ddd] hover:drop-shadow-sm'
             }>
             <button
               onClick={async () => {
