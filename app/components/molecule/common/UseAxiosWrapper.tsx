@@ -80,17 +80,6 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           return withAuth.request(error.config)
         }
 
-        if (error.response.status === 401) {
-          const response = await refresh()
-
-          setNewAccessToken(response.data.result)
-          error.headers = {
-            Authorization: `Bearer ${response.data.result}`,
-          } as AxiosRequestHeaders
-
-          return withAuth.request(error.config)
-        }
-
         if (error.response.data.status === 403) {
           if (error.response.data.error === 'FORBIDDEN') {
             toast.error('회원가입을 진행해 주세요.')

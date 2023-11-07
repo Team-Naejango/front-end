@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { AxiosError } from 'axios'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import jwtDecode from 'jwt-decode'
@@ -15,8 +15,8 @@ import { currentLocationState } from '@/app/store/atom'
 import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 // import { useUnloadEffect } from '@/app/hooks/useUnloadEffect'
 
-// import { logout } from '@/app/apis/domain/auth/auth'
 import { refresh } from '@/app/apis/domain/auth/auth'
+// import { logout } from '@/app/apis/domain/auth/auth'
 
 interface EventSourceOption {
   headers: {
@@ -30,15 +30,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
+  const [isSseReconnect, setIsSseReconnect] = useState<boolean>(false)
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
-  // const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenSelector)
-  const [x, setX] = useState<boolean>(false)
   const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
   const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
-
-  console.log('accessToken:', accessToken)
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
@@ -47,23 +44,16 @@ export default function Template({ children }: { children: React.ReactNode }) {
       const expTime = decodedToken.exp * 1000
       const currentTime = Date.now()
 
-      console.log('token:', token)
-      console.log('currentTime:', currentTime)
-      console.log('expTime:', expTime)
-
       let options: EventSourceOption = {
-        headers: { Authorization: '' },
+        headers: { Authorization: `Bearer ${token}` },
         heartbeatTimeout: 1000 * 60 * 60,
         withCredentials: true,
       }
 
       // 토큰 만료별 조건
-      if (currentTime < expTime) {
+      if (currentTime < expTime - 1000 * 60) {
         options = {
           ...options,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       } else {
         const response = await refresh()
@@ -104,8 +94,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
-        setX(true)
-        // subscribe(false, accessToken)
+        setIsSseReconnect(true)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -151,11 +140,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
   )
 
   useEffect(() => {
-    if (x) {
+    if (isSseReconnect) {
       subscribe(false, accessToken)
-      setX(false)
+      setIsSseReconnect(false)
     }
-  }, [accessToken, subscribe, x])
+  }, [accessToken, subscribe, isSseReconnect])
 
   // 서비스 워커 등록
   useEffect(() => {
