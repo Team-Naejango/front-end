@@ -2,12 +2,13 @@
 
 import React, { useCallback, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { AxiosError } from 'axios'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import { toast } from 'react-hot-toast'
+import jwtDecode from 'jwt-decode'
 
-import { accessTokenState } from '@/app/store/auth'
+import { accessTokenSelector, accessTokenState } from '@/app/store/auth'
 import { E_NOTIFICATION_TYPE, E_SWITCH_STATUS, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
 import { SSEType } from '@/app/apis/types/domain/common/alarm'
 import { currentLocationState } from '@/app/store/atom'
@@ -15,30 +16,59 @@ import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 // import { useUnloadEffect } from '@/app/hooks/useUnloadEffect'
 
 // import { logout } from '@/app/apis/domain/auth/auth'
+import { refresh } from '@/app/apis/domain/auth/auth'
+
+interface EventSourceOption {
+  headers: {
+    Authorization: string
+  }
+  heartbeatTimeout: number
+  withCredentials: boolean
+}
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
-  const accessToken = useRecoilValue<string | undefined>(accessTokenState)
+  const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
-
-  console.log('(전)밖에 있는 액세스토큰:', accessToken)
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
     async (firstConnection: boolean) => {
-      console.log('(전)안에 있는 액세스토큰:', accessToken)
-      const SSE = new EventSourcePolyfill(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        heartbeatTimeout: 1000 * 60 * 60, // 60분
+      const decodedToken = jwtDecode(accessToken || '') as { exp: number }
+      const expTime = decodedToken.exp * 1000
+      const currentTime = Date.now()
+
+      let options: EventSourceOption = {
+        headers: { Authorization: '' },
+        heartbeatTimeout: 1000 * 60 * 60,
         withCredentials: true,
-      })
-      console.log('(후)안에 있는 액세스토큰:', accessToken)
+      }
+
+      if (currentTime < expTime) {
+        options = {
+          ...options,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      } else {
+        const response = await refresh()
+
+        setNewAccessToken(response.data.result)
+        options = {
+          ...options,
+          headers: {
+            Authorization: `Bearer ${response.data.result}`,
+          },
+        }
+      }
+
+      const SSE = new EventSourcePolyfill(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, options)
 
       // 알림 노출
       const showNotification = (title: string, content?: string) => {
@@ -63,8 +93,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       }
 
       // 재연결 시도
-      SSE.onerror = (ev: any) => {
-        // console.log('ev:', ev)
+      SSE.onerror = () => {
         SSE.close()
         subscribe(false)
       }
@@ -108,10 +137,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
         SSE.close()
       }
     },
-    [accessToken]
+    [accessToken, setNewAccessToken]
   )
-
-  console.log('(후)밖에 있는 액세스토큰:', accessToken)
 
   // 서비스 워커 등록
   useEffect(() => {

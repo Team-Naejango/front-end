@@ -66,7 +66,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     // 응답 예외처리
     const responseInterceptor = withAuth.interceptors.response.use(
       response => response,
-      async error => {
+      error => {
         if (!error.headers) {
           error.headers = {} as AxiosHeaders
         }
