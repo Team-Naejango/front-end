@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { AxiosError } from 'axios'
 import { EventSourcePolyfill } from 'event-source-polyfill'
-import { toast } from 'react-hot-toast'
 import jwtDecode from 'jwt-decode'
+import { toast } from 'react-hot-toast'
 
 import { accessTokenSelector, accessTokenState } from '@/app/store/auth'
 import { E_NOTIFICATION_TYPE, E_SWITCH_STATUS, NOTIFICATION_PERMISSION } from '@/app/libs/client/constants/code'
@@ -38,8 +38,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
-    async (firstConnection: boolean) => {
-      const decodedToken = jwtDecode(accessToken || '') as { exp: number }
+    async (firstConnection: boolean, token: string | undefined) => {
+      const decodedToken = jwtDecode(token || '') as { exp: number }
       const expTime = decodedToken.exp * 1000
       const currentTime = Date.now()
 
@@ -49,11 +49,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
         withCredentials: true,
       }
 
+      // 토큰 만료별 조건
       if (currentTime < expTime) {
         options = {
           ...options,
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       } else {
@@ -68,7 +69,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         }
       }
 
-      const SSE = new EventSourcePolyfill(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, options)
+      const SSE = new EventSourcePolyfill(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, { ...options })
 
       // 알림 노출
       const showNotification = (title: string, content?: string) => {
@@ -95,7 +96,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
-        subscribe(false)
+        subscribe(false, accessToken)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -150,7 +151,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('/sw.js').then(async () => {
             try {
-              await subscribe(true)
+              await subscribe(true, accessToken)
             } catch (error: unknown) {
               if (error instanceof AxiosError) {
                 return Promise.reject(error)

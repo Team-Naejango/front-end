@@ -66,7 +66,7 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
     // 응답 예외처리
     const responseInterceptor = withAuth.interceptors.response.use(
       response => response,
-      error => {
+      async error => {
         if (!error.headers) {
           error.headers = {} as AxiosHeaders
         }
@@ -75,6 +75,17 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
           setNewAccessToken(error.response.data.reissuedAccessToken)
           error.headers = {
             Authorization: `Bearer ${error.response.data.reissuedAccessToken}`,
+          } as AxiosRequestHeaders
+
+          return withAuth.request(error.config)
+        }
+
+        if (error.response.status === 401) {
+          const response = await refresh()
+
+          setNewAccessToken(response.data.result)
+          error.headers = {
+            Authorization: `Bearer ${response.data.result}`,
           } as AxiosRequestHeaders
 
           return withAuth.request(error.config)
