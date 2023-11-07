@@ -17,10 +17,6 @@ import { modalSelector } from '@/app/store/modal'
 import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
-import { WAREHOUSE } from '@/app/libs/client/reactQuery/queryKey/warehouse'
-import { FOLLOW } from '@/app/libs/client/reactQuery/queryKey/profile/follow'
-import { WISH } from '@/app/libs/client/reactQuery/queryKey/profile/wish'
-import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
 import { currentLocationState } from '@/app/store/atom'
 import { useClearSession } from '@/app/hooks/useClearSession'
@@ -57,9 +53,8 @@ const Profile = () => {
   const { mutate: mutateDeleteUser } = useMutation(deleteUser, {
     onSuccess: () => {
       toast.success('회원 탈퇴가 완료되었습니다.')
-      query.invalidateQueries([WAREHOUSE.조회, FOLLOW.조회, WISH.조회, CHAT.조회])
-      query.invalidateQueries([OAUTH.유저정보])
       resetToken()
+      query.clear()
     },
     onError: (error: ApiError) => {
       toast.error(error.message)
