@@ -39,9 +39,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   // 브라우저 알림 구독
   const subscribe = useCallback(
     async (firstConnection: boolean, token: string | undefined) => {
-      const decodedToken = jwtDecode(token || '') as { exp: number }
-      const expTime = decodedToken.exp * 1000
-      const currentTime = Date.now()
+      // const decodedToken = jwtDecode(token || '') as { exp: number }
+      // const expTime = decodedToken.exp * 1000
+      // const currentTime = Date.now()
 
       let options: EventSourceOption = {
         headers: { Authorization: '' },
@@ -49,25 +49,31 @@ export default function Template({ children }: { children: React.ReactNode }) {
         withCredentials: true,
       }
 
-      // 토큰 만료별 조건
-      if (currentTime < expTime) {
-        options = {
-          ...options,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      } else {
-        const response = await refresh()
-
-        setNewAccessToken(response.data.result)
-        options = {
-          ...options,
-          headers: {
-            Authorization: `Bearer ${response.data.result}`,
-          },
-        }
+      options = {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
+      // 토큰 만료별 조건
+      // if (currentTime < expTime) {
+      //   options = {
+      //     ...options,
+      //     headers: {
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   }
+      // } else {
+      //   const response = await refresh()
+      //
+      //   setNewAccessToken(response.data.result)
+      //   options = {
+      //     ...options,
+      //     headers: {
+      //       Authorization: `Bearer ${response.data.result}`,
+      //     },
+      //   }
+      // }
 
       const SSE = new EventSourcePolyfill(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, { ...options })
 
