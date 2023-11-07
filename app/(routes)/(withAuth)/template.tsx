@@ -31,11 +31,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams()
 
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
-  const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenSelector)
+  // const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenSelector)
+  const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
+  const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
 
-  console.log('newAccessToken:', newAccessToken)
+  console.log('accessToken:', accessToken)
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
@@ -101,7 +103,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
-        subscribe(false, newAccessToken)
+        subscribe(false, accessToken)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -143,7 +145,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         SSE.close()
       }
     },
-    [newAccessToken, setNewAccessToken]
+    [accessToken, setNewAccessToken]
   )
 
   // 서비스 워커 등록
@@ -156,7 +158,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('/sw.js').then(async () => {
             try {
-              await subscribe(true, newAccessToken)
+              await subscribe(true, accessToken)
             } catch (error: unknown) {
               if (error instanceof AxiosError) {
                 return Promise.reject(error)

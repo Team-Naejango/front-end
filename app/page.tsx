@@ -4,6 +4,7 @@ import React, { useEffect } from 'react'
 import { NextPage } from 'next'
 import { useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-hot-toast'
 
 import { accessTokenState } from '@/app/store/auth'
 import Login from '@/app/(routes)/(auth)/(domain)/login/page'
@@ -19,6 +20,7 @@ const App: NextPage = () => {
 
     _refresh
       .then(response => {
+        toast.success('로그인 성공하였습니다.')
         setNewAccessToken(response.data.result)
         router.replace('/home?isLoggedIn=true')
       })
