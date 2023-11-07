@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { AxiosError } from 'axios'
@@ -32,6 +32,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
   // const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenSelector)
+  const [x, setX] = useState<boolean>(false)
   const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
   const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
@@ -103,7 +104,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
       // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
-        subscribe(false, accessToken)
+        setX(true)
+        // subscribe(false, accessToken)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -147,6 +149,13 @@ export default function Template({ children }: { children: React.ReactNode }) {
     },
     [accessToken, setNewAccessToken]
   )
+
+  useEffect(() => {
+    if (x) {
+      subscribe(false, accessToken)
+      setX(false)
+    }
+  }, [accessToken, subscribe, x])
 
   // 서비스 워커 등록
   useEffect(() => {
