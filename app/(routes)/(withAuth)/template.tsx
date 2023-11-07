@@ -33,17 +33,21 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
   const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
   const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
-  const [x, setX] = useState<boolean>(false)
-  const [a] = useState<string | undefined>(accessToken)
-  const [decodedToken] = useState(jwtDecode(a || '') as { exp: number })
-  const [expTime] = useState(decodedToken.exp * 1000)
-  const [currentTime] = useState(Date.now())
+  // const [x, setX] = useState<boolean>(false)
+  const [a, setA] = useState<string | undefined>(accessToken)
+  const [decodedToken, setDecodedToken] = useState(jwtDecode(a || '') as { exp: number })
+  const [expTime, setExpTime] = useState(decodedToken.exp * 1000)
+  const [currentTime, setCurrentTime] = useState(Date.now())
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
     async (firstConnection: boolean, token: string | undefined) => {
+      setDecodedToken(jwtDecode(a || '') as { exp: number })
+      setCurrentTime(Date.now())
+      setExpTime(decodedToken.exp * 1000)
+
       let options: EventSourceOption = {
         headers: { Authorization: '' },
         heartbeatTimeout: 1000 * 60 * 60,
@@ -62,6 +66,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         const response = await refresh()
 
         setNewAccessToken(response.data.result)
+        setA(response.data.result)
         options = {
           ...options,
           headers: {
@@ -97,8 +102,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
       // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
-        setX(true)
-        // subscribe(false, accessToken)
+        // setX(true)
+        subscribe(false, accessToken)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -140,15 +145,20 @@ export default function Template({ children }: { children: React.ReactNode }) {
         SSE.close()
       }
     },
-    [a, currentTime, expTime, setNewAccessToken]
+    [a, accessToken, currentTime, decodedToken.exp, expTime, setNewAccessToken]
   )
 
-  useEffect(() => {
-    if (x) {
-      subscribe(false, a)
-      setX(false)
-    }
-  }, [a, subscribe, x])
+  // useEffect(() => {
+  //   if (x) {
+  //     setDecodedToken(jwtDecode(a || '') as { exp: number })
+  //     setCurrentTime(Date.now())
+  //     setExpTime(decodedToken.exp * 1000)
+  //     subscribe(false, a)
+  //     setX(false)
+  //   }
+  //   console.log('currentTime:', currentTime)
+  //   console.log('expTime:', expTime)
+  // }, [a, currentTime, decodedToken.exp, expTime, subscribe, x])
 
   // 서비스 워커 등록
   useEffect(() => {
