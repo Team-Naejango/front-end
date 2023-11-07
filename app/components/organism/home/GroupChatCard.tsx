@@ -7,7 +7,6 @@ import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
 import { toast } from 'react-hot-toast'
 import { ApiError } from 'next/dist/server/api-utils'
-import initialLogo from '@/app/assets/image/logo_n.png'
 
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { currentLocationState, locationRealState, locationState } from '@/app/store/atom'
@@ -112,10 +111,10 @@ const GroupChatCard = () => {
         )}>
         <div
           className={cls(
-            'mx-auto flex flex-col gap-4 bg-[#F3F4F6] p-4',
+            'mx-auto flex flex-col gap-4 bg-white px-2 py-4',
             !groupChats?.result || groupChats?.result?.length <= 2 ? 'h-inherit' : 'h-auto'
           )}>
-          <p className={'text-left text-sm'}>근처 그룹 채팅방</p>
+          <p className={'mb-1 text-center text-[15px]'}>근처 그룹 채팅방</p>
           {!groupChats?.result || groupChats?.result.length === 0 ? (
             <div className={'flex h-[100px] items-center justify-center rounded border bg-white'}>
               <p className={'text-xs'}>진행중인 그룹 채팅이 없습니다.</p>
@@ -127,7 +126,7 @@ const GroupChatCard = () => {
                   role={'presentation'}
                   key={chat.channelId}
                   className={cls(
-                    'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg border border-gray-300 bg-white pl-2',
+                    'flex h-16 cursor-pointer items-center justify-start overflow-hidden rounded-lg border border-gray-300 bg-white pl-2 hover:border-[#32D7A0]',
                     activeIndex === index ? 'ring-1 ring-[#32D7A0]' : 'ring-[#ddd]'
                   )}
                   onClick={() => {
@@ -136,9 +135,14 @@ const GroupChatCard = () => {
                   }}>
                   <div className='relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#33CC99]'>
                     <Image
-                      src={initialLogo}
-                      alt={'이니셜 로고'}
-                      style={{ objectFit: 'cover', width: '24px', height: '24px' }}
+                      key={chat?.imgUrl}
+                      src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
+                        chat?.imgUrl
+                      )}`}
+                      width={'28'}
+                      height={'28'}
+                      alt='아이템 이미지'
+                      style={{ objectFit: 'cover' }}
                     />
                   </div>
                   <div className='relative flex h-16 w-full flex-col justify-center py-1 pl-4'>
