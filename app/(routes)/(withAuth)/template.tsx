@@ -44,7 +44,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   // 브라우저 알림 구독
   const subscribe = useCallback(
     async (firstConnection: boolean, token: string | undefined) => {
-      setDecodedToken(jwtDecode(a || '') as { exp: number })
+      setDecodedToken(jwtDecode(token || '') as { exp: number })
       setCurrentTime(Date.now())
       setExpTime(decodedToken.exp * 1000)
 
@@ -103,7 +103,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       SSE.onerror = () => {
         SSE.close()
         // setX(true)
-        subscribe(false, accessToken)
+        subscribe(false, a)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -145,7 +145,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         SSE.close()
       }
     },
-    [a, accessToken, currentTime, decodedToken.exp, expTime, setNewAccessToken]
+    [a, currentTime, decodedToken.exp, expTime, setNewAccessToken]
   )
 
   // useEffect(() => {
