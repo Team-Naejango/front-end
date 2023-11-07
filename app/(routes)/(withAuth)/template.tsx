@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { AxiosError } from 'axios'
 import { EventSourcePolyfill } from 'event-source-polyfill'
 import jwtDecode from 'jwt-decode'
@@ -31,22 +31,17 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const searchParams = useSearchParams()
 
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
-  const setNewAccessToken = useSetRecoilState<string | undefined>(accessTokenState)
-  const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
-  // const [x, setX] = useState<boolean>(false)
-  const [a, setA] = useState<string | undefined>(accessToken)
-  const [decodedToken, setDecodedToken] = useState(jwtDecode(a || '') as { exp: number })
-  const [expTime, setExpTime] = useState(decodedToken.exp * 1000)
-  const [currentTime, setCurrentTime] = useState(Date.now())
+  const [newAccessToken, setNewAccessToken] = useRecoilState<string | undefined>(accessTokenState)
+  // const accessToken = useRecoilValue<string | undefined>(accessTokenSelector)
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
 
   // 브라우저 알림 구독
   const subscribe = useCallback(
     async (firstConnection: boolean, token: string | undefined) => {
-      setDecodedToken(jwtDecode(token || '') as { exp: number })
-      setCurrentTime(Date.now())
-      setExpTime(decodedToken.exp * 1000)
+      const decodedToken = jwtDecode(token || '') as { exp: number }
+      const expTime = decodedToken.exp * 1000
+      const currentTime = Date.now()
 
       let options: EventSourceOption = {
         headers: { Authorization: '' },
@@ -66,7 +61,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
         const response = await refresh()
 
         setNewAccessToken(response.data.result)
-        setA(response.data.result)
         options = {
           ...options,
           headers: {
@@ -102,8 +96,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
       // 재연결 시도
       SSE.onerror = () => {
         SSE.close()
-        // setX(true)
-        subscribe(false, a)
+        subscribe(false, newAccessToken)
       }
 
       // SSE 감지 후 브라우저 알림 푸시
@@ -145,20 +138,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
         SSE.close()
       }
     },
-    [a, currentTime, decodedToken.exp, expTime, setNewAccessToken]
+    [newAccessToken, setNewAccessToken]
   )
-
-  // useEffect(() => {
-  //   if (x) {
-  //     setDecodedToken(jwtDecode(a || '') as { exp: number })
-  //     setCurrentTime(Date.now())
-  //     setExpTime(decodedToken.exp * 1000)
-  //     subscribe(false, a)
-  //     setX(false)
-  //   }
-  //   console.log('currentTime:', currentTime)
-  //   console.log('expTime:', expTime)
-  // }, [a, currentTime, decodedToken.exp, expTime, subscribe, x])
 
   // 서비스 워커 등록
   useEffect(() => {
@@ -170,7 +151,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.register('/sw.js').then(async () => {
             try {
-              await subscribe(true, a)
+              await subscribe(true, newAccessToken)
             } catch (error: unknown) {
               if (error instanceof AxiosError) {
                 return Promise.reject(error)
