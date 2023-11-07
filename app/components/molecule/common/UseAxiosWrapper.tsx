@@ -72,18 +72,12 @@ const UseAxiosWrapper = ({ children }: { children: ReactNode }) => {
         }
 
         if (error.response.data.status === 401) {
-          try {
-            const response = await refresh()
+          setNewAccessToken(error.response.data.reissuedAccessToken)
+          error.headers = {
+            Authorization: `Bearer ${error.response.data.reissuedAccessToken}`,
+          } as AxiosRequestHeaders
 
-            setNewAccessToken(response.data.result)
-            error.headers = {
-              Authorization: `Bearer ${response.data.result}`,
-            } as AxiosRequestHeaders
-
-            return withAuth.request(error.config)
-          } catch (error: unknown) {
-            return true
-          }
+          return withAuth.request(error.config)
         }
 
         if (error.response.data.status === 403) {
