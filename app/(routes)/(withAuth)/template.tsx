@@ -25,9 +25,12 @@ export default function Template({ children }: { children: React.ReactNode }) {
 
   const isLoggedIn = searchParams.get('isLoggedIn') === 'true'
 
+  console.log('(전)밖에 있는 액세스토큰:', accessToken)
+
   // 브라우저 알림 구독
   const subscribe = useCallback(
     async (firstConnection: boolean) => {
+      console.log('(전)안에 있는 액세스토큰:', accessToken)
       const SSE = new EventSourcePolyfill(`${process.env.NEXT_PUBLIC_API_URL}/api/subscribe`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -35,6 +38,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
         heartbeatTimeout: 1000 * 60 * 60, // 60분
         withCredentials: true,
       })
+      console.log('(후)안에 있는 액세스토큰:', accessToken)
 
       // 알림 노출
       const showNotification = (title: string, content?: string) => {
@@ -106,6 +110,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
     },
     [accessToken]
   )
+
+  console.log('(후)밖에 있는 액세스토큰:', accessToken)
 
   // 서비스 워커 등록
   useEffect(() => {
