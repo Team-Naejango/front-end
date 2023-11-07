@@ -18,8 +18,9 @@ import { useModal } from '@/app/hooks/useModal'
 import Loading from '@/app/loading'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import { formatKoreanCurrency } from '@/app/libs/client/utils/util'
-import { currentLocationState } from '@/app/store/atom'
+import { currentLocationState, loadAddressState } from '@/app/store/atom'
 import { useClearSession } from '@/app/hooks/useClearSession'
+import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 
 import { deleteUser, userInfo } from '@/app/apis/domain/profile/profile'
 import { logout as kill } from '@/app/apis/domain/auth/auth'
@@ -40,6 +41,7 @@ const Profile = () => {
 
   const [isSwitchCurrentLocationStatus, setIsSwitchCurrentLocationStatus] =
     useRecoilState<E_SWITCH_STATUS>(currentLocationState)
+  const addressState = useRecoilValue<string | undefined>(loadAddressState)
   const _account = useRecoilValue(modalSelector('account'))
   const _logout = useRecoilValue(modalSelector('logout'))
   const _withdrawal = useRecoilValue(modalSelector('withdrawal'))
@@ -113,6 +115,11 @@ const Profile = () => {
   // 현재 위치 변환기
   const onSwitchGeolocationConverter = () => {
     setIsSwitchCurrentLocationStatus(convert => !convert)
+    if (isSwitchCurrentLocationStatus) {
+      localStorage.setItem(COMMON_STORE_KEY.주소, '서울 강남구 역삼동 858')
+    } else {
+      localStorage.setItem(COMMON_STORE_KEY.주소, addressState || '')
+    }
   }
 
   // 설정 모달

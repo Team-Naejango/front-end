@@ -31,4 +31,5 @@ export const COMMON_STORE_KEY = {
   실제위치정보: 'storeRealLocation',
   위치옵션: 'storeOptionLocation',
   주소: 'storeAddress',
+  도로명주소: 'storeLoadAddress',
 }

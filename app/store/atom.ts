@@ -59,6 +59,15 @@ export const currentLocationState = atom<boolean>({
   default: false,
 })
 
+/**
+ * 현재 위치 도로명 주소
+ *
+ * */
+export const loadAddressState = atom<string | undefined>({
+  key: `${COMMON_STORE_KEY.도로명주소}/${new Date().getUTCMilliseconds() * Math.random()}`,
+  default: '',
+})
+
 /* ****************************************************************** 창고스팟 ****************************************************************** */
 
 /**

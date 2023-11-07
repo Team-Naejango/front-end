@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil'
 import { useRouter } from 'next/navigation'
 
-import { currentLocationState, locationRealState, locationState } from '@/app/store/atom'
+import { currentLocationState, loadAddressState, locationRealState, locationState } from '@/app/store/atom'
 import { COMMON_STORE_KEY } from '@/app/libs/client/constants/store/common'
 import { E_SWITCH_STATUS } from '@/app/libs/client/constants/code'
 
@@ -17,6 +17,7 @@ export interface LocationProps {
 const useGeolocation = () => {
   const router = useRouter()
   const [userArea, setUserArea] = useRecoilState<{ latitude: number; longitude: number }>(locationState)
+  const setAddressState = useSetRecoilState<string | undefined>(loadAddressState)
   const isCurrentLocationStatus = useRecoilValue<E_SWITCH_STATUS>(currentLocationState)
   const setUserRealArea = useSetRecoilState<{ latitude: number; longitude: number }>(locationRealState)
   const [myLocation, setMyLocation] = useState<LocationProps>({
@@ -32,6 +33,7 @@ const useGeolocation = () => {
     geocoder.coord2Address(currentPos.getLng(), currentPos.getLat(), (result, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
         const { address } = result[0]
+        setAddressState(address.address_name)
         localStorage.setItem(COMMON_STORE_KEY.주소, address.address_name)
       } else {
         console.error('도로명 주소를 가져오지 못했습니다.')
