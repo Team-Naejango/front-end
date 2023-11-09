@@ -56,6 +56,7 @@ const KakaoMap = () => {
         markers={markers}
         setMarkers={setMarkers}
         selectedCategory={selectedCategory?.name || ''}
+        setSelectedCategory={setSelectedCategory}
         setIsUpdatePreview={setIsUpdatePreview}
         isDragedMixture={isDragedMixture}
         setIsDragedMixture={setIsDragedMixture}

@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useCallback, useEffect, useLayoutEffect, Dispatch, SetStateAction } from 'react'
-import { Map, CustomOverlayMap, MapMarker } from 'react-kakao-maps-sdk'
+import React, { Dispatch, SetStateAction, useCallback, useEffect, useLayoutEffect } from 'react'
+import { CustomOverlayMap, Map, MapMarker } from 'react-kakao-maps-sdk'
 import { useRecoilValue, useSetRecoilState } from 'recoil'
 import { Controller, useForm } from 'react-hook-form'
 import Image from 'next/image'
@@ -31,6 +31,7 @@ interface EventProps {
   kakaoMap: kakao.maps.Map | null
   setKakaoMap: Dispatch<SetStateAction<kakao.maps.Map | null>>
   selectedCategory: string
+  setSelectedCategory: Dispatch<SetStateAction<{ name: string } | undefined>>
   markers: SearchCondition[] | Storages[]
   setMarkers: Dispatch<SetStateAction<SearchCondition[] | Storages[]>>
   myLocation: LocationProps
@@ -50,6 +51,7 @@ const PlaceMarker = ({
   kakaoMap,
   setKakaoMap,
   selectedCategory,
+  setSelectedCategory,
   myLocation,
   setMyLocation,
   setIsUpdatePreview,
@@ -96,6 +98,7 @@ const PlaceMarker = ({
     { enabled: !!kakaoMap }
   )
 
+  // 마커 최신화
   const updateMarkers = useCallback(
     (newMarkers: SearchCondition[] | Storages[]) => {
       setMarkers(newMarkers)
@@ -174,6 +177,11 @@ const PlaceMarker = ({
     [kakaoMap]
   )
 
+  useLayoutEffect(() => {
+    if (search !== '') return reset()
+  }, [selectedCategory])
+
+  // 카카오맵에 마커 추가
   useEffect(() => {
     if (!kakaoMap) return
 
@@ -183,12 +191,7 @@ const PlaceMarker = ({
     kakaoMapCallback(status)
   }, [kakaoMap, kakaoMapCallback])
 
-  useLayoutEffect(() => {
-    if (search !== '') {
-      reset()
-    }
-  }, [selectedCategory])
-
+  // 키워드 검색 할 시
   const onSubmitSearch = () => {
     onSearchKeywordOrCategories(search, selectedCategory)
     isDragedMixture && setIsDragedMixture(false)
@@ -261,20 +264,9 @@ const PlaceMarker = ({
               const storage = await refetchStorages()
 
               const markers = storage.data?.data.result.map(value => {
-                return {
-                  storageId: Number(value.storageId),
-                  ownerId: Number(value.ownerId),
-                  address: value.address,
-                  description: value.description,
-                  imgUrl: value.imgUrl,
-                  coord: {
-                    latitude: value.coord.latitude,
-                    longitude: value.coord.longitude,
-                  },
-                  name: value.name,
-                  distance: value.distance,
-                }
+                return { ...value }
               })
+
               updateMarkers(markers || [])
               setMyLocation({
                 coords: {
@@ -282,10 +274,12 @@ const PlaceMarker = ({
                   longitude: map.getCenter().getLng(),
                 },
               })
-
               isDragedMixture && setIsDragedMixture(false)
-              setValue('search', '')
-              setError('search', { message: '' })
+              if (watch('search') !== '') {
+                setValue('search', '')
+                setError('search', { message: '' })
+                setSelectedCategory(undefined)
+              }
             } catch (error: unknown) {
               if (error instanceof AxiosError) {
                 return Promise.reject(error)
