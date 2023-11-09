@@ -115,6 +115,7 @@ const Profile = () => {
   // 현재 위치 변환기
   const onSwitchGeolocationConverter = () => {
     setIsSwitchCurrentLocationStatus(convert => !convert)
+    // 바뀌기 전 STATE
     if (isSwitchCurrentLocationStatus) {
       localStorage.setItem(COMMON_STORE_KEY.주소, '서울 강남구 역삼동 858')
     } else {

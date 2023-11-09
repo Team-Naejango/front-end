@@ -372,7 +372,7 @@ const PreviewCard = ({
       mutateJoin(String(ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat) {
-        toast.error('등록된 그룹채팅이 없습니다. \n 다음에 다시 이용해주세요.')
+        toast.error('등록된 그룹채팅이 없습니다. \n 잠시 후 다시 시도해주세요.')
         return closeModal('channel')
       }
 

@@ -163,11 +163,11 @@ const WareHouseItem = () => {
       mutateJoin(String(selectedItem!.ownerId))
     } else if (type === CHAT_TYPE.그룹) {
       if (!groupChat?.result) {
-        toast.error('등록된 그룹채팅이 없습니다. \n 다음에 다시 이용해주세요.')
+        toast.error('등록된 그룹채팅이 없습니다. \n 잠시 후 다시 시도해주세요.')
         return closeModal('chat')
       }
       if (groupChat?.result?.participantsCount === groupChat?.result?.channelLimit) {
-        toast.error('현재 채팅방 참여 인원수가 최대입니다. \n 다음에 다시 이용해주세요.')
+        toast.error('현재 채팅방 참여 인원수가 최대입니다. \n 잠시 후 다시 시도해주세요.')
         return closeModal('chat')
       }
 

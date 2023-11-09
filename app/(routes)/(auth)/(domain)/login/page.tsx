@@ -67,7 +67,7 @@ const Login = () => {
           router.replace('/home?isLoggedIn=true')
         }
       } else {
-        toast.error('게스트 로그인에 실패하였습니다.')
+        toast.error('게스트 로그인에 실패하였습니다. \n 잠시 후 다시 시도해주세요.')
       }
     }
   }
@@ -82,7 +82,7 @@ const Login = () => {
       router.replace('/home?isLoggedIn=true')
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
-        toast.error('공용 로그인에 실패하였습니다. 잠시 후 다시 시도해주세요.')
+        toast.error('공용 로그인에 실패하였습니다. \n 잠시 후 다시 시도해주세요.')
       }
     }
   }
