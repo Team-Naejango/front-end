@@ -4,15 +4,12 @@ import React, { Dispatch, SetStateAction, SVGProps } from 'react'
 import { RadioGroup } from '@headlessui/react'
 import { useFormContext } from 'react-hook-form'
 
-export type DataTypes = {
-  label: string
-  value: number
-}
+import { LabelValueTypes } from '@/app/libs/client/types/common'
 
 interface RadioPickerProps {
-  data: DataTypes[]
-  selectedRadio: DataTypes
-  setSelectedRadio: Dispatch<SetStateAction<DataTypes>>
+  data: LabelValueTypes[]
+  selectedRadio: LabelValueTypes
+  setSelectedRadio: Dispatch<SetStateAction<LabelValueTypes>>
 }
 
 interface ChildrenProp {
