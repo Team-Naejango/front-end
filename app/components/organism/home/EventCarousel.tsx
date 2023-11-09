@@ -11,7 +11,6 @@ import 'swiper/css'
 
 import { HOMEIMAGES } from '@/app/libs/client/constants/static'
 import { cls } from '@/app/libs/client/utils/util'
-import uuid from 'react-uuid'
 
 const EventCarousel = () => {
   SwiperCore.use([A11y, Autoplay])

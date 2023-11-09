@@ -9,9 +9,10 @@ import { FormProvider, useForm } from 'react-hook-form'
 
 import Layout from '@/app/components/template/main/layout/Layout'
 import Button from '@/app/components/atom/Button'
-import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
+import RadioPicker from '@/app/components/molecule/tab/RadioPicker'
 import { POINTS } from '@/app/libs/client/constants/static'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
+import { LabelValueTypes } from '@/app/libs/client/types/common'
 
 import { account } from '@/app/apis/domain/profile/account'
 
@@ -22,7 +23,7 @@ interface Charge {
 const PointCharge = () => {
   const query = useQueryClient()
   const router = useRouter()
-  const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
+  const [selectedPoint, setSelectedPoint] = useState<LabelValueTypes>(POINTS[0])
 
   const formMethods = useForm<Charge>({
     mode: 'onSubmit',

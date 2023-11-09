@@ -13,7 +13,7 @@ import { modalSelector } from '@/app/store/modal'
 import { MODAL_TYPES } from '@/app/libs/client/constants/code'
 import { useModal } from '@/app/hooks/useModal'
 import { POINTS } from '@/app/libs/client/constants/static'
-import RadioPicker, { DataTypes } from '@/app/components/molecule/tab/RadioPicker'
+import RadioPicker from '@/app/components/molecule/tab/RadioPicker'
 import { OAUTH } from '@/app/libs/client/reactQuery/queryKey/auth'
 import Register from '@/app/components/organism/chat/Register'
 import Loading from '@/app/loading'
@@ -21,6 +21,7 @@ import { Member } from '@/app/apis/types/domain/profile/profile'
 import { cls, formatCurrentIsoDate } from '@/app/libs/client/utils/util'
 import { ITEM } from '@/app/libs/client/reactQuery/queryKey/warehouse'
 import { transactionSellerAmountState, transactionTraderAmountState } from '@/app/store/atom'
+import { LabelValueTypes } from '@/app/libs/client/types/common'
 
 import {
   wire,
@@ -64,7 +65,7 @@ const MenuBox = ({
 }) => {
   const query = useQueryClient()
   const { openModal } = useModal()
-  const [selectedPoint, setSelectedPoint] = useState<DataTypes>(POINTS[0])
+  const [selectedPoint, setSelectedPoint] = useState<LabelValueTypes>(POINTS[0])
   const setTransactionSellerAmount = useSetRecoilState(transactionSellerAmountState)
   const setTransactionTraderAmount = useSetRecoilState(transactionTraderAmountState)
 
