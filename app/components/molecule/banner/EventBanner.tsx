@@ -11,7 +11,7 @@ const EventBanner = () => {
     <div className={'flex h-[100%] flex-col items-center justify-center space-y-6'}>
       {HOMEIMAGES.map(value => {
         return (
-          <div key={value.title} className={'relative h-[230px] w-full cursor-pointer'}>
+          <div key={value.id} className={'relative h-[230px] w-full cursor-pointer'}>
             <Image
               src={value.src}
               priority
@@ -27,7 +27,7 @@ const EventBanner = () => {
             />
             <span
               className={cls(
-                'absolute bottom-[9px] left-[10px] rounded border p-0.5 text-xs text-white',
+                'absolute left-[10px] top-[9px] rounded border p-0.5 text-xs text-white',
                 value.ing ? 'border-white bg-transparent' : 'border-black bg-black/60'
               )}>
               {value.ing ? '진행중' : '진행종료'}
