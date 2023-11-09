@@ -177,7 +177,7 @@ const EditProfile = () => {
   const onSubmit = async () => {
     if (!_userInfo) return
 
-    if (!setImagePreview) {
+    if (!imagePreview) {
       toast.error('이미지를 등록해주세요.')
       return
     }

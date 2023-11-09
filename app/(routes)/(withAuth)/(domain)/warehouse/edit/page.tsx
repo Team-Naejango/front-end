@@ -187,7 +187,7 @@ const WarehouseEdit = () => {
   const onSubmit = async (data: WarehouseProps) => {
     // if (!data) return
 
-    if (!setImagePreview) {
+    if (!imagePreview) {
       toast.error('이미지를 등록해주세요.')
       return
     }
