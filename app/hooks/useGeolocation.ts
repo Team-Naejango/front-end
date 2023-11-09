@@ -92,7 +92,11 @@ const useGeolocation = () => {
     })
     navigator.geolocation.getCurrentPosition((position: { coords: { latitude: number; longitude: number } }) => {
       setUserRealArea({ latitude: position.coords.latitude, longitude: position.coords.longitude })
-      getUserAddress({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+      if (isCurrentLocationStatus) {
+        getUserAddress({ latitude: position.coords.latitude, longitude: position.coords.longitude })
+      } else {
+        getUserAddress({ latitude: 37.49648606, longitude: 127.02836155 })
+      }
     }, coordOnError)
   }, [])
 
