@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRecoilValue } from 'recoil'
 import dynamic from 'next/dynamic'
 import { toast } from 'react-hot-toast'
-import { ApiError } from 'next/dist/server/api-utils'
+import { AxiosError } from 'axios'
 
 import { CHAT } from '@/app/libs/client/reactQuery/queryKey/chat'
 import { currentLocationState, locationRealState, locationState } from '@/app/store/atom'
@@ -16,7 +16,8 @@ import { useModal } from '@/app/hooks/useModal'
 import { modalSelector } from '@/app/store/modal'
 import Loading from '@/app/loading'
 import UseCustomRouter from '@/app/hooks/useCustomRouter'
-import { NearbyResult } from '@/app/apis/types/domain/chat/chat'
+import { GroupChat, NearbyResult } from '@/app/apis/types/domain/chat/chat'
+import { AxiosErrorResponse } from '@/app/apis/types/response/response'
 
 import { nearbyGroupChat } from '@/app/apis/domain/chat/channel'
 import { joinGroupChat } from '@/app/apis/domain/chat/chat'
@@ -65,7 +66,23 @@ const GroupChatCard = () => {
         },
       })
     },
-    onError: (error: ApiError) => {
+    onError: (error: AxiosError) => {
+      const data = error.response?.data as AxiosErrorResponse
+      if (data.error === 'CONFLICT') {
+        return toast.error(data.message)
+      }
+
+      if (error.response?.status === 409) {
+        const data = error.response?.data as GroupChat
+        toast.success(data.message)
+        return push({
+          pathname: '/chats/edit',
+          query: {
+            channel: data.result.channelId,
+          },
+        })
+      }
+
       toast.error(error.message)
     },
   })
