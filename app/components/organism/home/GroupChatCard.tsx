@@ -133,16 +133,16 @@ const GroupChatCard = () => {
                     setActiveIndex(index)
                     onSelectedGroupChat(chat)
                   }}>
-                  <div className='relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-[#33CC99]'>
+                  <div className='relative flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl'>
                     <Image
                       key={chat?.imgUrl}
                       src={`https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/upload/item/${encodeURIComponent(
                         chat?.imgUrl
                       )}`}
-                      width={'28'}
-                      height={'28'}
+                      width={'50'}
+                      height={'50'}
                       alt='아이템 이미지'
-                      style={{ objectFit: 'cover' }}
+                      style={{ objectFit: 'cover', borderRadius: '8px' }}
                     />
                   </div>
                   <div className='relative flex h-16 w-full flex-col justify-center py-1 pl-4'>
