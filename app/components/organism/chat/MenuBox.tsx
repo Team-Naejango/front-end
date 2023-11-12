@@ -288,10 +288,6 @@ const MenuBox = ({
     })
   }
 
-  console.log('searchInfo:', searchInfo)
-  console.log('sellerTransaction:', sellerTransaction)
-  console.log('incompleteInfo:', incompleteInfo)
-
   return (
     <>
       {isOpen ? (
