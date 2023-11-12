@@ -275,14 +275,14 @@ export async function deleteItem(itemId: string): Promise<Response<Common>> {
   return withAuth.delete(`/api/item/${itemId}`)
 }
 
-// /**
-//  * 다중 아이템 창고 수정
-//  *
-//  * @param params.itemId // 아이템 ID
-//  * @param params.storageIdList[] // 창고 ID 리스트
-//  *
-//  * @param params
-//  */
+/**
+ * 다중 아이템 창고 수정
+ *
+ * @param params.itemId // 아이템 ID
+ * @param params.storageIdList[] // 창고 ID 리스트
+ *
+ * @param params
+ */
 // export async function modifyStorageItem(params: ModifyStorageParam): Promise<null> {
 //   return withAuth.patch(`/api/item/connect/${params.itemId}`, params)
 // }
