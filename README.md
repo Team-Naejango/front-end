@@ -2,7 +2,19 @@
 
 [![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_banner.jpg)](https://naejango.site/)
 
-## 💁‍♂️ 프로젝트 소개
+<details open="open">
+  <summary>목차</summary>
+  <ol>
+    <li><a href="#-프로젝트-소개">프로젝트 소개</a></li>
+    <li><a href="#-팀원">팀원</a></li>
+    <li><a href="#-기술-스택">기술 스택</a></li>
+    <li><a href="#-구현-기능">구현 기능</a></li>
+    <li><a href="#%EF%B8%8F-개발-로드맵">개발 로드맵</a></li>
+    <li><a href="#-ui">UI</a></li>
+  </ol>
+</details>
+
+## 💁‍♂ 프로젝트 소개
 
 1인 가구 맞춤형 공동구매 및 중고거래 플랫폼입니다.
 
@@ -19,7 +31,7 @@
 
 <br />
 
-## 🛠 기술스택
+## 🛠 기술 스택
 
 <br />
 
@@ -39,7 +51,7 @@
 
 - 🔐 계정
   - 카카오 로그인 / 로그아웃 / 탈퇴
-  - 게스트 로그인
+  - 게스트 로그인 / 공용 로그인
   - 회원가입
   - 회원 정보 수정
   - 유효성 검증
@@ -84,6 +96,7 @@
   - 관심 아이템 조회 / 취소
   - 거래 내역 조회 / 삭제
   - 계정 로그아웃 / 탈퇴
+  - 가상 위치, 현재 위치 변환 기능
 
 <br />
 
@@ -101,13 +114,15 @@
 
 ## 🎨 UI
 
+
+
 |스플래시 | 로그인| 회원가입 | 
 |---|---|---|
-|![스플래시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/01.svg)|![로그인](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/02.svg)|![회원가입](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/03.svg)|
+|![스플래시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/splash-2.gif)|![로그인](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/login.svg)|![회원가입](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/03.svg)|
 
 |홈 화면| 이벤트 목록 | 알림 목록 |
 |---|---|---|
-|![홈 화면](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/04.svg)|![이벤트 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/05.svg)|![알림 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/06.svg)|
+|![홈 화면](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/04_01.svg)|![이벤트 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/05_01.svg)|![알림 목록](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/06.svg)|
 
 |창고 공간| 창고 생성 | 창고 아이템 목록 |
 |---|---|---|
@@ -115,7 +130,7 @@
 
 |창고 아이템 수정| 창고 스팟 | 창고 선택 시 |
 |---|---|---|
-|![창고 아이템 수정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/10.svg)|![창고 스팟](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/11.svg)|![창고 선택 시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/12.svg)|
+|![창고 아이템 수정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/10-1.svg)|![창고 스팟](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/11.svg)|![창고 선택 시](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/12.svg)|
 
 |창고 아이템 선택 | 거래신청 채팅방 선택(판매자만) | 거래 등록(판매자만) |
 |---|---|---|
@@ -141,13 +156,21 @@
 |---|---|---|
 |![거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/28.svg)|![상세 거래 내역](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/29.svg)|![계정 설정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/30.svg)|
 
-|아이템 매칭 | 창고 검색 | PWA |
+| 창고 검색 | 아이템 검색 | 아이템 매칭 |
 |---|---|---|
-|![아이템 매칭](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/itemMatch.gif)|![창고 검색](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/search_02.gif)|![PWA](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/PWA_02.gif)|
+|![창고 검색](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/storage_search_2.gif)|![아이템 검색](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/searching.gif)|![아이템 매칭](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/matching.gif)|
+
+|근처 그룹 채팅 | 채팅 | 채팅방 나가기 |
+|---|---|---|
+|![근처 그룹 채팅](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/nearby.gif)|![채팅](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/chatting.gif)|![채팅방 나가기](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/chat_out_04.gif)|
+
+| 거래 로직 | 가상 위치 / 현재 위치 | PWA |
+|---|---|---|
+|![거래 로직](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/transaction.gif)|![위치 설정](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/gps.gif)|![PWA](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/pwa-1.gif)|
 
 |브라우저 알림 푸시(첫 알림 허용/채팅 신청 시/거래 등록 시)
 |---|
-|![브라우저 알림](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/alarm_01.gif)|
+|![브라우저 알림](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/layout/sse.gif)|
 
 <br />
 <br />
