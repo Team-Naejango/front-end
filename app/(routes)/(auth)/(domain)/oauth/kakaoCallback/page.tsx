@@ -31,7 +31,7 @@ const KakaoCallback = () => {
 
           if (hasLoggedIn) {
             toast.success('로그인 성공하였습니다.')
-            return router.push('/home')
+            return router.push('/home?isLoggedIn=true')
           }
           return router.push('/sign')
         })
