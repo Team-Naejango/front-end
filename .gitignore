@@ -7,7 +7,7 @@
 package-lock.json
 
 # yarn berry
-#.yarn
+.yarn
 .yarn/*
 !.yarn/cache // Zero-Install
 !.yarn/patches
