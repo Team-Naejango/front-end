@@ -12,6 +12,7 @@
     <li><a href="#-구현-기능">구현 기능</a></li>
     <li><a href="#%EF%B8%8F-개발-로드맵">개발 로드맵</a></li>
     <li><a href="#-ui">UI</a></li>
+    <li><a href="#-트러블-슈팅">트러블 슈팅</a></li>
   </ul>
 
 <br />
