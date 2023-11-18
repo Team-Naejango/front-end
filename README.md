@@ -2,17 +2,19 @@
 
 [![github_readme](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/naejango_banner.jpg)](https://naejango.site/)
 
-<details open="open">
-  <summary>목차</summary>
-  <ol>
+<br />
+
+## 📌 목차
+  <ul>
     <li><a href="#-프로젝트-소개">프로젝트 소개</a></li>
     <li><a href="#-팀원">팀원</a></li>
     <li><a href="#-기술-스택">기술 스택</a></li>
     <li><a href="#-구현-기능">구현 기능</a></li>
     <li><a href="#%EF%B8%8F-개발-로드맵">개발 로드맵</a></li>
     <li><a href="#-ui">UI</a></li>
-  </ol>
-</details>
+  </ul>
+
+<br />
 
 ## 💁‍♂ 프로젝트 소개
 
@@ -177,9 +179,23 @@
 
 ## 🚀 트러블 슈팅
 
-[로그인 이슈](https://airhalfsoundhalf.github.io/tech-blog/troubleshooting/2023/10/27/naejango_trouble_shooting_01.html)
+### * ASIS  
+  1. [토큰 관리](https://airhalfsoundhalf.github.io/tech-blog/troubleshooting/2023/10/27/naejango_trouble_shooting_01.html)  
+  2. [빌드 시 AWS CloudFront 캐싱 이슈]  
+  3. [Recoil with 중첩 모달 관리]  
+  4. [Yarn to Yarn Berry 마이그레이션]  
+  5. [PWA로 휴대폰에서 서비스 이용하기]  
+  6. [단방향 SSE 통신 알림 제어]  
+  7. [SockJS와 StompJS로 채팅 서비스 다루기]  
+  8. [아토믹 디자인 패턴 적용기]
+  9. [유저의 시선을 끌 인터렉션과 사용자 경험을 높이려면?]
+  10. [localhost에서 https로 개발서버 열기]  
+
+### * TOBE  
+  1. [회원가입 플로우 퍼널 도입]  
+  2. [테스트 코드 작성]  
 
 <br />
 
-현재, GIF로 서비스 시연 영상 만드는 중입니다.  
-프론트엔드 트러블 슈팅 작성중입니다.
+현재, 프론트엔드 트러블 슈팅 작성중입니다.  
+
