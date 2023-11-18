@@ -29,5 +29,5 @@ artifacts:
 cache:
   paths:
     - 'node_modules/**/*'
-    - '.yarn/**/*',
+    - '.yarn/**/*'
     - '.next/cache/**/*'
