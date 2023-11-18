@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=16.8.0",
-    "npm": ">=8.5.5"
+    "node": ">=18.0.0",
+    "npm": ">=8.5.5",
+    "yarn": ">=4.0.0"
   },
   "scripts": {
     "dev": "env-cmd -f .env.local yarn run open-browser && next dev",
@@ -93,6 +94,7 @@
   },
   "cacheDirectories": [
     "node_modules/",
+    ".yarn/",
     ".next/cache/"
   ],
   "packageManager": "yarn@4.0.2",

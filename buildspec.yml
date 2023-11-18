@@ -25,8 +25,9 @@ phases:
 artifacts:
   files:
     - '**/*'
-  base-directory: 'out'
+  base-directory: '.yarn'
 cache:
   paths:
     - 'node_modules/**/*'
+    - '.yarn/**/*',
     - '.next/cache/**/*'
