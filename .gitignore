@@ -6,6 +6,20 @@
 .pnp.js
 package-lock.json
 
+# yarn berry
+.yarn
+.yarn/*
+!.yarn/cache // Zero-Install
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# pnp
+.pnp.cjs
+.pnp.loader.mjs
+
 # testing
 /coverage
 .swc
