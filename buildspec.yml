@@ -6,6 +6,7 @@ phases:
     commands:
       - n 16
       - npm install -g yarn
+      - yarn install
   pre_build:
     commands:
       - echo NEXT_PUBLIC_API_URL= ${API_URL} >> .env.production
