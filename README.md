@@ -178,25 +178,25 @@
 <br />
 <br />
 
+## 🧹 최적화
+![첫 페이지](https://naejango-s3-image.s3.ap-northeast-2.amazonaws.com/outer/optimization.png)
+
+<br />
+
 ## 🚀 트러블 슈팅
 
 ### * ASIS  
-  1. [토큰 관리](https://airhalfsoundhalf.github.io/tech-blog/troubleshooting/2023/10/27/naejango_trouble_shooting_01.html)  
-  2. [빌드 시 AWS CloudFront 캐싱 이슈]  
-  3. [Recoil with 중첩 모달 관리]  
-  4. [Yarn to Yarn Berry 마이그레이션]  
-  5. [PWA로 휴대폰에서 서비스 이용하기]  
-  6. [단방향 SSE 통신 알림 제어]  
-  7. [SockJS와 StompJS로 채팅 서비스 다루기]  
-  8. [아토믹 디자인 패턴 적용기]
-  9. [유저의 시선을 끌 인터렉션과 사용자 경험을 높이려면?]
-  10. [localhost에서 https로 개발서버 열기]  
+  1. [로그인 이슈](https://tydev-blog.vercel.app/%EB%82%B4-%EC%9E%94%EA%B3%A0%EB%A5%BC-%EB%B6%80%ED%83%81%ED%95%B4-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%9D%B4%EC%8A%88)  
+  2. [단방향 SSE 통신 알림 제어](https://tydev-blog.vercel.app/%EB%8B%A8%EB%B0%A9%ED%96%A5-%ED%86%B5%EC%8B%A0-sse-%EC%95%8C%EB%A6%BC-%EC%A0%9C%EC%96%B4)  
+  3. [AWS 빌드 시 환경변수 읽는 시점 변경기](https://tydev-blog.vercel.app/aws-%EB%B9%8C%EB%93%9C-%EC%8B%9C-%ED%99%98%EA%B2%BD%EB%B3%80%EC%88%98-%EC%9D%BD%EB%8A%94-%EC%8B%9C%EC%A0%90-%EB%B3%80%EA%B2%BD%EA%B8%B0)  
+  4. [AWS 빌드 시 CloudFront 캐싱 이슈](https://tydev-blog.vercel.app/aws-%EB%B9%8C%EB%93%9C-%EC%8B%9C-cloudfront-%EC%BA%90%EC%8B%B1-%EC%9D%B4%EC%8A%88)  
+  5. [Yarn to Yarn Berry 마이그레이션](https://tydev-blog.vercel.app/yarn-to-yarn-berry-%EB%A7%88%EC%9D%B4%EA%B7%B8%EB%A0%88%EC%9D%B4%EC%85%98)  
+  6. [PWA with 하이브리드앱 사용기](https://tydev-blog.vercel.app/pwa-with-%ED%95%98%EC%9D%B4%EB%B8%8C%EB%A6%AC%EB%93%9C%EC%95%B1-%EC%82%AC%EC%9A%A9%EA%B8%B0)  
+  7. [localhost에서 https로 개발서버 열기](https://tydev-blog.vercel.app/%EB%A1%9C%EC%BB%AC%ED%98%B8%EC%8A%A4%ED%8A%B8-http-to-https-%EB%A7%A4%ED%95%91%ED%95%98%EA%B8%B0)  
 
 ### * TOBE  
   1. [회원가입 플로우 퍼널 도입]  
   2. [테스트 코드 작성]  
 
 <br />
-
-현재, 프론트엔드 트러블 슈팅 작성중입니다.  
 
